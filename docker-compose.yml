@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  db:
+    build:
+      context: .
+      dockerfile: nestJs/Dockerfile
+    ports:
+      - '5000:5000'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
