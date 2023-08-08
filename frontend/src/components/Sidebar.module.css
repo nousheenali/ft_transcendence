@@ -1,0 +1,21 @@
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+  }
+  
+.ul {
+list-style: none;
+padding: 0;
+}
+  
+.list {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.list:hover {
+    color: #ff9900;
+}
+  
