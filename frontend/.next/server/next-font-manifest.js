@@ -1,1 +1,0 @@
-self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/home/yoni/Desktop/ft_transcendence/frontend/src/app/(app)/layout\":[\"static/media/2aaf0723e720e8b9-s.p.woff2\"],\"/home/yoni/Desktop/ft_transcendence/frontend/src/app/layout\":[\"static/media/2aaf0723e720e8b9-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
