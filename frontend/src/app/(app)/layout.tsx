@@ -1,9 +1,7 @@
 import MainLayout from '@/components/layout'
-import './globals.css'
+// import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import Image from "next/image";
-
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,8 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      {/* <body className="inter.className flex min-h-screen flex-col items-center justify-between p-24"> */}
+      <body className='bg-slate-600'>
+        <MainLayout>
           {children}
+        </MainLayout>
       </body>
     </html>
   );
