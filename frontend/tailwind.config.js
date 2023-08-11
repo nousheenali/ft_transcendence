@@ -21,6 +21,10 @@ module.exports = {
         'custom-fill': 'rgba(158, 159, 164, 0.70)',
         'strokeWidth': '0.2px',
         'custom-stroke': 'rgba(0, 0, 0, 0.50)',
+        'heading-fill': 'rgba(34, 39, 46, 0.8)',
+        'heading-stroke':'rgba(105, 109, 125, 1)',
+        'heading-stroke-30':'rgba(105, 109, 125, 0.3)',
+        'start-game':'rgba(213, 242, 35, 0.5)',
       }
     },
   },
