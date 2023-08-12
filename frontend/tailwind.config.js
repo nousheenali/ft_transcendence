@@ -12,6 +12,9 @@ module.exports = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      fontFamily: {
+        'saira-condensed': ['Saira Condensed', 'sans-serif'],
+      },
       colors: {
         'box-fill':'rgba(14, 18, 17, 0.7)',
         'main-text':'#9e9fa4',
