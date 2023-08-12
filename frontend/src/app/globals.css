@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@700&display=swap');
+
 
 .background {
     z-index: -1;
