@@ -12,7 +12,7 @@ import React from "react";
 export default function Home() {
   return (
     <>
-      <main className="w-screen h-full flex flex-col items-center gap-20">
+      <main className="w-screen h-full flex flex-col items-center gap-20 absolute">
         <Title />
         <IntraAuthButton />
         <Team />

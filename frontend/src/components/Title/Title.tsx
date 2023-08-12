@@ -5,7 +5,7 @@
 
 export function Title() {
 	return (
-		<div className="w-[800px] flex flex-col justify-center font-saira-condensed">
+		<div className="w-[800px] flex flex-col justify-center font-saira-condensed mt-52">
 			<div
 				className="-mb-4 ml-32 flex justify-start text-9xl font-saira-condensed text-main-yellow [-webkit-text-stroke:1px_#555967]">
 				<div>SPIN</div>

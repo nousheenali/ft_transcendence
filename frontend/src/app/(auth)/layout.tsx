@@ -24,8 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex justify-center flex-col overflow-auto">
-        <Background />
+      <body>
         <Header />
         {children}
         <Footer />

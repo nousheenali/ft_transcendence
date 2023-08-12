@@ -10,29 +10,23 @@ import Image from "next/image";
  * */
 export const Header: React.FC = () => {
   return (
-    <header className="w-screen h-60 flex justify-between items-center shadow-2xl px-20 2xl:px-60">
-      <div className="flex justify-between items-center w-screen h-full">
-        <div className="flex flex-col justify-between items-center">
+    <header className="w-screen h-40 flex justify-center items-center px-20 2xl:px-60 absolute top-0">
+      <div className="navbar w-screen h-full flex justify-between">
+        <div className="flex flex-col items-center">
           <div className="font-saira-condensed text-xl">
             <span className="text-main-yellow">Spin</span>
             <span className="text-main-text">Masters</span>
           </div>
           <div>
-            <Image alt="Logo" src="./Logo.svg" width={115} height={115} />
+            <Image alt="Logo" src="./Logo.svg" width={115} height={15} />
           </div>
         </div>
 
-        <div className="flex flex-row justify-between items-center w-1/2">
-          <ul className="flex text-main-yellow font-saira-condensed text-xl shadow-inner border-b-2 border-nav-stroke">
-            <li className="ml-20 hover:text-hover-login-nav-text">
-              <Link href={"/"}>Home</Link>
-            </li>
-            <li className="ml-10 hover:text-hover-login-nav-text">
-              <Link href={"/#team-section"}>The Team</Link>
-            </li>
-            <li className="ml-10 mr-20 hover:text-hover-login-nav-text">
-              <Link href={"/about"}>About Spin Masters</Link>
-            </li>
+        <div>
+          <ul className="flex justify-center items-center text-main-yellow font-saira-condensed text-xl shadow-inner border-b-2 border-nav-stroke">
+            <li className="ml-20 hover:text-hover-login-nav-text"><Link href={"/"}>Home</Link></li>
+            <li className="ml-10 hover:text-hover-login-nav-text"><Link href={"/#team-section"}>The Team</Link></li>
+            <li className="ml-10 hover:text-hover-login-nav-text"><Link href={"/about"}>About Spin Masters</Link></li>
           </ul>
         </div>
       </div>

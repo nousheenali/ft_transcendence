@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="footer p-4 text-base-content bg-zinc-900 shadow-inner border-t border-main-text items-center">
+    <footer className="w-screen p-4 bg-zinc-900 shadow-inner border-t border-main-text items-center absolute bottom-0">
       <div className="flex items-center">
         <Image
           alt="Company logo"

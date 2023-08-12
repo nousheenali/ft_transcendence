@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Team: NextPage = () => {
 	return (
-		<div id="team-section" className="relative">
+		<div id="team-section" className="relative w-full ">
 			<div className="absolute -top-6 left-1/4 text-center z-10">
 				<b className="text-9xl font-saira-condensed text-main-text font-bold">OUR</b>
 			</div>
