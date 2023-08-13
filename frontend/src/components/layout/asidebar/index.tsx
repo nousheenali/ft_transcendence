@@ -4,13 +4,15 @@ import React from "react";
 import { useState } from "react";
 import { VscBellDot } from "react-icons/vsc";
 import Image from "next/image";
+import MobileSidebar from "@/components/mobileSidebar";
 const AsideBar = () => {
   const [isChecked, setIsChecked] = useState(true);
   const handleToggleChange = () => {
     setIsChecked(!isChecked);
   };
   return (
-    <aside className="min-w-[300px] max-w-[220px] my-[18px] ml-[35px] border-2  border-aside-border bg-aside-fill rounded-3xl overflow-hidden">
+    <>
+    <aside className="hidden lg:w-[400px] m my-[18px] ml-[35px] border-2  border-aside-border bg-aside-fill rounded-3xl overflow-hidden lg:flex flex-col justify-start">
       <div className=" flex  justify-between w-17 h-17 bg-heading-fill rounded-t-2xl border-b-[1px] border-heading-stroke p-2">
         <button className="">
           <div className="flex items-center justify-center rounded-2xl w-6 h-6 bg-gray-500 hover:bg-gray-900 p-1 ">
@@ -152,6 +154,7 @@ const AsideBar = () => {
             </div>
         </div>
 
+
         <div className="flex flex-row gap-[30px] border-2  border-transparent p-3 hover:bg-black hover:border-heading-fill hover:border-2 hover:rounded-l-xl">
           <div>
           <button className="">
@@ -171,6 +174,41 @@ const AsideBar = () => {
         </div>
         {/* <input type="checkbox" /> */}
       </div>
+
+
+        {/* settings and help */}
+      <div className="mt-auto flex flex-col mb-6">
+        <hr className="mx-8 mb-4 border-heading-stroke-30" />
+        <div className="mt-4 ml-12  flex flex-row gap-[30px] border-2  border-transparent p-1 hover:bg-black hover:border-heading-fill hover:border-2 hover:rounded-l-xl">
+          <div>
+          <button className="">
+              <Image
+                // className="w-[24px] h-[24px]"
+                height={24}
+                width={24}
+                src="/DashBoard_logo.svg"
+                alt="DashBoard_logo"
+              />
+          </button>
+          </div>
+          <div> <h1 className="font-saira-condensed font-bold text-xl">Help</h1></div>
+        </div>
+
+        <div className="ml-12  flex flex-row gap-[30px] border-2  border-transparent p-1 hover:bg-black hover:border-heading-fill hover:border-2 hover:rounded-l-xl">
+          <div>
+          <button className="">
+              <Image
+                // className="w-[40px]"
+                height={24}
+                width={24}
+                src="/LeaderBoard_logo.svg"
+                alt="DashBoard_logo"
+              />
+          </button>
+          </div>
+          <div><h1 className="font-saira-condensed font-bold text-xl">Setting</h1></div>
+        </div>
+      </div>
       {/* <div className="avatar offline">
         <div className="w-24 rounded-full">
           <Image src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
@@ -181,6 +219,7 @@ const AsideBar = () => {
       <h1 className="text-white">SideBar </h1>
       <h1 className="text-white">SideBar </h1> */}
     </aside>
+    </>
   );
 };
 
