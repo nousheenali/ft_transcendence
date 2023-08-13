@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function Breaker() {
   return (
-	<div className="border-b-2 border-heading-stroke-30 mx-8"></div>
+    <hr className="mx-8 mb-4 border-heading-stroke-30" />
   )
 }
