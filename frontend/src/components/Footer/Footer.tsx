@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="w-screen p-4 bg-zinc-900 shadow-inner border-t border-main-text items-center absolute bottom-0">
+    <footer className="w-screen p-4 bg-zinc-900 shadow-inner border-t border-main-text items-center">
       <div className="flex items-center">
         <Image
           alt="Company logo"
@@ -18,3 +18,4 @@ export function Footer() {
     </footer>
   );
 }
+

@@ -24,10 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="overflow-y-scroll">
         <Header />
         {children}
-        <Footer />
       </body>
     </html>
   );

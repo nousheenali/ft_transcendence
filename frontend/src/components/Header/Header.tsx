@@ -22,11 +22,11 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        <div>
+        <div className="flex justify-center items-center">
           <ul className="flex justify-center items-center text-main-yellow font-saira-condensed text-xl shadow-inner border-b-2 border-nav-stroke">
-            <li className="ml-20 hover:text-hover-login-nav-text"><Link href={"/"}>Home</Link></li>
-            <li className="ml-10 hover:text-hover-login-nav-text"><Link href={"/#team-section"}>The Team</Link></li>
-            <li className="ml-10 hover:text-hover-login-nav-text"><Link href={"/about"}>About Spin Masters</Link></li>
+            <li className="ml-20 hover:text-hover-login-nav-text"><Link href={"/login"}>Login</Link></li>
+            <li className="ml-10 hover:text-hover-login-nav-text"><Link href={"/login#team-section"}>Team</Link></li>
+            <li className="ml-10 hover:text-hover-login-nav-text"><Link href={"/about"}>About</Link></li>
           </ul>
         </div>
       </div>
