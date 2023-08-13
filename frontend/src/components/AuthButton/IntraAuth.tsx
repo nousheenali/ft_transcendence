@@ -12,7 +12,7 @@ export function IntraAuthButton() {
 			<div className="w-[400px] h-[80px] rounded-md shadow border border-zinc-800
 							bg-gradient-to-b from-authGrad-s to-authGrad-e
 							hover:bg-gradient-to-b hover:from-hover-authGrad-s hover:to-hover-authGrad-e hover:shadow-lg hover:border-main-yellow
-							flex-row justify-center items-center gap-5 inline-flex text-[30px] font-bold">
+							flex-row justify-center items-center gap-5 inline-flex text-[30px] font-bold hover:cursor-pointer">
 				<div className="font-saira-condensed left-0 text-center text-main-yellow">
 					Authenticate 42 Intra
 				</div>
