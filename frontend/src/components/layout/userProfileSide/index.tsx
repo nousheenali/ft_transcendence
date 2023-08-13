@@ -1,5 +1,6 @@
 import Breaker from '@/components/br'
 import React from 'react'
+import StartGameCustomize from '../startGame'
 
 export default function UserProfileSide() {
 	return (
@@ -16,13 +17,7 @@ export default function UserProfileSide() {
 
 			{/* braker to be updated */}
 			<Breaker />
-
-			<div className="flex items-center justify-center p-4 mb-6">
-				<button className="text-start-game font-saira-condensed font-bold text-xl h-18 w-screen border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx-4">
-					Start Game
-				</button>
-			</div>
-
+			<StartGameCustomize />
 		</>
 	)
 }
