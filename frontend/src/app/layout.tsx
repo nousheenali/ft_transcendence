@@ -1,15 +1,13 @@
 import './globals.css'
 import type {Metadata} from 'next'
-import {Inter} from 'next/font/google'
 import React from "react";
 import Background from "@/components/Background/Background";
-
-
-const inter = Inter({subsets: ['latin']})
 
 export const metadata: Metadata = {
 	title: "Spin Masters",
 	description: "Transcendence project",
+	
+
 };
 
 export default function RootLayout({
@@ -19,6 +17,9 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
+			<head>
+				<link rel="icon" href="/Logo.svg" sizes="any" />
+			</head>
 			<body>
 				<Background/>
 				{children}

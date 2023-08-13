@@ -6,8 +6,8 @@ export default function Background() {
 		<div className='background h-screen blur-[12px]'>
 			<Image src='/website-background.webp'
 			       alt='website-background'
-			       objectFit='cover'
 			       layout='fill'
+			       objectFit='cover'
 			/>
 		</div>
 	);
