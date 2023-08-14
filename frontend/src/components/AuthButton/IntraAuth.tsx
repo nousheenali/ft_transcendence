@@ -3,7 +3,7 @@ import Image from "next/image";
 export function IntraAuthButton() {
 	return (
 		<>
-			<div className="w-56 md:w-96 h-20 md:h-28 rounded-md
+			<div className="w-56 md:w-96 h-28 md:h-28 rounded-md
 							flex-col md:flex-row justify-center items-center gap-5 inline-flex 
 							text-2xl md:text-3xl font-bold
 							shadow border border-zinc-800 bg-gradient-to-b from-authGrad-s to-authGrad-e

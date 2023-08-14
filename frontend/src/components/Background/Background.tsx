@@ -3,12 +3,11 @@ import React from "react";
 
 export default function Background() {
 	return (
-		<div className='background h-screen blur-[12px]'>
+		<div className='fixed z-[-1] object-cover border-0 h-screen w-screen blur-md transform scale-105'>
 			<Image src='/website-background.webp'
 			       alt='website-background'
-			       layout='fill'
-			       objectFit='cover'
-			/>
+				   layout="fill"
+					/>
 		</div>
 	);
 }
