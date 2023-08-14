@@ -9,7 +9,7 @@ interface MainLayoutProps {
 
 export default function MainLayout({children}: MainLayoutProps){
     return (
-        <>
+        <main>
         
         <MobileSidebar />
         <div className="flex w-full space-x-4 h-screen max-h-screen py-5 px-4">
@@ -20,6 +20,6 @@ export default function MainLayout({children}: MainLayoutProps){
             </main>
         </div>
 
-        </>
+        </main>
     )
 }
