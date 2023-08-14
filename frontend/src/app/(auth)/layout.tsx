@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="overflow-y-scroll">
+      <body className="overflow-y-scroll flex justify-center">
         <Header />
         {children}
       </body>
