@@ -12,7 +12,10 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+            'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
+      fontFamily: {
+        'saira-condensed': ['Saira Condensed', 'sans'],
       },
       fontFamily: {
         'saira-condensed': ['Saira Condensed', 'sans-serif'],
@@ -20,7 +23,13 @@ module.exports = {
       colors: {
         'box-fill':'rgba(14, 18, 17, 0.7)',
         'main-text':'#9e9fa4',
+        'main-yellow':'rgba(213, 242, 35, 0.8)',
         'nav-stroke':'#D1AA43',
+        'authGrad-s':'rgba(55, 80, 92, 0.1)',
+        'authGrad-e':'rgba(61, 179, 162, 0.1)',
+        'hover-authGrad-s':'rgba(55, 80, 92, 0.3)',
+        'hover-authGrad-e':'rgba(61, 179, 162, 0.3)',
+        'hover-login-nav-text':'#7A8D00',
         'aside-fill': '#0E1211',
         'aside-border': '#696D7D',
         'custom-fill': 'rgba(158, 159, 164, 0.70)',
@@ -35,3 +44,4 @@ module.exports = {
   },
   plugins: [require("daisyui")],
 }
+
