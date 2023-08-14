@@ -18,15 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* <body className="inter.className flex min-h-screen flex-col items-center justify-between p-24"> */}
-      <body className="">
-      <div className="background h-screen blur-[15px]">
-          <Image
-            src="/website-background.webp"
-            alt="website-background"
-            objectFit="cover"
-            layout="fill"
-          />
-        </div>
+      <body>
         <MainLayout>
           {children}
         </MainLayout>
