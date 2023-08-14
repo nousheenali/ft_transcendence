@@ -11,7 +11,7 @@ export default function UserProfileSide() {
 						<img src="/av1.svg" />
 					</div>
 				</div>
-				<div className="text-main-text ">Gab-172</div>
+				<div className="text-main-text font-saira-condensed font-bold text-xl">Gab-172</div>
 			</div>
 
 

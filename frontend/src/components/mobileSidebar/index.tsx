@@ -9,7 +9,8 @@ export default function MobileSidebar() {
     setVisible((visible) => !visible);
   }, []);
     return (
-      <Drawer
+      <Drawer 
+      className=""
       open={visible}
       onClickOverlay={toggleVisible}
       side={

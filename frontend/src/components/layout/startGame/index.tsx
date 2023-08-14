@@ -11,7 +11,7 @@ export default function StartGameCustomize() {
 			<button className="text-start-game font-saira-condensed font-bold text-xl h-18 w-screen border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx-4" onClick={handleShow}>
 				Start Game
 			</button>
-			<Modal ref={ref}>
+			<Modal className='w-[1000px] h-[1000px]' ref={ref}>
 				<Modal.Header className="font-bold">Customize Game!</Modal.Header>
 				<Modal.Body>
 					
