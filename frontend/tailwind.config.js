@@ -4,6 +4,8 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    'node_modules/daisyui/dist/**/*.js',
+    'node_modules/react-daisyui/dist/**/*.js',
   ],
   theme: {
     extend: {
@@ -14,6 +16,9 @@ module.exports = {
       },
       fontFamily: {
         'saira-condensed': ['Saira Condensed', 'sans'],
+      },
+      fontFamily: {
+        'saira-condensed': ['Saira Condensed', 'sans-serif'],
       },
       colors: {
         'box-fill':'rgba(14, 18, 17, 0.7)',

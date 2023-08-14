@@ -3,5 +3,4 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 *, ::before, ::after { border-width: 0; }
