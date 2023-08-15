@@ -39,6 +39,7 @@ module.exports = {
         'heading-stroke':'rgba(105, 109, 125, 1)',
         'heading-stroke-30':'rgba(105, 109, 125, 0.3)',
         'start-game':'rgba(213, 242, 35, 0.5)',
+        'chat-btn-click' : '#232A30',
       }
     },
   },
