@@ -5,10 +5,10 @@ import { useState } from "react";
 import { VscBellDot } from "react-icons/vsc";
 import Image from "next/image";
 import MobileSidebar from "@/components/mobileSidebar";
-import NotificationIcon from "../notificationIcon";
-import UserProfileSide from "../userProfileSide";
-import MenuSideBar from "../menuSideBar";
-import FooterSideBar from "../FooterSideBar";
+import NotificationIcon from "../../notificationIcon";
+import UserProfileSide from "../../userProfileSide";
+import MenuSideBar from "../../menuSideBar";
+import FooterSideBar from "../../FooterSideBar";
 
 interface AsideBarProps {
   isMobile: boolean;
