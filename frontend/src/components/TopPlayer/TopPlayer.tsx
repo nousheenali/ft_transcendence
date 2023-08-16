@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import PlayerInfo from "./PlayerInfo/PlayerInfo";
+import PlayerInfo from "../PlayerInfo/PlayerInfo";
 
 export default function TopPlayer() {
   const scores = [1950, 1900, 1820];
@@ -9,7 +9,7 @@ export default function TopPlayer() {
   return (
     <>
       <div className="flex flex-col w-full">
-        <div className="flex flex-row justify-center items-center space-x-2 h-[40px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke">
+        <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke">
           <div>
             <h1 className="font-saira-condensed font-bold text-xl text-main-text">
               Top Players

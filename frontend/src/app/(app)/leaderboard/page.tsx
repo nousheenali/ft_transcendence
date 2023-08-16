@@ -1,5 +1,5 @@
 import React from 'react';
-import TopPlayer from '@/components/TopPlayer';
+import TopPlayer from '@/components/TopPlayer/TopPlayer';
 
 export default function Leaderboard() {
   return (
