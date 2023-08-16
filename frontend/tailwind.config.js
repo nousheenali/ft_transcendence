@@ -31,6 +31,7 @@ module.exports = {
         'hover-authGrad-e':'rgba(61, 179, 162, 0.3)',
         'hover-login-nav-text':'#7A8D00',
         'aside-fill': '#0E1211',
+        'aside-fill-70': 'rgba(14, 18, 17, 0.7)',
         'aside-border': '#696D7D',
         'custom-fill': 'rgba(158, 159, 164, 0.70)',
         'strokeWidth': '0.2px',
@@ -40,6 +41,8 @@ module.exports = {
         'heading-stroke-30':'rgba(105, 109, 125, 0.3)',
         'start-game':'rgba(213, 242, 35, 0.5)',
         'game-status-bg': 'rgba(54, 55, 62, 0.4)',
+        'Customize-game-bg': ' rgba(21, 21, 21, 0.5)',
+        'placeholder-text': 'rgba(106, 106, 106, 0.5)',
       }
     },
   },
