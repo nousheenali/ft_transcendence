@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default function Profile() {
   return (
@@ -6,7 +6,7 @@ export default function Profile() {
       <div className="w-full h-full text-center text-white flex flex-col">
         <div className="bg-black h-[156px] border-2 border-[#667030]">
           PROFILE
-          </div>
+        </div>
         <div className="bg-black mt-[10px] h-[37px] border-2 border-[#667030]">
           PROFILE_NAV
         </div>
@@ -15,5 +15,5 @@ export default function Profile() {
         </div>
       </div>
     </>
-  )
+  );
 }
