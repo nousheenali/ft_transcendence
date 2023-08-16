@@ -19,7 +19,7 @@ export default function GameStatus() {
         </div>
       </div>
       <div className="grid grid-cols-4 space-x-5 h-[130px] pb-4  pr-6 pl-6 m-4">
-        <div className="bg-game-status-bg p-2 rounded-2xl flex flex-col pt-4">
+        <div className="bg-game-status-bg p-2 rounded-2xl flex flex-col pt-7 ">
           <div className="text-main-yellow flex justify-evenly font-saira-condensed text-xl">
             Games :{" "}
             <span className="text-main-text font-saira-condensed text-xl">
@@ -33,7 +33,7 @@ export default function GameStatus() {
             </span>
           </div>
         </div>
-        <div className="bg-game-status-bg p-2 rounded-2xl flex flex-col pt-4">
+        <div className="bg-game-status-bg p-2 rounded-2xl flex flex-col pt-7">
           <div className="text-main-yellow flex justify-evenly font-saira-condensed text-xl">
             Wins :{" "}
             <span className="text-main-text font-saira-condensed text-xl">
