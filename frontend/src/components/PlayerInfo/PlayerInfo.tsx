@@ -22,7 +22,7 @@ const PlayerInfo: React.FC<PlayerInfoProps> = (props) => {
             </div>
           </div>
         </div>
-        <div className="ml-5 text-white">
+        <div className="ml-5 font-saira-condensed text-lg text-main-text">
           <p className="font-semibold">{props.name}</p>
           <p className="font-semibold">{props.score}</p>
         </div>
