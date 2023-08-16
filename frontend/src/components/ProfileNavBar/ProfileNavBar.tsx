@@ -11,16 +11,16 @@ export default function ProfileNavBar() {
     };
 
     const getButtonStyles = (buttonId: string) => {
-      return `mr-2 px-4 py-1 hover:text-[#7E8937] rounded-md truncate ${
+      return `px-4 mt-1 mb-1 hover:text-subheading-two rounded-md truncate ${
         activeButton === buttonId
-          ? "text-[#7E8937] border-heading-stroke border-[1px] "
+          ? "text-subheading-two border-heading-stroke border-[1px] "
           : "text-main-text"
       }`;
     };
 
     return (
       <>
-        <div className="flex flex-row flex-shrink-0 h-[45px] space-x-10 justify-center font-saira-condensed text-main-text items-end">
+        <div className="flex flex-row flex-shrink-0 h-[45px] space-x-10 justify-center font-saira-condensed text-main-text">
           <button
             onClick={() => handleButtonClick("button1")}
             className={getButtonStyles("button1")}
