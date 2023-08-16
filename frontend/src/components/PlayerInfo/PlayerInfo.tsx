@@ -18,7 +18,7 @@ const PlayerInfo: React.FC<PlayerInfoProps> = (props) => {
           <div className="absolute bottom-0 right-0">
             <Image height={40} width={40} src={props.medal} alt="medal" />
             <div className="absolute top-1 left-4">
-              <p className="text-[#cee821] text-l font-bold">{props.rank}</p>
+              <p className="text-[#D0F223] text-l font-bold">{props.rank}</p>
             </div>
           </div>
         </div>

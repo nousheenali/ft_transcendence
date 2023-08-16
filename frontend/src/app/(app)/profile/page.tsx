@@ -5,7 +5,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="w-full h-full text-center text-white flex flex-col">
+      <div className="w-full h-full text-center text-white flex flex-col p-6">
         <ProfileInfo
           name="UserName"
           email="username@email.com"

@@ -11,9 +11,9 @@ export default function ProfileNavBar() {
     };
 
     const getButtonStyles = (buttonId: string) => {
-      return `mr-2 px-4 py-1 hover:text-[#7a8a27]  rounded-md truncate ${
+      return `mr-2 px-4 py-1 hover:text-[#7E8937] rounded-md truncate ${
         activeButton === buttonId
-          ? "text-[#7a8a27] border-heading-stroke border-[1px] "
+          ? "text-[#7E8937] border-heading-stroke border-[1px] "
           : "text-main-text"
       }`;
     };

@@ -16,10 +16,10 @@ export default function TopPlayer() {
             </h1>
           </div>
           <div>
-            <Image height={25} width={25} src="/crown.svg" alt="crown" />
+            <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
           </div>
         </div>
-        <div className="flex flex-row space-x-20 justify-center items-center h-[130px] border-b rounded-b-lg border-[#7a8a27]">
+        <div className="flex flex-row space-x-20 justify-center items-center h-[130px] border-b rounded-b-lg border-[#7E8937]">
           <PlayerInfo
             name="Player 2"
             score={scores[1]}
