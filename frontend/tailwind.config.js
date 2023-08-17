@@ -40,6 +40,10 @@ module.exports = {
         'heading-stroke':'rgba(105, 109, 125, 1)',
         'heading-stroke-30':'rgba(105, 109, 125, 0.3)',
         'start-game':'rgba(213, 242, 35, 0.5)',
+        'subheading-one':'#D0F223',
+        'subheading-two':'#7E8937',
+        'grid-border':'#7E8937',
+        'grid-bg':'#22272E'
         'game-status-bg': 'rgba(54, 55, 62, 0.4)',
         'Customize-game-bg': ' rgba(21, 21, 21, 0.5)',
         'placeholder-text': 'rgba(106, 106, 106, 0.5)',
