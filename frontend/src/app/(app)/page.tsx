@@ -1,11 +1,11 @@
 // import SideBar from "@/components/SideBar";
 
+import GameStatus from "@/components/GameStatus/page";
+
 export default function DashBoardPage() {
   return (
 <div className="p-2 h-full flex flex-col mr-[35px]">
-  <div className="text-white items-center border-b-2 stroke-slate-200 flex bg-box-fill mb-10 h-[160px]">
-    <h1 className="text-center self-center">GAME STATUS</h1>
-  </div>
+  <GameStatus />
   <div className="text-white grid grid-cols-3 gap-10 h-full">
     <div className="col-span-2 items-center justify-center border-b-2 stroke-slate-200 flex bg-box-fill mr-8 overflow-y-scroll">
       GAME HISTORY
