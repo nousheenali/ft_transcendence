@@ -8,7 +8,6 @@ import MobileSidebar from "@/components/mobileSidebar";
 import NotificationIcon from "../../notificationIcon";
 import UserProfileSide from "../../userProfileSide";
 import MenuSideBar from "../../menuSideBar";
-import FooterSideBar from "../../FooterSideBar";
 
 interface AsideBarProps {
   isMobile: boolean;
@@ -26,8 +25,6 @@ const AsideBar : FC<AsideBarProps> = ({isMobile}) => {
     <UserProfileSide />
 
     <MenuSideBar />
-
-    <FooterSideBar />
 
     </aside>
     </>
