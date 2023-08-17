@@ -19,7 +19,6 @@ export default function RootLayout({
 		<html lang="en">
 			<head><link rel="icon" href="Logo.ico" sizes="any" /></head>
 			<body>
-				<Background/>
 				{children}
 			</body>
 		</html>

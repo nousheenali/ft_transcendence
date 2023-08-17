@@ -1,3 +1,4 @@
+import Background from '@/components/Background/Background'
 import MainLayout from '@/components/layout'
 // import './globals.css'
 import type { Metadata } from 'next'
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       {/* <body className="inter.className flex min-h-screen flex-col items-center justify-between p-24"> */}
       <body>
+				<Background />
         <MainLayout>
           {children}
         </MainLayout>
