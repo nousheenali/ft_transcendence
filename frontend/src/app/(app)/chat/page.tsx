@@ -12,32 +12,69 @@ export default function Chat() {
       <div className="w-96 mt-5 mb-14 flex flex-col gap-4 items-center border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
         <MsgChannelBtn />
         <ChatSearch />
+
         <LatestMessage
           sender={{
-            name: "user-1",
+            name: "Ghaiath Abdoush",
             profileImage: {
-              alt: "User 1 Profile Picture",
+              alt: "Ghaiath Abdoush Profile Picture",
               src: "av1.svg",
             },
             isOnline: false,
           }}
-          messageTime="12:30 AM"
-          messageContent="Hello! How are you?"
+          messageTime="2m ago"
+          messageContent=" since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more r"
         />
         <LatestMessage
           sender={{
-            name: "user-1",
+            name: "Yonatan Monges",
             profileImage: {
-              alt: "User 2 Profile Picture",
+              alt: "Yonatan Monges Profile Picture",
               src: "av1.svg",
             },
             isOnline: true,
           }}
-          messageTime="11:30 AM"
-          messageContent="Hi!!"
+          messageTime="10m ago"
+          messageContent="Hi!"
+        />
+                <LatestMessage
+          sender={{
+            name: "Ghaiath Abdoush",
+            profileImage: {
+              alt: "Ghaiath Abdoush Profile Picture",
+              src: "av1.svg",
+            },
+            isOnline: false,
+          }}
+          messageTime="2m ago"
+          messageContent=" since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more r"
+        />
+                <LatestMessage
+          sender={{
+            name: "Ghaiath Abdoush",
+            profileImage: {
+              alt: "Ghaiath Abdoush Profile Picture",
+              src: "av1.svg",
+            },
+            isOnline: false,
+          }}
+          messageTime="2m ago"
+          messageContent=" since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more r"
+        />
+                <LatestMessage
+          sender={{
+            name: "Ghaiath Abdoush",
+            profileImage: {
+              alt: "Ghaiath Abdoush Profile Picture",
+              src: "av1.svg",
+            },
+            isOnline: false,
+          }}
+          messageTime="2m ago"
+          messageContent=" since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more r"
         />
       </div>
-      
+
       <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
         <UserMessages />
       </div>
