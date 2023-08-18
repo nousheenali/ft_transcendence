@@ -22,7 +22,10 @@ const AsideBar : FC<AsideBarProps> = ({isMobile}) => {
 
     <NotificationIcon />
 
-    <UserProfileSide />
+    <UserProfileSide 
+    image="/av1.svg"
+    name="Gab-172"
+    />
 
     <MenuSideBar />
 
