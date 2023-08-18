@@ -1,7 +1,16 @@
 import React from "react";
 import Image from "next/image";
 
-export default function GameStatus() {
+interface GameStatusProps {
+  score: number;
+  games: number;
+  wins: number;
+  loses: number;
+  archivement: string;
+}
+
+
+export default function GameStatus({score, games, wins, loses, archivement}: GameStatusProps) {
   return (
     <div className=" text-white border-b-2 border-heading-stroke-30 rounded-b-2xl rounded-t-2xl stroke-slate-200 flex flex-col bg-box-fill mb-10 h-[200px]">
       <div className="flex flex-row bg-heading-stroke-30 border-2 rounded-t-2xl border-aside-border p-1 items-center justify-center font-saira-condensed font-bold text-20 text-2xl text-main-text space-x-2">
@@ -23,13 +32,13 @@ export default function GameStatus() {
           <div className="text-main-yellow flex justify-evenly font-saira-condensed text-xl">
             Games :{" "}
             <span className="text-main-text font-saira-condensed text-xl">
-              42
+              {games}
             </span>
           </div>
           <div className="text-main-yellow flex justify-evenly ml-1 font-saira-condensed text-xl">
             Score :{" "}
             <span className="text-main-text font-saira-condensed text-xl">
-              1420
+              {score}
             </span>
           </div>
         </div>
@@ -37,13 +46,13 @@ export default function GameStatus() {
           <div className="text-main-yellow flex justify-evenly font-saira-condensed text-xl">
             Wins :{" "}
             <span className="text-main-text font-saira-condensed text-xl">
-              12
+              {wins}
             </span>
           </div>
           <div className="text-main-yellow flex justify-evenly ml-1 font-saira-condensed text-xl">
             Loses :{" "}
             <span className="text-main-text font-saira-condensed text-xl">
-              30
+              {loses}
             </span>
           </div>
         </div>
@@ -53,7 +62,7 @@ export default function GameStatus() {
         <div className="bg-game-status-bg col-start-3 col-span-4 rounded-2xl overflow-hidden p-2">
           <div className="flex flex-row items-center justify-around">
             <div className="font-saira-condensed text-2xl text-main-yellow text-bold">Archivement :</div>
-            <div className="flex flex-col justify-center items-center gap-1">
+            <div className={"flex flex-col justify-center items-center gap-1"}>
               <h1 className="text-main-text font-saira-condensed font-bold text-2xl">Bronze</h1>
                 <Image
                   src="/Bronze_icon.svg"
@@ -63,7 +72,7 @@ export default function GameStatus() {
                   alt="Game Status"
                 />
             </div>
-            <div className="flex flex-col justify-center items-center gap-1">
+            <div className="flex flex-col justify-center items-center gap-1 opacity-25">
               <div className="text-main-text font-saira-condensed font-bold text-2xl"><h1>Silver</h1></div>
               <div>
                 <Image
@@ -75,7 +84,7 @@ export default function GameStatus() {
                 />
               </div>
               </div>
-            <div className="flex flex-col justify-center items-center gap-1">
+            <div className="flex flex-col justify-center items-center gap-1 opacity-25">
               <div className="text-main-text font-saira-condensed font-bold text-2xl"><h1>Gold</h1></div>
               <div>
                 <Image
@@ -87,7 +96,7 @@ export default function GameStatus() {
                 />
               </div>
               </div>
-            <div className="flex flex-col justify-center items-center gap-1">
+            <div className="flex flex-col justify-center items-center gap-1 opacity-25">
               <div className="text-main-text font-saira-condensed font-bold text-2xl"><h1>Champion</h1></div>
               <div>
                 <Image

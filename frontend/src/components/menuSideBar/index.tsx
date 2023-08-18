@@ -4,7 +4,7 @@ import Link from "next/link";
 import Breaker from "../br";
 
 export default function MenuSideBar() {
-  const [activeButton, setActiveButton] = useState("button0");
+  const [activeButton, setActiveButton] = useState("");
 
   const handleButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);

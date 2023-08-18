@@ -5,7 +5,13 @@ import GameStatus from "@/components/GameStatus/page";
 export default function DashBoardPage() {
   return (
 <div className="p-2 h-full flex flex-col mr-[35px]">
-  <GameStatus />
+  <GameStatus 
+  score={1420}
+  games={42}
+  wins={12}
+  loses={30}
+  archivement="broze"
+  />
   <div className="text-white grid grid-cols-3 gap-10 h-full">
     <div className="col-span-2 items-center justify-center border-b-2 stroke-slate-200 flex bg-box-fill mr-8 overflow-y-scroll">
       GAME HISTORY
