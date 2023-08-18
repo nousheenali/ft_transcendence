@@ -47,7 +47,7 @@ export default function ChatMessage({
         <p className="text-sm font-saira-condensed font-thin overflow-y-hidden text-dimmed-text truncate">{messageContent}</p>
       </div>
 
-      <div className="text-xs font-saira-condensed font-thin text-dimmed-text basis-1/6">{messageTime}</div>
+      <div className="text-xs font-saira-condensed font-thin text-dimmed-text basis-1/6 -mt-12 -mr-4">{messageTime}</div>
 
     </div>
   );
