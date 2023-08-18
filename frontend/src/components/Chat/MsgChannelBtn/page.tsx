@@ -18,7 +18,7 @@ export default function MsgChannelBtn() {
                       }`}
         onClick={() => setActiveTab("Messages")}
       >
-        <span className="text-xl">Messages</span>
+        <span className="text-main-text text-xl">Messages</span>
         <Image
           alt="messages-icon"
           src="chat/message-notif.svg"
@@ -36,7 +36,7 @@ export default function MsgChannelBtn() {
                       }`}
         onClick={() => setActiveTab("Channels")}
       >
-        <span className="text-xl">Channels</span>
+        <span className="text-main-text text-xl">Channels</span>
         <Image
           alt="messages-icon"
           src="chat/people.svg"

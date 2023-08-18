@@ -3,14 +3,16 @@ import { messages } from "./message_example";
 
 export default function LatestMsgsBox() {
   return (
-    <div className="w-full overflow-y-scroll bg-slate-500 scroll-container">
+    <div className="flex flex-col w-full h-1/2 rounded-xl overflow-y-scroll scroll-container">
       {messages.map((message, index) => (
-        <LatestMessage
-          key={index}
-          sender={message.sender}
-          messageTime={message.messageTime}
-          messageContent={message.messageContent}
-        />
+        <div className="py-1">
+          <LatestMessage
+            key={index}
+            sender={message.sender}
+            messageTime={message.messageTime}
+            messageContent={message.messageContent}
+          />
+        </div>
       ))}
     </div>
   );

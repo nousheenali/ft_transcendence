@@ -46,6 +46,7 @@ module.exports = {
         'latest-msg-s' : 'rgba(34, 39, 46, 0.5)',
         'latest-msg-e' : 'rgba(54, 55, 62, 0.5)',
         'dimmed-text' : '#6B6B6B',
+        'line-break' : 'rgba(105, 109, 125, 0.3)',
       }
     },
   },

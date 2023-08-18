@@ -5,6 +5,7 @@ import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/page";
 import UserMessages from "@/components/Chat/ChatBox/ChatBox";
 import ChatSearch from "@/components/Chat/ChatSearch/ChatSearch";
 import LatestMsgsBox from "@/components/Chat/LatestMsgsBox/LatestMsgsBox";
+import FriendsBoxHeader from "@/components/Chat/Friends/FriendsBoxHeader/FriendsBoxHeader";
 
 export default function Chat() {
   return (
@@ -13,6 +14,8 @@ export default function Chat() {
         <MsgChannelBtn />
         <ChatSearch />
         <LatestMsgsBox />
+        <hr className="w-80 border-line-break" />
+        <FriendsBoxHeader />
       </div>
 
       <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">

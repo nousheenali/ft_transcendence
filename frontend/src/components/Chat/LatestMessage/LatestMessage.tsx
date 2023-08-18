@@ -20,7 +20,7 @@ export default function ChatMessage({
 }: ChatMessageProps) {
   return (
     <div
-      className="flex flex-row justify-center items-center w-80 h-14 rounded-md px-1 py-1 overflow-hidden hover:cursor-pointer
+      className="flex flex-row justify-center items-center w-80 h-20 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer
 						bg-gradient-to-b from-latest-msg-s to-latest-msg-e">
       
 
