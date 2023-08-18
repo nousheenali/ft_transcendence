@@ -40,8 +40,11 @@ module.exports = {
         'heading-stroke-30':'rgba(105, 109, 125, 0.3)',
         'start-game':'rgba(213, 242, 35, 0.5)',
         'chat-btn-click' : '#232A30',
-        'chat-search' : '#151717',
+        'search-box-fill' : '#151717',
+        'search-box-text' : '#6B6B6B',
         'chat-search-stroke' : '#696D7D',
+        'latest-msg-s' : 'rgba(34, 39, 46, 0.5)',
+        'latest-msg-e' : 'rgba(54, 55, 62, 0.5)',
       }
     },
   },
