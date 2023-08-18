@@ -6,4 +6,33 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* width */
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #22272E;
+    border-radius: 1px;
+}
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(213, 242, 35, 0.8);
+    border-radius: 3px;
+	box-shadow: none;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(178, 202, 27, 0.8);
+}
+
+::-webkit-scrollbar-corner {
+    background: rgba(178, 202, 27, 0.8);
+    border-radius: 1px;
+}
+
 *, ::before, ::after { border-width: 0; }
