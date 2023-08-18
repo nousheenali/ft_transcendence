@@ -9,7 +9,7 @@ import FriendsBoxHeader from "@/components/Chat/Friends/FriendsBoxHeader/Friends
 
 export default function Chat() {
   return (
-    <div className="flex w-full h-screen px-4 justify-start">
+    <div className="flex w-full h-screen px-4 justify-center">
       <div className="w-96 mt-5 mb-14 flex flex-col gap-4 items-center border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
         <MsgChannelBtn />
         <ChatSearch />

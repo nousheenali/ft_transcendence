@@ -43,7 +43,7 @@ export default function ChatMessage({
 
       {/* [2] */}
       <div className="flex flex-col overflow-y-hidden basis-4/6">
-        <span className="font-saira-condensed font-light truncate ...">{sender.name}</span>
+        <span className="font-saira-condensed text-main-text font-light truncate ...">{sender.name}</span>
         <p className="text-sm font-saira-condensed font-thin overflow-y-hidden text-dimmed-text truncate">{messageContent}</p>
       </div>
 
