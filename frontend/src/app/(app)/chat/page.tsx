@@ -6,16 +6,23 @@ import UserMessages from "@/components/Chat/ChatBox/ChatBox";
 import ChatSearch from "@/components/Chat/ChatSearch/ChatSearch";
 import LatestMsgsBox from "@/components/Chat/LatestMsgsBox/LatestMsgsBox";
 import FriendsBoxHeader from "@/components/Chat/Friends/FriendsBoxHeader/FriendsBoxHeader";
+import FriendsSearch from "@/components/Chat/Friends/FriendsSearch/FriendsSearch";
+import FriendsBox from "@/components/Chat/Friends/FriendsBox/FriendsBox";
 
 export default function Chat() {
   return (
     <div className="flex w-full h-screen px-4 justify-center">
       <div className="w-96 mt-5 mb-14 flex flex-col gap-4 items-center border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
         <MsgChannelBtn />
+        
         <ChatSearch />
         <LatestMsgsBox />
         <hr className="w-80 border-line-break" />
+
         <FriendsBoxHeader />
+        <FriendsSearch />
+        <FriendsBox />
+        <hr className="w-80 border-line-break" />
       </div>
 
       <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
