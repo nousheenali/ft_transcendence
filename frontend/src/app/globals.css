@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@50&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@100&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 *, ::before, ::after { border-width: 0; }

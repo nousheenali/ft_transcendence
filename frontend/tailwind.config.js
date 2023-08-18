@@ -45,6 +45,7 @@ module.exports = {
         'chat-search-stroke' : '#696D7D',
         'latest-msg-s' : 'rgba(34, 39, 46, 0.5)',
         'latest-msg-e' : 'rgba(54, 55, 62, 0.5)',
+        'dimmed-text' : '#6B6B6B',
       }
     },
   },

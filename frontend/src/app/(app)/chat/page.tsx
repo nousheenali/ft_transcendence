@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/page";
-import UserMessages from "@/components/Chat/UserMessages/UserMessages";
+import UserMessages from "@/components/Chat/ChatBox/ChatBox";
 import ChatSearch from "@/components/Chat/ChatSearch/ChatSearch";
 import LatestMessage from "@/components/Chat/LatestMessage/LatestMessage";
 
