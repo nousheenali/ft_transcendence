@@ -11,11 +11,12 @@ export default function MenuSideBar() {
   };
 
   const getButtonStyles = (buttonId: string) => {
-    return `border-2 border-transparent pl-6 hover:bg-black hover:border-heading-fill hover:border-2 hover:rounded-l-xl no-underline hover:no-underline ${
-      activeButton === buttonId
-        ? "bg-black border-heading-fill border-2 rounded-l-xl "
-        : ""
-    }`;
+    return `border-2 border-transparent pl-6 hover:bg-black hover:border-2 hover:rounded-l-xl no-underline hover:no-underline 
+      ${
+        activeButton === buttonId
+          ? "bg-black border-gray-800 rounded-l-xl border-2"
+          : ""
+      }`;
   };
   return (
     <>
