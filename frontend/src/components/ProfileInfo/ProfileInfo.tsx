@@ -34,17 +34,17 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({name, email, rank}) => {
             <div className="flex flex-shrink-0 w-1/5 justify-center">
               <img height={100} width={100} src="/av1.svg" alt="avatar" />
             </div>
-            <div className="flex flex-col w-4/5 ml-2 mt-5 mb-5 mr-10 rounded-xl font-saira-condensed text-lg text-main-text justify-start pl-6 pt-1 bg-grid-bg opacity-50">
+            <div className="flex flex-col w-4/5 ml-2 mt-5 mb-5 mr-10 rounded-xl font-saira-condensed text-lg text-main-text justify-start pl-6 pt-1 bg-grid-bg">
               <div className="flex flex-row">
-                <div className="text-subheading-one">Name:</div>
+                <div>Name:</div>
                 <div className="ml-10 truncate max-w-[300px]">{name}</div>
               </div>
               <div className="flex flex-row">
-                <div className="text-subheading-one">Email:</div>
+                <div>Email:</div>
                 <div className="ml-10 truncate max-w-[300px]">{email}</div>
               </div>
               <div className="flex flex-row">
-                <div className="text-subheading-one">Rank:</div>
+                <div>Rank:</div>
                 <div className="ml-10">#{rank}</div>
               </div>
             </div>

@@ -5,47 +5,6 @@ export default function Leaderboard() {
   return (
     <div className="container mx-auto p-6">
       <TopPlayer />
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">
-          Top Player Heading With Icon
-        </h1>
-      </div>
-      <div className="mb-6 w-full flex justify-center items-center">
-        <div className="flex space-x-20">
-          <div className="flex items-center space-x-4 relative flex-1">
-            <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0 relative">
-              {/* Avatar Image */}
-              <div className="absolute w-4 h-4 bg-red-500 rounded-full right-0 bottom-0"></div>
-            </div>
-            <div>
-              <p className="font-semibold">Player 1</p>
-              <p className="font-semibold">1900</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4 relative flex-1">
-            <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0 relative">
-              {/* Avatar Image */}
-              <div className="absolute w-4 h-4 bg-red-500 rounded-full right-0 bottom-0"></div>
-            </div>
-            <div>
-              <p className="font-semibold">Player 1</p>
-              <p className="font-semibold">1900</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4 relative flex-1">
-            <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0 relative">
-              {/* Avatar Image */}
-              <div className="absolute w-4 h-4 bg-red-500 rounded-full right-0 bottom-0"></div>
-            </div>
-            <div>
-              <p className="font-semibold">Player 1</p>
-              <p className="font-semibold">1900</p>
-            </div>
-          </div>
-          {/* Repeat for other players */}
-        </div>
-        {/* Repeat for other players */}
-      </div>
       <h2 className="text-xl font-bold mb-4 text-center mt-10">
         Leaderboard Heading with icon{' '}
       </h2>

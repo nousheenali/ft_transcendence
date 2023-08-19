@@ -47,7 +47,11 @@ module.exports = {
         'game-status-bg': 'rgba(54, 55, 62, 0.4)',
         'Customize-game-bg': ' rgba(21, 21, 21, 0.5)',
         'placeholder-text': 'rgba(106, 106, 106, 0.5)',
-      }
+      },
+      zIndex: {
+        'z-10': 10, 
+        'z-1000': 1000, 
+      },
     },
   },
   plugins: [require("daisyui")],
