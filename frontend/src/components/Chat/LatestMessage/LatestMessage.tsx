@@ -13,6 +13,21 @@ interface ChatMessageProps {
   messageContent: string;
 }
 
+/**
+ * A component that renders a single message in the LatestMsgsBox component, it receives the following props:
+ * 
+ * {sender} is an object that contains the following properties:
+ *   {name} is a string that represents the name of the sender
+ *  {profileImage} is an object that contains the following properties:
+ *    {alt} is a string that represents the alt attribute of the profile image
+ *   {src} is a string that represents the src attribute of the profile image
+ * {isOnline} is a boolean that represents whether the sender is online or not
+ * 
+ * {messageTime} is a string that represents the time of the message
+ * {messageContent} is a string that represents the content of the message
+ * 
+ * all of the above props are received from the LatestMsgsBox component (frontend/src/components/Chat/LatestMsgsBox/LatestMsgsBox.tsx)
+ */
 export default function ChatMessage({
   sender,
   messageTime,
@@ -25,7 +40,7 @@ export default function ChatMessage({
       
 
       {/* [1] */}
-      <div className="indicator profile w-36 h-12 basis-1/6">
+      <div className="indicator profile w-36 h-12 basis-1/6 -mt-4 -ml-2">
         <Image
           alt={sender.profileImage.alt}
           src={sender.profileImage.src}
