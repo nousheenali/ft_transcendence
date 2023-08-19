@@ -2,11 +2,11 @@ import React from "react";
 import Friend from "@/components/Chat/Friends/Friend/Friend";
 import { friends } from "./FriendsListExample";
 
-export default function FriendssBox() {
+export default function FriendsBox() {
   return (
-    <div className="flex flex-col w-full h-1/3 rounded-xl pl-7 overflow-y-scroll scroll-container">
+    <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
       {friends.map((OneFriend, index) => (
-        <div className="py-1">
+        <div>
           <Friend
             key={index}
             friend={OneFriend.friend}

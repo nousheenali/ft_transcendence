@@ -39,7 +39,10 @@ export default function ChatMessage({
 						bg-gradient-to-b from-latest-msg-s to-latest-msg-e">
       
 
-      {/* [1] */}
+      {/**
+       * [1]: The indicator is a div that contains the profile image of the sender and a small circle that indicates
+       * whether the sender is online or not.
+      */}
       <div className="indicator profile w-36 h-12 basis-1/6 -mt-4 -ml-2">
         <Image
           alt={sender.profileImage.alt}
@@ -56,12 +59,17 @@ export default function ChatMessage({
       </div>
       
 
-      {/* [2] */}
+      {/**
+       * [2]: The sender name and the message content. 
+       * */}
       <div className="flex flex-col overflow-y-hidden basis-4/6">
         <span className="font-saira-condensed text-main-text font-light truncate ...">{sender.name}</span>
         <p className="text-sm font-saira-condensed font-thin overflow-y-hidden text-dimmed-text truncate">{messageContent}</p>
       </div>
 
+      {/**
+       * [3]: The message time.
+       * */}
       <div className="text-xs font-saira-condensed font-thin text-dimmed-text basis-1/6 -mt-12 -mr-4">{messageTime}</div>
 
     </div>

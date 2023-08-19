@@ -33,7 +33,7 @@ export default function Friend({friend}: FriendProps) {
 			)}
 		  </div>
 
-		  <div className="flex flex-col overflow-y-hidden basis-4/6">
+		  <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2">
 			<span className="font-saira-condensed text-main-text font-light truncate ...">{friend.name}</span>
 		  </div>
 		
