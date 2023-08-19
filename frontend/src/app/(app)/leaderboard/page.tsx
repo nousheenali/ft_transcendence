@@ -1,105 +1,56 @@
 import React from 'react';
 import TopPlayer from '@/components/TopPlayer/TopPlayer';
+import ResponsiveTable from '@/components/Table/Table';
+import Image from 'next/image';
 
 export default function Leaderboard() {
+  const leaderboardHeadings = [
+    'Rank',
+    'Player',
+    'Score',
+    'Games',
+    'Wins',
+    'Losses',
+  ];
+  const generateLeaderboardData = (numRecords = 100) => {
+    const records = [];
+
+    for (let i = 1; i <= numRecords; i++) {
+      records.push([
+        `${i}`, // Position/Number
+        { playerName: `Player${i}`, img: `/av1.svg`, name: `Name${i}` },
+        `${1800 + i}`, // This score increases by 1 for each record as an example
+        `${Math.floor(Math.random() * 15) + 1}`, // Random number between 1-15
+        `${Math.floor(Math.random() * 10) + 1}`, // Random number between 1-10
+        `${Math.floor(Math.random() * 5) + 1}`, // Random number between 1-5
+      ]);
+    }
+
+    return records;
+  };
+
+  const leaderboardData = generateLeaderboardData();
+
+  console.log(leaderboardData);
+
   return (
     <div className="container mx-auto p-6">
       <TopPlayer />
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">
-          Top Player Heading With Icon
-        </h1>
-      </div>
-      <div className="mb-6 w-full flex justify-center items-center">
-        <div className="flex space-x-20">
-          <div className="flex items-center space-x-4 relative flex-1">
-            <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0 relative">
-              {/* Avatar Image */}
-              <div className="absolute w-4 h-4 bg-red-500 rounded-full right-0 bottom-0"></div>
-            </div>
-            <div>
-              <p className="font-semibold">Player 1</p>
-              <p className="font-semibold">1900</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4 relative flex-1">
-            <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0 relative">
-              {/* Avatar Image */}
-              <div className="absolute w-4 h-4 bg-red-500 rounded-full right-0 bottom-0"></div>
-            </div>
-            <div>
-              <p className="font-semibold">Player 1</p>
-              <p className="font-semibold">1900</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4 relative flex-1">
-            <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0 relative">
-              {/* Avatar Image */}
-              <div className="absolute w-4 h-4 bg-red-500 rounded-full right-0 bottom-0"></div>
-            </div>
-            <div>
-              <p className="font-semibold">Player 1</p>
-              <p className="font-semibold">1900</p>
-            </div>
-          </div>
-          {/* Repeat for other players */}
+      <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
+        <div>
+          <h1 className="font-saira-condensed font-bold text-xl text-main-text">
+            LeaderBoard
+          </h1>
         </div>
-        {/* Repeat for other players */}
+        <div>
+          <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
+        </div>
       </div>
-      <h2 className="text-xl font-bold mb-4 text-center mt-10">
-        Leaderboard Heading with icon{' '}
-      </h2>
-      <table className="w-full bg-black text-white border border-white">
-        <thead className="border border-white">
-          <tr>
-            <th className="py-2 px-4 text-center bg-black text-white shadow-md">
-              Player
-            </th>
-            <th className="py-2 px-4 text-center bg-black text-white shadow-md">
-              Rank
-            </th>
-            <th className="py-2 px-4 text-center bg-black text-white shadow-md">
-              Score
-            </th>
-            <th className="py-2 px-4 text-center bg-black text-white shadow-md">
-              Games
-            </th>
-            <th className="py-2 px-4 text-center bg-black text-white shadow-md">
-              Wins
-            </th>
-            <th className="py-2 px-4 text-center bg-black text-white shadow-md">
-              Losses
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="py-2 px-4 text-center">Player 1</td>
-            <td className="py-2 px-4 text-center">1</td>
-            <td className="py-2 px-4 text-center">1900</td>
-            <td className="py-2 px-4 text-center">10</td>
-            <td className="py-2 px-4 text-center">7</td>
-            <td className="py-2 px-4 text-center">3</td>
-          </tr>
-          <tr>
-            <td className="py-2 px-4 text-center">Player 1</td>
-            <td className="py-2 px-4 text-center">1</td>
-            <td className="py-2 px-4 text-center">1900</td>
-            <td className="py-2 px-4 text-center">10</td>
-            <td className="py-2 px-4 text-center">7</td>
-            <td className="py-2 px-4 text-center">3</td>
-          </tr>
-          <tr>
-            <td className="py-2 px-4 text-center">Player 1</td>
-            <td className="py-2 px-4 text-center">1</td>
-            <td className="py-2 px-4 text-center">1900</td>
-            <td className="py-2 px-4 text-center">10</td>
-            <td className="py-2 px-4 text-center">7</td>
-            <td className="py-2 px-4 text-center">3</td>
-          </tr>
-          {/* Repeat for other players */}
-        </tbody>
-      </table>
+      <ResponsiveTable
+        headings={leaderboardHeadings}
+        data={leaderboardData}
+        maxHeight="520px"
+      ></ResponsiveTable>
     </div>
   );
 }

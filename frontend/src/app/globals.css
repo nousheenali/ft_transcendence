@@ -3,4 +3,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-*, ::before, ::after { border-width: 0; }
+*,
+::before,
+::after {
+  border-width: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #22272e;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(213.28, 242.25, 35.33, 0.8);
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+  background: rgba(241, 241, 241, 0.8);
+} */
