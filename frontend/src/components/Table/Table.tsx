@@ -20,6 +20,8 @@ interface ResponsiveTableProps {
   maxHeight: string;
 }
 
+
+
 const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
   headings,
   data,
