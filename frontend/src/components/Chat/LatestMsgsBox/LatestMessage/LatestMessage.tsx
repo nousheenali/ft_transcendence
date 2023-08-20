@@ -1,17 +1,5 @@
 import Image from "next/image";
-
-interface ChatMessageProps {
-  sender: {
-    name: string;
-    profileImage: {
-      alt: string;
-      src: string;
-    };
-    isOnline: boolean;
-  };
-  messageTime: string;
-  messageContent: string;
-}
+import { MessageProps } from "../types";
 
 /**
  * A component that renders a single message in the LatestMsgsBox component, it receives the following props:
@@ -32,7 +20,7 @@ export default function ChatMessage({
   sender,
   messageTime,
   messageContent,
-}: ChatMessageProps) {
+}: MessageProps) {
   return (
     <div
       className="flex flex-row justify-center items-center w-80 h-20 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer

@@ -1,4 +1,18 @@
+import React, { useEffect, useState } from 'react';
 import LatestMessage from "@/components/Chat/LatestMsgsBox/LatestMessage/LatestMessage";
+import {MessageProps} from "@/components/Chat/LatestMsgsBox/types";
+
+// const getMessages = async () => {
+//   try {
+//     const response = await fetch('../../../data/messages.json');
+//     const data = await response.json();
+//     return data.messages; // Return the 'messages' array from the data
+//   } catch (error) {
+//     console.error('Error fetching messages:', error);
+//     return []; // Return an empty array in case of error
+//   }
+// };
+
 
 /**
  * A component that renders the LatestMsgsBox component, which is a box that contains the latest messages
@@ -18,15 +32,29 @@ import LatestMessage from "@/components/Chat/LatestMsgsBox/LatestMessage/LatestM
  * {messageContent} is a string that represents the content of the message
  * 
  */
-export default function LatestMsgsBox(props: {message:string}) {
-  const {message} = props;
+export default function LatestMsgsBox() {
+  const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [isLoading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('../../../messages.json')
+      .then((res) => res.json())
+      .then((data) => {
+        setMessages(data)
+        setLoading(false)
+      })
+  }, [])
+
+  if (isLoading) return <p>Loading...</p>
+  if (!messages) return <p>No profile data</p>
+
+  console.log(messages);
 
   return (
     <div className="flex flex-col w-full h-1/2 rounded-xl pl-5 overflow-y-scroll scroll-container">
-      {/* {messages.map((message:any, index:number) => (
-        <div className="py-1">
+      {/* {messages.map((message, index) => (
+        <div className="py-1" key={index}>
           <LatestMessage
-            key={index}
             sender={message.sender}
             messageTime={message.messageTime}
             messageContent={message.messageContent}
@@ -35,39 +63,4 @@ export default function LatestMsgsBox(props: {message:string}) {
       ))} */}
     </div>
   );
-}
-
-/**
- * Example of a message object:
- * ----------------------------
- * 	sender: {
-		name: "Ghaiath Abdoush",
-		profileImage: {
-		  alt: "Ghaiath Abdoush Profile Picture",
-		  src: "av1.svg",
-		},
-		isOnline: false,
-	  },
-	  messageTime: "2m ago",
-	  messageContent: "Lorem Ipsum 1",
-	},
- */
-
-
-  /**
-   * The getStaticProps function is used to fetch the data that is needed to render the LatestMsgsBox component,
-   * it is used to fetch the messages array from the database.
-   */
-
-
-  export async function getStaticProps() {
-    const {messages} = await import("../../../data/messages.json");
-
-    console.log(messages);
-
-    return {
-        props: {
-            messages: messages,
-        },
-    }
 }
