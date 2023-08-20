@@ -1,4 +1,4 @@
-import ChatBoxHeader from "./ChatBoxHeader/ChatBoxHeader";
+import ChatBoxHeader from "./FriendsChatBoxHeader/FriendsChatBoxHeader";
 
 export default function ChatBox() {
   return (

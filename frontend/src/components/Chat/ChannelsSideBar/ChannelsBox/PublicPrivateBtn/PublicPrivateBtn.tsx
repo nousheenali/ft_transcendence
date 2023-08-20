@@ -1,12 +1,22 @@
-import { ChannelsBtn } from "../../types";
-import Image from "next/image";
+import { ChannelsBtn } from "../../../types";
 
+/**
+ * @param {string} activeChannel - The active channel
+ * @param {function} setActiveChannel - The function that sets the active channel
+ * @returns {JSX.Element} - JSX element that renders the Public and Private buttons
+ * @description - This component renders the Public and Private buttons, it is used in the ChannelsSideBar component.
+ * It is also responsible for managing the state of the Public and Private buttons, the state is managed by the {activeChannel} state,
+ * which is a string that can be either "Public" or "Private". The {activeChannel} state is passed to the PublicPrivateBtn component as a prop
+ * and it is used to determine which tab is active and render the appropriate tab. The {activeChannel} state
+ * is also used to determine which component to render, the Public component or the Private component.
+ * @component
+ */
 export default function PublicPrivateBtn({
   activeChannel,
   setActiveChannel,
 }: ChannelsBtn) {
   return (
-    <div className="w-full h-11 flex justify-between rounded-xl bg-main-theme text-main-texts font-saira-condensed border-b border-main-yellow">
+    <div className="w-80 h-11 flex justify-between rounded-xl bg-main-theme text-main-texts font-saira-condensed border-b border-main-yellow">
       <div
         className={`flex flex-row flex-grow h-full justify-center items-center gap-2 rounded-xl hover:cursor-pointer select-none 
 						${
@@ -17,12 +27,6 @@ export default function PublicPrivateBtn({
         onClick={() => setActiveChannel("Public")}
       >
         <span className="text-main-text text-xl">Public</span>
-        <Image
-          alt="messages-icon"
-          src="chat/message-notif.svg"
-          width={25}
-          height={25}
-        />
       </div>
 
       <div
@@ -35,12 +39,6 @@ export default function PublicPrivateBtn({
         onClick={() => setActiveChannel("Private")}
       >
         <span className="text-main-text text-xl">Private</span>
-        <Image
-          alt="messages-icon"
-          src="chat/people.svg"
-          width={25}
-          height={25}
-        />
       </div>
     </div>
   );
