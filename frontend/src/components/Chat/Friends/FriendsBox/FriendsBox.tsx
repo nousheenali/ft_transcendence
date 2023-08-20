@@ -6,7 +6,7 @@ export default function FriendsBox() {
   return (
     <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
       {friends.map((OneFriend, index) => (
-        <div>
+        <div key={index}>
           <Friend
             key={index}
             friend={OneFriend.friend}

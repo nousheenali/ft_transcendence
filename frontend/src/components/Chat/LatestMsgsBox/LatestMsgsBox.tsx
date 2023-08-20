@@ -2,24 +2,27 @@ import React, { useEffect, useState } from 'react';
 import LatestMessage from "@/components/Chat/LatestMsgsBox/LatestMessage/LatestMessage";
 import {MessageProps} from "@/components/Chat/LatestMsgsBox/types";
 
-// const getMessages = async () => {
-//   try {
-//     const response = await fetch('../../../data/messages.json');
-//     const data = await response.json();
-//     return data.messages; // Return the 'messages' array from the data
-//   } catch (error) {
-//     console.error('Error fetching messages:', error);
-//     return []; // Return an empty array in case of error
-//   }
-// };
+
+/**
+ * A function that fetches the messages from the data/messages.json file (for now)
+ * and later from the backend.
+ * @returns {Promise<MessageProps[]>} A promise that resolves to an array of messages
+ * @async
+ */
+
+const getMessages = async () => {
+  try {
+    const data = await import('../../../data/messages.json');
+    return data.messages; // Return the 'messages' array from the data
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    return []; // Return an empty array in case of error
+  }
+};
 
 
 /**
- * A component that renders the LatestMsgsBox component, which is a box that contains the latest messages
- * of the user. It is responsible for rendering the LatestMessage component for each message in the messages
- * array.
- * 
- * The messages array is an array of objects, each object represents a message and it contains the following properties:
+ * A component that renders the latest messages in the chat, it receives the following props:
  * 
  * {sender} is an object that contains the following properties:
  *  {name} is a string that represents the name of the sender
@@ -32,27 +35,26 @@ import {MessageProps} from "@/components/Chat/LatestMsgsBox/types";
  * {messageContent} is a string that represents the content of the message
  * 
  */
+
 export default function LatestMsgsBox() {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('../../../messages.json')
-      .then((res) => res.json())
-      .then((data) => {
-        setMessages(data)
-        setLoading(false)
-      })
-  }, [])
+    getMessages().then((messages) => {
+      setMessages(messages);
+      setLoading(false)
+    });
+  }, []);
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <span className="loading loading-ring loading-lg text-main-yellow"></span>
   if (!messages) return <p>No profile data</p>
 
   console.log(messages);
 
   return (
     <div className="flex flex-col w-full h-1/2 rounded-xl pl-5 overflow-y-scroll scroll-container">
-      {/* {messages.map((message, index) => (
+      {messages.map((message, index) => (
         <div className="py-1" key={index}>
           <LatestMessage
             sender={message.sender}
@@ -60,7 +62,7 @@ export default function LatestMsgsBox() {
             messageContent={message.messageContent}
           />
         </div>
-      ))} */}
+      ))}
     </div>
   );
 }
