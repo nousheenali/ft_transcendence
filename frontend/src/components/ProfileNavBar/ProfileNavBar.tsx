@@ -6,7 +6,7 @@ export default function ProfileNavBar() {
     const [activeButton, setActiveButton] = useState("button1");
 
     const handleButtonClick = (buttonId: string) => {
-      console.log("Button clicked!");
+      // console.log("Button clicked!");
       setActiveButton(buttonId);
     };
 

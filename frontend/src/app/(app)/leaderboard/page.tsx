@@ -31,7 +31,7 @@ export default function Leaderboard() {
 
   const leaderboardData = generateLeaderboardData();
 
-  console.log(leaderboardData);
+  // console.log(leaderboardData);
 
   return (
     <div className="container mx-auto p-6">

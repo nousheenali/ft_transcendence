@@ -9,7 +9,8 @@ import FriendsBoxHeader from "@/components/Chat/Friends/FriendsBoxHeader/Friends
 import FriendsSearch from "@/components/Chat/Friends/FriendsSearch/FriendsSearch";
 import FriendsBox from "@/components/Chat/Friends/FriendsBox/FriendsBox";
 
-
+import ChannelsSearch from "@/components/Chat/ChannelsBox/ChannelsSearch";
+import PublicPrivateBtn from "@/components/Chat/ChannelsBox/PublicPrivateBtn";
 /**
  * The Chat component is the main component of the Chat page, it is responsible for rendering
  * the whole page and it is also responsible for managing the state of the page.
@@ -22,6 +23,7 @@ import FriendsBox from "@/components/Chat/Friends/FriendsBox/FriendsBox";
  */
 export default function Chat() {
   const [activeTab, setActiveTab] = useState<string>("Messages");
+  const [activeChannel, setActiveChannel] = useState<string>("Public");
 
   return (
     <div className="flex w-full h-screen px-4 justify-center">
@@ -37,6 +39,16 @@ export default function Chat() {
             <FriendsBoxHeader />
             <FriendsSearch />
             <FriendsBox />
+            <hr className="w-80 border-line-break" />
+          </>
+        }
+        {activeTab === "Channels" &&
+          <>
+            <ChannelsSearch />
+            <PublicPrivateBtn activeChannel={activeTab} setActiveChannel={setActiveTab} />
+            <hr className="w-80 border-line-break" />
+            {activeChannel === "Public" && <div>Public</div>}
+            {activeChannel === "Private" && <div>Private</div>}
             <hr className="w-80 border-line-break" />
           </>
         }

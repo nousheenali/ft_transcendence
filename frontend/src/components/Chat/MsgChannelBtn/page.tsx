@@ -1,34 +1,23 @@
 import Image from "next/image";
-
-
-/**
- * Interface for the MsgChannelBtn component props, which are:
- * 
- * {activeTab} is a string that can be either "Messages" or "Channels"
- * {setActiveTab} is a function that takes a string as an argument and sets the activeTab state to that string
- */
-interface MsgChannelBtnProps {
-  activeTab: string;
-  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-}
+import { MsgChannelBtnProps } from "../types";
 
 /**
  * A component that uses the {activeTab} state to determine which tab is active
- * and render the appropriate tab. it is also using the {setActiveTab} state to 
+ * and render the appropriate tab. it is also using the {setActiveTab} state to
  * change the activeTab state when the user clicks on the tab.
- * 
+ *
  * {activeTab} is a string that can be either "Messages" or "Channels"
  * {setActiveTab} is a function that takes a string as an argument and sets the activeTab state to that string
- * 
+ *
  * both are received as props from the Chat component (frontend/src/app/(app)/chat/page.tsx).
  */
 
-
-export default function MsgChannelBtn( {activeTab, setActiveTab}: MsgChannelBtnProps ) {
-
+export default function MsgChannelBtn({
+  activeTab,
+  setActiveTab,
+}: MsgChannelBtnProps) {
   return (
     <div className="w-full h-11 flex justify-between rounded-xl bg-main-theme text-main-texts font-saira-condensed border-b border-main-yellow">
-    
       <div
         className={`flex flex-row flex-grow h-full justify-center items-center gap-2 rounded-xl hover:cursor-pointer select-none 
                       ${
@@ -64,7 +53,6 @@ export default function MsgChannelBtn( {activeTab, setActiveTab}: MsgChannelBtnP
           height={25}
         />
       </div>
-    
     </div>
   );
 }
