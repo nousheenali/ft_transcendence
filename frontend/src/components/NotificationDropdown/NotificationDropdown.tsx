@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 
 interface NotificationItem {
   username: string;
@@ -21,7 +22,10 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
   return (
     <div>
       <div>
-        <button onClick={toggleDropdown} className="btn-xs btn-ghost">
+        <button
+          onClick={toggleDropdown}
+          className="btn-xs btn-ghost btn-circle"
+        >
           <div className="flex items-center justify-center rounded-2xl w-6 h-6 bg-gray-500 hover:bg-[#696A71] opacity-70 p-1 ">
             <svg
               className=""
@@ -69,28 +73,27 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
       </div>
 
       {isOpen && (
-        <div className="absolute z-1000 rounded-md w-1/3 bg-grid-bg max-h-48 overflow-y-auto border border-aside-border backdrop-blur-xl">
+        <div className="absolute z-[1000] rounded-3xl w-1/3 bg-notification-fill max-h-40 overflow-y-auto border-[0.5px] border-notification-stroke backdrop-blur-xl">
           <div className="py-1" role="none">
             {NotificationList.map((item, index) => (
-              <div className="flex flex-row space-x-4 px-4 py-2 my-4 mx-2 text-md font-saira-condensed text-gray-500 bg-gray-900 hover:text-gray-400 rounded-full">
-                <a key={index} href="#" className="">
-                  <div className="flex space-x-5">
-                    <div className="flex rounded-full px-2 bg-grid-bg">
-                      <div className="py-1">
-                        <img
-                          className="w-8 h-8 mr-2"
-                          src="/av1.svg"
-                          alt="Image 1"
-                        />
-                      </div>
-                      <div className="truncate max-w-[100px] pt-2">
-                        {item.username}
-                      </div>
-                    </div>
-                    <div className="py-1 pt-2 truncate max-w-[200px]">
-                      {item.message}
-                    </div>
-                    <div className="py-1 pt-2">{item.time}</div>
+              <div className="flex flex-row px-1 py-1 my-1 mx-1 text-sm font-extralight text-main-text font-saira-condensed hover:text-gray-300 rounded-full bg-gradient-to-b from-notif-item-bg to-notif-item-bg-two">
+                <a key={index} href="#" className="flex space-x-5 w-full">
+                  <div className="flex rounded-full bg-gradient-to-b from-notif-img-one to-notif-img-two">
+                    <Image
+                      src="/av1.svg"
+                      alt="User Profile Image"
+                      width={30}
+                      height={30}
+                    />
+                    <h1 className="truncate max-w-[50px] pt-2">
+                      {item.username}
+                    </h1>
+                  </div>
+                  <div className="truncate grow py-1 pt-2 truncate max-w-[200px]">
+                    {item.message}
+                  </div>
+                  <div className="grow py-1 pt-2 text-end pr-2">
+                    {item.time}
                   </div>
                 </a>
               </div>

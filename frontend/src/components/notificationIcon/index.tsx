@@ -10,7 +10,7 @@ interface NotificationItem {
 
 const List: NotificationItem[] = [
   {
-    username: "User1",
+    username: "Long1",
     image: "/av1.svg",
     message: "Requested your friendship",
     time: "2 min ago",

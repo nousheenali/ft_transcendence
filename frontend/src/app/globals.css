@@ -5,10 +5,3 @@
 @tailwind utilities;
 *, ::before, ::after { border-width: 0; }
 
-.z-100 {
-    z-index: 100;
-}
-
-.z-1000 {
-    z-index: 1000;
-}

@@ -47,6 +47,15 @@ module.exports = {
         'game-status-bg': 'rgba(54, 55, 62, 0.4)',
         'Customize-game-bg': ' rgba(21, 21, 21, 0.5)',
         'placeholder-text': 'rgba(106, 106, 106, 0.5)',
+        'notification-fill': 'rgba(14, 20, 18, 0.7)',
+        'notification-stroke': 'rgba(108, 120, 36, 0.8)',
+        'grid-bg-two': 'rgba(54, 55, 62, 0.44)',
+        'notif-item-bg': '#14171C',
+        'notif-item-bg-two': 'rgba(54, 55, 62, 0.44)',
+        'notif-img-one':'#101214',
+        'notif-img-two':'rgba(54, 55, 62, 0.44)'
+        
+
       }
     },
   },
