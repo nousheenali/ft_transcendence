@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import LatestMessage from "@/components/Chat/LatestMsgsBox/LatestMessage/LatestMessage";
-import {MessageProps} from "@/components/Chat/LatestMsgsBox/types";
+import LatestMessage from "@/components/Chat/LatesMessages/LatestMessage/LatestMessage";
+import {MessageProps} from "@/components/Chat/types";
 
 
 /**
@@ -12,7 +12,7 @@ import {MessageProps} from "@/components/Chat/LatestMsgsBox/types";
 
 const getMessages = async () => {
   try {
-    const data = await import('../../../data/messages.json');
+    const data = await import('../../../../data/messages.json');
     return data.messages; // Return the 'messages' array from the data
   } catch (error) {
     console.error('Error fetching messages:', error);
@@ -47,10 +47,8 @@ export default function LatestMsgsBox() {
     });
   }, []);
 
-  if (isLoading) return <span className="loading loading-ring loading-lg text-main-yellow"></span>
-  if (!messages) return <p>No profile data</p>
-
-  console.log(messages);
+  if (isLoading) return (<span className="loading loading-ring loading-lg text-main-yellow"></span>);
+  if (!messages) return (<p>No profile data</p>);
 
   return (
     <div className="flex flex-col w-full h-1/2 rounded-xl pl-5 overflow-y-scroll scroll-container">

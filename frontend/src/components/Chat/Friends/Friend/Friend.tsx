@@ -1,17 +1,8 @@
 import Image from "next/image";
+import {ChatFriendsProps} from "@/components/Chat/types";
 
-interface FriendProps {
-	friend: {
-	  name: string;
-	  isOnline: boolean;
-	  profileImage: {
-		alt: string;
-		src: string;
-	  };
-	};
-  }
 
-export default function Friend({friend}: FriendProps) {
+export default function Friend({friend}: ChatFriendsProps) {
 	return (
 		<div
 		  className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer">

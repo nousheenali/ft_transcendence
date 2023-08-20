@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MessageProps } from "../types";
+import { MessageProps } from "../../../types";
 
 /**
  * A component that renders a single message in the LatestMsgsBox component, it receives the following props:

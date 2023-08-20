@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/page";
 import UserMessages from "@/components/Chat/ChatBox/ChatBox";
-import ChatSearch from "@/components/Chat/ChatSearch/ChatSearch";
-import LatestMsgsBox from "@/components/Chat/LatestMsgsBox/LatestMsgsBox";
+import ChatSearch from "@/components/Chat/LatesMessages/MessagesSearch/ChatSearch";
+import LatestMsgsBox from "@/components/Chat/LatesMessages/LatestMsgsBox/LatestMsgsBox";
 import FriendsBoxHeader from "@/components/Chat/Friends/FriendsBoxHeader/FriendsBoxHeader";
 import FriendsSearch from "@/components/Chat/Friends/FriendsSearch/FriendsSearch";
 import FriendsBox from "@/components/Chat/Friends/FriendsBox/FriendsBox";
