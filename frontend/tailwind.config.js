@@ -49,8 +49,12 @@ module.exports = {
         'placeholder-text': 'rgba(106, 106, 106, 0.5)',
         'table-header-bg': 'rgba(26, 26, 26, 0.69)',
         'table-header-text-color': '#6B6B6B',
-        'table-row-bg': '#36373E70',
-        'table-row-text-color': '#8D98A7'
+        // 'table-row-bg': '#36373E70',
+        'table-row-text-color': '#8D98A7',
+      },
+      backgroundImage: {
+        'table-row-bg':
+          'linear-gradient(180deg, rgba(34, 39, 46, 0.50) 0%, rgba(54, 55, 62, 0.22) 100%)',
       },
     },
   },
