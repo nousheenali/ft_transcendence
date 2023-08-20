@@ -49,8 +49,15 @@ module.exports = {
         'placeholder-text': 'rgba(106, 106, 106, 0.5)',
         'table-header-bg': 'rgba(26, 26, 26, 0.69)',
         'table-header-text-color': '#6B6B6B',
-        // 'table-row-bg': '#36373E70',
         'table-row-text-color': '#8D98A7',
+        'chat-btn-click': '#232A30',
+        'search-box-fill': '#151717',
+        'search-box-text': '#6B6B6B',
+        'chat-search-stroke': '#696D7D',
+        'latest-msg-s': 'rgba(34, 39, 46, 0.5)',
+        'latest-msg-e': 'rgba(54, 55, 62, 0.5)',
+        'dimmed-text': '#6B6B6B',
+        'line-break': 'rgba(105, 109, 125, 0.3)',
       },
       backgroundImage: {
         'table-row-bg':
