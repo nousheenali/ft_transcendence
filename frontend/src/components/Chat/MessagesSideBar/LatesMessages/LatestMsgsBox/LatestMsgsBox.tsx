@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import LatestMessage from "@/components/Chat/LatesMessages/LatestMessage/LatestMessage";
+import LatestMessage from "@/components/Chat/MessagesSideBar/LatesMessages/LatestMessage/LatestMessage";
 import {MessageProps} from "@/components/Chat/types";
 
 
@@ -12,7 +12,7 @@ import {MessageProps} from "@/components/Chat/types";
 
 const getMessages = async () => {
   try {
-    const data = await import('../../../../data/messages.json');
+    const data = await import('../../../../../data/messages.json');
     return data.messages; // Return the 'messages' array from the data
   } catch (error) {
     console.error('Error fetching messages:', error);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Friend from "@/components/Chat/Friends/Friend/Friend";
+import Friend from "@/components/Chat/MessagesSideBar/Friends/Friend/Friend";
 import {ChatFriendsProps} from "@/components/Chat/types";
 
 /**
@@ -11,7 +11,7 @@ import {ChatFriendsProps} from "@/components/Chat/types";
 
 const getMessages = async () => {
   try {
-    const data = await import('../../../../data/friends.json');
+    const data = await import('../../../../../data/friends.json');
     return data.friends; // Return the 'friends' array from the data
   } catch (error) {
     console.error('Error fetching friends data:', error);

@@ -1,16 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/page";
+import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/MsgChannelBtn";
+import MessagesSideBar from "@/components/Chat/MessagesSideBar/MessagesSideBar";
+import ChannelsSideBar from "@/components/Chat/ChannelsSideBar/ChannelsSideBar";
 import UserMessages from "@/components/Chat/ChatBox/ChatBox";
-import ChatSearch from "@/components/Chat/LatesMessages/MessagesSearch/ChatSearch";
-import LatestMsgsBox from "@/components/Chat/LatesMessages/LatestMsgsBox/LatestMsgsBox";
-import FriendsBoxHeader from "@/components/Chat/Friends/FriendsBoxHeader/FriendsBoxHeader";
-import FriendsSearch from "@/components/Chat/Friends/FriendsSearch/FriendsSearch";
-import FriendsBox from "@/components/Chat/Friends/FriendsBox/FriendsBox";
 
-import ChannelsSearch from "@/components/Chat/ChannelsBox/ChannelsSearch";
-import PublicPrivateBtn from "@/components/Chat/ChannelsBox/PublicPrivateBtn";
 /**
  * The Chat component is the main component of the Chat page, it is responsible for rendering
  * the whole page and it is also responsible for managing the state of the page.
@@ -23,35 +18,15 @@ import PublicPrivateBtn from "@/components/Chat/ChannelsBox/PublicPrivateBtn";
  */
 export default function Chat() {
   const [activeTab, setActiveTab] = useState<string>("Messages");
-  const [activeChannel, setActiveChannel] = useState<string>("Public");
 
   return (
     <div className="flex w-full h-screen px-4 justify-center">
       <div className="w-96 mt-5 mb-14 flex flex-col gap-4 items-center border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
         <MsgChannelBtn activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        {/* Render the Messages part, otherise render the Channel part */}
-        {activeTab === "Messages" &&
-          <>
-            <ChatSearch />
-            <LatestMsgsBox />
-            <hr className="w-80 border-line-break" />
-            <FriendsBoxHeader />
-            <FriendsSearch />
-            <FriendsBox />
-            <hr className="w-80 border-line-break" />
-          </>
-        }
-        {activeTab === "Channels" &&
-          <>
-            <ChannelsSearch />
-            <PublicPrivateBtn activeChannel={activeTab} setActiveChannel={setActiveTab} />
-            <hr className="w-80 border-line-break" />
-            {activeChannel === "Public" && <div>Public</div>}
-            {activeChannel === "Private" && <div>Private</div>}
-            <hr className="w-80 border-line-break" />
-          </>
-        }
+        {/* Render the Messages/Channels part */}
+        { activeTab === "Messages" &&  <MessagesSideBar /> }
+        { activeTab === "Channels" &&  <ChannelsSideBar /> }
 
       </div>
 
