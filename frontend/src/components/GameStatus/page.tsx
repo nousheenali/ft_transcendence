@@ -9,25 +9,31 @@ interface GameStatusProps {
   archivement: string;
 }
 
-
-export default function GameStatus({score, games, wins, loses, archivement}: GameStatusProps) {
+export default function GameStatus({
+  score,
+  games,
+  wins,
+  loses,
+  archivement,
+}: GameStatusProps) {
   return (
     <div className=" text-white border-b-2 border-heading-stroke-30 rounded-b-2xl rounded-t-2xl stroke-slate-200 flex flex-col bg-box-fill mb-10 h-[200px]">
-      <div className="flex flex-row bg-heading-stroke-30 border-2 rounded-t-2xl border-aside-border p-1 items-center justify-center font-saira-condensed font-bold text-20 text-2xl text-main-text space-x-2">
-        <div className="mt-1">
+      <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke">
+        <div className="font-saira-condensed font-bold text-xl text-main-text">
           <h1>Game Status</h1>
         </div>
         <div>
           <Image
             src="/Game_status_icon.svg"
-            width={40}
-            height={40}
-            className="inline-block ml-2"
+            width={25}
+            height={25}
+            // className="inline-block ml-2"
             alt="Game Status"
           />
         </div>
       </div>
-      <div className="grid grid-cols-4 space-x-5 h-[130px] pb-4  pr-6 pl-6 m-4">
+      <div className="grid grid-cols-[200px,200px,100px,auto] space-x-5 h-[130px] pb-4  pr-4 pl-4 m-4 ">
+        {/* Game And score box */}
         <div className="bg-game-status-bg p-2 rounded-2xl flex flex-col pt-7 ">
           <div className="text-main-yellow flex justify-evenly font-saira-condensed text-xl">
             Games :{" "}
@@ -42,6 +48,7 @@ export default function GameStatus({score, games, wins, loses, archivement}: Gam
             </span>
           </div>
         </div>
+        {/* Wins And loses box */}
         <div className="bg-game-status-bg p-2 rounded-2xl flex flex-col pt-7">
           <div className="text-main-yellow flex justify-evenly font-saira-condensed text-xl">
             Wins :{" "}
@@ -57,23 +64,28 @@ export default function GameStatus({score, games, wins, loses, archivement}: Gam
           </div>
         </div>
 
-
         {/* Archivements section */}
         <div className="bg-game-status-bg col-start-3 col-span-4 rounded-2xl overflow-hidden p-2">
           <div className="flex flex-row items-center justify-around">
-            <div className="font-saira-condensed text-2xl text-main-yellow text-bold">Archivement :</div>
+            <div className="font-saira-condensed text-2xl text-main-yellow text-bold">
+              Archivement :
+            </div>
             <div className={"flex flex-col justify-center items-center gap-1"}>
-              <h1 className="text-main-text font-saira-condensed font-bold text-2xl">Bronze</h1>
-                <Image
-                  src="/Bronze_icon.svg"
-                  width={70}
-                  height={70}
-                  // className="inline-block ml-2"
-                  alt="Game Status"
-                />
+              <h1 className="text-main-text font-saira-condensed font-bold text-2xl">
+                Bronze
+              </h1>
+              <Image
+                src="/Bronze_icon.svg"
+                width={70}
+                height={70}
+                // className="inline-block ml-2"
+                alt="Game Status"
+              />
             </div>
             <div className="flex flex-col justify-center items-center gap-1 opacity-25">
-              <div className="text-main-text font-saira-condensed font-bold text-2xl"><h1>Silver</h1></div>
+              <div className="text-main-text font-saira-condensed font-bold text-2xl">
+                <h1>Silver</h1>
+              </div>
               <div>
                 <Image
                   src="/Silver_icon.svg"
@@ -83,9 +95,11 @@ export default function GameStatus({score, games, wins, loses, archivement}: Gam
                   alt="Game Status"
                 />
               </div>
-              </div>
+            </div>
             <div className="flex flex-col justify-center items-center gap-1 opacity-25">
-              <div className="text-main-text font-saira-condensed font-bold text-2xl"><h1>Gold</h1></div>
+              <div className="text-main-text font-saira-condensed font-bold text-2xl">
+                <h1>Gold</h1>
+              </div>
               <div>
                 <Image
                   src="/Gold_icon.svg"
@@ -95,9 +109,11 @@ export default function GameStatus({score, games, wins, loses, archivement}: Gam
                   alt="Game Status"
                 />
               </div>
-              </div>
+            </div>
             <div className="flex flex-col justify-center items-center gap-1 opacity-25">
-              <div className="text-main-text font-saira-condensed font-bold text-2xl"><h1>Champion</h1></div>
+              <div className="text-main-text font-saira-condensed font-bold text-2xl">
+                <h1>Champion</h1>
+              </div>
               <div>
                 <Image
                   src="/GoldStar_icon.svg"
@@ -107,7 +123,7 @@ export default function GameStatus({score, games, wins, loses, archivement}: Gam
                   alt="Game Status"
                 />
               </div>
-              </div>
+            </div>
           </div>
         </div>
       </div>
