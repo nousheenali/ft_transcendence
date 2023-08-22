@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/MsgChannelBtn";
 import MessagesSideBar from "@/components/Chat/MessagesSideBar/MessagesSideBar";
 import ChannelsSideBar from "@/components/Chat/ChannelsSideBar/ChannelsSideBar";
-import UserMessages from "@/components/Chat/ChatBox/FriendsChatBox/FriendsChatBox";
+import FriendsChatBox from "@/components/Chat/ChatBox/FriendsChatBox/FriendsChatBox";
 
 /**
  * The Chat component is the main component of the Chat page, it is responsible for rendering
@@ -30,7 +30,7 @@ export default function Chat() {
       </div>
 
       <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
-        <UserMessages />
+        <FriendsChatBox />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import ChatSearch from "@/components/Chat/MessagesSideBar/LatesMessages/MessagesSearch/ChatSearch";
+import ChatSearch from "@/components/Chat/MessagesSideBar/MessagesSearch/ChatSearch";
 import LatestMsgsBox from "@/components/Chat/MessagesSideBar/LatesMessages/LatestMsgsBox/LatestMsgsBox";
 import FriendsBoxHeader from "@/components/Chat/MessagesSideBar/Friends/FriendsBoxHeader/FriendsBoxHeader";
 import FriendsSearch from "@/components/Chat/MessagesSideBar/Friends/FriendsSearch/FriendsSearch";

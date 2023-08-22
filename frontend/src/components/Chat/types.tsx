@@ -52,6 +52,28 @@ export interface ChatFriendsProps {
 
 /*-------------------------------------------------------------------*/
 /**
+ * Interface for the ChannelUserProps component props, which are:
+ *
+ * {user} is an object that contains the following properties:
+ *    {name} is a string that contains the name of the user
+ *    {isOnline} is a boolean that determines whether the user is online or not
+ *    {profileImage} is an object that contains the following properties:
+ *       {alt} is a string that contains the alt text for the profile image
+ *       {src} is a string that contains the source of the profile image
+ */
+export interface ChannelUserProps {
+  user: {
+    name: string;
+    isOnline: boolean;
+    profileImage: {
+      alt: string;
+      src: string;
+    };
+  };
+}
+
+/*-------------------------------------------------------------------*/
+/**
  * Interface for the MsgChannelBtn component props, which are:
  *
  * {activeTab} is a string that can be either "Messages" or "Channels"

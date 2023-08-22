@@ -1,4 +1,4 @@
-export default function ChatBoxHeader() {
+export default function FriendsChatBoxHeader() {
   return (
     <div className="">
 		<h1>User image and indicator</h1>

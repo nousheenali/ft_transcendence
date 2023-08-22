@@ -1,0 +1,195 @@
+{
+	"users": [
+	  {
+		"user": {
+		  "name": "Ghaiath",
+		  "profileImage": {
+			"alt": "Ghaiath Abdoush Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Raghed",
+		  "profileImage": {
+			"alt": "Raghed Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": true
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Yonatan",
+		  "profileImage": {
+			"alt": "Yonatan Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Ghaiath",
+		  "profileImage": {
+			"alt": "Ghaiath Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "George123",
+		  "profileImage": {
+			"alt": "George123 Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Nousheen",
+		  "profileImage": {
+			"alt": "Nousheen Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Antoun",
+		  "profileImage": {
+			"alt": "Antoun Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Abd AlSamad",
+		  "profileImage": {
+			"alt": "Abd AlSamad Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": true
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Ghaiath",
+		  "profileImage": {
+			"alt": "Ghaiath Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Omar",
+		  "profileImage": {
+			"alt": "Omar Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": true
+		}
+	  },
+	  {
+		"user": {
+		  "name": "George",
+		  "profileImage": {
+			"alt": "George Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Abd AlSamad",
+		  "profileImage": {
+			"alt": "Abd AlSamad Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": true
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Ghaiath",
+		  "profileImage": {
+			"alt": "Ghaiath Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Omar",
+		  "profileImage": {
+			"alt": "Omar Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": true
+		}
+	  },
+	  {
+		"user": {
+		  "name": "George",
+		  "profileImage": {
+			"alt": "George Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Abd AlSamad",
+		  "profileImage": {
+			"alt": "Abd AlSamad Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": true
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Ghaiath",
+		  "profileImage": {
+			"alt": "Ghaiath Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  },
+	  {
+		"user": {
+		  "name": "Omar",
+		  "profileImage": {
+			"alt": "Omar Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": true
+		}
+	  },
+	  {
+		"user": {
+		  "name": "George",
+		  "profileImage": {
+			"alt": "George Profile Picture",
+			"src": "av1.svg"
+		  },
+		  "isOnline": false
+		}
+	  }
+	]
+  }
+  

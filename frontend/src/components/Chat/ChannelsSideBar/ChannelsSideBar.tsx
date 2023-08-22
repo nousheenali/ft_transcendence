@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import ChannelsSearch from "@/components/Chat/ChannelsSideBar/ChannelsBox/ChannelsSearch/ChannelsSearch";
-import PublicPrivateBtn from "@/components/Chat/ChannelsSideBar/ChannelsBox/PublicPrivateBtn/PublicPrivateBtn";
+import ChannelsSearch from "@/components/Chat/ChannelsSideBar/ChannelsSearch/ChannelsSearch";
+import PublicPrivateBtn from "@/components/Chat/ChannelsSideBar/PublicPrivateBtn/PublicPrivateBtn";
+
+import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeader";
+import UsersSearch from "./ChannelUsers/UsersSearch/UsersSearch";
+import ChannelsUsersBox from "./ChannelUsers/ChannelsUsersBox/ChannelsUsersBox";
 
 /**
  * The ChannelsSideBar component is responsible for rendering the ChannelsSideBar part of the Chat page,
@@ -25,9 +29,18 @@ export default function ChannelsSideBar() {
         setActiveChannel={setActiveChannel}
       />
       <hr className="w-80 border-line-break" />
-      {activeChannel === "Public" && <div>Public</div>}
+      {activeChannel === "Public" && 
+        <>
+          <ChannelUserHeader />
+          <UsersSearch />
+          <ChannelsUsersBox />
+        </>
+      }
       {activeChannel === "Private" && <div>Private</div>}
       <hr className="w-80 border-line-break" />
     </>
   );
 }
+
+// public channels
+// private channels

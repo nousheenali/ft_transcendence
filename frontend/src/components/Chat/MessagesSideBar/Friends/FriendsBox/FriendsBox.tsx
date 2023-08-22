@@ -3,13 +3,13 @@ import Friend from "@/components/Chat/MessagesSideBar/Friends/Friend/Friend";
 import {ChatFriendsProps} from "@/components/Chat/types";
 
 /**
- * A function that fetches the messages from the data/messages.json file (for now)
+ * A function that fetches the user's friends from the data/friends.json file (for now)
  * and later from the backend.
- * @returns {Promise<ChatFriendsProps[]>} A promise that resolves to an array of messages
+ * @returns {Promise<ChatFriendsProps[]>} A promise that resolves to an array of friends
  * @async
  */
 
-const getMessages = async () => {
+const getFriends = async () => {
   try {
     const data = await import('../../../../../data/friends.json');
     return data.friends; // Return the 'friends' array from the data
@@ -25,7 +25,7 @@ export default function FriendsBox() {
   const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
-    getMessages().then((friends) => {
+    getFriends().then((friends) => {
       setFriends(friends);
       setLoading(false)
     });

@@ -1,4 +1,4 @@
-import { ChannelsBtn } from "../../../types";
+import { ChannelsBtn } from "../../types";
 
 /**
  * @param {string} activeChannel - The active channel
