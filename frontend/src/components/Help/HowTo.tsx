@@ -1,6 +1,6 @@
 export default function HowTo() {
   return (
-    <div className="ml-10 mr-20 mt-5 mb-10 space-y-5 text-main-text text-xl font-saira-condensed">
+    <div className="ml-10 mr-10 mt-5 mb-10 space-y-5 text-main-text text-md flex-shrink-0 font-saira-condensed font-light">
       <p>
         In this game, a tiny ball bounces around the screen, rebounding off the
         top and bottom edges.

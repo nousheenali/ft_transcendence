@@ -1,6 +1,6 @@
 export default function WhatIs() {
   return (
-    <div className="ml-10 mr-20 mt-5 mb-10 space-y-5 text-main-text text-xl font-saira-condensed">
+    <div className="ml-10 mr-10 mt-5 mb-10 space-y-5 text-main-text text-md font-saira-condensed font-light">
       <p>
         Spin Masters: A Student-Crafted Marvel from 42 Abu Dhabi! Enter the
         world of Spin Masters, a remarkable game created by five students from
