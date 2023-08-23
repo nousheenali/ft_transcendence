@@ -44,6 +44,15 @@
             },
             "messageContent": "Invited you to play a match",
             "messageTime": "10 min ago"
+        },
+        {
+            "username": "42 Abudhabi",
+            "profileImage": {
+                "alt": "Nousheen Ali Profile Picture",
+                "src": "av1.svg"
+            },
+            "messageContent": "Sent you a message",
+            "messageTime": "11 min ago"
         }
     ]
 }

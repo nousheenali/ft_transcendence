@@ -14,9 +14,11 @@ const fetchData = async () => {
 
 export default function NotificationIcon() {
     const [isChecked, setIsChecked] = useState(true);
+
     const handleToggleChange = () => {
       setIsChecked(!isChecked);
     };
+
     const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
     useEffect(() => {
