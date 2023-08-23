@@ -12,17 +12,10 @@
   border-width: 0;
 }
 
-.z-100 {
-  z-index: 100;
-}
-
-.z-1000 {
-  z-index: 1000;
-}
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
-  height: 5px;
+  height: 2px;
 }
 
 ::-webkit-scrollbar-track {

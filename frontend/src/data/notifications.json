@@ -1,0 +1,50 @@
+{
+    "notifications": [
+        {
+            "username": "Yonatan",
+            "profileImage": {
+                "alt": "Yonatan Profile Picture",
+                "src": "av1.svg"
+            },
+            "messageContent": "Requested your friendship",
+            "messageTime": "2 min ago"
+        },
+        {
+            "username": "Gaith",
+            "profileImage": {
+                "alt": "Gaith Profile Picture",
+                "src": "av1.svg"
+            },
+            "messageContent": "Sent you a message",
+            "messageTime": "4 min ago"
+        },
+        {
+            "username": "Abdul Samad",
+            "profileImage": {
+                "alt": "Abdul Samad Profile Picture",
+                "src": "av1.svg"
+            },
+            "messageContent": "Invited you to play a match",
+            "messageTime": "5 min ago"
+        },
+        {
+            "username": "Sumaiya Fathima",
+            "profileImage": {
+                "alt": "Sumaiya Fathima Profile Picture",
+                "src": "av1.svg"
+            },
+            "messageContent": "Sent you a message",
+            "messageTime": "8 min ago"
+        },
+        {
+            "username": "Nousheen Ali",
+            "profileImage": {
+                "alt": "Nousheen Ali Profile Picture",
+                "src": "av1.svg"
+            },
+            "messageContent": "Invited you to play a match",
+            "messageTime": "10 min ago"
+        }
+    ]
+}
+  

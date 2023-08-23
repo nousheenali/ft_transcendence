@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
+import { NotificationItem, NotificationDropdownProps } from "../types";
 
-interface NotificationItem {
-  username: string;
-  image: string;
-  message: string;
-  time: string;
-}
 
-interface NotificationDropdownProps {
-  NotificationList: NotificationItem[];
-}
-
-const NotificationDropdown: React.FC<NotificationDropdownProps> = ({NotificationList}) => {
+const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
+  NotificationList,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -60,40 +53,38 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
                 strokeWidth="1.5"
                 strokeMiterlimit="10"
               />
-              <circle
-                cx="12"
-                cy="13"
-                r="3"
-                fill="#CD5555"
-                fillOpacity="0.93"
-              />
+              <circle cx="12" cy="13" r="3" fill="#CD5555" fillOpacity="0.93" />
             </svg>
           </div>
         </button>
       </div>
 
       {isOpen && (
-        <div className="absolute z-[1000] rounded-3xl w-1/3 bg-notification-fill max-h-40 overflow-y-auto border-[0.5px] border-notification-stroke backdrop-blur-xl">
-          <div className="py-1" role="none">
+        <div className="absolute z-[1000] rounded-3xl w-1/3 bg-notification-bg max-h-40 overflow-y-scroll  border-[0.2px] border-notification-stroke backdrop-blur-xl">
+          <div className="py-2 space-y-2">
             {NotificationList.map((item, index) => (
-              <div className="flex flex-row px-1 py-1 my-1 mx-1 text-sm font-extralight text-main-text font-saira-condensed hover:text-gray-300 rounded-full bg-gradient-to-b from-notif-item-bg to-notif-item-bg-two">
-                <a key={index} href="#" className="flex space-x-5 w-full">
-                  <div className="flex rounded-full bg-gradient-to-b from-notif-img-one to-notif-img-two">
+              <div
+                key={index}
+                className="flex flex-row px-1 py-1 my-1 mx-1 h-18 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
+              >
+                <a href="#" className="flex space-x-6 w-full">
+                  <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
                     <Image
-                      src="/av1.svg"
-                      alt="User Profile Image"
-                      width={30}
-                      height={30}
+                      src={item.profileImage.src}
+                      alt={item.profileImage.alt}
+                      width={40}
+                      height={40}
                     />
-                    <h1 className="truncate max-w-[50px] pt-2">
+                    <h1 className="truncate max-w-[70px] pt-2">
                       {item.username}
                     </h1>
+                    <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
                   </div>
-                  <div className="truncate grow py-1 pt-2 truncate max-w-[200px]">
-                    {item.message}
+                  <div className="truncate w-3/5 py-1 pt-2 truncate max-w-[200px]">
+                    {item.messageContent}
                   </div>
-                  <div className="grow py-1 pt-2 text-end pr-2">
-                    {item.time}
+                  <div className="w-1/5 grow py-1 pt-2 text-end pr-2 text-dimmed-text">
+                    {item.messageTime}
                   </div>
                 </a>
               </div>
