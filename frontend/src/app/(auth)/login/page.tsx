@@ -1,7 +1,7 @@
-import { Title } from "@/components/Title/Title";
-import { IntraAuthButton } from "@/components/AuthButton/IntraAuth";
-import Team from "@/components/Team/Team";
-import { Footer } from "@/components/Footer/Footer";
+import { Title } from "@/components/Login/Title/Title";
+import { IntraAuthButton } from "@/components/Login/AuthButton/IntraAuth";
+import Team from "@/components/Login/Team/Team";
+import { Footer } from "@/components/Login/Footer/Footer";
 import React from "react";
 
 /*

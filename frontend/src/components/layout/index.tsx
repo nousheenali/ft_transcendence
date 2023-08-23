@@ -1,7 +1,6 @@
 "use client"
 import MobileSidebar from "../mobileSidebar";
 import AsideBar from "./asidebar"
-import Image from "next/image";
 
 interface MainLayoutProps {
     children: React.ReactNode
