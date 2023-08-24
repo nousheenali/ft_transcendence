@@ -58,6 +58,7 @@ module.exports = {
         'latest-msg-e': 'rgba(54, 55, 62, 0.5)',
         'dimmed-text': '#6B6B6B',
         'line-break': 'rgba(105, 109, 125, 0.3)',
+        'button-background': 'rgba(100, 110, 120, 0.3)',
       },
       backgroundImage: {
         'table-row-bg':
