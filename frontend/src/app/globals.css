@@ -20,6 +20,7 @@
 
 ::-webkit-scrollbar-track {
   background: #22272e;
+  margin-block: 1.5em
 }
 
 /* Track */
