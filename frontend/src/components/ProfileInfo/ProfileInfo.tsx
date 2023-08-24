@@ -26,7 +26,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({name, email, rank}) => {
               />
             </div>
           </div>
-          <div className="flex flex-row h-[130px] border-b rounded-b-lg border-grid-border">
+          <div className="flex flex-row h-[130px] border-b rounded-b-lg border-main-yellow">
             <div className="flex flex-shrink-0 w-1/5 justify-center">
               <Image height={100} width={100} src="/av1.svg" alt="avatar" />
             </div>
@@ -45,7 +45,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({name, email, rank}) => {
               </div>
             </div>
           </div>
-          <div className="border-b rounded-b-lg border-grid-border">
+          <div className="border-b rounded-b-lg border-main-yellow">
             <ProfileNavBar />
           </div>
         </div>
