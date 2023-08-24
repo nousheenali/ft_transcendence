@@ -1,54 +1,35 @@
-import React,{ useState } from 'react'
-import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
+import React,{ useEffect, useState } from 'react'
+import NotificationDropdown from './NotificationDropdown/NotificationDropdown';
+import { NotificationItem} from './types';
 
-interface NotificationItem {
-  username: string;
-  image: string;
-  message: string;
-  time: string;
-}
-
-const List: NotificationItem[] = [
-  {
-    username: "User1",
-    image: "/av1.svg",
-    message: "Requested your friendship",
-    time: "2 min ago",
-  },
-  {
-    username: "User2",
-    image: "/av1.svg",
-    message: "Sent you a message",
-    time: "4 min ago",
-  },
-  {
-    username: "User3",
-    image: "/av1.svg",
-    message: "Invited you to play a match",
-    time: "5 min ago",
-  },
-  {
-    username: "User4",
-    image: "/av1.svg",
-    message: "Sent you a message",
-    time: "8 min ago",
-  },
-  {
-    username: "User5",
-    image: "/av1.svg",
-    message: "Invited you to play a match",
-    time: "10 min ago",
-  },
-];
+const fetchData = async () => {
+  try {
+    const data = await import("../../data/notifications.json");
+    return data.notifications;
+  } 
+  catch (error) {
+    return [];
+  }
+};
 
 export default function NotificationIcon() {
     const [isChecked, setIsChecked] = useState(true);
-  const handleToggleChange = () => {
-    setIsChecked(!isChecked);
-  };
+
+    const handleToggleChange = () => {
+      setIsChecked(!isChecked);
+    };
+
+    const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+
+    useEffect(() => {
+      fetchData().then((data) => {
+        setNotifications(data);
+      });
+    }, []);
+
   return (
 	     <div className=" flex  justify-between w-17 h-17 bg-heading-fill rounded-t-2xl border-b-[1px] border-heading-stroke p-2">
-        <NotificationDropdown NotificationList={List} />
+        <NotificationDropdown NotificationList={notifications} />
         <h1>
           <span className="text-yellow-300 text-stroke-3 ">Spin</span>
           <span className="text-main-text">Masters</span>

@@ -19,7 +19,7 @@ export default function TopPlayer() {
             <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
           </div>
         </div>
-        <div className="flex flex-row space-x-20 justify-center items-center h-[130px] border-b rounded-b-lg border-grid-border">
+        <div className="flex flex-row space-x-20 justify-center items-center h-[130px] border-b rounded-b-lg border-main-yellow">
           <PlayerInfo
             name="Player 2"
             score={scores[1]}

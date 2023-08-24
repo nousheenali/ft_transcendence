@@ -1,20 +1,15 @@
 import React from "react";
 import Image from "next/image";
+import { PlayerInfoProps } from "./types";
 
-interface PlayerInfoProps {
-  name: string;
-  score: number;
-  rank: number;
-  img: string;
-  medal: string;
-}
+
 
 const PlayerInfo: React.FC<PlayerInfoProps> = (props) => {
   return (
     <>
       <div className="flex flex-row justify-center items-center">
         <div className="relative flex-shrink-0">
-          <img height={100} width={100} src={props.img} alt="avatar" />
+          <Image height={100} width={100} src={props.img} alt="avatar" />
           <div className="absolute bottom-0 right-0">
             <Image height={40} width={40} src={props.medal} alt="medal" />
             <div className="absolute top-1 left-4">
