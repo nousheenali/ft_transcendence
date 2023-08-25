@@ -3,15 +3,15 @@
 /*-------------------------- Common Types --------------------------- */
 /*-------------------------------------------------------------------*/
 
-export type ImageInformation = {
+export type ImageData = {
   src: string;
   alt: string;
 };
 
-export type playerInformation = {
+export type playerData = {
   username: string;
   score: number;
-  profileImage: ImageInformation;
+  profileImage: ImageData;
   rank: number;
   email: string;
 };

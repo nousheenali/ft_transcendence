@@ -2,10 +2,10 @@
 /*---------- All the Types required in Notification Window ----------*/
 /*-------------------------------------------------------------------*/
 
-import { playerInformation } from "../commonTypes/types";
+import { playerData } from "../commonTypes/types";
 
 export type NotificationItem = {
-  userInfo: playerInformation;
+  userInfo: playerData;
   messageContent: string;
   messageTime: string;
 };

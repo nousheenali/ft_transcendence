@@ -3,9 +3,9 @@
 /*------------ All the Types required in LeaderBoard page -----------*/
 /*-------------------------------------------------------------------*/
 
-import { playerInformation } from "../commonTypes/types";
+import { playerData } from "../commonTypes/types";
 
 export interface PlayerInfoProps {
-  userInfo: playerInformation;
+  userData: playerData;
   medal: string;
 }

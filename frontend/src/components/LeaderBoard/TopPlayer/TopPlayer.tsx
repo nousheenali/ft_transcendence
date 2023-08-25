@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import PlayerInfo from "./PlayerInfo/PlayerInfo";
-import { ImageInformation, playerInformation } from "@/components/commonTypes/types";
-import { PlayerInfoProps } from "../types";
+import { playerData } from "@/components/commonTypes/types";
 
 
 const fetchData = async () => {
@@ -17,7 +16,7 @@ const fetchData = async () => {
 
 export default function TopPlayer() {
 
-  const [topPlayersData, setTopPlayersData] = useState<playerInformation[]>([])
+  const [topPlayersData, setTopPlayersData] = useState<playerData[]>([])
 
   useEffect(() => {
     fetchData().then((data) => {
@@ -41,27 +40,27 @@ export default function TopPlayer() {
         <div className="flex justify-center items-center h-[130px] border-b rounded-b-lg border-main-yellow">
           {topPlayersData.length === 1 && (
             <div>
-              <PlayerInfo userInfo={topPlayersData[0]} medal="gold.svg" />
+              <PlayerInfo userData={topPlayersData[0]} medal="gold.svg" />
             </div>
           )}
 
           {topPlayersData.length === 2 && (
             <div className="flex flex-row space-x-20">
-              <PlayerInfo userInfo={topPlayersData[0]} medal="gold.svg" />
-              <PlayerInfo userInfo={topPlayersData[1]} medal="silver.svg" />
+              <PlayerInfo userData={topPlayersData[0]} medal="gold.svg" />
+              <PlayerInfo userData={topPlayersData[1]} medal="silver.svg" />
             </div>
           )}
 
           {topPlayersData.length > 2 && (
             <div className="flex flex-row space-x-20">
-              <PlayerInfo userInfo={topPlayersData[1]} medal="silver.svg" />
-              <PlayerInfo userInfo={topPlayersData[0]} medal="gold.svg" />
-              <PlayerInfo userInfo={topPlayersData[2]} medal="bronze.svg" />
+              <PlayerInfo userData={topPlayersData[1]} medal="silver.svg" />
+              <PlayerInfo userData={topPlayersData[0]} medal="gold.svg" />
+              <PlayerInfo userData={topPlayersData[2]} medal="bronze.svg" />
             </div>
           )}
 
           {topPlayersData.length === 0 && (
-            <div className="font-saira-condensed text-main-text">
+            <div className="font-saira-condensed">
               No Information to show
             </div>
           )}
