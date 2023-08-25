@@ -61,6 +61,7 @@ module.exports = {
         'notification-bg': 'rgba(14, 20, 18, 0.7)',
         'notification-stroke': 'rgba(108, 120, 36, 0.8)',
         
+        'button-background': 'rgba(100, 110, 120, 0.3)',
       },
       backgroundImage: {
         'table-row-bg':
