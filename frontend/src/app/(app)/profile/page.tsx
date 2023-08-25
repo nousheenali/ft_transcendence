@@ -1,5 +1,5 @@
 import React from 'react';
-import ProfileInfo from '@/components/ProfileInfo/ProfileInfo';
+import ProfileInfo from '@/components/Profile/ProfileInfo/ProfileInfo';
 import ResponsiveTable from '@/components/Table/Table';
 
 export default function Profile() {

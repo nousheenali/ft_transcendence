@@ -2,8 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import ProfileNavBar from "../ProfileNavBar/ProfileNavBar";
-import { ProfileInfoProps } from "./types";
+import ProfileNavBar from "./ProfileNavBar/ProfileNavBar";
+import { ProfileInfoProps } from "../types";
 
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({name, email, rank}) => {
