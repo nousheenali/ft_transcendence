@@ -10,7 +10,7 @@ import {MessageProps} from "@/components/Chat/types";
  * @async
  */
 
-const getMessages = async () => {
+const getMessages = async (): Promise<MessageProps[]> => {
   try {
     const data = await import('../../../../../data/messages.json');
     return data.messages; // Return the 'messages' array from the data

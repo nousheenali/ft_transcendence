@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import ChannelsSearch from "@/components/Chat/ChannelsSideBar/ChannelsSearch/ChannelsSearch";
 import PublicPrivateBtn from "@/components/Chat/ChannelsSideBar/PublicPrivateBtn/PublicPrivateBtn";
 
+import PublicChannels from "./Channels/PublicChannels/PublicChannels";
+import PrivateChannels from "./Channels/PrivateChannels/PrivateChannels";
+
 import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeader";
 import UsersSearch from "./ChannelUsers/UsersSearch/UsersSearch";
 import ChannelsUsersBox from "./ChannelUsers/ChannelsUsersBox/ChannelsUsersBox";
@@ -29,18 +32,23 @@ export default function ChannelsSideBar() {
         setActiveChannel={setActiveChannel}
       />
       <hr className="w-80 border-line-break" />
-      {activeChannel === "Public" && 
+      {activeChannel === "Public" && (
         <>
+          <PublicChannels />
           <ChannelUserHeader />
           <UsersSearch />
           <ChannelsUsersBox />
         </>
-      }
-      {activeChannel === "Private" && <div>Private</div>}
+      )}
+      {activeChannel === "Private" && (
+        <>
+          <PrivateChannels />
+          <ChannelUserHeader />
+          <UsersSearch />
+          <ChannelsUsersBox />
+        </>
+      )}
       <hr className="w-80 border-line-break" />
     </>
   );
 }
-
-// public channels
-// private channels

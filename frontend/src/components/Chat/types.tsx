@@ -74,6 +74,27 @@ export interface ChannelUserProps {
 
 /*-------------------------------------------------------------------*/
 /**
+ * Interface for the ChannelProps component props, which are:
+ * 
+ * {channel} is an object that contains the following properties:
+ *   {name} is a string that contains the name of the channel
+ *  {channelAvatar} is an object that contains the following properties:
+ *   {alt} is a string that contains the alt text for the profile image
+ *  {src} is a string that contains the source of the profile image
+ */
+
+export interface ChannelProps {
+  channel: {
+    name: string;
+    channelAvatar: {
+      alt: string;
+      src: string;
+    };
+  };
+}
+
+/*-------------------------------------------------------------------*/
+/**
  * Interface for the MsgChannelBtn component props, which are:
  *
  * {activeTab} is a string that can be either "Messages" or "Channels"
