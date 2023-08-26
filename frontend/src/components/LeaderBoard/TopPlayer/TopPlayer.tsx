@@ -58,12 +58,6 @@ export default function TopPlayer() {
               <PlayerInfo userData={topPlayersData[2]} medal="bronze.svg" />
             </div>
           )}
-
-          {topPlayersData.length === 0 && (
-            <div className="font-saira-condensed">
-              No Information to show
-            </div>
-          )}
         </div>
       </div>
     </>
