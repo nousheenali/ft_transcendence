@@ -3,15 +3,13 @@
 /*-------------------------- Common Types --------------------------- */
 /*-------------------------------------------------------------------*/
 
-export type ImageData = {
-  src: string;
-  alt: string;
-};
-
 export type playerData = {
   username: string;
   score: number;
-  profileImage: ImageData;
+  profileImage: {
+    src: string;
+    alt: string; 
+  };
   rank: number;
   email: string;
 };
