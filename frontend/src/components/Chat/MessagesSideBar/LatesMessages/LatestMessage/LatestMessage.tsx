@@ -1,6 +1,11 @@
 import Image from "next/image";
 import { MessageProps } from "../../../types";
 
+// TODO: 
+//    1. If the user clicker on the message box, the message box will be highlighted,
+//       and that friend chat will be displayed in the FriendsChatBox() component.
+
+
 /**
  * A component that renders a single message in the LatestMsgsBox component, it receives the following props:
  * 
