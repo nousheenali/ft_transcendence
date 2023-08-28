@@ -31,8 +31,11 @@ function mergeAndSortMessages(senderMessages: any, receiverMessages: any) {
 }
 
 export default function FriendChat() {
-  const sortedMessages = mergeAndSortMessages(senderMessages.sender, receiverMessages.receiver);
-  
+  const sortedMessages = mergeAndSortMessages(
+    senderMessages.sender,
+    receiverMessages.receiver
+  );
+
   return (
     <div>
       {sortedMessages.map((message, index) => {
@@ -64,4 +67,3 @@ export default function FriendChat() {
     </div>
   );
 }
-

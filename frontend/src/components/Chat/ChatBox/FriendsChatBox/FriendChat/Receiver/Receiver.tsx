@@ -12,7 +12,12 @@ export default function ReceiverChatBox({
     <div className="chat chat-end font-saira-condensed">
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
-          <Image alt={receiverAvatar.alt} src={receiverAvatar.src} width={34} height={34} />
+          <Image
+            alt={receiverAvatar.alt}
+            src={receiverAvatar.src}
+            width={34}
+            height={34}
+          />
         </div>
       </div>
 

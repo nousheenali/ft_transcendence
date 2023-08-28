@@ -11,7 +11,12 @@ export default function SenderChatBox({
     <div className="chat chat-start font-saira-condensed">
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
-          <Image alt={senderAvatar.alt} src={senderAvatar.src} width={34} height={34} />
+          <Image
+            alt={senderAvatar.alt}
+            src={senderAvatar.src}
+            width={34}
+            height={34}
+          />
         </div>
       </div>
 
