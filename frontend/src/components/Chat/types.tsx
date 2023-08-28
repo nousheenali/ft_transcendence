@@ -118,3 +118,43 @@ export interface ChannelsBtn {
 }
 
 /*-------------------------------------------------------------------*/
+
+/**
+ * Interface for the MessageSenderProps component props, which are:
+ * 
+ * {senderName} is a string that contains the name of the sender
+ * {messageTime} is a string that contains the time the message was sent
+ * {messageContent} is a string that contains the content of the message
+ */
+export interface MessageSenderProps {
+  senderName: string;
+  senderAvatar: {
+    alt: string;
+    src: string;
+  };
+  messageTime: string;
+  messageContent: string;
+}
+
+/*-------------------------------------------------------------------*/
+/**
+ * Interface for the MessageReceiverProps component props, which are:
+ * 
+ * {receiverName} is a string that contains the name of the receiver.
+ * {messageTime} is a string that contains the time the message was sent
+ * {messageContent} is a string that contains the content of the message
+ * {messageSeenTime} is a string that contains the time the message was seen 
+ *  from the other chat part
+ */
+export interface MessageReceiverProps {
+  receiverName: string;
+  receiverAvatar: {
+    alt: string;
+    src: string;
+  };
+  messageTime: string;
+  messageSeenTime: string;
+  messageContent: string;
+}
+
+/*-------------------------------------------------------------------*/

@@ -1,0 +1,112 @@
+{
+  "sender": [
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "10:20 AM",
+      "messageContent": "Hey, how's it going? What did you do today?"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "11:30 AM",
+      "messageContent": "Hi there! Just wanted to catch up."
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "2:15 PM",
+      "messageContent": "Hey, any plans for the weekend?"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "5:45 PM",
+      "messageContent": "I heard you went on a trip recently. How was it?"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "9:00 AM",
+      "messageContent": "Good morning! Have a great day ahead!"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "7:30 PM",
+      "messageContent": "Hey, did you watch the new movie?"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "3:45 PM",
+      "messageContent": "Just wanted to say hi!"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "6:20 AM",
+      "messageContent": "Early morning messages are the best!"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "10:20 AM",
+      "messageContent": "Hey, how's it going? What did you do today?"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "11:30 AM",
+      "messageContent": "Hi there! Just wanted to catch up."
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "2:15 PM",
+      "messageContent": "Hey, any plans for the weekend?"
+    },
+    {
+      "senderName": "Yonatan Monges",
+      "senderAvatar": {
+        "alt": "Yonatan Monges Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "5:45 PM",
+      "messageContent": "I heard you went on a trip recently. How was it?"
+    }
+  ]
+}

@@ -58,6 +58,10 @@ module.exports = {
         'latest-msg-e': 'rgba(54, 55, 62, 0.5)',
         'dimmed-text': '#6B6B6B',
         'line-break': 'rgba(105, 109, 125, 0.3)',
+
+        /*--------------------  [Chatbox]  ----------------------*/
+        'sender-chatbox-bg':'rgba(49, 75, 73, 0.50)', // Gabdoush
+        'receiver-chatbox-bg':'rgba(77, 94, 137, 0.5)', // Gabdoush
       },
       backgroundImage: {
         'table-row-bg':
