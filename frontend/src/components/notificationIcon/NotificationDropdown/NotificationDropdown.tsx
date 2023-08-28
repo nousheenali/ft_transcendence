@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect} from "react";
 import Image from "next/image";
-import { NotificationItem, NotificationDropdownProps } from "../types";
+import { NotificationDropdownProps } from "../types";
 
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
@@ -110,13 +110,13 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                 <a href="#" className="flex space-x-6 w-full">
                   <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
                     <Image
-                      src={item.profileImage.src}
-                      alt={item.profileImage.alt}
+                      src={item.userInfo.profileImage.src}
+                      alt={item.userInfo.profileImage.alt}
                       width={40}
                       height={40}
                     />
                     <h1 className="truncate max-w-[70px] pt-4">
-                      {item.username}
+                      {item.userInfo.username}
                     </h1>
                     <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
                   </div>

@@ -2,15 +2,13 @@
 /*---------- All the Types required in Notification Window ----------*/
 /*-------------------------------------------------------------------*/
 
+import { playerData } from "../commonTypes/types";
+
 export type NotificationItem = {
-  username: string;
-  profileImage: {
-    alt: string;
-    src: string;
-  };
+  userInfo: playerData;
   messageContent: string;
   messageTime: string;
-}
+};
 
 /*-------------------------------------------------------------------*/
 

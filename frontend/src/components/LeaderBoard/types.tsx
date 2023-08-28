@@ -1,12 +1,11 @@
 
 /*-------------------------------------------------------------------*/
-/*--------- This prop belongs in LeaderBoard page --------------*/
+/*------------ All the Types required in LeaderBoard page -----------*/
 /*-------------------------------------------------------------------*/
 
+import { playerData } from "../commonTypes/types";
+
 export interface PlayerInfoProps {
-  name: string;
-  score: number;
-  rank: number;
-  img: string;
+  userData: playerData;
   medal: string;
 }
