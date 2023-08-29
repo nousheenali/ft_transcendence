@@ -62,6 +62,7 @@ module.exports = {
         /*--------------------  [Chatbox]  ----------------------*/
         'sender-chatbox-bg':'rgba(49, 75, 73, 0.50)', // Gabdoush
         'receiver-chatbox-bg':'rgba(77, 94, 137, 0.5)', // Gabdoush
+        'sender-chatbox-bg':'rgba(52, 52, 52, 0.3)', // Gabdoush
       },
       backgroundImage: {
         'table-row-bg':

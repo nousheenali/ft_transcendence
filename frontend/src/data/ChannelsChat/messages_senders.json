@@ -1,0 +1,112 @@
+{
+  "senders": [
+    {
+      "senderName": "Sender 1",
+      "senderAvatar": {
+        "alt": "Sender 1 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "10:20 AM",
+      "messageContent": "Message from Sender 1"
+    },
+    {
+      "senderName": "Sender 2",
+      "senderAvatar": {
+        "alt": "Sender 2 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "11:30 AM",
+      "messageContent": "Message from Sender 2"
+    },
+    {
+      "senderName": "Sender 3",
+      "senderAvatar": {
+        "alt": "Sender 3 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "2:15 PM",
+      "messageContent": "Message from Sender 3"
+    },
+    {
+      "senderName": "Sender 1",
+      "senderAvatar": {
+        "alt": "Sender 1 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "10:20 AM",
+      "messageContent": "Message from Sender 1"
+    },
+    {
+      "senderName": "Sender 2",
+      "senderAvatar": {
+        "alt": "Sender 2 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "11:30 AM",
+      "messageContent": "Message from Sender 2"
+    },
+    {
+      "senderName": "Sender 3",
+      "senderAvatar": {
+        "alt": "Sender 3 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "2:15 PM",
+      "messageContent": "Message from Sender 3"
+    },
+    {
+      "senderName": "Sender 1",
+      "senderAvatar": {
+        "alt": "Sender 1 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "10:20 AM",
+      "messageContent": "Message from Sender 1"
+    },
+    {
+      "senderName": "Sender 2",
+      "senderAvatar": {
+        "alt": "Sender 2 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "11:30 AM",
+      "messageContent": "Message from Sender 2"
+    },
+    {
+      "senderName": "Sender 3",
+      "senderAvatar": {
+        "alt": "Sender 3 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "2:15 PM",
+      "messageContent": "Message from Sender 3"
+    },
+    {
+      "senderName": "Sender 1",
+      "senderAvatar": {
+        "alt": "Sender 1 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "10:20 AM",
+      "messageContent": "Message from Sender 1"
+    },
+    {
+      "senderName": "Sender 2",
+      "senderAvatar": {
+        "alt": "Sender 2 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "11:30 AM",
+      "messageContent": "Message from Sender 2"
+    },
+    {
+      "senderName": "Sender 3",
+      "senderAvatar": {
+        "alt": "Sender 3 Profile Picture",
+        "src": "av1.svg"
+      },
+      "messageTime": "2:15 PM",
+      "messageContent": "Message from Sender 3"
+    }
+  ]
+}

@@ -75,7 +75,7 @@ export interface ChannelUserProps {
 /*-------------------------------------------------------------------*/
 /**
  * Interface for the ChannelProps component props, which are:
- * 
+ *
  * {channel} is an object that contains the following properties:
  *   {name} is a string that contains the name of the channel
  *  {channelAvatar} is an object that contains the following properties:
@@ -121,7 +121,7 @@ export interface ChannelsBtn {
 
 /**
  * Interface for the MessageSenderProps component props, which are:
- * 
+ *
  * {senderName} is a string that contains the name of the sender
  * {messageTime} is a string that contains the time the message was sent
  * {messageContent} is a string that contains the content of the message
@@ -140,11 +140,11 @@ export interface MessageSenderProps {
 /*-------------------------------------------------------------------*/
 /**
  * Interface for the MessageReceiverProps component props, which are:
- * 
+ *
  * {receiverName} is a string that contains the name of the receiver.
  * {messageTime} is a string that contains the time the message was sent
  * {messageContent} is a string that contains the content of the message
- * {messageSeenTime} is a string that contains the time the message was seen 
+ * {messageSeenTime} is a string that contains the time the message was seen
  *  from the other chat part
  */
 export interface MessageReceiverProps {
@@ -158,4 +158,21 @@ export interface MessageReceiverProps {
   messageContent: string;
 }
 
+/*-------------------------------------------------------------------*/
+/**
+ * Interface for the ChannelChatBoxHeaderProps component props, which are:
+ *
+ * {ChannelName} is a string that contains the name of the channel
+ * {ChannelAvatar} is an object that contains the following properties:
+ *   {alt} is a string that contains the alt text for the profile image
+ *  {src} is a string that contains the source of the profile image
+ */
+export interface ChosenChannelProps {
+  ChannelName: string;
+  ChannelAvatar: {
+    alt: string;
+    src: string;
+  };
+  isPublic: boolean;
+}
 /*-------------------------------------------------------------------*/

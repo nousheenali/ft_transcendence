@@ -1,6 +1,6 @@
 import FriendsChatBoxHeader from "./FriendsChatBoxHeader/FriendsChatBoxHeader";
-import {MessageSenderProps} from "../../types";
 import FriendChat from "./FriendChat/FriendChat";
+import SendMessageBox from "../SendMessageBox/SendMessageBox"
 
 
 export default function FriendsChatBox() {
@@ -12,6 +12,7 @@ export default function FriendsChatBox() {
         isOnline = {true}
         />
       <FriendChat />
+      <SendMessageBox />
     </div>
   );
 }

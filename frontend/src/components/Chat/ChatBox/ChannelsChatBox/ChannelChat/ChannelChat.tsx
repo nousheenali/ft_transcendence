@@ -1,10 +1,10 @@
 import React from "react";
 import ReceiverChatBox from "./Receiver/Receiver";
-import SenderChatBox from "./Sender/Sender";
+import SenderChatBox from "./Senders/Senders";
 import { MessageReceiverProps, MessageSenderProps } from "./../../../types";
 
-import senderMessages from "../../../../../data/FriendsChat/message_sender.json";
-import receiverMessages from "../../../../../data/FriendsChat/message_receiver.json";
+import senderMessages from "../../../../../data/ChannelsChat/messages_senders.json";
+import receiverMessages from "../../../../../data/ChannelsChat/messages_receiver.json";
 
 /**
  *** Helper function:
@@ -42,7 +42,7 @@ function mergeAndSortMessages(senderMessages: any, receiverMessages: any) {
 }
 
 /**
- * A component that renders the chat part of the FriendsChatBox component, it receives the following props:
+ * A component that renders the chat part of the ChannelChatBox component, it receives the following props:
  * 
  * {senderMessages} is an array of objects that contains the following properties:
     * {senderName} is a string that contains the name of the sender
@@ -64,9 +64,9 @@ function mergeAndSortMessages(senderMessages: any, receiverMessages: any) {
  * 
  * ====================================================================================================
  */
-export default function FriendChat() {
+export default function ChannelChat() {
   const sortedMessages = mergeAndSortMessages(
-    senderMessages.sender,
+    senderMessages.senders,
     receiverMessages.receiver
   );
 
