@@ -1,0 +1,65 @@
+{
+    "playersInformation": [
+        {
+            "username": "Player 1",
+            "score": 1920,
+            "profileImage": {
+                "src": "av1.svg",
+                "alt": "Player1 Profile Picture"
+            },
+            "rank": 1,
+            "email": "user@email.com"
+        },
+        {
+            "username": "Player 2",
+            "score": 1900,
+            "profileImage": {
+                "src": "av1.svg",
+                "alt": "Player2 Profile Picture"
+            },
+            "rank": 2,
+            "email": "user@email.com"
+        },
+        {
+            "username": "Player 3",
+            "score": 1820,
+            "profileImage": {
+                "src": "av1.svg",
+                "alt": "Player3 Profile Picture"
+            },
+            "rank": 3,
+            "email": "user@email.com"
+        },
+        {
+            "username": "Player 4",
+            "score": 1800,
+            "profileImage": {
+                "src": "av1.svg",
+                "alt": "Player4 Profile Picture"
+            },
+            "rank": 4,
+            "email": "user@email.com"
+        },
+        {
+            "username": "Player 5",
+            "score": 1720,
+            "profileImage": {
+                "src": "av1.svg",
+                "alt": "Player5 Profile Picture"
+            },
+            "rank": 5,
+            "email": "user@email.com"
+        },
+        {
+            "username": "Player 6",
+            "score": 1700,
+            "profileImage": {
+                "src": "av1.svg",
+                "alt": "Player6 Profile Picture"
+            },
+            "rank": 6,
+            "email": "user@email.com"
+        }
+    ]
+}
+  

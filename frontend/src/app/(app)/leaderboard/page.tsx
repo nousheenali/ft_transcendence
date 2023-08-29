@@ -1,16 +1,16 @@
-import React from 'react';
-import TopPlayer from '@/components/TopPlayer/TopPlayer';
-import ResponsiveTable from '@/components/Table/Table';
-import Image from 'next/image';
+import React from "react";
+import TopPlayer from "@/components/LeaderBoard/TopPlayer/TopPlayer";
+import ResponsiveTable from "@/components/Table/Table";
+import Image from "next/image";
 
 export default function Leaderboard() {
   const leaderboardHeadings = [
-    'Rank',
-    'Player',
-    'Score',
-    'Games',
-    'Wins',
-    'Losses',
+    "Rank",
+    "Player",
+    "Score",
+    "Games",
+    "Wins",
+    "Losses",
   ];
   const generateLeaderboardData = (numRecords = 100) => {
     const records = [];
