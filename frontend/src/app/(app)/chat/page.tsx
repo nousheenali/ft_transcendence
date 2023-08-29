@@ -28,10 +28,8 @@ export default function Chat() {
         {activeTab === "Messages" && <MessagesSideBar />}
         {activeTab === "Channels" && <ChannelsSideBar />}
       </div>
-
-      <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
-        <FriendsChatBox />
-      </div>
+      {/* Render the FriendsChatBox or ChannelsChatBox depending on the activeTab state */}
+      {activeTab === "Messages" && <FriendsChatBox /> }
     </div>
   );
 }

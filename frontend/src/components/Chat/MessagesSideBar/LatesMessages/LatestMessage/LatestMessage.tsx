@@ -36,7 +36,7 @@ export default function ChatMessage({
        * [1]: The indicator is a div that contains the profile image of the sender and a small circle that indicates
        * whether the sender is online or not.
       */}
-      <div className="indicator profile w-36 h-12 basis-1/6 -mt-4 -ml-2">
+      <div className="indicator w-36 h-12 basis-1/6 -mt-4 -ml-2">
         <Image
           alt={sender.profileImage.alt}
           src={sender.profileImage.src}

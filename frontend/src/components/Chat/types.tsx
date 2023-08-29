@@ -132,8 +132,9 @@ export interface MessageSenderProps {
     alt: string;
     src: string;
   };
-  messageTime: string;
-  messageContent: string;
+  isOnline?: boolean;
+  messageTime?: string;
+  messageContent?: string;
 }
 
 /*-------------------------------------------------------------------*/
