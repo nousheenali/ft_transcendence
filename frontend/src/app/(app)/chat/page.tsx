@@ -5,6 +5,7 @@ import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/MsgChannelBtn";
 import MessagesSideBar from "@/components/Chat/MessagesSideBar/MessagesSideBar";
 import ChannelsSideBar from "@/components/Chat/ChannelsSideBar/ChannelsSideBar";
 import FriendsChatBox from "@/components/Chat/ChatBox/FriendsChatBox/FriendsChatBox";
+import ChannelsChatBox from "@/components/Chat/ChatBox/ChannelsChatBox/ChannelsChatBox";
 
 /**
  * The Chat component is the main component of the Chat page, it is responsible for rendering
@@ -30,6 +31,7 @@ export default function Chat() {
       </div>
       {/* Render the FriendsChatBox or ChannelsChatBox depending on the activeTab state */}
       {activeTab === "Messages" && <FriendsChatBox /> }
+      {activeTab === "Channels" && <ChannelsChatBox /> }
     </div>
   );
 }

@@ -60,8 +60,11 @@ module.exports = {
         'line-break': 'rgba(105, 109, 125, 0.3)',
         'notification-bg': 'rgba(14, 20, 18, 0.7)',
         'notification-stroke': 'rgba(108, 120, 36, 0.8)',
-        
         'button-background': 'rgba(100, 110, 120, 0.3)',
+        /*--------------------  [Chatbox]  ----------------------*/
+        'sender-chatbox-bg': 'rgba(49, 75, 73, 0.50)', // Gabdoush
+        'receiver-chatbox-bg': 'rgba(77, 94, 137, 0.5)', // Gabdoush
+        'sender-chatbox-bg': 'rgba(52, 52, 52, 0.3)', // Gabdoush
       },
       backgroundImage: {
         'table-row-bg':
@@ -70,7 +73,6 @@ module.exports = {
           'linear-gradient(180deg, rgba(20, 23, 28, 0.50) 0%, rgba(54, 55, 62, 0.22) 100%)',
         'notification-img-bg':
           'linear-gradient(180deg, rgba(16, 18, 20, 0.50) 0%, rgba(54, 55, 62, 0.22) 100%)',
-
       },
     },
   },
