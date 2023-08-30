@@ -28,7 +28,7 @@ export default function PrivateChannels() {
 	if (!channels) return (<p>No channels data</p>);
   
 	return (
-	  <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
+	  <div className="flex flex-col w-full h-2/4 px-1 rounded-xl overflow-y-scroll scroll-container">
 		{channels.map((OneChannel, index) => (
 		  <div key={index}>
 			<Channel
