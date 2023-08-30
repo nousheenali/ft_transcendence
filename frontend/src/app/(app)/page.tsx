@@ -1,6 +1,6 @@
 // import SideBar from "@/components/SideBar";
 
-import GameStatus from '@/components/GameStatus/page';
+import GameStatus from '@/components/GameStatus/Gamestatus.tsx';
 import ResponsiveTable from '@/components/Table/Table';
 import Image from 'next/image';
 
