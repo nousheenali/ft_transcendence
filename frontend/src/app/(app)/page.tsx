@@ -23,7 +23,7 @@ export default function DashBoardPage() {
         archivement="broze"
       />
       <div className="text-white grid grid-cols-3 gap-10 h-full">
-        <div className="col-span-2 items-center justify-center border-b-2 stroke-slate-200">
+        <div className="col-span-2 items-center justify-center border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
           <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
             <div>
               <h1 className="font-saira-condensed font-bold text-xl text-main-text">
@@ -40,7 +40,7 @@ export default function DashBoardPage() {
             maxHeight="540px"
           ></ResponsiveTable>
         </div>
-        <div className="col-span-1 items-center justify-center border-b-2 stroke-slate-200 ">
+        <div className="col-span-1 items-center justify-center  border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
           <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
             <div>
               <h1 className="font-saira-condensed font-bold text-xl text-main-text">

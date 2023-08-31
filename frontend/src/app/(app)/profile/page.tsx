@@ -72,7 +72,7 @@ export default function Profile() {
           activeButton={activeButton}
           handleButtonClick={handleButtonClick}
         />
-        <div className="h-full mt-[10px] ">{renderTable()}</div>
+        <div className="h-full mt-[10px]  border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden ">{renderTable()}</div>
       </div>
     </>
   );

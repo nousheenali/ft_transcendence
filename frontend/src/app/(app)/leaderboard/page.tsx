@@ -17,7 +17,7 @@ export default function Leaderboard() {
   const leaderboardData = generateLeaderboardData();
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6  border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
       <TopPlayer />
       <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
         <div>
@@ -32,7 +32,7 @@ export default function Leaderboard() {
       <ResponsiveTable
         headings={leaderboardHeadings}
         data={leaderboardData}
-        maxHeight="595px"
+        maxHeight="570px"
       ></ResponsiveTable>
     </div>
   );
