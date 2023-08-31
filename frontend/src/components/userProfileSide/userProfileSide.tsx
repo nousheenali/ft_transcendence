@@ -12,7 +12,7 @@ export default function UserProfileSide({ image, name }: UserProfileSideProps) {
     <>
       <div className="flex flex-row items-center justify-between px-[50px] pt-8 pb-4 ">
         <div className="relative">
-          <img className="w-24 h-24 rounded-full" src={image} />
+          <img className="w-24 h-24 rounded-full object-cover" src={image} />
           <span className="bottom-1 left-16  absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
         </div>
 
