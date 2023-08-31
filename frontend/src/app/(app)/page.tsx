@@ -2,44 +2,17 @@
 
 import GameStatus from '@/components/GameStatus/Gamestatus.tsx';
 import ResponsiveTable from '@/components/Table/Table';
+import { generateGameHistoryData } from '@/data/Table/gameHistory';
+import { generateLiveGamesData } from '@/data/Table/liveGames';
 import Image from 'next/image';
 
 export default function DashBoardPage() {
   const gameHistoryHeading = ['Player 1', 'Score', 'Date', 'Moves', 'Result'];
-
-  const generateGameHistoryData = (numRecords = 100) => {
-    const records = [];
-
-    for (let i = 1; i <= numRecords; i++) {
-      records.push([
-        { playerName: `Player${i}`, img: `/av1.svg`, name: `Name${i}` },
-        `${1800 + i}`, // This score increases by 1 for each record as an example
-        `${Math.floor(Math.random() * 10)}`, // Random number between 0-9
-        `${Math.floor(Math.random() * 10)}`, // Random number between 0-9
-        `${Math.floor(Math.random() * 10)}`, // Random number between 0-9
-      ]);
-    }
-
-    return records;
-  };
+  const LiveGamesHeading = ['Player 1', 'Time', 'Plater 2'];
 
   const gameHistoryData = generateGameHistoryData();
-
-  const LiveGamesHeading = ['Player 1', 'Time', 'Plater 2'];
-  const generateLiveGamesData = (numRecords = 100) => {
-    const records = [];
-
-    for (let i = 1; i <= numRecords; i++) {
-      records.push([
-        { playerName: `Player${i}`, img: `/av1.svg`, name: `Name${i}` },
-        `${1900 + i}`,
-        { playerName: `Player${i}`, img: `/av1.svg`, name: `Name${i}` },
-      ]);
-    }
-
-    return records;
-  };
   const liveGamesData = generateLiveGamesData();
+
   return (
     <div className="p-2 h-full flex flex-col mr-[35px]">
       <GameStatus
@@ -64,7 +37,7 @@ export default function DashBoardPage() {
           <ResponsiveTable
             headings={gameHistoryHeading}
             data={gameHistoryData}
-            maxHeight="450px"
+            maxHeight="540px"
           ></ResponsiveTable>
         </div>
         <div className="col-span-1 items-center justify-center border-b-2 stroke-slate-200 ">
@@ -81,7 +54,7 @@ export default function DashBoardPage() {
           <ResponsiveTable
             headings={LiveGamesHeading}
             data={liveGamesData}
-            maxHeight="450px"
+            maxHeight="540px"
           ></ResponsiveTable>
         </div>
       </div>
