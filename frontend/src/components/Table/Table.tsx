@@ -9,7 +9,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
   data,
   maxHeight,
 }) => (
-  <div className="max-w-full mx-auto font-saira-condensed ">
+  <div className="max-w-full mx-auto font-saira-condensed font-bold ">
     <div className="flex flex-col">
       <div className="flex bg-table-header-bg justify-center items-center">
         {/* table headings */}
