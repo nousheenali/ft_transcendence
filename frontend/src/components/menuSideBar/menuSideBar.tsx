@@ -1,33 +1,39 @@
+'use client'
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Breaker from "../br/Br";
 import { signOut } from "next-auth/react";
+ 
+import { usePathname } from 'next/navigation'
 
 export default function MenuSideBar() {
-  const [activeButton, setActiveButton] = useState("");
+  const pathname = usePathname()
+  // return <p>Current pathname: {pathname}</p>
+  const [activeButton, setActiveButton] = useState(pathname);
 
   const handleButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);
   };
 
   const getButtonStyles = (buttonId: string) => {
-    return `border-2 border-transparent pl-6 hover:bg-black hover:border-2 hover:rounded-l-xl no-underline hover:no-underline 
+    return `border-2 border-transparent pl-6 hover:bg-black hover:border-[#696D7D] hover:border-opacity-30 hover:border-2 hover:rounded-l-xl no-underline hover:no-underline 
       ${
         activeButton === buttonId
-          ? "bg-black border-gray-800 rounded-l-xl border-2"
+          ? "bg-black border-[#696D7D] border-opacity-30 rounded-l-xl border-2"
           : ""
       }`;
   };
   return (
     <>
       {/* menu section */}
+      {/* <p>current path: {pathname}</p> */}
       <ul className="flex flex-col ml-10 flex-grow">
         <Link
           passHref
           href="/"
-          onClick={() => handleButtonClick("button0")}
-          className={getButtonStyles("button0")}
+          onClick={() => handleButtonClick("/")}
+          className={getButtonStyles("/")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -45,8 +51,8 @@ export default function MenuSideBar() {
         <Link
           href="/leaderboard"
           passHref
-          onClick={() => handleButtonClick("button1")}
-          className={getButtonStyles("button1")}
+          onClick={() => handleButtonClick("/leaderboard")}
+          className={getButtonStyles("/leaderboard")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -64,8 +70,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/chat"
-          onClick={() => handleButtonClick("button2")}
-          className={getButtonStyles("button2")}
+          onClick={() => handleButtonClick("/chat")}
+          className={getButtonStyles("/chat")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -82,8 +88,8 @@ export default function MenuSideBar() {
 
         <Link
           passHref
-          onClick={() => handleButtonClick("button3")}
-          className={getButtonStyles("button3")}
+          onClick={() => handleButtonClick("/profile")}
+          className={getButtonStyles("/profile")}
           href="/profile"
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -101,8 +107,8 @@ export default function MenuSideBar() {
 
         <Link
           passHref
-          onClick={() => handleButtonClick("button4")}
-          className={getButtonStyles("button4")}
+          onClick={() => handleButtonClick("/settings")}
+          className={getButtonStyles("/settings")}
           href="/settings"
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -123,8 +129,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/help"
-          onClick={() => handleButtonClick("button5")}
-          className={getButtonStyles("button5")}
+          onClick={() => handleButtonClick("/help")}
+          className={getButtonStyles("/help")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -144,7 +150,7 @@ export default function MenuSideBar() {
           onClick={() =>
             signOut({ callbackUrl: "http://localhost:3000/login" })
           }
-          className={getButtonStyles("button6") + " mb-10"}
+          className={getButtonStyles("/logout") + " mb-10"}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
