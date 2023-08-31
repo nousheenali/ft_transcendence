@@ -2,6 +2,7 @@ import './globals.css'
 import type {Metadata} from 'next'
 import React from "react";
 import Background from "@/components/Background/Background";
+import AuthProvider from './context/AuthProvider';
 
 export const metadata: Metadata = {
 	title: "Spin Masters",
@@ -19,7 +20,7 @@ export default function RootLayout({
 		<html lang="en">
 			<head><link rel="icon" href="Logo.ico" sizes="any" /></head>
 			<body>
-				{children}
+			<AuthProvider>{children}</AuthProvider>
 			</body>
 		</html>
 	);

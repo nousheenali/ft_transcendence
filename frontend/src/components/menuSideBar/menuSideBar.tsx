@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Breaker from '../br/Br';
+import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import Breaker from "../br/Br";
+import { signOut } from "next-auth/react";
 
 export default function MenuSideBar() {
-  const [activeButton, setActiveButton] = useState('');
+  const [activeButton, setActiveButton] = useState("");
 
   const handleButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);
@@ -14,8 +15,8 @@ export default function MenuSideBar() {
     return `border-2 border-transparent pl-6 hover:bg-black hover:border-2 hover:rounded-l-xl no-underline hover:no-underline 
       ${
         activeButton === buttonId
-          ? 'bg-black border-gray-800 rounded-l-xl border-2'
-          : ''
+          ? "bg-black border-gray-800 rounded-l-xl border-2"
+          : ""
       }`;
   };
   return (
@@ -25,8 +26,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/"
-          onClick={() => handleButtonClick('button0')}
-          className={getButtonStyles('button0')}
+          onClick={() => handleButtonClick("button0")}
+          className={getButtonStyles("button0")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -44,8 +45,8 @@ export default function MenuSideBar() {
         <Link
           href="/leaderboard"
           passHref
-          onClick={() => handleButtonClick('button1')}
-          className={getButtonStyles('button1')}
+          onClick={() => handleButtonClick("button1")}
+          className={getButtonStyles("button1")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -63,8 +64,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/chat"
-          onClick={() => handleButtonClick('button2')}
-          className={getButtonStyles('button2')}
+          onClick={() => handleButtonClick("button2")}
+          className={getButtonStyles("button2")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -81,8 +82,8 @@ export default function MenuSideBar() {
 
         <Link
           passHref
-          onClick={() => handleButtonClick('button3')}
-          className={getButtonStyles('button3')}
+          onClick={() => handleButtonClick("button3")}
+          className={getButtonStyles("button3")}
           href="/profile"
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -100,8 +101,8 @@ export default function MenuSideBar() {
 
         <Link
           passHref
-          onClick={() => handleButtonClick('button4')}
-          className={getButtonStyles('button4')}
+          onClick={() => handleButtonClick("button4")}
+          className={getButtonStyles("button4")}
           href="/settings"
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -122,8 +123,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/help"
-          onClick={() => handleButtonClick('button5')}
-          className={getButtonStyles('button5')}
+          onClick={() => handleButtonClick("button5")}
+          className={getButtonStyles("button5")}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -139,9 +140,11 @@ export default function MenuSideBar() {
         </Link>
 
         <Link
-          href="/login"
-          onClick={() => handleButtonClick('button6')}
-          className={getButtonStyles('button6') + ' mb-10'}
+          href=""
+          onClick={() =>
+            signOut({ callbackUrl: "http://localhost:3000/login" })
+          }
+          className={getButtonStyles("button6") + " mb-10"}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
