@@ -8,9 +8,9 @@ export const generateProfileFriendsData = (numRecords = 100) => {
       `1`,
       `3`,
       `4`,
-      { iconName: 'icon1', iconImg: '/crown.svg' },
-      { iconName: 'icon2', iconImg: '/crown.svg' },
-      { iconName: 'icon3', iconImg: '/crown.svg' },
+      { iconName: 'icon1', iconImg: '/User_Chat.svg' },
+      { iconName: 'icon2', iconImg: '/Blocked.svg' },
+      { iconName: 'icon3', iconImg: '/delete.svg' },
     ]);
   }
 

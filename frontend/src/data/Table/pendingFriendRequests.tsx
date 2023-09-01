@@ -8,8 +8,8 @@ export const generatePendingRequestsData = (numRecords = 100) => {
       `1`,
       `3`,
       `4`,
-      { iconName: 'icon2', iconImg: '/crown.svg' },
-      { iconName: 'icon3', iconImg: '/crown.svg' },
+      { iconName: 'icon2', iconImg: '/User_Chat.svg' },
+      { iconName: 'icon3', iconImg: '/user-remove.svg' },
     ]);
   }
   return records;
