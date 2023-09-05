@@ -3,9 +3,9 @@ services:
   db:
     build:
       context: .
-      dockerfile: nestJs/Dockerfile
+      dockerfile: postgres_db/Dockerfile
     ports:
-      - '5000:5000'
+      - '${DB_PORT}:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
 
