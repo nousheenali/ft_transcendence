@@ -17,7 +17,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  friends Friend[]
+  channels Channel[]
+  friends  Friend[]
 }
 
 // ---------------------------------------------------------------------
@@ -36,10 +37,15 @@ model Channel {
 
   channelName String
   channelType Type
+  createdBy      Int
 
-  createdBy Int      @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  channelMembers ChannelMember[]
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
 }
 
 enum Type {
@@ -49,10 +55,43 @@ enum Type {
 
 // ---------------------------------------------------------------------
 model ChannelMember {
+  id     Int @id @default(autoincrement())
+  userId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Channel   Channel? @relation(fields: [channelId], references: [id])
+  channelId Int?
+}
+
+// ---------------------------------------------------------------------
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------
+// There is a possipelity to add seen time to the table.
+model DirectMessage {
   id Int @id @default(autoincrement())
 
+  messageId  Int
+  senderId   Int
+  receiverId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------
+model ChannelMessages {
+  id Int @id @default(autoincrement())
+
+  messageId Int
   channelId Int
-  userId    Int
+  senderId  Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

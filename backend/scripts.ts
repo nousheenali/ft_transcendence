@@ -92,6 +92,7 @@ async function main() {
  */
 
 // Testing the Channels and the channels members.
+
 async function main() {
   console.log('Seeding started:');
   console.log('==============================================================');
@@ -130,6 +131,16 @@ async function main() {
 
   console.log('The channel: [', newChannel.id, newChannel.channelName, '] has been created by: [', newChannel.createdBy, ']');
   
+  const newChannel_2 = await prisma.channel.create({
+    data: {
+      channelName: '42 Dubai',
+      channelType: 'PUBLIC',
+      createdBy: user_1.id,
+    }
+  })
+
+  console.log('The channel: [', newChannel_2.id, newChannel_2.channelName, '] has been created by: [', newChannel_2.createdBy, ']');
+  
   //================================================================================================================
   // Create new 2 users.
 
@@ -162,6 +173,12 @@ async function main() {
       userId: user_2.id,
     }
   })
+  await prisma.channelMember.create({
+    data: {
+      channelId: newChannel_2.id,
+      userId: user_2.id,
+    }
+  })
 
   // Adding user_3 to the channel.
   await prisma.channelMember.create({
@@ -174,14 +191,28 @@ async function main() {
   //================================================================================================================
   // Getting all the members of the channel.
 
-  const channelMembers = await prisma.channelMember.findMany({
+  const channelMembers_2 = await prisma.channelMember.findMany({
+    where: {channelId: newChannel_2.id}
+  })
+  console.log('The members of the channel: [', newChannel_2.channelName, '] are:');
+
+  // Getting the tables of the members of the channel.
+
+  for (const member of channelMembers_2) {
+    const memberTable = await prisma.user.findUnique({
+      where: {id: member.userId}
+    })
+    console.log(member.userId, memberTable);
+  }
+
+  const channelMembers_1 = await prisma.channelMember.findMany({
     where: {channelId: newChannel.id}
   })
   console.log('The members of the channel: [', newChannel.channelName, '] are:');
 
   // Getting the tables of the members of the channel.
-  
-  for (const member of channelMembers) {
+
+  for (const member of channelMembers_1) {
     const memberTable = await prisma.user.findUnique({
       where: {id: member.userId}
     })
