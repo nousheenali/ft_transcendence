@@ -3,6 +3,7 @@ import FortyTwoProvider from "next-auth/providers/42-school";
 import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
 import GitHubProfile from "next-auth/providers/github";
 import { FortyTwoProfile } from "next-auth/providers/42-school";
+import axios from "axios";
 
 export const options: NextAuthOptions = {
   providers: [
@@ -46,6 +47,21 @@ export const options: NextAuthOptions = {
       // console.log("session: ", session);
       return session;
     },
+    async signIn({user}) {
+      const userData = {
+        login_id: user.name,
+        email: user.email,
+        name: user.name,
+        profile_pic: user.image,
+      };
+
+      const response = await axios.post("http://localhost:3001/user/create", userData);
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   },
   secret: process.env.SECRET,
 };

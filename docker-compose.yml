@@ -8,6 +8,8 @@ services:
       - '${DB_PORT}:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
 
 volumes:
   db-data:
