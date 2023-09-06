@@ -16,6 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+
+    // Added by gabdoush.
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "lib": ["esnext"],
+    "strict": true,
   }
 }

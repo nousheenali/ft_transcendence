@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) // discuss uuid
+  login     String // unigue
+  email     String // unigue
+  firstName String
+  lastName  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  friends Friend[]
+}
+
+model Friend {
+  id        Int      @id @default(autoincrement())
+  friendId  Int
+  createdAt DateTime @default(now())
+
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+}
+
+model Channel {
+  id Int @id @default(autoincrement())
+  channelName String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
