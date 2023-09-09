@@ -17,8 +17,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  channels Channel[]
-  friends  Friend[]
+  friends         Friend[]
+  channelRelation ChannelRelation[]
+  createdChannels Channel[]         @relation("createdChannels")
 }
 
 // ---------------------------------------------------------------------
@@ -35,18 +36,18 @@ model Friend {
 model Channel {
   id Int @id @default(autoincrement())
 
-  channelName String
-  channelType Type
-  createdBy   Int
+  channelName   String
+  channelType   Type
+  // Relation to the creator user
+  createdBy     Int
+  createdByUser User   @relation("createdChannels", fields: [createdBy], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Each channel has a list of members and a list of messages (one to many)
-  channelMembers  ChannelMember[]
+  channelMembers ChannelRelation[]
+
   // channelMessages ChannelMessages[]
-  User            User?             @relation(fields: [userId], references: [id])
-  userId          Int?
 }
 
 enum Type {
@@ -55,9 +56,10 @@ enum Type {
 }
 
 // ---------------------------------------------------------------------
-model ChannelMember {
-  id     Int @id @default(autoincrement())
+model ChannelRelation {
+  id     Int  @id @default(autoincrement())
   userId Int
+  user   User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
