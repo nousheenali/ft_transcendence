@@ -44,7 +44,7 @@ model Channel {
 
   // Each channel has a list of members and a list of messages (one to many)
   channelMembers  ChannelMember[]
-  channelMessages ChannelMessages[]
+  // channelMessages ChannelMessages[]
   User            User?             @relation(fields: [userId], references: [id])
   userId          Int?
 }
@@ -67,37 +67,40 @@ model ChannelMember {
 }
 
 // ---------------------------------------------------------------------
-model Message {
-  id        Int      @id @default(autoincrement())
-  content   String
-  createdAt DateTime @default(now())
-}
-
+// #################   The Rest is under development   #################
 // ---------------------------------------------------------------------
-model DirectMessage {
-  id Int @id @default(autoincrement())
 
-  messageId  Int
-  senderId   Int
-  receiverId Int
+// model Message {
+//   id        Int      @id @default(autoincrement())
+//   content   String
+//   createdAt DateTime @default(now())
+// }
 
-  seenAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
+// // ---------------------------------------------------------------------
+// model DirectMessage {
+//   id Int @id @default(autoincrement())
 
-// ---------------------------------------------------------------------
-model ChannelMessages {
-  id Int @id @default(autoincrement())
+//   messageId  Int
+//   senderId   Int
+//   receiverId Int
 
-  messageId Int
-  channelId Int
-  senderId  Int
+//   seenAt    DateTime?
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+// }
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// // ---------------------------------------------------------------------
+// model ChannelMessages {
+//   id Int @id @default(autoincrement())
 
-  Channel Channel @relation(fields: [channelId], references: [id])
-}
+//   messageId Int
+//   channelId Int
+//   senderId  Int
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   Channel Channel @relation(fields: [channelId], references: [id])
+// }
 
 // ---------------------------------------------------------------------
