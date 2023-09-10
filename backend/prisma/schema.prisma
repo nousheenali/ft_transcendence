@@ -9,44 +9,109 @@ datasource db {
 
 // ---------------------------------------------------------------------
 model User {
-  id        Int      @id @default(autoincrement()) // discuss uuid
+  id        String   @id @default(uuid())
   login     String   @unique
   email     String   @unique
-  firstName String
-  lastName  String
+  name      String
+  avatar    String?  @default("https://i.imgur.com/6VBx3io.png")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  channels Channel[]
-  friends  Friend[]
+  isOnline Boolean @default(true)
+  score    Int     @default(0)
+
+  // game         Game[]
+
+  notification Notification[]
+
+  friendRelation  FriendRelation[]
+  channelRelation ChannelRelation[]
+  channels        Channel[]         @relation("createdChannels")
+
+  Message         Message[]
 }
 
 // ---------------------------------------------------------------------
-model Friend {
-  id        Int      @id @default(autoincrement())
-  friendId  Int      @unique
-  createdAt DateTime @default(now())
+// Think about it later
+// model Game {
+//   id     String @id @default(uuid())
+//   gameId Int
 
-  User   User? @relation(fields: [userId], references: [id])
-  userId Int?
+//   moves  Int
+//   isLive Boolean @default(true)
+//   result Result
+//   points Int
+
+//   startTime DateTime @default(now())
+//   endTime   DateTime @updatedAt
+
+// player1         String 
+// player1Relation User  @relation(fields: [player1], references: [id])
+
+// player2         String
+// player2Relation User   @relation(fields: [player2], references: [id])
+// }
+
+// enum Result {
+//   WIN
+//   LOSE
+//   DRAW
+// }
+
+// ---------------------------------------------------------------------
+model Notification {
+  id        String   @id @default(uuid())
+  content   Content
+  recivedAt DateTime @default(now())
+
+  sender   User   @relation(fields: [senderId], references: [id])
+  senderId String
+}
+
+enum Content {
+  DirectMessage_Recieved
+  ChannelInvite_Recieved
+  GameInvite_Recieved
+  FriendRequest_Recieved
+}
+
+// ---------------------------------------------------------------------
+model FriendRelation {
+  id     String @id @default(uuid())
+  userId String
+
+  friend   User   @relation(fields: [friendId], references: [id])
+  friendId String
+
+  friendStatus FriendStatus
+
+  createdAt DateTime @default(now())
+}
+
+enum FriendStatus {
+  OUTGOING_REQUESTS
+  INCOMING_REQUESTS
+  BLOCKED
+  ACCEPTED
+  DECLINED
 }
 
 // ---------------------------------------------------------------------
 model Channel {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
-  channelName String
-  channelType Type
-  createdBy   Int
+  channelName   String
+  channelType   Type
+  // Relation to the creator user
+  createdBy     String
+  createdByUser User   @relation("createdChannels", fields: [createdBy], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Each channel has a list of members and a list of messages (one to many)
-  channelMembers  ChannelMember[]
+  channelMembers ChannelRelation[]
+
   // channelMessages ChannelMessages[]
-  User            User?             @relation(fields: [userId], references: [id])
-  userId          Int?
 }
 
 enum Type {
@@ -55,26 +120,31 @@ enum Type {
 }
 
 // ---------------------------------------------------------------------
-model ChannelMember {
-  id     Int @id @default(autoincrement())
-  userId Int
+model ChannelRelation {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   Channel   Channel? @relation(fields: [channelId], references: [id])
-  channelId Int?
+  channelId String?
 }
 
 // ---------------------------------------------------------------------
 // #################   The Rest is under development   #################
 // ---------------------------------------------------------------------
 
-// model Message {
-//   id        Int      @id @default(autoincrement())
-//   content   String
-//   createdAt DateTime @default(now())
-// }
+model Message {
+  id       Int    @id @default(autoincrement())
+  sender   User   @relation(fields: [senderId], references: [id])
+  senderId String
+
+  content   String
+  sentTime DateTime @default(now())
+}
+
 
 // // ---------------------------------------------------------------------
 // model DirectMessage {
