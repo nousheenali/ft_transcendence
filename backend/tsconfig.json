@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false,
 
     // Added by gabdoush.
-    "rootDir": "src",
+    "rootDir": "./",
     "esModuleInterop": true,
     "lib": ["esnext"],
     "strict": true,
