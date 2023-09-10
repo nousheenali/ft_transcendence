@@ -1,37 +1,26 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import {Controller,Get,Post,Body,Patch,Param,Delete,} from '@nestjs/common';
 import { ChannelService } from './channel.service';
-import { CreateChannelDto } from './dto/create-channel.dto';
-import { UpdateChannelDto } from './dto/update-channel.dto';
+import { CreateChannelRelationDto } from './dto/create-channel-relation.dto';
 
 @Controller('channel')
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 
-  @Post()
-  create(@Body() createChannelDto: CreateChannelDto) {
-    return this.channelService.create(createChannelDto);
+  // 👇 create a new channel relation between a user table and a certain channel.
+  @Post('/createChannelRelation/')
+  create(@Body() createChannelRelationDto: CreateChannelRelationDto) {
+    return this.channelService.createChannelRelation(createChannelRelationDto);
   }
 
+  // 👇 get all members of a channel.
   @Get('/getMembers/:id')
   findAll(@Param('id') id: number) {
     return this.channelService.findChannelMembers(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
-    return this.channelService.update(+id, updateChannelDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  // 👇 delete a channel relation between a user table and a channel.
+  @Delete('/deleteChannelRelation/:id')
+  remove(@Param('id') id: number) {
     return this.channelService.remove(+id);
   }
 }
