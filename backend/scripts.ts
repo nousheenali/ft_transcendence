@@ -187,38 +187,38 @@ async function main() {
 
   //================================================================================================================
   // Getting all the members of the channel.
+  
+  const channelRelations_2 = await prisma.channelRelation.findMany({
+    where: {channelId: newChannel_2.id}
+  })
+  console.log('The members of the channel: [', newChannel_2.channelName, '] are:');
 
-  // const channelRelations_2 = await prisma.channelRelation.findMany({
-  //   where: {channelId: newChannel_2.id}
-  // })
-  // console.log('The members of the channel: [', newChannel_2.channelName, '] are:');
+  // Getting the tables of the members of the channel.
 
-  // // Getting the tables of the members of the channel.
+  for (const member of channelRelations_2) {
+    const memberTable = await prisma.user.findUnique({
+      where: {id: member.userId}
+    })
+    console.log(member.userId, memberTable);
+  }
 
-  // for (const member of channelRelations_2) {
-  //   const memberTable = await prisma.user.findUnique({
-  //     where: {id: member.userId}
-  //   })
-  //   console.log(member.userId, memberTable);
-  // }
+  const channelRelations_1 = await prisma.channelRelation.findMany({
+    where: {channelId: newChannel.id}
+  })
+  console.log('The members of the channel: [', newChannel.channelName, '] are:');
 
-  // const channelRelations_1 = await prisma.channelRelation.findMany({
-  //   where: {channelId: newChannel.id}
-  // })
-  // console.log('The members of the channel: [', newChannel.channelName, '] are:');
+  // Getting the tables of the members of the channel.
 
-  // // Getting the tables of the members of the channel.
+  for (const member of channelRelations_1) {
+    const memberTable = await prisma.user.findUnique({
+      where: {id: member.userId}
+    })
+    console.log(member.userId, memberTable);
+  }
 
-  // for (const member of channelRelations_1) {
-  //   const memberTable = await prisma.user.findUnique({
-  //     where: {id: member.userId}
-  //   })
-  //   console.log(member.userId, memberTable);
-  // }
-
-  // //================================================================================================================
-  // console.log('==============================================================');
-  // console.log('Seeding finished.');
+  //================================================================================================================
+  console.log('==============================================================');
+  console.log('Seeding finished.');
 }
 
 main()
