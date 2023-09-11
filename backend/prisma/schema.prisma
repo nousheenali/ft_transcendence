@@ -76,6 +76,7 @@ enum Content {
 }
 
 // ---------------------------------------------------------------------
+
 model FriendRelation {
   id     String @id @default(uuid())
   userId String
