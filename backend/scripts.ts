@@ -203,7 +203,31 @@ async function main() {
   );
 
   //------------------------------------------------
-  // Creating a channel
+  // Creating 'FourTwo' channel
+
+  const FourTwo = await prisma.channel.create({
+    data: {
+      channelName: 'FourTwo',
+      channelType: 'PUBLIC',
+      createdBy: gabdoush.id,
+      channelMembers: {
+        create: {
+          userId: gabdoush.id,
+        },
+      },
+    },
+  });
+
+  console.log(
+    'The channel: [',
+    FourTwo.id,
+    '] [',
+    FourTwo.channelName,
+    '] has been created.',
+  );
+
+  //------------------------------------------------
+  // Creating Dubai channel
 
   const Dubai = await prisma.channel.create({
     data: {

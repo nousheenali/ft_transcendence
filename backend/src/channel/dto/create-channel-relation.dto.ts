@@ -1,17 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsDate, IsOptional } from 'class-validator';
+import { IsInt, IsDate, IsOptional, IsString } from 'class-validator';
 
 /**
  * The data transfer object (DTO) that represents the data sent to create a new channel relation.
  */
 export class CreateChannelRelationDto {
 	@ApiProperty()
-	@IsInt()
-	userId: number;
+	@IsString()
+	userId: string;
 
 	@ApiProperty()
-	@IsOptional()
-	@IsInt()
-	channelId: number | null;
+	@IsString()
+	channelId: string;
 }
  

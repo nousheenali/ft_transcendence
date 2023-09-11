@@ -14,13 +14,13 @@ export class ChannelController {
 
   // 👇 get all members of a channel.
   @Get('/getMembers/:id')
-  findAll(@Param('id') id: number) {
-    return this.channelService.findChannelMembers(+id);
+  findAll(@Param('id') id: string) {
+    return this.channelService.findChannelMembers(id);
   }
 
   // 👇 delete a channel relation between a user table and a channel.
   @Delete('/deleteChannelRelation/:id')
-  remove(@Param('id') id: number) {
-    return this.channelService.remove(+id);
+  remove(@Param('id') id: string) {
+    return this.channelService.remove(id);
   }
 }
