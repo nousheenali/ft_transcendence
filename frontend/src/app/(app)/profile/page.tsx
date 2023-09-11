@@ -7,8 +7,10 @@ import { generateProfileFriendsData } from '@/data/Table/friends';
 import { generateProfileBlockedData } from '@/data/Table/blocked';
 import { generateFriendRequestsData } from '@/data/Table/friendRequests';
 import { generatePendingRequestsData } from '@/data/Table/pendingFriendRequests';
+import { generateProfileSearchData } from '@/data/Table/search';
 import ProfileInfo from '@/components/Profile/ProfileInfo/ProfileInfo';
 import {
+  searchProfileHeadings,
   blockedFriendsHeadings,
   friendsProfileHeadings,
   friendsRequestHeadings,
@@ -25,7 +27,7 @@ export default function Profile() {
 
   const renderTable = () => {
     switch (activeButton) {
-      case 'friends':
+      case "friends":
         return (
           <ResponsiveTable
             headings={friendsProfileHeadings}
@@ -33,7 +35,15 @@ export default function Profile() {
             maxHeight="585px"
           />
         );
-      case 'blocked':
+      case "search":
+        return (
+          <ResponsiveTable
+            headings={searchProfileHeadings}
+            data={generateProfileSearchData()}
+            maxHeight="585px"
+          />
+        );
+      case "blocked":
         return (
           <ResponsiveTable
             headings={blockedFriendsHeadings}
@@ -41,7 +51,7 @@ export default function Profile() {
             maxHeight="585px"
           />
         );
-      case 'friendRequests':
+      case "friendRequests":
         return (
           <ResponsiveTable
             headings={friendsRequestHeadings}
@@ -49,7 +59,7 @@ export default function Profile() {
             maxHeight="585px"
           />
         );
-      case 'pendingRequests':
+      case "pendingRequests":
         return (
           <ResponsiveTable
             headings={pendingRequestHeadings}
