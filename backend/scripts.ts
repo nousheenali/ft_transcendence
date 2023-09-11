@@ -101,7 +101,7 @@ async function main() {
   // Delete all data from the DataBase at the beginning to avoid any errors.
   
   await prisma.user.deleteMany();
-  await prisma.friend.deleteMany();
+  await prisma.friendRelation.deleteMany();
   await prisma.channel.deleteMany();
   await prisma.channelRelation.deleteMany();
   //================================================================================================================
@@ -111,8 +111,7 @@ async function main() {
     data: {
       login: 'gabdoush',
       email: 'gabdoush@hotmail.com',
-      firstName: 'Ghaiath',
-      lastName: 'Abdoush',
+      name: 'Ghaiath',
     },
   });
 
@@ -148,8 +147,7 @@ async function main() {
     data: {
       login: 'yonatan',
       email: 'yonatan@hotmail.com',
-      firstName: 'Yonathan',
-      lastName: 'Monges',
+      name: 'Yonathan',
     },
   });
 
@@ -158,8 +156,7 @@ async function main() {
     data: {
       login: 'Samad',
       email: 'Samad@hotmail.com',
-      firstName: 'Abdul',
-      lastName: 'Samad',
+      name: 'Abdul',
     },
   });
 
@@ -191,37 +188,37 @@ async function main() {
   //================================================================================================================
   // Getting all the members of the channel.
 
-  const channelRelations_2 = await prisma.channelRelation.findMany({
-    where: {channelId: newChannel_2.id}
-  })
-  console.log('The members of the channel: [', newChannel_2.channelName, '] are:');
+  // const channelRelations_2 = await prisma.channelRelation.findMany({
+  //   where: {channelId: newChannel_2.id}
+  // })
+  // console.log('The members of the channel: [', newChannel_2.channelName, '] are:');
 
-  // Getting the tables of the members of the channel.
+  // // Getting the tables of the members of the channel.
 
-  for (const member of channelRelations_2) {
-    const memberTable = await prisma.user.findUnique({
-      where: {id: member.userId}
-    })
-    console.log(member.userId, memberTable);
-  }
+  // for (const member of channelRelations_2) {
+  //   const memberTable = await prisma.user.findUnique({
+  //     where: {id: member.userId}
+  //   })
+  //   console.log(member.userId, memberTable);
+  // }
 
-  const channelRelations_1 = await prisma.channelRelation.findMany({
-    where: {channelId: newChannel.id}
-  })
-  console.log('The members of the channel: [', newChannel.channelName, '] are:');
+  // const channelRelations_1 = await prisma.channelRelation.findMany({
+  //   where: {channelId: newChannel.id}
+  // })
+  // console.log('The members of the channel: [', newChannel.channelName, '] are:');
 
-  // Getting the tables of the members of the channel.
+  // // Getting the tables of the members of the channel.
 
-  for (const member of channelRelations_1) {
-    const memberTable = await prisma.user.findUnique({
-      where: {id: member.userId}
-    })
-    console.log(member.userId, memberTable);
-  }
+  // for (const member of channelRelations_1) {
+  //   const memberTable = await prisma.user.findUnique({
+  //     where: {id: member.userId}
+  //   })
+  //   console.log(member.userId, memberTable);
+  // }
 
-  //================================================================================================================
-  console.log('==============================================================');
-  console.log('Seeding finished.');
+  // //================================================================================================================
+  // console.log('==============================================================');
+  // console.log('Seeding finished.');
 }
 
 main()
