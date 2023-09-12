@@ -32,6 +32,7 @@ module.exports = {
         'hover-login-nav-text': '#7A8D00',
         'aside-fill': '#0E1211',
         'aside-fill-70': 'rgba(14, 18, 17, 0.7)',
+        'aside-fill-90': 'rgba(14, 18, 17, 0.9)',
         'aside-border': '#696D7D',
         'custom-fill': 'rgba(158, 159, 164, 0.70)',
         strokeWidth: '0.2px',
