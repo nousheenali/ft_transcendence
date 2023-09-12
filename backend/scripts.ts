@@ -255,22 +255,7 @@ async function main() {
   //================================================================================================================
   // Adding channelRelation between the users to the channel.
 
-  await prisma.channelRelation.create({
-    data: {
-      channelId: AbuDhabi.id,
-      userId: yonatan.id,
-    },
-  });
-  console.log(
-    'channelRelation created: [',
-    AbuDhabi.channelName,
-    '+',
-    yonatan.login,
-    ']',
-  );
-
-  //------------------------------------------------
-  await prisma.channelRelation.create({
+  const relation_1 = await prisma.channelRelation.create({
     data: {
       channelId: Dubai.id,
       userId: yonatan.id,
@@ -278,14 +263,16 @@ async function main() {
   });
   console.log(
     'channelRelation created: [',
-    Dubai.channelName,
-    '+',
-    yonatan.login,
+    relation_1.id,
+    '] [channelId ->',
+    relation_1.channelId,
+    '+ userId ->',
+    relation_1.userId,
     ']',
   );
 
   //------------------------------------------------
-  await prisma.channelRelation.create({
+  const relation_2 = await prisma.channelRelation.create({
     data: {
       channelId: AbuDhabi.id,
       userId: samad.id,
@@ -293,9 +280,28 @@ async function main() {
   });
   console.log(
     'channelRelation created: [',
-    AbuDhabi.channelName,
-    '+',
-    samad.login,
+    relation_2.id,
+    '] [channelId ->',
+    relation_2.channelId,
+    '+ userId ->',
+    relation_2.userId,
+    ']',
+  );
+
+  //------------------------------------------------
+  const relation_3 = await prisma.channelRelation.create({
+    data: {
+      channelId: AbuDhabi.id,
+      userId: yonatan.id,
+    },
+  });
+  console.log(
+    'channelRelation created: [',
+    relation_3.id,
+    '] [channelId ->',
+    relation_3.channelId,
+    '+ userId ->',
+    relation_3.userId,
     ']',
   );
 

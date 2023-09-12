@@ -1,14 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import { CreateChannelRelationDto } from './dto/create-channel-relation.dto';
+import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; // 👈 Import CreateChannelRelationDto
 import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
-
-/** ------------------------------------------------------------------------------------------- **/
-/**
- * TODO:
- *  1. Before creating new relation between the user and the channel, check if the user is already
- *    have relation with the channel.
- */
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
@@ -22,7 +14,7 @@ export class ChannelService {
    * @param userId the id of the user to check if he is a member of the channel.
    * @returns
    */
-  async isChannelMember(channelId: string, userId: string) {
+  async isRelationExist(channelId: string, userId: string) {
     return await this.prisma.channelRelation
       .findMany({
         where: {
@@ -43,18 +35,12 @@ export class ChannelService {
    * @throws BadRequestException if the user is already a member of the channel.
    * @example
    * createChannelRelation({ userId: 1, channelId: 1 })
-   * NOTE:
-   * -------------------------------------------------------------------------------------------
-   * @ApiCreatedResponse, @ApiBadRequestResponse,
-   * is only for swagger documentation, to show the user what is the result the request.
    */
-  @ApiCreatedResponse({ description: 'Channel relation created successfully.' })
-  @ApiBadRequestResponse({ description: 'User is already a member of this channel.' })
   async createChannelRelation(createChannelRelationDto: CreateChannelRelationDto) {
     const { userId, channelId } = createChannelRelationDto;
-    const isMember = await this.isChannelMember(channelId, userId); // Await the result
+    const isRelationExist = await this.isRelationExist(channelId, userId);
 
-    if (isMember) {
+    if (isRelationExist) {
       throw new BadRequestException('User is already a member of this channel.');
     } else {
       const newChannelRelation = await this.prisma.channelRelation.create({
@@ -82,15 +68,26 @@ export class ChannelService {
   }
 
   /** -------------------------------------------------------------------------------------------
-   * 👉 Delete a channel relation between a user table and a channel according to the id of
-   * the channel relation.
-   * @param id the id of the channel relation to remove.
+   * 👉 Delete a channel relation between a user and a channel according to the id of
+   * the channel and the id of the user.
+   * @param userID the id of the user that is a member of the channel.
+   * @param channelID the id of the channel that the user is a member of.
    */
-  remove(id: string) {
-    return this.prisma.channelRelation.delete({
-      where: { id: id },
-    });
-  }
-}
 
-/** ------------------------------------------------------------------------------------------- **/
+  async remove(userID: string, channelID: string) {
+    const isRelationExist = await this.isRelationExist(channelID, userID);
+
+    if (!isRelationExist) {
+      throw new BadRequestException('User is not a member of the channel.');
+    } else {
+      return this.prisma.channelRelation.deleteMany({
+        where: {
+          userId: userID,
+          channelId: channelID
+        }
+      });
+    }
+  }
+
+  /** ------------------------------------------------------------------------------------------- **/
+}

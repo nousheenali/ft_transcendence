@@ -1,6 +1,6 @@
 import {Controller,Get,Post,Body,Patch,Param,Delete,} from '@nestjs/common';
-import { ChannelService } from './channel.service';
-import { CreateChannelRelationDto } from './dto/create-channel-relation.dto';
+import { ChannelService } from './channel.service'; // 👈 Import ChannelService
+import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; // 👈 Import CreateChannelRelationDto
 
 @Controller('channel')
 export class ChannelController {
@@ -19,8 +19,8 @@ export class ChannelController {
   }
 
   // 👇 delete a channel relation between a user table and a channel.
-  @Delete('/deleteChannelRelation/:id')
-  remove(@Param('id') id: string) {
-    return this.channelService.remove(id);
+  @Delete('/deleteChannelRelation/:userID/:channelID')
+  remove(@Param('userID') userID: string, @Param('channelID') channelID: string) {
+    return this.channelService.remove(userID, channelID);
   }
 }
