@@ -32,11 +32,11 @@ export default function ChannelsSideBar() {
         activeChannel={activeChannel}
         setActiveChannel={setActiveChannel}
       />
+      <CreateChannel />
       <hr className="w-80 border-line-break" />
       {activeChannel === "Public" && (
         <>
           <PublicChannels />
-          <CreateChannel />
           {/* <ChannelUserHeader />
           <UsersSearch />
           <ChannelsUsersBox /> */}
@@ -48,7 +48,6 @@ export default function ChannelsSideBar() {
           <ChannelUserHeader />
           <UsersSearch />
           <ChannelsUsersBox />
-          <CreateChannel />
         </>
       )}
       <hr className="w-80 border-line-break" />
