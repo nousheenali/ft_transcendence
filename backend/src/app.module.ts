@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { CreateChannelModule } from './createChannel/create-channel.module';
+import { ChannelModule } from './channel/channel.module';
 
 @Module({
-  imports: [PrismaModule, CreateChannelModule],
+  imports: [PrismaModule, ChannelModule],
   controllers: [AppController],
   providers: [AppService],
 })
