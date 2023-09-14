@@ -9,6 +9,15 @@ export const friendsProfileHeadings = [
   'Delete',
 ];
 
+export const searchProfileHeadings = [
+  "Player",
+  "Score",
+  "Games",
+  "Wins",
+  "Losses",,
+  "Add Friend",
+];
+
 export const blockedFriendsHeadings = [
   'Friend',
   'Score',
