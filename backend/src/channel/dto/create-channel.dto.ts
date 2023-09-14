@@ -10,7 +10,7 @@ enum Type {
     PRIVATE
 }
 
-export class CreateChannel {
+export class CreateChannelDto {
     @ApiProperty()
     channelName: string | null;
 
