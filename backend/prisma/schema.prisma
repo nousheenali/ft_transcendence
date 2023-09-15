@@ -28,7 +28,7 @@ model User {
   channelRelation ChannelRelation[]
   channels        Channel[]         @relation("createdChannels")
 
-  Message         Message[]
+  Message Message[]
 }
 
 // ---------------------------------------------------------------------
@@ -76,6 +76,7 @@ enum Content {
 }
 
 // ---------------------------------------------------------------------
+
 model FriendRelation {
   id     String @id @default(uuid())
   userId String
@@ -100,7 +101,7 @@ enum FriendStatus {
 model Channel {
   id String @id @default(uuid())
 
-  channelName   String
+  channelName   String @unique
   channelType   Type
   // Relation to the creator user
   createdBy     String
@@ -141,10 +142,9 @@ model Message {
   sender   User   @relation(fields: [senderId], references: [id])
   senderId String
 
-  content   String
+  content  String
   sentTime DateTime @default(now())
 }
-
 
 // // ---------------------------------------------------------------------
 // model DirectMessage {

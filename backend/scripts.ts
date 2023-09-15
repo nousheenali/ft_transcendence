@@ -107,7 +107,7 @@ async function main() {
   //================================================================================================================
   // Creating the main user.
 
-  const user_1 = await prisma.user.create({
+  const gabdoush = await prisma.user.create({
     data: {
       login: 'gabdoush',
       email: 'gabdoush@hotmail.com',
@@ -115,7 +115,7 @@ async function main() {
     },
   });
 
-  console.log('The user: ', user_1.id, user_1.login, ' has been created.');
+  console.log('The user: ', gabdoush.id, gabdoush.login, ' has been created.');
 
   //================================================================================================================
   // Creating a channel
@@ -124,7 +124,7 @@ async function main() {
     data: {
       channelName: '42 AbuDhabi',
       channelType: 'PUBLIC',
-      createdBy: user_1.id,
+      createdBy: gabdoush.id,
     }
   })
 
@@ -134,7 +134,7 @@ async function main() {
     data: {
       channelName: '42 Dubai',
       channelType: 'PUBLIC',
-      createdBy: user_1.id,
+      createdBy: gabdoush.id,
     }
   })
 
@@ -143,7 +143,7 @@ async function main() {
   //================================================================================================================
   // Create new 2 users.
 
-  const user_2 = await prisma.user.create({
+  const yonatan = await prisma.user.create({
     data: {
       login: 'yonatan',
       email: 'yonatan@hotmail.com',
@@ -152,7 +152,7 @@ async function main() {
   });
 
   //------------------------------------------------
-  const user_3 = await prisma.user.create({
+  const Samad = await prisma.user.create({
     data: {
       login: 'Samad',
       email: 'Samad@hotmail.com',
@@ -167,13 +167,13 @@ async function main() {
   await prisma.channelRelation.create({
     data: {
       channelId: newChannel.id,
-      userId: user_2.id,
+      userId: yonatan.id,
     }
   })
   await prisma.channelRelation.create({
     data: {
       channelId: newChannel_2.id,
-      userId: user_2.id,
+      userId: yonatan.id,
     }
   })
 
@@ -181,13 +181,13 @@ async function main() {
   await prisma.channelRelation.create({
     data: {
       channelId: newChannel.id,
-      userId: user_3.id,
+      userId: Samad.id,
     }
   })
 
   //================================================================================================================
   // Getting all the members of the channel.
-
+  
   const channelRelations_2 = await prisma.channelRelation.findMany({
     where: {channelId: newChannel_2.id}
   })

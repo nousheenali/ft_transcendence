@@ -5,25 +5,13 @@ services:
     image: postgres:10.3
     restart: always
     environment:
-      - POSTGRES_USER=gab182
+      - POSTGRES_USER=user
       - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=transDB
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-
-
-  # db:
-  #   build:
-  #     context: .
-  #     dockerfile: nestJs/Dockerfile
-  #   ports:
-  #     - '5000:5000'
-    # volumes:
-    #   - db-data:/var/lib/postgresql/data
-
-
-    
 
 volumes:
   postgres:
