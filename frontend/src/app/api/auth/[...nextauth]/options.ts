@@ -3,7 +3,9 @@ import FortyTwoProvider from "next-auth/providers/42-school";
 import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
 import GitHubProfile from "next-auth/providers/github";
 import { FortyTwoProfile } from "next-auth/providers/42-school";
+import axios from "axios";
 
+const backendUrl = process.env.NESTJS_URL; //http://localhost:3001
 export const options: NextAuthOptions = {
   providers: [
     FortyTwoProvider({
@@ -45,6 +47,28 @@ export const options: NextAuthOptions = {
       }
       // console.log("session: ", session);
       return session;
+    },
+    //this accesses the backend api when user logs into the website
+    async signIn({ user }) {
+      const userData = {
+        login: user.name,
+        email: user.email,
+        avatar: user.image,
+        name: user.displayname,
+      };
+
+      const endpoint="/user/create"
+      const apiUrl = `${backendUrl}${endpoint}`;
+
+      const response = await axios.post(
+        apiUrl,
+        userData
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
   secret: process.env.SECRET,
