@@ -5,7 +5,7 @@ services:
     image: postgres:10.3
     restart: always
     environment:
-      - POSTGRES_USER=user
+      - POSTGRES_USER=gab182
       - POSTGRES_PASSWORD=12345
       - POSTGRES_DB=transDB
     volumes:
