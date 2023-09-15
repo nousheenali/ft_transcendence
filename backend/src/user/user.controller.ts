@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
-import { CreateUserDto } from './dto';
+import { Body, Controller, Get, Param, Post, Put, Res } from '@nestjs/common';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -22,6 +22,18 @@ export class UserController {
             console.error('Error creating/getting user:', error);
             res.status(500).json();
         }
+    }
+
+    //gets all the users information from user table 
+    @Get('all')
+    async getAllUsers(){
+        return this.userService.getAllUsers();
+    }
+
+    //updates user details using id
+    @Put(':id')
+    updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+        return this.userService.UpdateUser(id, dto);
     }
 
     //gets a single user information from user table 
