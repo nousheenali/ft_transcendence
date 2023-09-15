@@ -33,6 +33,8 @@ model User {
 
 // ---------------------------------------------------------------------
 // Think about it later
+// ---------------------------------------------------------------------
+
 // model Game {
 //   id     String @id @default(uuid())
 //   gameId Int
@@ -76,7 +78,6 @@ enum Content {
 }
 
 // ---------------------------------------------------------------------
-
 model FriendRelation {
   id     String @id @default(uuid())
   userId String
