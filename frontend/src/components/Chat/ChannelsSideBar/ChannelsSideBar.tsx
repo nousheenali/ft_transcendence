@@ -10,6 +10,7 @@ import PrivateChannels from "./Channels/PrivateChannels/PrivateChannels";
 import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeader";
 import UsersSearch from "./ChannelUsers/UsersSearch/UsersSearch";
 import ChannelsUsersBox from "./ChannelUsers/ChannelsUsersBox/ChannelsUsersBox";
+import CreateChannel from "./CreateChannel/CreateChannel";
 
 /**
  * The ChannelsSideBar component is responsible for rendering the ChannelsSideBar part of the Chat page,
@@ -31,13 +32,14 @@ export default function ChannelsSideBar() {
         activeChannel={activeChannel}
         setActiveChannel={setActiveChannel}
       />
+      <CreateChannel />
       <hr className="w-80 border-line-break" />
       {activeChannel === "Public" && (
         <>
           <PublicChannels />
-          <ChannelUserHeader />
+          {/* <ChannelUserHeader />
           <UsersSearch />
-          <ChannelsUsersBox />
+          <ChannelsUsersBox /> */}
         </>
       )}
       {activeChannel === "Private" && (
