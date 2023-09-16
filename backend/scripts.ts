@@ -217,6 +217,39 @@ async function main() {
   }
 
   //================================================================================================================
+  // Sending first time friend request from Gabdoush to Yonatan.
+  await prisma.friendRelation.create({
+    data: {
+      userId: gabdoush.id,
+      friendId: yonatan.id,
+      friendStatus: 'PENDING',
+    },
+  });
+
+  // Gabdoush blocking Yonatan.
+  await prisma.friendRelation.updateMany({
+    where: {
+      userId: gabdoush.id,
+      friendId: yonatan.id,
+    },
+    data: {
+      friendStatus: 'BLOCKED',
+      blockedBy: gabdoush.id,
+    }
+  })
+
+  
+  //Yonatan sends a friend request to Samad
+  await prisma.friendRelation.create({
+    data: {
+      userId: yonatan.id,
+      friendId: Samad.id,
+      friendStatus: 'BLOCKED',
+      blockedBy: Samad.id,
+    },
+  });
+
+  //================================================================================================================
   console.log('==============================================================');
   console.log('Seeding finished.');
 }

@@ -2,7 +2,7 @@
 CREATE TYPE "Content" AS ENUM ('DirectMessage_Recieved', 'ChannelInvite_Recieved', 'GameInvite_Recieved', 'FriendRequest_Recieved');
 
 -- CreateEnum
-CREATE TYPE "FriendStatus" AS ENUM ('OUTGOING_REQUESTS', 'INCOMING_REQUESTS', 'BLOCKED', 'ACCEPTED', 'DECLINED');
+CREATE TYPE "FriendStatus" AS ENUM ('PENDING', 'BLOCKED', 'ACCEPTED', 'DECLINED');
 
 -- CreateEnum
 CREATE TYPE "Type" AS ENUM ('PUBLIC', 'PRIVATE');
@@ -39,6 +39,7 @@ CREATE TABLE "FriendRelation" (
     "friendId" TEXT NOT NULL,
     "friendStatus" "FriendStatus" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "blockedBy" TEXT,
 
     CONSTRAINT "FriendRelation_pkey" PRIMARY KEY ("id")
 );
@@ -87,6 +88,9 @@ CREATE UNIQUE INDEX "Channel_channelName_key" ON "Channel"("channelName");
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FriendRelation" ADD CONSTRAINT "FriendRelation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FriendRelation" ADD CONSTRAINT "FriendRelation_friendId_fkey" FOREIGN KEY ("friendId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

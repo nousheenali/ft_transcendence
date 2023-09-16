@@ -9,26 +9,22 @@ datasource db {
 
 // ---------------------------------------------------------------------
 model User {
-  id        String   @id @default(uuid())
-  login     String   @unique
-  email     String   @unique
-  name      String
-  avatar    String?  @default("https://i.imgur.com/6VBx3io.png")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  isOnline Boolean @default(true)
-  score    Int     @default(0)
-
+  id              String            @id @default(uuid())
+  login           String            @unique
+  email           String            @unique
+  name            String
+  avatar          String?           @default("https://i.imgur.com/6VBx3io.png")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  isOnline        Boolean           @default(true)
+  score           Int               @default(0)
   // game         Game[]
-
-  notification Notification[]
-
-  friendRelation  FriendRelation[]
+  notification    Notification[]
+  friendToUser    FriendRelation[]  @relation(name: "FriendToFriendRelations")
+  userToFriend    FriendRelation[]  @relation(name: "UserToFriendRelations")
   channelRelation ChannelRelation[]
   channels        Channel[]         @relation("createdChannels")
-
-  Message Message[]
+  Message         Message[]
 }
 
 // ---------------------------------------------------------------------
@@ -77,21 +73,20 @@ enum Content {
 
 // ---------------------------------------------------------------------
 
+// When somebody block you, then blockedBy will have the ID of the user who blocked you.
 model FriendRelation {
-  id     String @id @default(uuid())
-  userId String
-
-  friend   User   @relation(fields: [friendId], references: [id])
-  friendId String
-
+  id           String       @id @default(uuid())
+  user         User         @relation(name: "UserToFriendRelations", fields: [userId], references: [id])
+  userId       String
+  friend       User         @relation(name: "FriendToFriendRelations", fields: [friendId], references: [id])
+  friendId     String
   friendStatus FriendStatus
-
-  createdAt DateTime @default(now())
+  createdAt    DateTime     @default(now())
+  blockedBy    String?
 }
 
 enum FriendStatus {
-  OUTGOING_REQUESTS
-  INCOMING_REQUESTS
+  PENDING
   BLOCKED
   ACCEPTED
   DECLINED
