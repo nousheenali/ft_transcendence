@@ -324,10 +324,9 @@ async function main() {
     data: {
       friendStatus: 'BLOCKED',
       blockedBy: gabdoush.id,
-    }
-  })
+    },
+  });
 
-  
   //Yonatan sends a friend request to Samad
   await prisma.friendRelation.create({
     data: {
@@ -338,6 +337,71 @@ async function main() {
     },
   });
 
+  //================================================================================================================
+  await prisma.messages.create({
+    data: {
+      senderId: gabdoush.id,
+      receiverId: yonatan.id,
+      content: 'Hello Yonatan, how are you?',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: yonatan.id,
+      receiverId: gabdoush.id,
+      content: 'Hello Gabdoush, I am fine, how are you?',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: gabdoush.id,
+      receiverId: yonatan.id,
+      content: 'everything is fine',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: yonatan.id,
+      receiverId: gabdoush.id,
+      content: 'yes, everything is fine',
+    },
+  });
+  
+  //-------------------------------------------------------------
+  // Sending a message to the channel.
+
+  await prisma.messages.create({
+    data: {
+      senderId: gabdoush.id,
+      channelId: AbuDhabi.id,
+      content: 'Hello Abudhabi',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: yonatan.id,
+      channelId: AbuDhabi.id,
+      content: 'Hello Abudhabi',
+    },
+  });
+  //================================================================================================================
+  console.log("All the DMs between ");
+  // retrieve all the messages between gabdoush and yonatan:
+  const gabdoushYonatanMessages = await prisma.messages.findMany({
+    where: {
+      OR: [
+        {
+          senderId: gabdoush.id,
+          receiverId: yonatan.id,
+        },
+        {
+          senderId: yonatan.id,
+          receiverId: gabdoush.id,
+        },
+      ],
+    },
+  });
+  console.log(gabdoushYonatanMessages);
   //================================================================================================================
   console.log('==============================================================');
   console.log('Seeding finished.');
