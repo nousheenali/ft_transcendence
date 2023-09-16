@@ -9,22 +9,29 @@ datasource db {
 
 // ---------------------------------------------------------------------
 model User {
-  id              String            @id @default(uuid())
-  login           String            @unique
-  email           String            @unique
-  name            String
-  avatar          String?           @default("https://i.imgur.com/6VBx3io.png")
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  isOnline        Boolean           @default(true)
-  score           Int               @default(0)
+  id           String         @id @default(uuid())
+  login        String         @unique
+  email        String         @unique
+  name         String
+  avatar       String?        @default("https://i.imgur.com/6VBx3io.png")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  isOnline     Boolean        @default(true)
+  score        Int            @default(0)
   // game         Game[]
-  notification    Notification[]
-  friendToUser    FriendRelation[]  @relation(name: "FriendToFriendRelations")
-  userToFriend    FriendRelation[]  @relation(name: "UserToFriendRelations")
+  notification Notification[]
+
+  // Relation to friends: Friend -> User
+  userToFriend FriendRelation[] @relation(name: "UserToFriendRelations")
+  // Opposit Relation to friends: Friend -> User
+  friendToUser FriendRelation[] @relation(name: "FriendToUserRelations")
+
+  // Channel Relations.
   channelRelation ChannelRelation[]
   channels        Channel[]         @relation("createdChannels")
-  Message         Message[]
+
+  sentMessages     Messages[] @relation(name: "sentMessages")
+  recievedMessages Messages[] @relation(name: "recievedMessages")
 }
 
 // ---------------------------------------------------------------------
@@ -80,7 +87,7 @@ model FriendRelation {
   id           String       @id @default(uuid())
   user         User         @relation(name: "UserToFriendRelations", fields: [userId], references: [id])
   userId       String
-  friend       User         @relation(name: "FriendToFriendRelations", fields: [friendId], references: [id])
+  friend       User         @relation(name: "FriendToUserRelations", fields: [friendId], references: [id])
   friendId     String
   friendStatus FriendStatus
   createdAt    DateTime     @default(now())
@@ -110,6 +117,7 @@ model Channel {
   channelMembers ChannelRelation[]
 
   // channelMessages ChannelMessages[]
+  Messages Messages[]
 }
 
 enum Type {
@@ -131,43 +139,21 @@ model ChannelRelation {
 }
 
 // ---------------------------------------------------------------------
-// #################   The Rest is under development   #################
-// ---------------------------------------------------------------------
+model Messages {
+  id Int @id @default(autoincrement())
 
-model Message {
-  id       Int    @id @default(autoincrement())
-  sender   User   @relation(fields: [senderId], references: [id])
   senderId String
+  sender   User @relation(name: "sentMessages", fields: [senderId], references: [id])
 
-  content  String
-  sentTime DateTime @default(now())
+  receiverId String?
+  reciever   User? @relation(name: "recievedMessages", fields: [receiverId], references: [id])
+
+  channelId String?
+  channel   Channel? @relation(fields: [channelId], references: [id])
+
+  content String
+
+  createdAt DateTime @default(now())
 }
-
-// // ---------------------------------------------------------------------
-// model DirectMessage {
-//   id Int @id @default(autoincrement())
-
-//   messageId  Int
-//   senderId   Int
-//   receiverId Int
-
-//   seenAt    DateTime?
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-// }
-
-// // ---------------------------------------------------------------------
-// model ChannelMessages {
-//   id Int @id @default(autoincrement())
-
-//   messageId Int
-//   channelId Int
-//   senderId  Int
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   Channel Channel @relation(fields: [channelId], references: [id])
-// }
 
 // ---------------------------------------------------------------------
