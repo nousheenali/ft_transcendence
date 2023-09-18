@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FriendsDto } from './dto/friends.dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class FriendsService {
@@ -36,8 +37,8 @@ export class FriendsService {
     ];
 
     /*remove nesting of the json output*/
-    const flattenedFriends = allFriends.map(({ friend }) => friend);
-    return flattenedFriends;
+    const friends = allFriends.map(({ friend }) => friend);
+    return friends;
   }
 
   /*------------------------------------------------------------------------------------*/
@@ -79,7 +80,7 @@ export class FriendsService {
       });
       return newRelation;
     } else {
-      throw new BadRequestException('Friend Relation already exists.');
+      throw new BadRequestException('Friend Request already sent or Received');
     }
   }
 }
