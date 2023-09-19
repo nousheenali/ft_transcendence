@@ -81,7 +81,7 @@ export class FriendsService {
           friendStatus: 'PENDING',
         },
       });
-      return ("Friend Request Sent");
+      return 'Friend Request Sent';
     } else {
       throw new BadRequestException('Friend Request already sent or Received');
     }
@@ -130,8 +130,9 @@ export class FriendsService {
 
   /*------------------------------------------------------------------------------------*/
 
+  /* To cancel friend request sent. This can be done only if record in friendRelations table 
+  is in 'PENDING' state */
   async deleteFriendRelation(userId: string, friendId: string) {
-    
     /*check if relation exists between users */
     const relation = await this.getRelation(userId, friendId);
     if (!relation) {
@@ -145,22 +146,24 @@ export class FriendsService {
           friendId: friendId,
         },
       });
-      return ("Friend Request Cancelled");
+      return 'Friend Request Cancelled';
     } else {
       throw new BadRequestException(
-      'Friend Request already Accepted/Declined/Blocked',
-      ); 
+        'Friend Request already Accepted/Declined/Blocked',
+      );
     }
-  } 
+  }
 
   /*------------------------------------------------------------------------------------*/
-  
+
+  /* To accept friend request received. This can be done only if record in friendRelations 
+  table is in 'PENDING' state */
   async AcceptRequest(userId: string, requestfromId: string) {
-    
     const relation = await this.getRelation(requestfromId, userId);
     if (!relation) {
       throw new NotFoundException('No friend request received');
     }
+
     if (relation.friendStatus === 'PENDING') {
       await this.prisma.friendRelation.updateMany({
         where: {
@@ -171,19 +174,19 @@ export class FriendsService {
           friendStatus: 'ACCEPTED',
         },
       });
-      return ("Friend Request Accepted");
+      return 'Friend Request Accepted';
     } else {
       throw new BadRequestException(
         'Friend Request already Accepted/Declined/Blocked',
       );
     }
-    
   }
 
   /*------------------------------------------------------------------------------------*/
 
+  /* To reject friend request received. This can be done only if record in friendRelations 
+  table is in 'PENDING' state */
   async DeclineRequest(userId: string, requestfromId: string) {
-    
     const relation = await this.getRelation(requestfromId, userId);
     if (!relation) {
       throw new BadRequestException('No friend request received');
