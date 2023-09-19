@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -17,9 +18,8 @@ export class UserService {
           avatar: dto.avatar,
         },
       });
-      return newUser;
     } catch (error) {
-      throw error;
+      throw new BadRequestException('Unable to create user')
     }
   }
 
@@ -29,6 +29,10 @@ export class UserService {
         id: id,
       },
     });
+
+    if(!user)
+      throw new NotFoundException('User ID does not exist');
+    
     return user;
   }
 }

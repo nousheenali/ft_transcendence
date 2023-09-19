@@ -139,7 +139,7 @@ export class FriendsService {
     }
 
     if (relation.friendStatus === 'PENDING') {
-      this.prisma.friendRelation.deleteMany({
+      await this.prisma.friendRelation.deleteMany({
         where: {
           userId: userId,
           friendId: friendId,
