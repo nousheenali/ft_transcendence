@@ -1,11 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FriendsDto } from './dto/friends.dto';
-import { NotFoundError } from 'rxjs';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class FriendsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly userService: UserService,
+  ) {}
 
   async getAllFriends(id: string) {
     /*gets list of friends to whom the user has sent a request to */
@@ -82,5 +85,47 @@ export class FriendsService {
     } else {
       throw new BadRequestException('Friend Request already sent or Received');
     }
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  async getAllNonFriends(id: string) {
+    /*check if valid user*/
+    const user = await this.userService.getUserById(id);
+    if (!user) 
+      throw new NotFoundException('User ID is invalid');
+
+    /* Get all users that do not have a corresponding entry against the
+    incoming userid in 'friendRelations' table */
+    const usersWithoutFriendship = await this.prisma.user.findMany({
+      where: {
+        NOT: {
+          OR: [
+            {
+              userToFriend: {
+                some: {
+                  friend: {
+                    id: id,
+                  },
+                },
+              },
+            },
+            {
+              friendToUser: {
+                some: {
+                  user: {
+                    id: id,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    /* The output above includes the incoming userid also, so removing that entry */
+    const result = usersWithoutFriendship.filter((user) => user.id !== id);
+    return result;
   }
 }
