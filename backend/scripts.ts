@@ -113,6 +113,7 @@ async function main() {
   await prisma.channelRelation.deleteMany();
   await prisma.channel.deleteMany();
   await prisma.friendRelation.deleteMany();
+  await prisma.messages.deleteMany();
   await prisma.user.deleteMany();
 
   //================================================================================================================
