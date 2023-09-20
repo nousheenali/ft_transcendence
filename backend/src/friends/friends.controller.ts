@@ -1,14 +1,15 @@
-import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { FriendsDto } from './dto/friends.dto';
+import { NotFoundError } from 'rxjs';
 
 @Controller('friends')
 export class FriendsController {
   constructor(private friendsService: FriendsService) {}
 
   /*Lists all friends */
-  @Get('all/:id')
-  GetAllFriends(@Param('id') id: string) {
+  @Get('allFriends/:id')
+  getAllFriends(@Param('id') id: string) {
     try {
       return this.friendsService.getAllFriends(id);
     } catch (error) {
@@ -21,7 +22,7 @@ export class FriendsController {
 
   /* When user sends a friend request */
   @Post('sendFriendRequest')
-  CreateFriendRelation(@Body() dto: FriendsDto) {
+  sendFriendRequest(@Body() dto: FriendsDto) {
     try {
       return this.friendsService.createFriendRelation(dto);
     } catch (error) {
@@ -33,6 +34,98 @@ export class FriendsController {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+    }
+  }
+
+  /* Gets all users except friends of the userId */
+  @Get('nonFriends/:id')
+  getAllNonFriends(@Param('id') id: string) {
+    try {
+
+      return this.friendsService.getAllNonFriends(id);
+
+    } catch (error) {
+
+      if (error instanceof NotFoundError) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      } else {
+        throw new HttpException(
+          'Unexpected Error while getting Non-friends',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+    }
+  }
+
+  /* When user cancels a friend request already sent*/
+  @Delete('deleteFriendRequest')
+  cancelFriendRequest(@Body() dto: FriendsDto) {
+    try {
+
+      return this.friendsService.deleteFriendRelation(dto.userId, dto.friendId);
+
+    } catch (error) {
+
+      if (error instanceof NotFoundError) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      } else if (error instanceof BadRequestException){
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      } else {
+        throw new HttpException(
+          'Unexpected Error while cancelling Friend Request',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+    }
+  }
+
+  /* When a user accepts a friend request from another user*/
+  @Put('acceptRequest')
+  acceptRequest(@Body() dto: FriendsDto) {
+
+    try {
+
+      return this.friendsService.acceptRequest(dto.userId, dto.friendId);
+      
+    } catch (error) {
+
+      if (error instanceof NotFoundError) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      } else if (error instanceof BadRequestException) {
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      } else {
+        throw new HttpException(
+          'Unexpected Error while cancelling Friend Request',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      
+    }
+  }
+
+  /* When a user declines a request from another user*/
+  @Put('declineRequest')
+  declineRequest(@Body() dto: FriendsDto) {
+
+    try {
+
+      return this.friendsService.declineRequest(dto.userId, dto.friendId);
+      
+    } catch (error) {
+
+      if (error instanceof NotFoundError) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      } else if (error instanceof BadRequestException) {
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      } else {
+        throw new HttpException(
+          'Unexpected Error while cancelling Friend Request',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      
     }
   }
 }

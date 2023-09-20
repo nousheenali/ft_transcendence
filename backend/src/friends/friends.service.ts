@@ -1,11 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FriendsDto } from './dto/friends.dto';
-import { NotFoundError } from 'rxjs';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class FriendsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly userService: UserService,
+  ) {}
 
   async getAllFriends(id: string) {
     /*gets list of friends to whom the user has sent a request to */
@@ -78,9 +81,132 @@ export class FriendsService {
           friendStatus: 'PENDING',
         },
       });
-      return newRelation;
+      return 'Friend Request Sent';
     } else {
       throw new BadRequestException('Friend Request already sent or Received');
+    }
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  async getAllNonFriends(id: string) {
+    /*check if valid user*/
+    const user = await this.userService.getUserById(id);
+    if (!user) throw new NotFoundException('User ID is invalid');
+
+    /* Get all users that do not have a corresponding entry against the
+    incoming userid in 'friendRelations' table */
+    const usersWithoutFriendship = await this.prisma.user.findMany({
+      where: {
+        NOT: {
+          OR: [
+            {
+              userToFriend: {
+                some: {
+                  friend: {
+                    id: id,
+                  },
+                },
+              },
+            },
+            {
+              friendToUser: {
+                some: {
+                  user: {
+                    id: id,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    /* The output above includes the incoming userid also, so removing that entry */
+    const result = usersWithoutFriendship.filter((user) => user.id !== id);
+    return result;
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  /* To cancel friend request sent. This can be done only if record in friendRelations table 
+  is in 'PENDING' state */
+  async deleteFriendRelation(userId: string, friendId: string) {
+    /*check if relation exists between users */
+    const relation = await this.getRelation(userId, friendId);
+    if (!relation) {
+      throw new NotFoundException('No friend request was sent');
+    }
+
+    if (relation.friendStatus === 'PENDING') {
+      await this.prisma.friendRelation.deleteMany({
+        where: {
+          userId: userId,
+          friendId: friendId,
+        },
+      });
+      return 'Friend Request Cancelled';
+    } else {
+      throw new BadRequestException(
+        'Friend Request already Accepted/Declined/Blocked',
+      );
+    }
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  /* To accept friend request received. This can be done only if record in friendRelations 
+  table is in 'PENDING' state */
+  async acceptRequest(userId: string, requestfromId: string) {
+    const relation = await this.getRelation(requestfromId, userId);
+    if (!relation) {
+      throw new NotFoundException('No friend request received');
+    }
+
+    if (relation.friendStatus === 'PENDING') {
+      await this.prisma.friendRelation.updateMany({
+        where: {
+          userId: requestfromId,
+          friendId: userId,
+        },
+        data: {
+          friendStatus: 'ACCEPTED',
+        },
+      });
+      return 'Friend Request Accepted';
+    } else {
+      throw new BadRequestException(
+        'Friend Request already Accepted/Declined/Blocked',
+      );
+    }
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  /* To reject friend request received. This can be done only if record in friendRelations 
+  table is in 'PENDING' state */
+  async declineRequest(userId: string, requestfromId: string) {
+    const relation = await this.getRelation(requestfromId, userId);
+    if (!relation) {
+      throw new BadRequestException('No friend request received');
+    }
+
+    if (relation.friendStatus === 'PENDING') {
+      await this.prisma.friendRelation.updateMany({
+        where: {
+          userId: requestfromId,
+          friendId: userId,
+        },
+        data: {
+          friendStatus: 'DECLINED',
+        },
+      });
+      return 'Friend Request Declined';
+    } else {
+      throw new BadRequestException(
+        'Friend Request already Accepted/Declined/Blocked',
+      );
     }
   }
 }
