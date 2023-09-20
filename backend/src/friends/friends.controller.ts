@@ -9,7 +9,7 @@ export class FriendsController {
 
   /*Lists all friends */
   @Get('allFriends/:id')
-  GetAllFriends(@Param('id') id: string) {
+  getAllFriends(@Param('id') id: string) {
     try {
       return this.friendsService.getAllFriends(id);
     } catch (error) {
@@ -22,7 +22,7 @@ export class FriendsController {
 
   /* When user sends a friend request */
   @Post('sendFriendRequest')
-  CreateFriendRelation(@Body() dto: FriendsDto) {
+  sendFriendRequest(@Body() dto: FriendsDto) {
     try {
       return this.friendsService.createFriendRelation(dto);
     } catch (error) {
@@ -39,7 +39,7 @@ export class FriendsController {
 
   /* Gets all users except friends of the userId */
   @Get('nonFriends/:id')
-  allNonFriends(@Param('id') id: string) {
+  getAllNonFriends(@Param('id') id: string) {
     try {
 
       return this.friendsService.getAllNonFriends(id);
@@ -60,7 +60,7 @@ export class FriendsController {
 
   /* When user cancels a friend request already sent*/
   @Delete('deleteFriendRequest')
-  DeleteFriendRelation(@Body() dto: FriendsDto) {
+  cancelFriendRequest(@Body() dto: FriendsDto) {
     try {
 
       return this.friendsService.deleteFriendRelation(dto.userId, dto.friendId);
@@ -83,11 +83,11 @@ export class FriendsController {
 
   /* When a user accepts a friend request from another user*/
   @Put('acceptRequest')
-  AcceptRequest(@Body() dto: FriendsDto) {
+  acceptRequest(@Body() dto: FriendsDto) {
 
     try {
 
-      return this.friendsService.AcceptRequest(dto.userId, dto.friendId);
+      return this.friendsService.acceptRequest(dto.userId, dto.friendId);
       
     } catch (error) {
 
@@ -107,11 +107,11 @@ export class FriendsController {
 
   /* When a user declines a request from another user*/
   @Put('declineRequest')
-  DeclineRequest(@Body() dto: FriendsDto) {
+  declineRequest(@Body() dto: FriendsDto) {
 
     try {
 
-      return this.friendsService.DeclineRequest(dto.userId, dto.friendId);
+      return this.friendsService.declineRequest(dto.userId, dto.friendId);
       
     } catch (error) {
 

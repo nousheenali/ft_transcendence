@@ -158,7 +158,7 @@ export class FriendsService {
 
   /* To accept friend request received. This can be done only if record in friendRelations 
   table is in 'PENDING' state */
-  async AcceptRequest(userId: string, requestfromId: string) {
+  async acceptRequest(userId: string, requestfromId: string) {
     const relation = await this.getRelation(requestfromId, userId);
     if (!relation) {
       throw new NotFoundException('No friend request received');
@@ -186,7 +186,7 @@ export class FriendsService {
 
   /* To reject friend request received. This can be done only if record in friendRelations 
   table is in 'PENDING' state */
-  async DeclineRequest(userId: string, requestfromId: string) {
+  async declineRequest(userId: string, requestfromId: string) {
     const relation = await this.getRelation(requestfromId, userId);
     if (!relation) {
       throw new BadRequestException('No friend request received');
