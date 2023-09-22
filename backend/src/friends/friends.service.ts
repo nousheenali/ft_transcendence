@@ -12,6 +12,8 @@ export class FriendsService {
 
   async getAllFriends(login: string) {
     const userData = await this.userService.getUserByLogin(login);
+    if (!userData)
+      throw new NotFoundException('User Id does not exist');
 
     /*gets list of friends to whom the user has sent a request to */
     const userToFriend = await this.prisma.friendRelation.findMany({
@@ -73,7 +75,10 @@ export class FriendsService {
   (if not already sent) */
   async createFriendRelation(dto: FriendsDto) {
     const userData = await this.userService.getUserByLogin(dto.userLogin);
+    if (!userData) throw new NotFoundException('User Id does not exist');
     const friendData = await this.userService.getUserByLogin(dto.friendLogin);
+    if (!friendData) throw new NotFoundException('Friend Id does not exist');
+
     const relation = await this.relationExists(
       userData.id,
       friendData.id,
@@ -98,6 +103,7 @@ export class FriendsService {
   async getAllNonFriends(login: string) {
     /*get user info to retuieve their id*/
     const userData = await this.userService.getUserByLogin(login);
+    if (!userData) throw new NotFoundException('User Id does not exist');
 
     /* Get all users that do not have a corresponding entry against the
     incoming userid in 'friendRelations' table */
@@ -141,7 +147,9 @@ export class FriendsService {
   is in 'PENDING' state */
   async deleteFriendRelation(userLogin: string, friendLogin: string) {
     const userData = await this.userService.getUserByLogin(userLogin);
+    if (!userData) throw new NotFoundException('User Id does not exist');
     const friendData = await this.userService.getUserByLogin(friendLogin);
+    if (!friendData) throw new NotFoundException('friend Id does not exist');
 
     /*check if relation exists between users */
     const relation = await this.getRelation(userData.id, friendData.id);
@@ -170,7 +178,9 @@ export class FriendsService {
   table is in 'PENDING' state */
   async acceptRequest(userLogin: string, requestfromLogin: string) {
     const userData = await this.userService.getUserByLogin(userLogin);
+    if (!userData) throw new NotFoundException('User Id does not exist');
     const reqFromData = await this.userService.getUserByLogin(requestfromLogin);
+    if (!reqFromData) throw new NotFoundException('friend Id does not exist');
 
     const relation = await this.getRelation(reqFromData.id, userData.id);
     if (!relation) {
@@ -201,7 +211,9 @@ export class FriendsService {
   table is in 'PENDING' state */
   async declineRequest(userLogin: string, requestfromLogin: string) {
     const userData = await this.userService.getUserByLogin(userLogin);
+    if (!userData) throw new NotFoundException('User Id does not exist');
     const reqFromData = await this.userService.getUserByLogin(requestfromLogin);
+    if (!reqFromData) throw new NotFoundException('Friend Id does not exist');
 
     const relation = await this.getRelation(reqFromData.id, userData.id);
     if (!relation) {
@@ -231,6 +243,8 @@ export class FriendsService {
   /* get all friend requests sent by the user*/
   async getOutgoingRequests(login: string) {
     const userData = await this.userService.getUserByLogin(login);
+    if (!userData) throw new NotFoundException('User Id does not exist');
+
     const result = await this.prisma.friendRelation.findMany({
       where: {
         userId: userData.id,
@@ -250,6 +264,7 @@ export class FriendsService {
   /* get all friend requests received by the user*/
   async getIncomingRequests(login: string) {
     const userData = await this.userService.getUserByLogin(login);
+    if (!userData) throw new NotFoundException('User Id does not exist');
     const result = await this.prisma.friendRelation.findMany({
       where: {
         friendId: userData.id,
@@ -269,7 +284,9 @@ export class FriendsService {
 
   async blockFriend(dto: FriendsDto) {
     const userData = await this.userService.getUserByLogin(dto.userLogin);
+    if (!userData) throw new NotFoundException('User Id does not exist');
     const friendData = await this.userService.getUserByLogin(dto.friendLogin);
+    if (!friendData) throw new NotFoundException('Friend Id does not exist');
 
     const relation = await this.relationExists(
       userData.id,
@@ -306,7 +323,9 @@ export class FriendsService {
 
   async unBlockFriend(dto: FriendsDto) {
     const userData = await this.userService.getUserByLogin(dto.userLogin);
+    if (!userData) throw new NotFoundException('User Id does not exist');
     const friendData = await this.userService.getUserByLogin(dto.friendLogin);
+    if (!friendData) throw new NotFoundException('Friend Id does not exist');
 
     const relation = await this.relationExists(
       userData.id,
@@ -339,6 +358,7 @@ export class FriendsService {
   /* get list of all blocked friends*/
   async getBlockedFriends(login: string) {
     const userData = await this.userService.getUserByLogin(login);
+    if (!userData) throw new NotFoundException('User Id does not exist');
 
     const result1 = await this.prisma.friendRelation.findMany({
       where: {

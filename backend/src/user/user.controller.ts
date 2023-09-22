@@ -11,6 +11,7 @@ export class UserController {
   @Post('create')
   async createUser(@Res() res, @Body() dto: CreateUserDto) {
     const user = await this.userService.getUserByLogin(dto.login);
+    console.log(user)
     try {
       if (user) {
         res.status(200).json(user);
@@ -29,14 +30,10 @@ export class UserController {
     try {
       return this.userService.getUserById(id);
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      } else {
-        throw new HttpException(
-          'Unexpected Error getting user by ID',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+      throw new HttpException(
+        'Unexpected Error getting user by ID',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -46,14 +43,11 @@ export class UserController {
     try {
       return this.userService.getUserById(login);
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      } else {
-        throw new HttpException(
-          'Unexpected Error getting user by Login',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+      throw new HttpException(
+        'Unexpected Error getting user by Login',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
+
 }

@@ -29,9 +29,6 @@ export class UserService {
         id: id,
       },
     });
-
-    if (!user) throw new NotFoundException('User ID does not exist');
-
     return user;
   }
 
@@ -42,9 +39,6 @@ export class UserService {
         login: login,
       },
     });
-
-    if (!user) throw new NotFoundException('User ID does not exist');
-
     return user;
   }
 }
