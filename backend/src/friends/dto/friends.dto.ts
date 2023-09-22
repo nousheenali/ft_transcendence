@@ -4,9 +4,9 @@ import { IsNotEmpty } from 'class-validator';
 export class FriendsDto {
   @ApiProperty()
   @IsNotEmpty()
-  userId: string;
+  userLogin: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  friendId: string;
+  friendLogin: string;
 }
