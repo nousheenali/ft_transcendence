@@ -31,6 +31,7 @@ export default function Profile() {
       case "friends":
         return (
           <ResponsiveTable
+            searchBar={true}
             header="Friends"
             headerImage="people.svg"
             headings={friendsProfileHeadings}
@@ -41,6 +42,7 @@ export default function Profile() {
       case "search":
         return (
           <ResponsiveTable
+            searchBar={true}
             header="Search Friends"
             headerImage="people.svg"
             headings={searchProfileHeadings}
@@ -51,6 +53,7 @@ export default function Profile() {
       case "blocked":
         return (
           <ResponsiveTable
+            searchBar={true}
             header="Blocked"
             headerImage="user-minus.svg"
             headings={blockedFriendsHeadings}
@@ -61,6 +64,7 @@ export default function Profile() {
       case "friendRequests":
         return (
           <ResponsiveTable
+            searchBar={true}
             header="Friend Requests"
             headerImage="user-plus.svg"
             headings={friendsRequestHeadings}
@@ -71,6 +75,7 @@ export default function Profile() {
       case "pendingRequests":
         return (
           <ResponsiveTable
+            searchBar={true}
             header="Pending Requests"
             headerImage="user-plus.svg"
             headings={pendingRequestHeadings}
