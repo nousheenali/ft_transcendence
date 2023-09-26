@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UserService {
-  
   constructor(private prisma: PrismaService) {}
 
   async createUser(dto: CreateUserDto) {
@@ -17,16 +17,26 @@ export class UserService {
           avatar: dto.avatar,
         },
       });
-      return newUser;
     } catch (error) {
-      throw error;
+      throw new BadRequestException('Unable to create user');
     }
   }
 
+  /* Get user information using uuid */
   async getUserById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: {
-        login: id,
+        id: id,
+      },
+    });
+    return user;
+  }
+
+  /* Get user information using login */
+  async getUserByLogin(login: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        login: login,
       },
     });
     return user;
