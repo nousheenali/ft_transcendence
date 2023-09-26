@@ -13,6 +13,7 @@ export interface ActionIconData {
 export type TableRowData = (string | PlayerData | ActionIconData)[];
 
 export interface ResponsiveTableProps {
+  searchBar: boolean;
   header: string;
   headerImage: string;
   headings: string[];

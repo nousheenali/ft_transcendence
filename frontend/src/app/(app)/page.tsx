@@ -35,6 +35,9 @@ export default function DashBoardPage() {
             </div>
           </div>
           <ResponsiveTable
+            searchBar={false}
+            header=""
+            headerImage=""
             headings={gameHistoryHeading}
             data={gameHistoryData}
             maxHeight="540px"
@@ -52,6 +55,9 @@ export default function DashBoardPage() {
             </div>
           </div>
           <ResponsiveTable
+            searchBar={false}
+            header=""
+            headerImage=""
             headings={LiveGamesHeading}
             data={liveGamesData}
             maxHeight="540px"
