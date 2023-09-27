@@ -14,7 +14,7 @@ export const searchProfileHeadings = [
   "Score",
   "Games",
   "Wins",
-  "Losses",,
+  "Losses",
   "Add Friend",
 ];
 

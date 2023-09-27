@@ -65,7 +65,6 @@ export class FriendsService {
   async relationExists(userId: string, friendId: string) {
     const relation1 = await this.getRelation(userId, friendId);
     const relation2 = await this.getRelation(friendId, userId);
-    console.log(relation1, relation2)
     if (relation1) return relation1;
     else if (relation2) return relation2;
     else return null;
