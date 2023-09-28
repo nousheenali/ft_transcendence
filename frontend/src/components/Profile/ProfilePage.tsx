@@ -27,37 +27,29 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 }) => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
-  const [searchData, setSearchData] = useState<TableRowData[]>([]); 
-  const [blockData, setBlockData] = useState<TableRowData[]>([]);
-  const [friendData, setFriendData] = useState<TableRowData[]>(friendsRecords);
-  const [incomingData, setIncomingData] = useState<TableRowData[]>([]);
-  const [outgoingData, setOutgoingData] = useState<TableRowData[]>([]); 
+  const [tableData, setTableData] = useState<TableRowData[]>(friendsRecords);
+
+
   let data: TableRowData[];
   
   const fetchTableData = async (buttonId: string) => {
     try {
-      if (buttonId === "friends") {
-        data = await generateProfileFriendsData(userInfo.login); // Fetch friends list
-        setFriendData(data);
-        setIsLoading(false);
-      } else if (buttonId === "search") {
-        data = await generateProfileSearchData(userInfo.login); //  non friends
-        setSearchData(data);
-        setIsLoading(false);
+      const dataGeneratorMap: any = {
+        friends: generateProfileFriendsData,
+        search: generateProfileSearchData,
+        blocked: generateProfileBlockedData,
+        friendRequests: generateFriendRequestsData,
+        pendingRequests: generatePendingRequestsData,
+      };
+      const dataGenerator = dataGeneratorMap[buttonId];
+
+      if (dataGenerator) {
+        const data = await dataGenerator(userInfo.login);
+        setTableData(data);
+        setIsLoading(false)
       }
-       else if (buttonId === "blocked") {
-        data = await generateProfileBlockedData(userInfo.login); // blocked friends
-        setBlockData(data);
-        setIsLoading(false);
-      } else if (buttonId === "friendRequests") {
-        data = await generateFriendRequestsData(userInfo.login); // incoming friend requests
-        setIncomingData(data);
-        setIsLoading(false);
-      } else if (buttonId === "pendingRequests") {
-        data = await generatePendingRequestsData(userInfo.login); // Fetch outgoing request
-        setOutgoingData(data);
-        setIsLoading(false);
-      }
+      else
+        throw new Error("Invalid Button Click");
     } catch (error: any) {
       toast.error(error.message);
       setIsLoading(false); 
@@ -86,7 +78,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               header="Friends"
               headerImage="people.svg"
               headings={friendsProfileHeadings}
-              data={friendData}
+              data={tableData}
               maxHeight="585px"
             />
           );
@@ -97,7 +89,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               header="Search Friends"
               headerImage="people.svg"
               headings={searchProfileHeadings}
-              data={searchData}
+              data={tableData}
               maxHeight="585px"
             />
           );
@@ -108,7 +100,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               header="Blocked"
               headerImage="user-minus.svg"
               headings={blockedFriendsHeadings}
-              data={blockData}
+              data={tableData}
               maxHeight="585px"
             />
           );
@@ -119,7 +111,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               header="Friend Requests"
               headerImage="user-plus.svg"
               headings={friendsRequestHeadings}
-              data={incomingData}
+              data={tableData}
               maxHeight="585px"
             />
           );
@@ -130,7 +122,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               header="Pending Requests"
               headerImage="user-plus.svg"
               headings={pendingRequestHeadings}
-              data={outgoingData}
+              data={tableData}
               maxHeight="585px"
             />
           );

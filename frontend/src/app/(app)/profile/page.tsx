@@ -7,6 +7,7 @@ import { generateProfileFriendsData } from "@/data/Table/friends";
 import ProfilePage from "@/components/Profile/ProfilePage";
 import { userInformation } from "@/components/Profile/types";
 import { getUserData } from "../../../../services/user";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 
 export default async function page(req: NextRequest) {
   const session = await getServerSession(options);
@@ -16,7 +17,7 @@ export default async function page(req: NextRequest) {
   // the friends tab is not empty
   const friendData: TableRowData[] = await generateProfileFriendsData(login);
   // Fetch user data
-  const userInfo: userInformation  = await getUserData(login,"/user/getByLogin/");
+  const userInfo: userInformation  = await getUserData(login, API_ENDPOINTS.getUserbyId);
 
   return <ProfilePage friendsRecords={friendData} userInfo={userInfo} />;
 }

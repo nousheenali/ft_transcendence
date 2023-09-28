@@ -3,6 +3,7 @@
 import { userInformation } from "@/components/Profile/types";
 import { TableRowData } from "@/components/Table/types";
 import { getFriendsData } from "../../../services/friends";
+import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 
 export const generateProfileSearchData= async (
   login: string
@@ -10,7 +11,7 @@ export const generateProfileSearchData= async (
   const records: TableRowData[] = [];
   const data: userInformation[] = await getFriendsData(
     login,
-    "/friends/nonFriends/"
+    API_ENDPOINTS.getNonFriends
   );
   if (Array.isArray(data)) {
     data.map((item: userInformation) =>
