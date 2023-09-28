@@ -1,4 +1,5 @@
-import React from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ResponsiveTableProps } from './types';
 import TableCell from './TableCell';
@@ -11,7 +12,35 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
   headings,
   data,
   maxHeight,
-}) => (
+}) => {
+  const [inputValue, setInputValue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState(data);
+
+  useEffect(() => {
+    setInputValue("");
+    setFilteredData(data);
+  }, [data]);
+
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    setInputValue(query);
+    // console.log("SEARCH QUERY IS:",searchQuery)
+
+    // Filter the data based on the search query
+    // data.map((item: playerData) =>
+    // console.log(item[0].playerName))
+    const filtered = data.filter((rowData) =>
+      rowData[0].playerName.toLowerCase().includes(query.toLowerCase())
+    );
+    console.log("FILTERED:", filtered);
+    setFilteredData(filtered);
+  };
+
+  return (
   <div className="max-w-full mx-auto font-saira-condensed font-bold ">
     <div className="flex flex-col">
       {searchBar ? (
@@ -34,6 +63,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
             type="search"
             name="search"
             placeholder="Search"
+            onChange={handleSearchInputChange}
           />
           <Image
             className="mr-2"
@@ -60,7 +90,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
         style={{ maxHeight }}
       >
         {/* table rows */}
-        {data.map((rowData, rowIndex) => (
+        {filteredData.map((rowData, rowIndex) => (
           <div
             key={rowIndex}
             className="bg-table-row-bg rounded-[10px] flex mt-3 justify-center items-center"
@@ -73,6 +103,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
       </div>
     </div>
   </div>
-);
+  )
+}
 
 export default ResponsiveTable;

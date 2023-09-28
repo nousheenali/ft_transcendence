@@ -41,7 +41,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         setFriendData(data);
         setIsLoading(false);
       } else if (buttonId === "search") {
-        data = await generateProfileSearchData("abcd"); //  non friends
+        data = await generateProfileSearchData(userInfo.login); //  non friends
         setSearchData(data);
         setIsLoading(false);
       }
