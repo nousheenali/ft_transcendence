@@ -1,24 +1,27 @@
 
 
 import { userInformation } from "@/components/Profile/types";
-import { getData } from "../../../services/api";
 import { TableRowData } from "@/components/Table/types";
+import { getFriendsData } from "../../../services/friends";
 
-export const generateProfileSearchData = async (login:string) => {
+export const generateProfileSearchData= async (
+  login: string
+) : Promise<TableRowData[]> => {
   const records: TableRowData[] = [];
-  const data: userInformation[] = await getData(login, "/friends/nonFriends/");
-  
-  if (Array.isArray(data)) 
-  {
+  const data: userInformation[] = await getFriendsData(
+    login,
+    "/friends/nonFriends/"
+  );
+  if (Array.isArray(data)) {
     data.map((item: userInformation) =>
-    records.push([
-      { playerName: item.login, img: item.avatar, name: item.name },
-      item.score.toString(),
-      `1`,
-      `3`,
-      `4`,
-      { iconName: "icon2", iconImg: "/user-add.svg" },
-    ])
+      records.push([
+        { playerName: item.login, img: item.avatar, name: item.name },
+        item.score.toString(),
+        `1`,
+        `3`,
+        `4`,
+        { iconName: "icon2", iconImg: "/user-add.svg" },
+      ])
     );
   }
   return records;

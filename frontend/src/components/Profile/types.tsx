@@ -31,10 +31,6 @@ export interface userInformation {
 }
 
 export interface ProfilePageProps {
-  friendData: TableRowData[];
-  searchData: TableRowData[];
-  blockData: TableRowData[];
-  incomingData: TableRowData[];
-  outgoingData: TableRowData[];
+  friendsRecords: TableRowData[];
   userInfo: userInformation;
 }
