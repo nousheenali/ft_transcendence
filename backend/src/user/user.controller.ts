@@ -11,7 +11,6 @@ export class UserController {
   @Post('create')
   async createUser(@Res() res, @Body() dto: CreateUserDto) {
     const user = await this.userService.getUserByLogin(dto.login);
-    console.log(user)
     try {
       if (user) {
         res.status(200).json(user);
@@ -25,7 +24,7 @@ export class UserController {
   }
 
   //gets a single user information from user table using uuid
-  @Get('getById:id')
+  @Get('getById/:id')
   getUserById(@Param('id') id: string) {
     try {
       return this.userService.getUserById(id);
@@ -38,10 +37,10 @@ export class UserController {
   }
 
   //gets a single user information from user table using uuid
-  @Get('getByLogin:')
+  @Get('getByLogin/:login')
   getUserByLogin(@Param('login') login: string) {
     try {
-      return this.userService.getUserById(login);
+      return this.userService.getUserByLogin(login);
     } catch (error) {
       throw new HttpException(
         'Unexpected Error getting user by Login',

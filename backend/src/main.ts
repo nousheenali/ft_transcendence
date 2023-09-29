@@ -4,6 +4,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // 👈 Import
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  //(CORS) is a mechanism that allows resources to be requested from another domain(NEXTJS frontend in our case)
+  app.enableCors();
 
   // 👇 This block will initiate Swagger using SwaggerModule and DocumentBuilder. 👇
   // ----------------------------------------------------------------------------------------

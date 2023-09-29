@@ -2,6 +2,7 @@ import Background from '@/components/Background/Background'
 import MainLayout from '@/components/layout'
 // import './globals.css'
 import type { Metadata } from 'next'
+import { ToastContainer } from 'react-toastify'
 
 export const metadata: Metadata = {
   title: 'ft_transcendence',
@@ -19,6 +20,7 @@ export default function RootLayout({
 				<Background />
         <MainLayout>
           {children}
+          <ToastContainer position='top-right'/>
         </MainLayout>
       </body>
     </html>
