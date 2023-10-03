@@ -21,7 +21,7 @@ export const generateProfileSearchData= async (
         `1`,
         `3`,
         `4`,
-        { iconName: "icon2", iconImg: "/user-add.svg" },
+        { iconName: "ADDFRIEND", iconImg: "/user-add.svg" },
       ])
     );
   }

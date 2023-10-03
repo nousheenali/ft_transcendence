@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ResponsiveTableProps } from './types';
 import TableCell from './TableCell';
+import { PlayerData } from './types';
+
 
 // This table is used everywhere in our project with diffrent columns and diffrent data .
 const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
@@ -33,6 +35,8 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
     setFilteredData(filtered);
   };
 
+  
+
   return (
     <div className="max-w-full mx-auto font-saira-condensed font-bold ">
       <div className="flex flex-col">
@@ -40,7 +44,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
         {searchBar ? (
           <div className="flex flex-row py-1 mt-2 h-10 justify-center font-saira-condensed text-xl text-main-text bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke">
             <div className=" flex flex-row w-3/4 justify-center font-saira-condensed text-xl text-main-text">
-              <h1 className="px-2 w-4/6 text-right">{header}</h1>
+              <h1 className="px-2 text-right">{header}</h1>
               <Image
                 className="mr-2"
                 alt="Header Image"
@@ -83,13 +87,17 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
           style={{ maxHeight }}
         >
           {/* table rows */}
-          {filteredData.map((rowData, rowIndex) => (
+          {filteredData.map((rowData:any, rowIndex) => (
             <div
               key={rowIndex}
               className="bg-table-row-bg rounded-[10px] flex mt-3 justify-center items-center"
             >
-              {rowData.map((dataItem, columnIndex) => (
-                <TableCell key={columnIndex} dataItem={dataItem} />
+              {rowData.map((dataItem: any, columnIndex: number) => (
+                <TableCell
+                  key={columnIndex}
+                  dataItem={dataItem}
+                  login={rowData[0].playerName}
+                />
               ))}
             </div>
           ))}

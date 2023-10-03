@@ -34,3 +34,8 @@ export interface ProfilePageProps {
   friendsRecords: TableRowData[];
   userInfo: userInformation;
 }
+
+export interface friendRelationDto {
+  userLogin: string;
+  friendLogin: string;
+}

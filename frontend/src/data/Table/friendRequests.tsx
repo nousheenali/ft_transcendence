@@ -17,8 +17,8 @@ export const generateFriendRequestsData = async(login: string) => {
         `1`,
         `3`,
         `4`,
-        { iconName: "icon2", iconImg: "/user-add.svg" },
-        { iconName: "icon3", iconImg: "/user-remove.svg" },
+        { iconName: "ACCEPT", iconImg: "/user-add.svg" },
+        { iconName: "DECLINE", iconImg: "/user-remove.svg" },
       ])
     );
   }

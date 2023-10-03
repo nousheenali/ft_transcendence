@@ -14,8 +14,8 @@ export const generateProfileBlockedData = async(login: string) => {
         `1`,
         `3`,
         `4`,
-        { iconName: "icon2", iconImg: "/unblock.svg" },
-        { iconName: "icon3", iconImg: "/delete.svg" },
+        { iconName: "UNBLOCK", iconImg: "/unblock.svg" },
+        { iconName: "UNFRIEND", iconImg: "/delete.svg" },
       ])
     );
   }

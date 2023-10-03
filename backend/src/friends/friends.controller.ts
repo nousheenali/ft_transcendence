@@ -47,10 +47,10 @@ export class FriendsController {
   }
 
   /* When user cancels a friend request already sent*/
-  @Delete('deleteFriendRequest')
+  @Delete('cancelFriendRequest')
   cancelFriendRequest(@Body() dto: FriendsDto) {
     try {
-      return this.friendsService.deleteFriendRelation(
+      return this.friendsService.cancelFriendRelation(
         dto.userLogin,
         dto.friendLogin,
       );
@@ -148,6 +148,22 @@ export class FriendsController {
     } catch (error) {
       throw new HttpException(
         'Unexpected Error while listing blocked users',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /* When user unfriends a friend/ delete a friend relation*/
+  @Delete('deleteFriend')
+  deleteFriendRequest(@Body() dto: FriendsDto) {
+    try {
+      return this.friendsService.deleteFriendRelation(
+        dto.userLogin,
+        dto.friendLogin,
+      );
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while cancelling Friend Request',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
