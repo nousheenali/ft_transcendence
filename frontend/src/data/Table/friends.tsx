@@ -14,9 +14,8 @@ export const generateProfileFriendsData = async(login: string) => {
         `1`,
         `3`,
         `4`,
-        { iconName: "icon1", iconImg: "/User_Chat.svg" },
-        { iconName: "icon2", iconImg: "/Blocked.svg" },
-        { iconName: "icon3", iconImg: "/delete.svg" },
+        { iconName: "BLOCK", iconImg: "/Blocked.svg" },
+        { iconName: "UNFRIEND", iconImg: "/delete.svg" },
       ])
     );
   }

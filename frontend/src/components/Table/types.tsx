@@ -23,4 +23,5 @@ export interface ResponsiveTableProps {
 
 export type TableCellProps = {
   dataItem: string | PlayerData | ActionIconData;
+  login: string;
 };

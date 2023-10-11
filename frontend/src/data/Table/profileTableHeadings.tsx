@@ -4,7 +4,6 @@ export const friendsProfileHeadings = [
   'Games',
   'Wins',
   'Losses',
-  'Chat',
   'Block',
   'Delete',
 ];
@@ -35,7 +34,7 @@ export const friendsRequestHeadings = [
   'Wins',
   'Losses',
   'Accept',
-  'Remove',
+  'Decline',
 ];
 
 export const pendingRequestHeadings = [
@@ -44,6 +43,5 @@ export const pendingRequestHeadings = [
   'Games',
   'Wins',
   'Losses',
-  'Chat',
-  'Remove Request',
+  'Cancel Request',
 ];

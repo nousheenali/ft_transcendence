@@ -17,8 +17,7 @@ export const generatePendingRequestsData = async(login: string) => {
         `1`,
         `3`,
         `4`,
-        { iconName: "icon2", iconImg: "/User_Chat.svg" },
-        { iconName: "icon3", iconImg: "/user-remove.svg" },
+        { iconName: "CANCEL", iconImg: "/user-remove.svg" },
       ])
     );
   }

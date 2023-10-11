@@ -12,8 +12,7 @@ export class FriendsService {
 
   async getAllFriends(login: string) {
     const userData = await this.userService.getUserByLogin(login);
-    if (!userData)
-      throw new NotFoundException('User Id does not exist');
+    if (!userData) throw new NotFoundException('User Id does not exist');
 
     /*gets list of friends to whom the user has sent a request to */
     const userToFriend = await this.prisma.friendRelation.findMany({
@@ -78,10 +77,7 @@ export class FriendsService {
     const friendData = await this.userService.getUserByLogin(dto.friendLogin);
     if (!friendData) throw new NotFoundException('Friend Id does not exist');
 
-    const relation = await this.relationExists(
-      userData.id,
-      friendData.id,
-    );
+    const relation = await this.relationExists(userData.id, friendData.id);
 
     if (!relation) {
       const newRelation = await this.prisma.friendRelation.create({
@@ -144,7 +140,7 @@ export class FriendsService {
 
   /* To cancel friend request sent. This can be done only if record in friendRelations table 
   is in 'PENDING' state */
-  async deleteFriendRelation(userLogin: string, friendLogin: string) {
+  async cancelFriendRelation(userLogin: string, friendLogin: string) {
     const userData = await this.userService.getUserByLogin(userLogin);
     if (!userData) throw new NotFoundException('User Id does not exist');
     const friendData = await this.userService.getUserByLogin(friendLogin);
@@ -287,10 +283,7 @@ export class FriendsService {
     const friendData = await this.userService.getUserByLogin(dto.friendLogin);
     if (!friendData) throw new NotFoundException('Friend Id does not exist');
 
-    const relation = await this.relationExists(
-      userData.id,
-      friendData.id,
-    );
+    const relation = await this.relationExists(userData.id, friendData.id);
 
     if (!relation)
       throw new NotFoundException('You are not friends with the user');
@@ -326,10 +319,7 @@ export class FriendsService {
     const friendData = await this.userService.getUserByLogin(dto.friendLogin);
     if (!friendData) throw new NotFoundException('Friend Id does not exist');
 
-    const relation = await this.relationExists(
-      userData.id,
-      friendData.id,
-    );
+    const relation = await this.relationExists(userData.id, friendData.id);
     if (!relation)
       throw new NotFoundException('You are not friends with the user');
 
@@ -389,5 +379,35 @@ export class FriendsService {
     /*remove nesting of the json output*/
     const friends = fullResult.map((item) => item.friend);
     return friends;
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  /* To unfriend a friend.  */
+  async deleteFriendRelation(userLogin: string, friendLogin: string) {
+    const userData = await this.userService.getUserByLogin(userLogin);
+    if (!userData) throw new NotFoundException('User Id does not exist');
+    const friendData = await this.userService.getUserByLogin(friendLogin);
+    if (!friendData) throw new NotFoundException('friend Id does not exist');
+
+    /*check if relation exists between users */
+    const relation = await this.relationExists(userData.id, friendData.id);
+    if (!relation) {
+      throw new NotFoundException('You are not friends with the user');
+    }
+
+    if (
+      relation.friendStatus === 'ACCEPTED' ||
+      relation.friendStatus === 'BLOCKED'
+    ) {
+      await this.prisma.friendRelation.deleteMany({
+        where: {
+          id: relation.id
+        },
+      });
+      return 'Unfriended the user';
+    } else {
+      throw new BadRequestException('You are not friends with the user');
+    }
   }
 }
