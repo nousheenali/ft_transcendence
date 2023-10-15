@@ -23,7 +23,8 @@ model User {
   TFAKey     String?
 
   // Relation to notifications-----------------------------------------
-  notification Notification[]
+  receiverdNotification Notification[] @relation(name: "receiver")
+  sentNotification      Notification[] @relation(name: "sender")
 
   // Relation to friends-----------------------------------------------
   userToFriend FriendRelation[] @relation(name: "UserToFriendRelations")
@@ -73,9 +74,12 @@ model Notification {
   id        String   @id @default(uuid())
   content   Content
   recivedAt DateTime @default(now())
+  read      Boolean  @default(false)
 
-  sender   User   @relation(fields: [senderId], references: [id])
+  sender   User   @relation("sender", fields: [senderId], references: [id])
   senderId String
+  User     User   @relation("receiver", fields: [userId], references: [id])
+  userId   String
 }
 
 enum Content {
