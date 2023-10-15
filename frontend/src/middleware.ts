@@ -8,4 +8,15 @@ export async function middleware(request: NextRequest) {
 	if(!session) return NextResponse.redirect(new URL('/login', request.url))
   }
   
-export const config = { matcher:['/', '/leaderboard', '/chat', '/help', '/matchhistory', '/profile', '/settings']}
+export const config = {
+  matcher: [
+    "/",
+    "/leaderboard",
+    "/chat",
+    "/help",
+    "/matchhistory",
+    "/profile",
+    "/settings",
+    "/game",
+  ],
+};
