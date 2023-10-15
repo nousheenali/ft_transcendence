@@ -4,6 +4,7 @@ import Image from "next/image";
 import QueueAndInvite from "./queue_invite";
 import CustomizeGame from "./customizeGame";
 import Header from "./Header";
+import { useRouter } from "next/navigation";
 
 
 export default function StartGameCustomize() {
@@ -11,6 +12,11 @@ export default function StartGameCustomize() {
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
+
+  const router = useRouter();
+  const openGame =() => {
+    router.push("/game");
+  }
   return (
     <div className="flex items-center justify-center p-4 mb-6">
       <button
@@ -35,7 +41,7 @@ export default function StartGameCustomize() {
         </Modal.Body>
 
         <Modal.Actions className="flex items-center justify-center mt-16 ">
-          <button className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx">
+          <button onClick={openGame} className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx">
             Start Game
           </button>
         </Modal.Actions>

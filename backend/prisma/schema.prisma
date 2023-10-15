@@ -7,70 +7,79 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ---------------------------------------------------------------------
+// =====================================================================
 model User {
-  id           String         @id @default(uuid())
-  login        String         @unique
-  email        String         @unique
-  name         String
-  avatar       String?        @default("https://i.imgur.com/6VBx3io.png")
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  isOnline     Boolean        @default(true)
-  score        Int            @default(0)
-  // game         Game[]
-  notification Notification[]
+  id        String   @id @default(uuid())
+  login     String   @unique
+  email     String   @unique
+  name      String   @unique
+  avatar    String?  @default("https://i.imgur.com/6VBx3io.png")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isOnline  Boolean  @default(true)
 
-  // Relation to friends: Friend -> User
+  // Two factor authentication-----------------------------------------
+  TFAEnabled Boolean @default(false)
+  TFAKey     String?
+
+  // Relation to notifications-----------------------------------------
+  receiverdNotification Notification[] @relation(name: "receiver")
+  sentNotification      Notification[] @relation(name: "sender")
+
+  // Relation to friends-----------------------------------------------
   userToFriend FriendRelation[] @relation(name: "UserToFriendRelations")
-  // Opposit Relation to friends: Friend -> User
   friendToUser FriendRelation[] @relation(name: "FriendToUserRelations")
 
-  // Channel Relations.
+  // Channel Relations-------------------------------------------------
   channelRelation ChannelRelation[]
   channels        Channel[]         @relation("createdChannels")
 
+  // Messages Relations-------------------------------------------------
   sentMessages     Messages[] @relation(name: "sentMessages")
   recievedMessages Messages[] @relation(name: "recievedMessages")
+
+  // Game Relations-----------------------------------------------------
+  games     Game[] @relation(name: "userGames")
+  opponents Game[] @relation(name: "opponentGames")
+  losses    Int    @default(0)
+  wins      Int    @default(0)
+  score     Int    @default(0)
 }
 
-// ---------------------------------------------------------------------
-// Think about it later
-// ---------------------------------------------------------------------
+// =====================================================================
 
-// model Game {
-//   id     String @id @default(uuid())
-//   gameId Int
+model Game {
+  id         String     @id @default(uuid())
+  gameStatus GameStatus @default(QUEUED)
+  startTime  DateTime   @default(now())
 
-//   moves  Int
-//   isLive Boolean @default(true)
-//   result Result
-//   points Int
+  winnerId String?
 
-//   startTime DateTime @default(now())
-//   endTime   DateTime @updatedAt
+  User   User   @relation("userGames", fields: [userId], references: [id])
+  userId String
 
-// player1         String 
-// player1Relation User  @relation(fields: [player1], references: [id])
+  opponent   User   @relation("opponentGames", fields: [opponentId], references: [id])
+  opponentId String
+}
 
-// player2         String
-// player2Relation User   @relation(fields: [player2], references: [id])
-// }
+enum GameStatus {
+  LIVE
+  QUEUED
+  FINISHED
+}
 
-// enum Result {
-//   WIN
-//   LOSE
-//   DRAW
-// }
+// =====================================================================
 
-// ---------------------------------------------------------------------
 model Notification {
   id        String   @id @default(uuid())
   content   Content
   recivedAt DateTime @default(now())
+  read      Boolean  @default(false)
 
-  sender   User   @relation(fields: [senderId], references: [id])
+  sender   User   @relation("sender", fields: [senderId], references: [id])
   senderId String
+  User     User   @relation("receiver", fields: [userId], references: [id])
+  userId   String
 }
 
 enum Content {
@@ -80,7 +89,7 @@ enum Content {
   FriendRequest_Recieved
 }
 
-// ---------------------------------------------------------------------
+// =====================================================================
 
 // When somebody block you, then blockedBy will have the ID of the user who blocked you.
 model FriendRelation {
@@ -101,7 +110,8 @@ enum FriendStatus {
   DECLINED
 }
 
-// ---------------------------------------------------------------------
+// =====================================================================
+
 model Channel {
   id String @id @default(uuid())
 
@@ -125,7 +135,8 @@ enum Type {
   PRIVATE
 }
 
-// ---------------------------------------------------------------------
+// =====================================================================
+
 model ChannelRelation {
   id     String @id @default(uuid())
   userId String
@@ -138,15 +149,16 @@ model ChannelRelation {
   channelId String
 }
 
-// ---------------------------------------------------------------------
+// =====================================================================
+
 model Messages {
   id Int @id @default(autoincrement())
 
   senderId String
-  sender   User @relation(name: "sentMessages", fields: [senderId], references: [id])
+  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id])
 
   receiverId String?
-  reciever   User? @relation(name: "recievedMessages", fields: [receiverId], references: [id])
+  reciever   User?   @relation(name: "recievedMessages", fields: [receiverId], references: [id])
 
   channelId String?
   channel   Channel? @relation(fields: [channelId], references: [id])
@@ -156,4 +168,4 @@ model Messages {
   createdAt DateTime @default(now())
 }
 
-// ---------------------------------------------------------------------
+// =====================================================================
