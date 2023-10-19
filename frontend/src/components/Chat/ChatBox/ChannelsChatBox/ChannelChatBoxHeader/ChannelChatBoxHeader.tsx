@@ -11,7 +11,7 @@ export default function ChannelChatBoxHeader({
       className="w-full h-32 flex flex-row items-center rounded-xl bg-main-theme text-main-texts 
     border-b border-main-yellow px-3"
     >
-      <div className="indicator h-31 w-full flex items-center bg-main-theme">
+      <div className="indicator h-31 w-full flex items-center rounded-xl bg-main-theme">
         <Image
           alt={ChannelAvatar.alt}
           src={ChannelAvatar.src}
@@ -33,7 +33,7 @@ export default function ChannelChatBoxHeader({
 
       {isPublic === false && (
         <div className="flex flex-row gap-5 px-3">
-          <div className="flex flex-row gap-1 text-dimmed-text font-thin">
+          <button className="flex flex-row gap-1 text-dimmed-text font-thin">
             <Image
               alt={"invite"}
               src={"./chat/user-cirlce-add.svg"}
@@ -41,8 +41,8 @@ export default function ChannelChatBoxHeader({
               height={25}
             />
             <span className=" text-main-text text-sm font-light">Invite</span>
-          </div>
-          <div className="flex flex-row gap-1 text-dimmed-text font-thin">
+          </button>
+          <button className="flex flex-row gap-1 text-dimmed-text font-thin">
             <Image
               alt={"invite"}
               src={"./chat/Sign_out_circle_duotone_line.svg"}
@@ -50,7 +50,7 @@ export default function ChannelChatBoxHeader({
               height={25}
             />
             <span className=" text-main-text text-sm font-light">Leave</span>
-          </div>
+          </button>
         </div>
       )}
     </div>
