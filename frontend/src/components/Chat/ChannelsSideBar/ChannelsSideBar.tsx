@@ -36,6 +36,7 @@ export default function ChannelsSideBar() {
       <hr className="w-80 border-line-break" />
       {activeChannel === "Public" && (
         <>
+        
           <PublicChannels />
           {/* <ChannelUserHeader />
           <UsersSearch />
