@@ -58,11 +58,17 @@ export class ChannelService {
    * Method that return all channels according to the channel type.
    * @param channelType: Type, which is an enum that can be either "public" or "private"
    */
-  async getChannels(channelType: Type) {
-    return await this.prisma.channel.findMany({
-      where: {
-        channelType: channelType,
-      },
-    });
+  async getChannels(login: string, channelType: Type) {
+    try {
+      const channels = await this.prisma.channel.findMany({
+        where: {
+          channelType: channelType,
+        },
+      });
+      return channels;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+
   }
 }

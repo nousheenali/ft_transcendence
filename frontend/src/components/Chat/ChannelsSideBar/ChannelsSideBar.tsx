@@ -43,14 +43,15 @@ export default function ChannelsSideBar() {
           <ChannelsUsersBox /> */}
         </>
       )}
-      {activeChannel === "Private" && (
+      
+      {/* {activeChannel === "Private" && (
         <>
           <PrivateChannels />
           <ChannelUserHeader />
           <UsersSearch />
           <ChannelsUsersBox />
         </>
-      )}
+      )} */}
       <hr className="w-80 border-line-break" />
     </>
   );
