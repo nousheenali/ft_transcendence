@@ -17,4 +17,8 @@ export const API_ENDPOINTS = {
   declineFriendRequest: "/friends/declineRequest/",
   blockFriend: "/friends/block/",
   unBlockFriend: "/friends/unBlock/",
+
+  //CHANNEL module
+  getPublicChannels: "/channel/all-channels/PUBLIC",
+  getPrivateChannels: "/channel/all-channels/PRIVATE",
 };

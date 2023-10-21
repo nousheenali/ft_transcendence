@@ -1,15 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; // 👈 Import CreateChannelRelationDto
 import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
+import { Type } from '@prisma/client';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
 export class ChannelService {
   constructor(private prisma: PrismaService) {} // 👈 Inject PrismaService class into the constructor.
 
-  /** ------------------------------------------------------------------------------------------- **/
-
-  /**
+  /** -------------------------------------------------------------------------------------------
    * create channel and add the creator as a member
    */
   async createChannel(CreateChannelDto) {
@@ -38,7 +37,7 @@ export class ChannelService {
     return create_channel;
   }
 
-  /**
+  /** -------------------------------------------------------------------------------------------
    * delete channel
    */
   async DeleteChannel(id: string) {
@@ -53,5 +52,17 @@ export class ChannelService {
       },
     });
     return `This action removes all channelMember and channels`;
+  }
+
+  /** -------------------------------------------------------------------------------------------
+   * Method that return all channels according to the channel type.
+   * @param channelType: Type, which is an enum that can be either "public" or "private"
+   */
+  async getChannels(channelType: Type) {
+    return await this.prisma.channel.findMany({
+      where: {
+        channelType: channelType,
+      },
+    });
   }
 }

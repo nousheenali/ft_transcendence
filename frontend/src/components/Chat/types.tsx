@@ -1,3 +1,5 @@
+import { userInformation } from "../Profile/types";
+
 /*-------------------------------------------------------------------*/
 /*------------ All the Types required in Chat page ------------------*/
 /*-------------------------------------------------------------------*/
@@ -14,6 +16,19 @@
  * {messageTime} is a string that contains the time the message was sent
  * {messageContent} is a string that contains the content of the message
  */
+
+export interface MessagesProps {
+  message: {
+    id: integer;
+    senderId: String;
+    sender: userInformation;
+    receiverId?: String;
+    channelId?: String;
+    channel: ChannelsProps;
+    content: String;
+    createdAt: String;
+  };
+}
 
 export interface MessageProps {
   sender: {
@@ -83,15 +98,25 @@ export interface ChannelUserProps {
  *  {src} is a string that contains the source of the profile image
  */
 
-export interface ChannelProps {
-  channel: {
-    name: string;
-    channelAvatar: {
-      alt: string;
-      src: string;
-    };
+export interface ChannelsProps {
+  channels: {
+    channelName: string;
+    channelType: string;
+    createdBy: string;
+    createdAt: string;
+    updatedAt: string;
+    Messages: MessagesProps[];
   };
 }
+// export interface ChannelProps {
+//   channel: {
+//     name: string;
+//     channelAvatar: {
+//       alt: string;
+//       src: string;
+//     };
+//   };
+// }
 
 /*-------------------------------------------------------------------*/
 /**
