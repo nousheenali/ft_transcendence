@@ -59,16 +59,28 @@ export class ChannelService {
    * @param channelType: Type, which is an enum that can be either "public" or "private"
    */
   async getChannels(login: string, channelType: Type) {
-    try {
+    if (channelType == 'PRIVATE') {
+      const channels = await this.prisma.user.findUnique({
+        where: {
+          login: login,
+        },
+        include: {
+          channelRelation: {
+            include: {
+              Channel: true,
+            },
+          },
+        },
+      });
+      console.log(channels)
+      return channels;
+    } else if (channelType == 'PUBLIC') {
       const channels = await this.prisma.channel.findMany({
         where: {
           channelType: channelType,
         },
       });
       return channels;
-    } catch (error: any) {
-      throw new Error(error.message);
     }
-
   }
 }
