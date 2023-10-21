@@ -2,8 +2,8 @@
 /*------------ All the Types required in Profile page ---------------*/
 /*-------------------------------------------------------------------*/
 
-import { TableRowData } from "../Table/types";
-import { playerData } from "../commonTypes/types";
+import { TableRowData } from '../Table/types';
+import { playerData } from '../commonTypes/types';
 
 export interface ProfileInfoProps {
   name: string;
@@ -28,6 +28,8 @@ export interface userInformation {
   updatedAt: string;
   isOnline: boolean;
   score: number;
+  TFAVerified: boolean;
+  TFAEnabled: boolean;
 }
 
 export interface ProfilePageProps {

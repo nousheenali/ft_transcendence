@@ -1,9 +1,10 @@
-import React from "react";
-import SettingDetails from "@/components/Setting/SettingDetails/SettingDetails";
-import SettingHeader from "@/components/Setting/SettingHeader/SettingHeader";
-import SettingAvatar from "@/components/Setting/SettingAvatar/SettingAvatar";
 
-export default function Settings() {
+import SettingDetails from '@/components/Setting/SettingDetails/SettingDetails';
+import SettingHeader from '@/components/Setting/SettingHeader/SettingHeader';
+import SettingAvatar from '@/components/Setting/SettingAvatar/SettingAvatar';
+
+
+export default async function Settings() {
   return (
     <div className="w-full flex p-6">
       <div className="w-full bg-box-fill bg-opacity-70 rounded-2xl border-b border-grid-border border-opacity-80 relative">

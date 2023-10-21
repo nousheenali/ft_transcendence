@@ -1,10 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto';
-
 
 @Injectable()
 export class UserService {
@@ -43,5 +39,16 @@ export class UserService {
       },
     });
     return user;
+  }
+
+  async setTFAVerificationRequired(login: string) {
+    try {
+      await this.prisma.user.update({
+        where: { login: login },
+        data: { TFAVerified: false },
+      });
+    } catch (error) {
+      throw new BadRequestException('Unable to update TFA verification status');
+    }
   }
 }

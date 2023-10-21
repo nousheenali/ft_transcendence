@@ -21,6 +21,7 @@ model User {
   // Two factor authentication-----------------------------------------
   TFAEnabled Boolean @default(false)
   TFAKey     String?
+  TFAVerified Boolean @default(false)
 
   // Relation to notifications-----------------------------------------
   receiverdNotification Notification[] @relation(name: "receiver")
