@@ -31,8 +31,8 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
             />
           </div>
           <div>
-            {dataItem.name?.length > 15
-              ? `${dataItem.name.substring(0, 15)}..`
+            {dataItem.name?.length > 10
+              ? `${dataItem.name.substring(0, 10)}..`
               : dataItem.name}
           </div>
         </div>
