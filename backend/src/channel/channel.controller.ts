@@ -18,17 +18,31 @@ export class ChannelController {
 
   //================================================================================================
   // 👇 get all channels according to the channel type
-  @Get('/all-channels/:channelType/:login')
-  GetChannels(
-    @Param('login') login: string, 
-    @Param('channelType') channelType: Type
-    ) {
+  @Get('/all-channels/:login')
+  GetAllChannels(@Param('login') login: string) {
     try {
-      return this.channelService.getChannels(login, channelType);
+      return this.channelService.getChannelsByLogin(login);
     } catch (error) {
       throw new HttpException(
-      'Unexpected Error while Getting Channels of the user ',
-      HttpStatus.INTERNAL_SERVER_ERROR,
+        'Unexpected Error while Getting Channels of the user ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  //================================================================================================
+  // 👇 get all channels according to the channel type
+  @Get('/all-channels/:channelType/:login')
+  GetChannelsByType(
+    @Param('login') login: string,
+    @Param('channelType') channelType: Type,
+  ) {
+    try {
+      return this.channelService.getChannelsByType(login, channelType);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting Channels of the user ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

@@ -268,9 +268,9 @@ async function main() {
 
   console.log(
     'The channel: [',
-    Dubai.id,
+    Sharjah.id,
     '] [',
-    Dubai.channelName,
+    Sharjah.channelName,
     '] has been created.',
   );
   //================================================================================================================

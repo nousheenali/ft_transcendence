@@ -7,34 +7,29 @@ import { useSession } from "next-auth/react"
 
 /**============================================================================================*/
 
-export default function PublicChannels() {
-  const [channels, setChannels] = useState<ChannelsProps[]>([]);
-  const [isLoading, setLoading] = useState(true);
-  const { data: session } = useSession();
+export default function PublicChannels(data: {publicChannels: ChannelsProps[]}) {
 
+  console.log("----------------- [publicChannels] --------------------");
+  console.log(data.publicChannels);
+  console.log("-------------------------------------------------------");
+
+
+  const [isLoading, setLoading] = useState(true);
   useEffect(() => {
-    if (session?.user.login) {
-      getChannelsData(session.user.login, API_ENDPOINTS.getPublicChannels).then((channel) => {
-        setChannels(channels.concat(channel));
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-    }}, []);
+    if (data.publicChannels) {
+      setLoading(false);
+    }
+  }, []);
 
   if (isLoading)
     return (
       <span className="loading loading-ring loading-lg text-main-yellow"></span>
     );
-  if (!channels) return <p>No channels data</p>;
-  console.log(channels);
+  if (!data.publicChannels) return <p>No channels data</p>;
   return (
     <div className="flex flex-col w-full h-3/4 px-1 rounded-xl overflow-y-scroll scroll-container">
-      console.log(channels);
-      <h1>channels</h1>;
-      {/* {
-        channels.map((OneChannel: ChannelsProps, index: integer) => (
+      {
+        data.publicChannels.map((OneChannel: ChannelsProps, index: integer) => (
           <div key={index}>
             <Channel
               key={index}
@@ -42,7 +37,7 @@ export default function PublicChannels() {
             />
           </div>
         ))
-      } */}
+      }
     </div>
   );
 }

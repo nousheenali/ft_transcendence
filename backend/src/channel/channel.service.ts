@@ -55,17 +55,14 @@ export class ChannelService {
     return `This action removes all channelMember and channels`;
   }
 
-  /**--------------------------------------------------------------------------------------------
-   * 
-   * 🌼 Helper function that will extract all the channelRelations according to the type
-   *   of the channel, which is either "public" or "private" and the login of the user, 
-   *   from the User table.
-   * * @returns The User object with the channelRelations array.
-   * * @param login: string, the login of the user
-   * * @param channelType: Type, an enum that can be either "public" or "private"
+  /** -------------------------------------------------------------------------------------------
+   * 🌼 Method that return all channels according to the channel type, from the Relations array
+   * * @param channelType: Type, which is an enum that can be either "public" or "private"
    */
-  async getUserRelationsByChannelType(login: string, channelType: Type) {
-    const channelsRelation = await this.prisma.user.findUnique({
+
+  async getChannelsByType(login: string, channelType: Type) {
+    const channels: Channel[] = [];
+    const userRelations = await this.prisma.user.findUnique({
       where: {
         login: login,
       },
@@ -82,18 +79,29 @@ export class ChannelService {
         },
       },
     });
-    return channelsRelation;
+    userRelations.channelRelation.forEach((relation) => {
+      channels.push(relation.Channel);
+    });
+    return channels;
   }
-
-
-  /** -------------------------------------------------------------------------------------------
-   * 🌼 Method that return all channels according to the channel type, from the Relations array
-   * * @param channelType: Type, which is an enum that can be either "public" or "private"
+  /** ------------------------------------------------------------------------------------------- *
+   * 🌼 Method that return all channels that the users have relations with.
+   * * @param login: string, the login of the user
    */
-
-  async getChannels(login: string, channelType: Type) {
+  async getChannelsByLogin(login: string) {
     const channels: Channel[] = [];
-    const userRelations = await this.getUserRelationsByChannelType(login, channelType);
+    const userRelations = await this.prisma.user.findUnique({
+      where: {
+        login: login,
+      },
+      include: {
+        channelRelation: {
+          include: {
+            Channel: true,
+          },
+        },
+      },
+    });
     userRelations.channelRelation.forEach((relation) => {
       channels.push(relation.Channel);
     });
@@ -101,6 +109,3 @@ export class ChannelService {
   }
   /** ------------------------------------------------------------------------------------------- **/
 }
-
-
-

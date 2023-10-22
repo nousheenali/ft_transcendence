@@ -1,4 +1,3 @@
-
 export const API_ENDPOINTS = {
   //USER module
   getUserbyLogin: "/user/getByLogin/",
@@ -19,6 +18,7 @@ export const API_ENDPOINTS = {
   unBlockFriend: "/friends/unBlock/",
 
   //CHANNEL module
-  getPublicChannels: "/channel/all-channels/PUBLIC/",
-  getPrivateChannels: "/channel/all-channels/PRIVATE/",
+  allChannels: "/channel/all-channels/",
+  publicChannels: "/channel/all-channels/PUBLIC/",
+  privateChannels: "/channel/all-channels/PRIVATE/",
 };

@@ -10,7 +10,7 @@ import { getData } from "./api";
  */
 export const getChannelsData = async (login: string, endpoint: string) => {
 	try {
-	  const channels: ChannelsProps = await getData<ChannelsProps>(login, endpoint);
+	  const channels: ChannelsProps[] = await getData<ChannelsProps[]>(login, endpoint);
 	  return channels;
 	} catch (error: any) {
 	  throw new Error(error.message);

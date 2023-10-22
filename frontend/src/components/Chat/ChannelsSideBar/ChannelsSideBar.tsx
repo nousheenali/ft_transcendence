@@ -11,6 +11,7 @@ import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeade
 import UsersSearch from "./ChannelUsers/UsersSearch/UsersSearch";
 import ChannelsUsersBox from "./ChannelUsers/ChannelsUsersBox/ChannelsUsersBox";
 import CreateChannel from "./CreateChannel/CreateChannel";
+import { ChannelsProps } from "../types";
 
 /**
  * The ChannelsSideBar component is responsible for rendering the ChannelsSideBar part of the Chat page,
@@ -22,7 +23,14 @@ import CreateChannel from "./CreateChannel/CreateChannel";
  * is also used to determine which component to render, the Public component or the Private component.
  *
  */
-export default function ChannelsSideBar() {
+export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
+  const publicChannels = data.channels.filter(
+    (channel) => channel.channelType === "PUBLIC"
+  );
+  const privateChannels = data.channels.filter(
+    (channel) => channel.channelType === "PRIVATE"
+  );
+  
   const [activeChannel, setActiveChannel] = useState<string>("Public");
 
   return (
@@ -36,14 +44,13 @@ export default function ChannelsSideBar() {
       <hr className="w-80 border-line-break" />
       {activeChannel === "Public" && (
         <>
-        
-          <PublicChannels />
+          <PublicChannels publicChannels={publicChannels}/>
           {/* <ChannelUserHeader />
           <UsersSearch />
           <ChannelsUsersBox /> */}
         </>
       )}
-      
+
       {/* {activeChannel === "Private" && (
         <>
           <PrivateChannels />
