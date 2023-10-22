@@ -1,8 +1,11 @@
 "use client";
+import { useGameColor } from "@/context/store";
 import React, { useEffect, useState } from "react";
 
 export default function GamePage() {
-  
+
+  const { ballColor, racketColor, bgColor } = useGameColor() //for the time being im saving the colors in the context store
+
   useEffect(() => {
     async function initPhaser() {
       const Phaser = await import("phaser");
