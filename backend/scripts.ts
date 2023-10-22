@@ -209,7 +209,7 @@ async function main() {
   const FourTwo = await prisma.channel.create({
     data: {
       channelName: 'FourTwo',
-      channelType: 'PUBLIC',
+      channelType: 'PRIVATE',
       createdBy: gabdoush.id,
       channelMembers: {
         create: {
@@ -250,7 +250,29 @@ async function main() {
     Dubai.channelName,
     '] has been created.',
   );
+  //------------------------------------------------
+  // Creating Sharjah channel
 
+  const Sharjah = await prisma.channel.create({
+    data: {
+      channelName: 'Sharjah',
+      channelType: 'PRIVATE',
+      createdBy: gabdoush.id,
+      channelMembers: {
+        create: {
+          userId: gabdoush.id,
+        },
+      },
+    },
+  });
+
+  console.log(
+    'The channel: [',
+    Dubai.id,
+    '] [',
+    Dubai.channelName,
+    '] has been created.',
+  );
   //================================================================================================================
   console.log('-------------------------------------------------------------');
   //================================================================================================================

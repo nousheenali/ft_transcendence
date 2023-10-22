@@ -27,7 +27,7 @@ export class ChannelController {
       return this.channelService.getChannels(login, channelType);
     } catch (error) {
       throw new HttpException(
-      'Unexpected Error while Getting Channels',
+      'Unexpected Error while Getting Channels of the user ',
       HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

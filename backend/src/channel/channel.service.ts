@@ -1,3 +1,4 @@
+import { Channel } from './entities/channel.entity';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; // 👈 Import CreateChannelRelationDto
 import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
@@ -54,33 +55,52 @@ export class ChannelService {
     return `This action removes all channelMember and channels`;
   }
 
-  /** -------------------------------------------------------------------------------------------
-   * Method that return all channels according to the channel type.
-   * @param channelType: Type, which is an enum that can be either "public" or "private"
+  /**--------------------------------------------------------------------------------------------
+   * 
+   * 🌼 Helper function that will extract all the channelRelations according to the type
+   *   of the channel, which is either "public" or "private" and the login of the user, 
+   *   from the User table.
+   * * @returns The User object with the channelRelations array.
+   * * @param login: string, the login of the user
+   * * @param channelType: Type, an enum that can be either "public" or "private"
    */
-  async getChannels(login: string, channelType: Type) {
-    if (channelType == 'PRIVATE') {
-      const channels = await this.prisma.user.findUnique({
-        where: {
-          login: login,
-        },
-        include: {
-          channelRelation: {
-            include: {
-              Channel: true,
+  async getUserRelationsByChannelType(login: string, channelType: Type) {
+    const channelsRelation = await this.prisma.user.findUnique({
+      where: {
+        login: login,
+      },
+      include: {
+        channelRelation: {
+          include: {
+            Channel: true,
+          },
+          where: {
+            Channel: {
+              channelType: channelType,
             },
           },
         },
-      });
-      console.log(channels)
-      return channels;
-    } else if (channelType == 'PUBLIC') {
-      const channels = await this.prisma.channel.findMany({
-        where: {
-          channelType: channelType,
-        },
-      });
-      return channels;
-    }
+      },
+    });
+    return channelsRelation;
   }
+
+
+  /** -------------------------------------------------------------------------------------------
+   * 🌼 Method that return all channels according to the channel type, from the Relations array
+   * * @param channelType: Type, which is an enum that can be either "public" or "private"
+   */
+
+  async getChannels(login: string, channelType: Type) {
+    const channels: Channel[] = [];
+    const userRelations = await this.getUserRelationsByChannelType(login, channelType);
+    userRelations.channelRelation.forEach((relation) => {
+      channels.push(relation.Channel);
+    });
+    return channels;
+  }
+  /** ------------------------------------------------------------------------------------------- **/
 }
+
+
+

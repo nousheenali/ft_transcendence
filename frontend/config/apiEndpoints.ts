@@ -19,6 +19,6 @@ export const API_ENDPOINTS = {
   unBlockFriend: "/friends/unBlock/",
 
   //CHANNEL module
-  getPublicChannels: "/channel/all-channels/public",
-  getPrivateChannels: "/channel/all-channels/private",
+  getPublicChannels: "/channel/all-channels/PUBLIC/",
+  getPrivateChannels: "/channel/all-channels/PRIVATE/",
 };

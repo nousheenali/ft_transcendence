@@ -99,7 +99,8 @@ export interface ChannelUserProps {
  */
 
 export interface ChannelsProps {
-  channels: {
+  [x: string]: any;
+  channel: {
     channelName: string;
     channelType: string;
     createdBy: string;
@@ -108,16 +109,6 @@ export interface ChannelsProps {
     Messages: MessagesProps[];
   };
 }
-// export interface ChannelProps {
-//   channel: {
-//     name: string;
-//     channelAvatar: {
-//       alt: string;
-//       src: string;
-//     };
-//   };
-// }
-
 /*-------------------------------------------------------------------*/
 /**
  * Interface for the MsgChannelBtn component props, which are:
