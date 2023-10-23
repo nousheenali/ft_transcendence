@@ -14,9 +14,9 @@ const changeColor = () => {
   const { ballColor, racketColor, bgColor } = useGameColor();
 
   const tmpColor = {
-    ballColor: colors[ballColor] || "Red",
-    racketColor: colors[racketColor] || "Red",
-    bgColor: colors[bgColor] || "Red",
+    ballColor: colors[ballColor] || "0xd0f223",
+    racketColor: colors[racketColor] || "0xd0f223",
+    bgColor: colors[bgColor] || "0xd0f223",
   };
 
   return tmpColor;
@@ -34,7 +34,7 @@ export default function CustomizeGame() {
       <div className="flex flex-row items-center justify-around gap-2">
         <h1 className="text-main-text font-saira-condensed">Ball Color</h1>
         <Dropdown.Details>
-        <Dropdown.Details.Toggle className="hover:bg-heading-fill text-placeholder-text font-saira-condensed normal-case bg-main bg-heading-fill border-1 border-aside-border rounded-2xl w-40 h-4 p-0 flex flex-row justify-evenly">
+          <Dropdown.Details.Toggle className="hover:bg-heading-fill text-placeholder-text font-saira-condensed normal-case bg-main bg-heading-fill border-1 border-aside-border rounded-2xl w-40 h-4 p-0 flex flex-row justify-evenly">
             {colorsCollection.ballColor}
             <Image
               src="/DropDown_icon.svg"

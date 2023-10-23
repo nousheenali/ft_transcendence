@@ -13,9 +13,9 @@ type TGameColor = {
 }
 
 export const useGameColor = create<TGameColor>((set) => ({
-    ballColor: 'blue',
-    racketColor: 'blue',
-    bgColor: 'blue',
+    ballColor: '0xd0f223',
+    racketColor: '0xd0f223',
+    bgColor: '0xd0f223',
 
     setBallColor: (ballColor: string) => set({ ballColor }),
     setRacketColor: (racketColor: string) => set({ racketColor }),
