@@ -55,35 +55,6 @@ export class ChannelService {
     return `This action removes all channelMember and channels`;
   }
 
-  /** -------------------------------------------------------------------------------------------
-   * 🌼 Method that return all channels according to the channel type, from the Relations array
-   * * @param channelType: Type, which is an enum that can be either "public" or "private"
-   */
-
-  async getChannelsByType(login: string, channelType: Type) {
-    const channels: Channel[] = [];
-    const userRelations = await this.prisma.user.findUnique({
-      where: {
-        login: login,
-      },
-      include: {
-        channelRelation: {
-          include: {
-            Channel: true,
-          },
-          where: {
-            Channel: {
-              channelType: channelType,
-            },
-          },
-        },
-      },
-    });
-    userRelations.channelRelation.forEach((relation) => {
-      channels.push(relation.Channel);
-    });
-    return channels;
-  }
   /** ------------------------------------------------------------------------------------------- *
    * 🌼 Method that return all channels that the users have relations with.
    * * @param login: string, the login of the user
@@ -97,13 +68,21 @@ export class ChannelService {
       include: {
         channelRelation: {
           include: {
-            Channel: true,
+            channel: {
+              include: {
+                channelMembers: {
+                  include: {
+                    user: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
     userRelations.channelRelation.forEach((relation) => {
-      channels.push(relation.Channel);
+      channels.push(relation.channel);
     });
     return channels;
   }

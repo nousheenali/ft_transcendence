@@ -31,23 +31,6 @@ export class ChannelController {
   }
 
   //================================================================================================
-  // 👇 get all channels according to the channel type
-  @Get('/all-channels/:channelType/:login')
-  GetChannelsByType(
-    @Param('login') login: string,
-    @Param('channelType') channelType: Type,
-  ) {
-    try {
-      return this.channelService.getChannelsByType(login, channelType);
-    } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting Channels of the user ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  //================================================================================================
   // 👇 create a new channel
   @Post('/create')
   CreateChannel(@Body() CreateChannelDto: CreateChannelDto) {

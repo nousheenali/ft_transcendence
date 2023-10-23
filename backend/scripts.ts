@@ -227,6 +227,30 @@ async function main() {
     '] has been created.',
   );
 
+    //------------------------------------------------
+  // Creating 'FourTwo' channel
+
+  const TwoFour = await prisma.channel.create({
+    data: {
+      channelName: 'TwoFour',
+      channelType: 'PRIVATE',
+      createdBy: gabdoush.id,
+      channelMembers: {
+        create: {
+          userId: gabdoush.id,
+        },
+      },
+    },
+  });
+
+  console.log(
+    'The channel: [',
+    TwoFour.id,
+    '] [',
+    TwoFour.channelName,
+    '] has been created.',
+  );
+
   //------------------------------------------------
   // Creating Dubai channel
 
@@ -271,6 +295,30 @@ async function main() {
     Sharjah.id,
     '] [',
     Sharjah.channelName,
+    '] has been created.',
+  );
+
+    //------------------------------------------------
+  // Creating Sharjah channel
+
+  const ourTeam = await prisma.channel.create({
+    data: {
+      channelName: 'ourTeam',
+      channelType: 'PRIVATE',
+      createdBy: gabdoush.id,
+      channelMembers: {
+        create: {
+          userId: gabdoush.id,
+        },
+      },
+    },
+  });
+
+  console.log(
+    'The channel: [',
+    ourTeam.id,
+    '] [',
+    ourTeam.channelName,
     '] has been created.',
   );
   //================================================================================================================

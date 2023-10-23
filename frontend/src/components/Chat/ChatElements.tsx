@@ -29,7 +29,7 @@ export default function ChatElements(data: { channels: ChannelsProps[] }) {
         {activeTab === "Messages" && <MessagesSideBar />}
         {activeTab === "Channels" && (
           <ChannelsSideBar channels={data.channels} />
-        )}
+)}
       </div>
       {/* Render the FriendsChatBox or ChannelsChatBox depending on the activeTab state */}
       {activeTab === "Messages" && <FriendsChatBox />}

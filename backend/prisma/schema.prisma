@@ -145,7 +145,7 @@ model ChannelRelation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Channel   Channel @relation(fields: [channelId], references: [id])
+  channel   Channel @relation(fields: [channelId], references: [id])
   channelId String
 }
 
@@ -169,5 +169,3 @@ model Messages {
 }
 
 // =====================================================================
-
-

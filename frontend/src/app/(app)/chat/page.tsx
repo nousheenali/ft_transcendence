@@ -10,6 +10,6 @@ export default async function Chat() {
   const session = await getServerSession(options);
   const login = session?.user.login!;
   const allChannels: ChannelsProps[] = await getChannelsData(login, API_ENDPOINTS.allChannels);
-
+  
   return <ChatElements channels={allChannels}/>; 
 }
