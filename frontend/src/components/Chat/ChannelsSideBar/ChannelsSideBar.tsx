@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import ChannelsSearch from "@/components/Chat/ChannelsSideBar/ChannelsSearch/ChannelsSearch";
 import PublicPrivateBtn from "@/components/Chat/ChannelsSideBar/PublicPrivateBtn/PublicPrivateBtn";
 
-import PublicChannels from "./Channels/PublicChannels/PublicChannels";
-import PrivateChannels from "./Channels/PrivateChannels/PrivateChannels";
+import Channels from "./Channels/Channels";
 
 import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeader";
 import UsersSearch from "./ChannelUsers/UsersSearch/UsersSearch";
@@ -30,7 +29,7 @@ export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
   const privateChannels = data.channels.filter(
     (channel) => channel.channelType === "PRIVATE"
   );
-  
+
   const [activeChannel, setActiveChannel] = useState<string>("Public");
 
   return (
@@ -43,22 +42,16 @@ export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
       <CreateChannel />
       <hr className="w-80 border-line-break" />
       {activeChannel === "Public" && (
+        <Channels channels={publicChannels} />
+      )}
+      {activeChannel === "Private" && (
         <>
-          <PublicChannels publicChannels={publicChannels}/>
+          <Channels channels={privateChannels} />
           {/* <ChannelUserHeader />
           <UsersSearch />
           <ChannelsUsersBox /> */}
         </>
       )}
-
-      {/* {activeChannel === "Private" && (
-        <>
-          <PrivateChannels />
-          <ChannelUserHeader />
-          <UsersSearch />
-          <ChannelsUsersBox />
-        </>
-      )} */}
       <hr className="w-80 border-line-break" />
     </>
   );

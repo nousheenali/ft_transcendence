@@ -3,17 +3,18 @@ import Image from "next/image";
 
 
 export default function Channel(data: {channel: ChannelsProps}) {
+	console.log(data.channel);
 	return (
 		<div
 		  className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer">
 	
 		  {/* [1] */}
-		  <div className="w-36 h-12 basis-1/6">
+		  <div className="w-36 h-12 basis-1/6 rounded-xl overflow-hidden">
 			<Image
 			  alt={data.channel.channelName}
 			  src={"https://i.imgur.com/6VBx3io.png"}
-			  width={45}
-			  height={45}
+			  width={55}
+			  height={55}
 			/>
 		  </div>
 
