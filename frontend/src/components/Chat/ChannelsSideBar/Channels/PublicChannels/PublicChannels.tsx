@@ -8,12 +8,6 @@ import { useSession } from "next-auth/react"
 /**============================================================================================*/
 
 export default function PublicChannels(data: {publicChannels: ChannelsProps[]}) {
-
-  console.log("----------------- [publicChannels] --------------------");
-  console.log(data.publicChannels);
-  console.log("-------------------------------------------------------");
-
-
   const [isLoading, setLoading] = useState(true);
   useEffect(() => {
     if (data.publicChannels) {
@@ -33,7 +27,7 @@ export default function PublicChannels(data: {publicChannels: ChannelsProps[]}) 
           <div key={index}>
             <Channel
               key={index}
-              channel={OneChannel.channels}
+              channel={OneChannel}
             />
           </div>
         ))

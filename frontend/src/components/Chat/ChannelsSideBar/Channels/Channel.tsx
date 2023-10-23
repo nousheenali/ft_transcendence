@@ -2,7 +2,7 @@ import {ChannelsProps} from '../../types';
 import Image from "next/image";
 
 
-export default function Channel({channel}: ChannelsProps) {
+export default function Channel(data: {channel: ChannelsProps}) {
 	return (
 		<div
 		  className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer">
@@ -10,7 +10,7 @@ export default function Channel({channel}: ChannelsProps) {
 		  {/* [1] */}
 		  <div className="w-36 h-12 basis-1/6">
 			<Image
-			  alt={"Channel alt text"}
+			  alt={data.channel.channelName}
 			  src={"https://i.imgur.com/6VBx3io.png"}
 			  width={45}
 			  height={45}
@@ -18,7 +18,7 @@ export default function Channel({channel}: ChannelsProps) {
 		  </div>
 
 		  <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2">
-			<span className="font-saira-condensed text-main-text font-light truncate ...">{channel.channelName}</span>
+			<span className="font-saira-condensed text-main-text font-light truncate ...">{data.channel.channelName}</span>
 		  </div>
 		
 		</div>
