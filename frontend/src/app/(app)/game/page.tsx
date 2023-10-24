@@ -1,8 +1,12 @@
 "use client";
+import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
 
 export default function GamePage() {
-  
+  const { data: session } = useSession();
+   const login: string = session?.user.login!;
+
   useEffect(() => {
     async function initPhaser() {
       const Phaser = await import("phaser");
@@ -38,6 +42,16 @@ export default function GamePage() {
       };
 
       var phaserGame = new Phaser.Game(config);
+      const socket = io("http://localhost:3001/game", {
+        withCredentials: true, // If you need to include credentials
+        transports: ["websocket"],
+        query: {
+            "username": login,
+        },
+      });
+      // socket.on("connected", () => {
+      //   console.log("Connected to the WebSocket server");
+      // });
     }
     initPhaser();
   }, []);

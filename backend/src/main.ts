@@ -1,11 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'; // 👈 Import the SwaggerModule class
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useWebSocketAdapter(new IoAdapter(app));
   //(CORS) is a mechanism that allows resources to be requested from another domain(NEXTJS frontend in our case)
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:3000', // frontend URL
+    credentials: true, // If you need to include credentials (cookies, headers, etc.)
+  });
+
 
   // 👇 This block will initiate Swagger using SwaggerModule and DocumentBuilder. 👇
   // ----------------------------------------------------------------------------------------
