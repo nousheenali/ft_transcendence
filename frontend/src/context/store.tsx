@@ -22,3 +22,4 @@ export const useGameColor = create<TGameColor>((set) => ({
     setBgColor: (bgColor: string) => set({ bgColor }),
 
 }))
+

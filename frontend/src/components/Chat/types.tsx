@@ -50,12 +50,10 @@ export interface ChannelsProps {
 }
 
 /*-------------------------------------------------------------------*/
-
-
-
-
-
-
+export interface ActiveChannelProps {
+  activeChannel: ChannelsProps;
+  setActiveChannel: React.Dispatch<React.SetStateAction<ChannelsProps>>;
+}
 
 /*-------------------------------------------------------------------*/
 export interface ChatFriendsProps {
