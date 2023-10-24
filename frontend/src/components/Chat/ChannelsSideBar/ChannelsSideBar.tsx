@@ -9,6 +9,7 @@ import UsersSearch from "./ChannelUsers/UsersSearch/UsersSearch";
 import ChannelsUsersBox from "./ChannelUsers/ChannelsUsersBox/ChannelsUsersBox";
 import CreateChannel from "./CreateChannel/CreateChannel";
 import { ChannelsProps, ChannelUserProps } from "../types";
+import { activateClickedChannel } from "@/context/store";
 
 export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
   const publicChannels = data.channels.filter(
@@ -20,7 +21,6 @@ export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
   );
 
   const privateChannelUsers: ChannelUserProps[] = [];
-
   privateChannels.forEach((channel) => {
     channel.channelMembers.forEach((channelUser) => {
       privateChannelUsers.push(channelUser.user);
@@ -28,7 +28,12 @@ export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
   });
 
   const [activeChannelType, setActiveChannelType] = useState<string>("Public");
-  const [activeChannel, setActiveChannel] = useState<ChannelsProps>();
+
+  // define the active channel and the function to set the active channel from the store context of zustand
+  const activeChannel = activateClickedChannel((state) => state.activeChannel);
+  const setActiveChannel = activateClickedChannel(
+    (state) => state.setActiveChannel
+  );
 
   console.log("activeChannel->[", activeChannel, "]");
 

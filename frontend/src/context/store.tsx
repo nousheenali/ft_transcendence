@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-
+import { ChannelsProps } from '@/components/Chat/types'
 
 
 type TGameColor = {
@@ -23,3 +23,8 @@ export const useGameColor = create<TGameColor>((set) => ({
 
 }))
 
+// Function to change the state of the active channel.
+export const activateClickedChannel = create((set) => ({
+    activeChannel: null,
+    setActiveChannel: (channel:ChannelsProps) => set({ activeChannel: channel }),
+  }));
