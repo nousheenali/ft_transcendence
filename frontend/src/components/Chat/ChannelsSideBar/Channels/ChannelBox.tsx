@@ -20,12 +20,12 @@ export default function Channel(data: { channel: ChannelsProps }) {
       onClick={() => setActiveChannel(data.channel)}
     >
       {/* [1] */}
-      <div className="w-36 h-12 basis-1/6 rounded-xl overflow-hidden">
+      <div className="w-36 h-12 basis-1/6 overflow-hidden">
         <Image
           alt={data.channel.channelName}
-          src={"https://i.imgur.com/6VBx3io.png"}
-          width={55}
-          height={55}
+          src={"/chat/people.svg"}
+          width={40}
+          height={40}
         />
       </div>
 

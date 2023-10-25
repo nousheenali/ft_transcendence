@@ -4,7 +4,7 @@ import Channel from "./ChannelBox";
 
 /**============================================================================================*/
 
-export default function PublicChannels(data: { channels: ChannelsProps[] }) {
+export default function Channels(data: { channels: ChannelsProps[] }) {
   const [isLoading, setLoading] = useState(true);
   useEffect(() => {
     if (data.channels) {
@@ -17,6 +17,7 @@ export default function PublicChannels(data: { channels: ChannelsProps[] }) {
       <span className="loading loading-ring loading-lg text-main-yellow"></span>
     );
   if (!data.channels) return <p>No channels data</p>;
+  
   return (
     <div className="flex flex-col w-full h-3/4 px-1 rounded-xl overflow-y-scroll scroll-container">
       {data.channels.map((OneChannel: ChannelsProps, index: integer) => (

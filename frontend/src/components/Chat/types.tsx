@@ -5,16 +5,15 @@ import { userInformation } from "../Profile/types";
 /*-------------------------------------------------------------------*/
 
 export interface MessagesProps {
-  message: {
-    id: integer;
-    senderId: String;
-    sender: userInformation;
-    receiverId?: String;
-    channelId?: String;
-    channel: ChannelsProps;
-    content: String;
-    createdAt: String;
-  };
+  id: integer;
+  senderId: String;
+  sender: userInformation;
+  receiverId?: String;
+  reciever: userInformation;
+  channelId?: String;
+  channel: ChannelsProps;
+  content: String;
+  createdAt: String;
 }
 
 /*-------------------------------------------------------------------*/
@@ -50,10 +49,6 @@ export interface ChannelsProps {
 }
 
 /*-------------------------------------------------------------------*/
-export interface ActiveChannelProps {
-  activeChannel: ChannelsProps;
-  setActiveChannel: React.Dispatch<React.SetStateAction<ChannelsProps>>;
-}
 
 /*-------------------------------------------------------------------*/
 export interface ChatFriendsProps {
@@ -79,37 +74,4 @@ export interface ChannelsBtn {
   setActiveChannel: React.Dispatch<React.SetStateAction<string>>;
 }
 
-/*-------------------------------------------------------------------*/
-export interface MessageSenderProps {
-  senderName: string;
-  senderAvatar: {
-    alt: string;
-    src: string;
-  };
-  isOnline?: boolean;
-  messageTime?: string;
-  messageContent?: string;
-}
-
-/*-------------------------------------------------------------------*/
-export interface MessageReceiverProps {
-  receiverName: string;
-  receiverAvatar: {
-    alt: string;
-    src: string;
-  };
-  messageTime: string;
-  messageSeenTime: string;
-  messageContent: string;
-}
-
-/*-------------------------------------------------------------------*/
-export interface ChosenChannelProps {
-  ChannelName: string;
-  ChannelAvatar: {
-    alt: string;
-    src: string;
-  };
-  isPublic: boolean;
-}
 /*-------------------------------------------------------------------*/

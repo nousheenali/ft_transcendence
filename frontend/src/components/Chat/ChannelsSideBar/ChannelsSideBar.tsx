@@ -20,22 +20,21 @@ export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
     (channel) => channel.channelType === "PRIVATE"
   );
 
-  const privateChannelUsers: ChannelUserProps[] = [];
-  privateChannels.forEach((channel) => {
-    channel.channelMembers.forEach((channelUser) => {
-      privateChannelUsers.push(channelUser.user);
-    });
-  });
-
   const [activeChannelType, setActiveChannelType] = useState<string>("Public");
 
-  // define the active channel and the function to set the active channel from the store context of zustand
+  // ⚡ define the active channel and the function to set the active channel from the store context of zustand
   const activeChannel = activateClickedChannel((state) => state.activeChannel);
   const setActiveChannel = activateClickedChannel(
     (state) => state.setActiveChannel
   );
 
-  console.log("activeChannel->[", activeChannel, "]");
+  //  ⚡ Extract users from the active private channel
+  const channelUsers: ChannelUserProps[] = [];
+  if (activeChannel && activeChannel.channelType === "PRIVATE") {
+    activeChannel.channelMembers.forEach((channelUser) => {
+      channelUsers.push(channelUser.user);
+    });
+  }
 
   return (
     <>
@@ -46,13 +45,17 @@ export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
       />
       <CreateChannel />
       <hr className="w-80 border-line-break" />
-      {activeChannelType === "Public" && <Channels channels={publicChannels} />}
+      {activeChannelType === "Public" && (
+        <>
+          <Channels channels={publicChannels} />
+        </>
+      )}
       {activeChannelType === "Private" && (
         <>
           <Channels channels={privateChannels} />
-          {/* <ChannelUserHeader />
+          <ChannelUserHeader />
           <UsersSearch />
-          <ChannelsUsersBox /> */}
+          <ChannelsUsersBox users={channelUsers} />
         </>
       )}
       <hr className="w-80 border-line-break" />
