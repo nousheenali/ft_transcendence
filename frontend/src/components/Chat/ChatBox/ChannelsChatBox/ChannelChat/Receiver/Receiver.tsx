@@ -23,8 +23,6 @@ export default function ReceiverChatBox(data: {message: MessagesProps}) {
       <div className="chat-bubble font-thin bg-receiver-chatbox-bg">
         {data.message.content}
       </div>
-
-      {/* <div className="chat-footer opacity-50">Seen at {messageSeenTime}</div> */}
     </div>
   );
 }

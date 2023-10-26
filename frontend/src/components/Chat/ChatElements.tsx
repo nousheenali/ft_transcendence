@@ -9,16 +9,8 @@ import ChannelsChatBox from "@/components/Chat/ChatBox/ChannelsChatBox/ChannelsC
 import { ChannelsProps } from "./types";
 
 import { activateClickedChannel } from "@/context/store";
-/**
- * The Chat component is the main component of the Chat page, it is responsible for rendering
- * the whole page and it is also responsible for managing the state of the page.
- *
- * The state of the page is managed by the {activeTab} state, which is a string that can be either
- * "Messages" or "Channels". The {activeTab} state is passed to the MsgChannelBtn component as a prop
- * and it is used to determine which tab is active and render the appropriate tab. The {activeTab} state
- * is also passed to the UserMessages component as a prop and it is used to determine which component to
- * render, the Messages component or the Channels component.
- */
+
+
 export default function ChatElements({ channels, login }: { channels: ChannelsProps[], login: string }) {
   console.log(channels[0].Messages)
   // ⚡ define the active channel and the function to set the active channel from the store context of zustand

@@ -18,7 +18,11 @@ export const API_ENDPOINTS = {
   unBlockFriend: "/friends/unBlock/",
 
   //CHANNEL module
+  // end point for getting all channels that the user have relation with.
   allChannels: "/channel/all-channels/",
-  publicChannels: "/channel/all-channels/PUBLIC/",
-  privateChannels: "/channel/all-channels/PRIVATE/",
+
+  // User Messsages
+  // end point for getting all messages of a user.
+  userMessages: "/user-messages/received/",
+
 };

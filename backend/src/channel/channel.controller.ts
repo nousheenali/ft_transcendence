@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
 import { CreateChannelDto } from './dto/create-channel.dto';
-import { Type } from '@prisma/client';
 import { HttpException, HttpStatus } from '@nestjs/common'; // 👈 Import HttpException and HttpStatus
 
 @Controller('channel')
