@@ -6,25 +6,27 @@ import { ChannelsProps } from "./../../../types";
 const extractMessagesFromChannel = (channel: ChannelsProps) => {
   const channelMessages = channel.Messages;
 
-  // if (channelMessages === undefined) return undefined;
-  // channelMessages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
+  if (channelMessages === undefined) return undefined;
+  channelMessages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
   return channelMessages;
 };
 
-
-
-export default function ChannelChat({ data, login }: { data: { channel: ChannelsProps }; login: string }) {
-  console.log(data.channel.Messages[0].content);
-
-
-  // if (channelMessages === undefined) return <></>;
+export default function ChannelChat({
+  channel,
+  login,
+}: {
+  channel: ChannelsProps;
+  login: string;
+}): JSX.Element {
+  const channelMessages = extractMessagesFromChannel(channel);
+  if (channelMessages === undefined) return <div></div>;
   return (
     <div className="overflow-y-scroll px-3">
-    {/* {channelMessages.map((message, index) => {
+      {channelMessages.map((message, index) => {
       if (channelMessages[index].sender.login === login)
         return <SenderChatBox key={index} message={message} />;
-      else return <ReceiverChatBox key={index} message={message} />;
-    })} */}
-  </div>
+      // else return <ReceiverChatBox key={index} message={message} />;
+    })}
+    </div>
   );
 }

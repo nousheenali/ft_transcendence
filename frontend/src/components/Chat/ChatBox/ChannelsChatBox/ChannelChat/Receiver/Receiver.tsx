@@ -1,20 +1,14 @@
 import Image from "next/image";
-import { MessageReceiverProps } from "./../../../../types";
+import { MessagesProps } from "./../../../../types";
 
-export default function ReceiverChatBox({
-  receiverName,
-  receiverAvatar,
-  messageTime,
-  messageSeenTime,
-  messageContent,
-}: MessageReceiverProps) {
+export default function ReceiverChatBox(data: {message: MessagesProps}) {
   return (
     <div className="chat chat-end font-saira-condensed">
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
           <Image
-            alt={receiverAvatar.alt}
-            src={receiverAvatar.src}
+            alt={data.message.sender.name}
+            src={data.message.sender.avatar}
             width={34}
             height={34}
           />
@@ -22,15 +16,15 @@ export default function ReceiverChatBox({
       </div>
 
       <div className="chat-header">
-        {receiverName}
-        <time className="text-xs opacity-50 px-2">{messageTime}</time>
+        {data.message.sender.name}
+        <time className="text-xs opacity-50 px-2">{data.message.createdAt}</time>
       </div>
 
       <div className="chat-bubble font-thin bg-receiver-chatbox-bg">
-        {messageContent}
+        {data.message.content}
       </div>
 
-      <div className="chat-footer opacity-50">Seen at {messageSeenTime}</div>
+      {/* <div className="chat-footer opacity-50">Seen at {messageSeenTime}</div> */}
     </div>
   );
 }

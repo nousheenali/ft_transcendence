@@ -39,6 +39,7 @@ export const activateClickedChannel = create<AppState>((set) => ({
     channelMembers: [],
     Messages: [],
   } as ChannelsProps,
+  
   setActiveChannel: (channel) => set({ activeChannel: channel }),
 }));
 

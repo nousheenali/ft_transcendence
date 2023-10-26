@@ -75,6 +75,11 @@ export class ChannelService {
                     user: true,
                   },
                 },
+                Messages: {
+                  include: {
+                    sender: true,
+                  },
+                }
               },
             },
           },

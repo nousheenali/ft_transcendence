@@ -126,7 +126,6 @@ model Channel {
 
   channelMembers ChannelRelation[]
 
-  // channelMessages ChannelMessages[]
   Messages Messages[]
 }
 

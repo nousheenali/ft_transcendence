@@ -9,8 +9,6 @@ import ChannelsChatBox from "@/components/Chat/ChatBox/ChannelsChatBox/ChannelsC
 import { ChannelsProps } from "./types";
 
 import { activateClickedChannel } from "@/context/store";
-import { channel } from "diagnostics_channel";
-
 /**
  * The Chat component is the main component of the Chat page, it is responsible for rendering
  * the whole page and it is also responsible for managing the state of the page.
@@ -21,9 +19,17 @@ import { channel } from "diagnostics_channel";
  * is also passed to the UserMessages component as a prop and it is used to determine which component to
  * render, the Messages component or the Channels component.
  */
-export default function ChatElements(data: { channels: ChannelsProps[] }, login: string) {
+export default function ChatElements({ channels, login }: { channels: ChannelsProps[], login: string }) {
+  console.log(channels[0].Messages)
   // ⚡ define the active channel and the function to set the active channel from the store context of zustand
+  // ⚡ define the activeTab state and the function to set the activeTab state
   const activeChannel = activateClickedChannel((state) => state.activeChannel);
+  const setActiveChannel = activateClickedChannel((state) => state.setActiveChannel);
+  setActiveChannel(channels[0]);
+  console.log(activeChannel);
+  console.log(activeChannel.Messages);
+
+
   const [activeTab, setActiveTab] = useState<string>("Messages");
 
   return (
@@ -34,7 +40,7 @@ export default function ChatElements(data: { channels: ChannelsProps[] }, login:
         {/* Render the Messages and the Channels(public, private) part */}
         {activeTab === "Messages" && <MessagesSideBar />}
         {activeTab === "Channels" && (
-          <ChannelsSideBar channels={data.channels} />
+          <ChannelsSideBar channels={channels} />
         )}
       </div>
       {/* Render the FriendsChatBox or ChannelsChatBox depending on the activeTab state */}
