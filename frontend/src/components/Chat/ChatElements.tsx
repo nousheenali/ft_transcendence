@@ -24,10 +24,6 @@ export default function ChatElements({ channels, login }: { channels: ChannelsPr
   // ⚡ define the active channel and the function to set the active channel from the store context of zustand
   // ⚡ define the activeTab state and the function to set the activeTab state
   const activeChannel = activateClickedChannel((state) => state.activeChannel);
-  const setActiveChannel = activateClickedChannel((state) => state.setActiveChannel);
-  setActiveChannel(channels[0]);
-  console.log(activeChannel);
-  console.log(activeChannel.Messages);
 
 
   const [activeTab, setActiveTab] = useState<string>("Messages");
