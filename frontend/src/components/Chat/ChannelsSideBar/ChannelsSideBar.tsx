@@ -40,8 +40,8 @@ export default function ChannelsSideBar(data: { channels: ChannelsProps[] }) {
     <>
       <ChannelsSearch />
       <PublicPrivateBtn
-        activeChannel={activeChannelType}
-        setActiveChannel={setActiveChannelType}
+        activeChannelType={activeChannelType}
+        setActiveChannelType={setActiveChannelType}
       />
       <CreateChannel />
       <hr className="w-80 border-line-break" />

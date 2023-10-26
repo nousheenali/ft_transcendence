@@ -75,8 +75,8 @@ export interface MsgChannelBtnProps {
 
 /*-------------------------------------------------------------------*/
 export interface ChannelsBtn {
-  activeChannel: string;
-  setActiveChannel: React.Dispatch<React.SetStateAction<string>>;
+  activeChannelType: string;
+  setActiveChannelType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 /*-------------------------------------------------------------------*/

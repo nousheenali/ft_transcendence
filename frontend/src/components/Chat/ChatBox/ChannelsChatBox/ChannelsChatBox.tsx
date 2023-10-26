@@ -11,7 +11,7 @@ export default function ChannelsChatBox({
   login: string;
 }) {
   return (
-    <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col border-b border-main-yellow bg-box-fill rounded-xl">
+    <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
       <ChannelChatBoxHeader channel={channel} />
       <ChannelChat channel={channel} login={login} />
       <SendMessageBox />

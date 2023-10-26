@@ -24,8 +24,8 @@ export default function ChannelChat({
     <div className="overflow-y-scroll px-3">
       {channelMessages.map((message, index) => {
       if (channelMessages[index].sender.login === login)
-        return <SenderChatBox key={index} message={message} />;
-      // else return <ReceiverChatBox key={index} message={message} />;
+        return <ReceiverChatBox key={index} message={message} />;
+      else return <SenderChatBox key={index} message={message} />;
     })}
     </div>
   );
