@@ -54,18 +54,22 @@ export default class GameObjects {
     this.scene.add.circle(x, y, 80).setStrokeStyle(5, 0xffffff, 1);
   }
 
-  renderBall(x: number, y: number) {
-    return this.scene.physics.add
+  renderBall(x: number, y: number, color: number) {
+    const ball =  this.scene.physics.add
       .sprite(x, y, "ball")
       .setCollideWorldBounds(true)
       .setBounce(1, 1);
+    ball.tint = color;
+    return ball;
   }
 
-  renderPaddle(x: number, y: number) {
-    return this.scene.physics.add
+  renderPaddle(x: number, y: number, color :number) {
+    const paddle = this.scene.physics.add
       .sprite(x, y, "paddle")
       .setCollideWorldBounds(true)
       .setImmovable(true);
+    paddle.tint = color;
+    return paddle;
   }
 
   renderImage(x: number, y: number, name: string) {

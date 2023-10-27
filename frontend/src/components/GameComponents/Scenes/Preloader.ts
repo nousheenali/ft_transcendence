@@ -7,8 +7,8 @@ export default class Preloader extends Scene {
   }
 
   preload() {
-    this.load.image("ball", "/gameAssets/green_ball.png");
-    this.load.image("paddle", "/gameAssets/green_paddle.png");
+    this.load.image("ball", "/gameAssets/ball.png");
+    this.load.image("paddle", "/gameAssets/paddle.png");
     this.load.image("logo", "/gameAssets/game_logo.png");
     this.load.image("play", "/gameAssets/play_button.png");
     this.load.image("player1keys", "/gameAssets/keys.png");

@@ -40,10 +40,22 @@ export default class Game extends Scene {
     this.scoreText = gameObj.displayScoreTexts(wH, wW, this.scoreText);
 
     //render sprites
-    this.ball = gameObj.renderBall(wW / 2, wH / 2);
+    this.ball = gameObj.renderBall(
+      wW / 2,
+      wH / 2,
+      this.registry.get("ballColor")
+    );
     const ballWidth = this.ball.body.width;
-    this.player[0] = gameObj.renderPaddle(wW - (ballWidth / 2 + 1), wH / 2);
-    this.player[1] = gameObj.renderPaddle(ballWidth / 2 + 1, wH / 2);
+    this.player[0] = gameObj.renderPaddle(
+      wW - (ballWidth / 2 + 1),
+      wH / 2,
+      this.registry.get("paddleColor")
+    );
+    this.player[1] = gameObj.renderPaddle(
+      ballWidth / 2 + 1,
+      wH / 2,
+      this.registry.get("paddleColor")
+    );
 
     this.physics.add.collider(this.ball, this.player[0]);
     this.physics.add.collider(this.ball, this.player[1]);
@@ -74,11 +86,11 @@ export default class Game extends Scene {
       this.gameStarted = true;
     }
     if (this.gameStarted) {
-      this.socket
-        .emit("updateBallPosition", { x: this.ball.x, y: this.ball.y , roomID: this.roomID})
-        .on("ballMove", (position: any) => {
-            this.ball?.setPosition(position.x, position.y);
-        });
+      // this.socket
+      //   .emit("updateBallPosition", { x: this.ball.x, y: this.ball.y , roomID: this.roomID})
+      //   .on("ballMove", (position: any) => {
+      //       this.ball?.setPosition(position.x, position.y);
+      //   });
       this.player[0].setVelocityY(0);
       if (this.cursors.up.isDown) {
         this.player[0].setVelocityY(-this.paddlespeed);

@@ -35,7 +35,7 @@ export default function GamePage() {
         height: worldHeight,
         // width: window.innerWidth * window.devicePixelRatio,
         // height: window.innerHeight * window.devicePixelRatio,
-        // backgroundColor: "#000000",
+        // backgroundColor: bgColor, // "#87CEEB", "#60b922", "#44b18b",
         scene: [Preloader, Menu, Game],
         physics: {
           default: "arcade",
@@ -65,6 +65,8 @@ export default function GamePage() {
             var phaserGame = new Phaser.Game(config);
             phaserGame.registry.set("roomID", roomID);
             phaserGame.registry.set('socket', socket);
+            phaserGame.registry.set("paddleColor", racketColor);
+            phaserGame.registry.set("ballColor", ballColor);
           });
         }
       });
