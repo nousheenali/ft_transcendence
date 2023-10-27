@@ -11,7 +11,7 @@ async function bootstrap() {
   //(CORS) is a mechanism that allows resources to be requested from another domain(NEXTJS frontend in our case)
   app.enableCors({
     origin: 'http://localhost:3000', // frontend URL
-    credentials: true, // If you need to include credentials (cookies, headers, etc.)
+    credentials: true, // to include credentials (cookies, headers, etc.)
   });
 
 
