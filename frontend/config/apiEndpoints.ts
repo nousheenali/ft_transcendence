@@ -22,7 +22,6 @@ export const API_ENDPOINTS = {
   allChannels: "/channel/all-channels/",
 
   // User Messsages
-  // end point for getting all messages of a user.
   userMessages: "/user-messages/received/",
-
+  userLatestMessages: "/user-messages/latest-messages/",
 };

@@ -13,15 +13,17 @@ import { HttpException, HttpStatus } from '@nestjs/common'; // 👈 Import HttpE
 @Controller('user-messages')
 export class UserMessagesController {
   constructor(private readonly userMessagesService: UserMessagesService) {}
+
   //================================================================================================
-  // 👇 get all received user messages from other users
-  @Get('/received/:login/')
-  getUserReceivedMessages(@Param('login') login: string) {
+  // 👇 get the user latest messages from other users.
+  @Get('/latest-messages/:login/')
+  async getUserLatestMessages(@Param('login') login: string) {
     try {
-      return this.userMessagesService.getUserMessages(login);
+      const userId = await this.userMessagesService.getUserIdByLogin(login);
+      return this.userMessagesService.userLatestMessages(userId);
     } catch (error) {
       throw new HttpException(
-        'Unexpected Error while Getting user received messages',
+        'Unexpected Error while Getting user latest messages',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

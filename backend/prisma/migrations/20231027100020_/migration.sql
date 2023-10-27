@@ -19,7 +19,7 @@ CREATE TABLE "User" (
     "avatar" TEXT DEFAULT 'https://i.imgur.com/6VBx3io.png',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "isOnline" BOOLEAN NOT NULL DEFAULT false,
+    "isOnline" BOOLEAN NOT NULL DEFAULT true,
     "TFAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "TFAKey" TEXT,
     "losses" INTEGER NOT NULL DEFAULT 0,

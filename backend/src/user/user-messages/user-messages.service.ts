@@ -10,25 +10,37 @@ export class UserMessagesService {
   constructor(private prisma: PrismaService) {}
 
   //===============================================================================
-  /**
-   * Get all received user messages from other users
-   * First, get the user by the login name,
-   * Second get all the messages that the user received.
-   */
-  async getUserMessages(login: string) {
+  /* Helper function to get the user using login */
+  async getUserIdByLogin(login: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        login: login,
+      },
+    });
+    return user.id;
+  }
+
+  //===============================================================================
+  // 👇 get the user latest messages from other users.
+  async userLatestMessages(userId: string) {
     try {
-      const user = await this.prisma.user.findUnique({
+      const latestMessages = await this.prisma.user.findFirst({
         where: {
-          login: login,
+          id: userId,
         },
         include: {
-          recievedMessages: true,
+          recievedMessages: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            distinct: ['senderId'],
+            include: {
+              sender: true,
+            },
+          },
         },
       });
-      if (user) {
-        const userMessages = user.recievedMessages;
-        return userMessages;
-      }
+      return latestMessages.recievedMessages;
     } catch (error) {
       throw new BadRequestException('Unable to get user messages');
     }

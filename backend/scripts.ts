@@ -53,6 +53,16 @@ async function main() {
       score: 122,
     },
   });
+  //------------------------------------------------
+  const taro = await prisma.user.create({
+    data: {
+      login: 'Taro',
+      email: 'taro@hotmail.com',
+      name: 'Taro Abdul',
+      isOnline: false,
+      score: 122,
+    },
+  });
   //================================================================================================================
   console.log('-------------------------------------------------------------');
   //================================================================================================================
@@ -161,24 +171,59 @@ async function main() {
     data: {
       senderId: samad.id,
       receiverId: gabdoush.id,
-      content: 'Hello gabdoush1, how are you....?',
+      content: 'Hello gabdoush1 from samad, how are you....?',
     },
   });
   await prisma.messages.create({
     data: {
       senderId: samad.id,
       receiverId: gabdoush.id,
-      content: 'Hello gabdoush2, how are?........',
+      content: 'Hello gabdoush2 from samad, how are?........',
     },
   });
   await prisma.messages.create({
     data: {
       senderId: samad.id,
       receiverId: gabdoush.id,
-      content: 'Hello gabdoush3, how.............',
+      content: 'Hello gabdoush3 from samad, how.............',
     },
   });
 
+  await prisma.messages.create({
+    data: {
+      senderId: yonatan.id,
+      receiverId: gabdoush.id,
+      content: 'Hello gabdoush1 from yonatan, how are you---',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: yonatan.id,
+      receiverId: gabdoush.id,
+      content: 'Hello gabdoush2 from yonatan, how are--------',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: yonatan.id,
+      receiverId: gabdoush.id,
+      content: 'Hello gabdoush3 from yonatan, how----------------',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: taro.id,
+      receiverId: gabdoush.id,
+      content: 'Hello gabdoush2 from taro, how are--------',
+    },
+  });
+  await prisma.messages.create({
+    data: {
+      senderId: taro.id,
+      receiverId: gabdoush.id,
+      content: 'Hello gabdoush3 from taro, how----------------',
+    },
+  });
   //================================================================================================================
   await prisma.messages.create({
     data: {
