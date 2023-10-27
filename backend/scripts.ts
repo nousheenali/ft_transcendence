@@ -33,36 +33,71 @@ async function main() {
       score: 120,
     },
   });
-  //------------------------------------------------
-  const yonatan = await prisma.user.create({
-    data: {
-      login: 'yonatan',
-      email: 'yonatan@hotmail.com',
-      name: 'Yonathan Monges',
-      isOnline: false,
-      score: 120,
-    },
-  });
-  //------------------------------------------------
-  const samad = await prisma.user.create({
-    data: {
-      login: 'samad',
-      email: 'samad@hotmail.com',
-      name: 'Samad Abdul',
-      isOnline: false,
-      score: 122,
-    },
-  });
-  //------------------------------------------------
-  const taro = await prisma.user.create({
-    data: {
-      login: 'Taro',
-      email: 'taro@hotmail.com',
-      name: 'Taro Abdul',
-      isOnline: false,
-      score: 122,
-    },
-  });
+  //================================================================================================================
+  const createUsers = async (numberOfUsers: any) => {
+    const users = [];
+
+    for (let i = 0; i < numberOfUsers; i++) {
+      const newUser = await prisma.user.create({
+        data: {
+          login: `user_${i}`,
+          email: `user_${i}@example.com`,
+          name: `User ${i}`,
+          isOnline: true,
+          score: 120,
+        },
+      });
+      users.push(newUser);
+    }
+
+    return users;
+  };
+
+  //================================================================================================================
+  const createChannels = async (users, numberOfChannels, channelType) => {
+    const channels = [];
+
+    for (let i = 0; i < numberOfChannels; i++) {
+      const creatorIndex = i % users.length;
+      const creator = users[creatorIndex];
+
+      const newChannel = await prisma.channel.create({
+        data: {
+          channelName: `Ch-${i}-${channelType}`,
+          channelType: channelType,
+          createdBy: creator.id,
+          channelMembers: {
+            create: {
+              userId: creator.id,
+            },
+          },
+        },
+      });
+
+      channels.push(newChannel);
+    }
+
+    return channels;
+  };
+
+  //================================================================================================================
+  const createChannelUserRelations = async (channels) => {
+    for (const channel of channels) {
+        await prisma.channelRelation.create({
+          data: {
+            channelId: channel.id,
+            userId: gabdoush.id,
+          }
+        })
+      }
+    };
+
+  //================================================================================================================
+  const users = await createUsers(100);
+  const privateChannels = await createChannels(users, 20, 'PRIVATE');
+  const publicChannels = await createChannels(users, 20, 'PUBLIC');
+  await createChannelUserRelations(privateChannels);
+  
   //================================================================================================================
   console.log('-------------------------------------------------------------');
   //================================================================================================================
@@ -143,340 +178,25 @@ async function main() {
       },
     },
   });
+  
   //================================================================================================================
-  // Adding channelRelation between the users to the channel.
+  // await prisma.messages.create({
+  //   data: {
+  //     senderId: samad.id,
+  //     receiverId: gabdoush.id,
+  //     content: 'Hello gabdoush1 from samad, how are you....?',
+  //   },
+  // });
 
-  await prisma.channelRelation.create({
-    data: {
-      channelId: Dubai.id,
-      userId: yonatan.id,
-    },
-  });
-  //------------------------------------------------
-  await prisma.channelRelation.create({
-    data: {
-      channelId: AbuDhabi.id,
-      userId: samad.id,
-    },
-  });
-  //------------------------------------------------
-  await prisma.channelRelation.create({
-    data: {
-      channelId: AbuDhabi.id,
-      userId: yonatan.id,
-    },
-  });
-  //================================================================================================================
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush1 from samad, how are you....?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush2 from samad, how are?........',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush3 from samad, how.............',
-    },
-  });
 
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush1 from yonatan, how are you---',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush2 from yonatan, how are--------',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush3 from yonatan, how----------------',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: taro.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush2 from taro, how are--------',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: taro.id,
-      receiverId: gabdoush.id,
-      content: 'Hello gabdoush3 from taro, how----------------',
-    },
-  });
+  // await prisma.messages.create({
+  //   data: {
+  //     senderId: samad.id,
+  //     channelId: AbuDhabi.id,
+  //     content: 'Hello Yonatan, how are you?',
+  //   },
+  // });
   //================================================================================================================
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Yonatan, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Gabdoush, I am fine, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'yes, everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Yonatan, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Gabdoush, I am fine, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'yes, everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Yonatan, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Gabdoush, I am fine, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'yes, everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Yonatan, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Gabdoush, I am fine, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'yes, everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Yonatan, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Gabdoush, I am fine, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'yes, everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Yonatan, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Gabdoush, I am fine, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'yes, everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: samad.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
 }
 
 main()

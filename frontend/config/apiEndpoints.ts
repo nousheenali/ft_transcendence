@@ -19,7 +19,8 @@ export const API_ENDPOINTS = {
 
   //CHANNEL module
   // end point for getting all channels that the user have relation with.
-  allChannels: "/channel/all-channels/",
+  privateChannels: "/channel/private-channels/",
+  publicChannels: "/channel/public-channels/",
 
   // User Messsages
   userMessages: "/user-messages/received/",

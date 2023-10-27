@@ -21,6 +21,7 @@ export default function ChatElements({
   latestMessages: MessagesProps[];
 }) {
   const session = useSession();
+  console.log(session)
   const login = session.data?.user.login!;
   const activeChannel = activateClickedChannel((state) => state.activeChannel);
   const [activeTab, setActiveTab] = useState<string>("Messages");

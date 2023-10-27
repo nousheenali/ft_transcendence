@@ -17,18 +17,32 @@ export class ChannelController {
 
   //================================================================================================
   // 👇 get all channels according to the channel type
-  @Get('/all-channels/:login')
-  GetAllChannels(@Param('login') login: string) {
+  @Get('/private-channels/:login')
+  GetPrivateChannels(@Param('login') login: string) {
     try {
-      return this.channelService.getChannelsByLogin(login);
+      return this.channelService.getPrivateChannels(login);
     } catch (error) {
       throw new HttpException(
-        'Unexpected Error while Getting Channels of the user ',
+        'Unexpected Error while Getting The Private Channels of the user ',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
+    //================================================================================================
+  // 👇 get all channels according to the channel type
+  @Get('/public-channels/:login')
+  GetPublicChannels() {
+    try {
+      return this.channelService.getPublicChannels();
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Public Channels of the server ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
   //================================================================================================
   // 👇 create a new channel
   @Post('/create')

@@ -56,10 +56,10 @@ export class ChannelService {
   }
 
   /** ------------------------------------------------------------------------------------------- *
-   * 🌼 Method that return all channels that the users have relations with.
+   * 🌼 Method that return all the private channels that the users have relations with.
    * * @param login: string, the login of the user
    */
-  async getChannelsByLogin(login: string) {
+  async getPrivateChannels(login: string) {
     const channels: Channel[] = [];
     const userRelations = await this.prisma.user.findUnique({
       where: {
@@ -79,7 +79,7 @@ export class ChannelService {
                   include: {
                     sender: true,
                   },
-                }
+                },
               },
             },
           },
@@ -90,6 +90,24 @@ export class ChannelService {
       channels.push(relation.channel);
     });
     return channels;
+  }
+  /** ------------------------------------------------------------------------------------------- *
+   * 🌼 Method that return all the public channels from the database.
+   */
+  async getPublicChannels() {
+    const publicChannels = await this.prisma.channel.findMany({
+      where: {
+        channelType: 'PUBLIC',
+      },
+      include: {
+        Messages: {
+          include: {
+            sender: true,
+          }
+        }
+      }
+    });
+    return publicChannels;
   }
   /** ------------------------------------------------------------------------------------------- **/
 }
