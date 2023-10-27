@@ -1,14 +1,14 @@
 // import SideBar from "@/components/SideBar";
 
-import GameStatus from '@/components/GameStatus/Gamestatus.tsx';
-import ResponsiveTable from '@/components/Table/Table';
-import { generateGameHistoryData } from '@/data/Table/gameHistory';
-import { generateLiveGamesData } from '@/data/Table/liveGames';
-import Image from 'next/image';
+import GameStatus from "@/components/GameStatus/Gamestatus";
+import ResponsiveTable from "@/components/Table/Table";
+import { generateGameHistoryData } from "@/data/Table/gameHistory";
+import { generateLiveGamesData } from "@/data/Table/liveGames";
+import Image from "next/image";
 
 export default function DashBoardPage() {
-  const gameHistoryHeading = ['Player 1', 'Score', 'Date', 'Moves', 'Result'];
-  const LiveGamesHeading = ['Player 1', 'Time', 'Plater 2'];
+  const gameHistoryHeading = ["Player 1", "Score", "Date", "Moves", "Result"];
+  const LiveGamesHeading = ["Player 1", "Time", "Plater 2"];
 
   const gameHistoryData = generateGameHistoryData();
   const liveGamesData = generateLiveGamesData();

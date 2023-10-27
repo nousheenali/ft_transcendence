@@ -1,10 +1,14 @@
 "use client";
 import { useSession } from "next-auth/react";
+import { useGameColor } from "@/context/store";
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 
 export default function GamePage() {
+
+  const { ballColor, racketColor, bgColor } = useGameColor() //for the time being im saving the colors in the context store
+
   const { data: session } = useSession();
   const login: string = session?.user.login!;
   const joinQueue = true;
