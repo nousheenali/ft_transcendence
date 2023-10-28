@@ -47,4 +47,72 @@ export class UserMessagesService {
   }
 
   //===============================================================================
+  // Get the chat between the user and his friend.
+  async userFriendChat(userId: string, friendId: string) {
+    try {
+      const friendChat = await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          recievedMessages: {
+            where: {
+              senderId: friendId,
+            },
+            select: {
+              content: true,
+              createdAt: true,
+              sender: {
+                select: {
+                  login: true,
+                  name: true,
+                  avatar: true,
+                  isOnline: true,
+                },
+              },
+              reciever: {
+                select: {
+                  login: true,
+                  name: true,
+                  avatar: true,
+                  isOnline: true,
+                },
+              },
+            },
+          },
+          sentMessages: {
+            where: {
+              receiverId: friendId,
+            },
+            select: {
+              content: true,
+              createdAt: true,
+              sender: {
+                select: {
+                  login: true,
+                  name: true,
+                  avatar: true,
+                  isOnline: true,
+                },
+              },
+              reciever: {
+                select: {
+                  login: true,
+                  name: true,
+                  avatar: true,
+                  isOnline: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return friendChat;
+    } catch (error) {
+      throw new BadRequestException('Unable to get user messages');
+    }
+  }
+
+  //===============================================================================
+
 }

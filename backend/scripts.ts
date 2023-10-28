@@ -83,119 +83,67 @@ async function main() {
   //================================================================================================================
   const createChannelUserRelations = async (channels) => {
     for (const channel of channels) {
-        await prisma.channelRelation.create({
-          data: {
-            channelId: channel.id,
-            userId: gabdoush.id,
-          }
-        })
+      await prisma.channelRelation.create({
+        data: {
+          channelId: channel.id,
+          userId: gabdoush.id,
+        },
+      });
+    }
+  };
+
+  //================================================================================================================
+  const sendMessagesToGabdoush = async (senders, gabdoush) => {
+    for (const sender of senders) {
+      await prisma.messages.create({
+        data: {
+          senderId: sender.id,
+          receiverId: gabdoush.id,
+          content: `Hello gabdoush from ${sender.login}, how are you....?`,
+        },
+      });
+    }
+  };
+
+  //================================================================================================================
+  const sendMessagesToChannels = async (users, channels) => {
+    for (const channel of channels) {
+      for (let i = 0; i < 10; i++) {
+        for (const user of users.concat(gabdoush)) {
+          const senderId = user.login === "gabdoush" ? gabdoush.id : user.id;
+          await prisma.messages.create({
+            data: {
+              senderId: senderId,
+              channelId: channel.id,
+              content: `Hello from ${user.login} to ${channel.channelName}`,
+            },
+          });
+        }
       }
-    };
+    }
+  };
 
   //================================================================================================================
-  const users = await createUsers(100);
-  const privateChannels = await createChannels(users, 20, 'PRIVATE');
-  const publicChannels = await createChannels(users, 20, 'PUBLIC');
+  // Create 5 users, and add gabdoush to them.
+  const users = await createUsers(5);
+  users.push(gabdoush);
+
+  // Create 5 private channels and 5 public channels, and add gabdoush to them.
+  const privateChannels = await createChannels(users, 5, 'PRIVATE');
+  const publicChannels = await createChannels(users, 5, 'PUBLIC');
+
+  // Add all users to all channels.
   await createChannelUserRelations(privateChannels);
-  
-  //================================================================================================================
-  console.log('-------------------------------------------------------------');
-  //================================================================================================================
-  const AbuDhabi = await prisma.channel.create({
-    data: {
-      channelName: 'AbuDhabi',
-      channelType: 'PUBLIC',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-  //------------------------------------------------
-  const FourTwo = await prisma.channel.create({
-    data: {
-      channelName: 'FourTwo',
-      channelType: 'PRIVATE',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-  //------------------------------------------------
-  const TwoFour = await prisma.channel.create({
-    data: {
-      channelName: 'TwoFour',
-      channelType: 'PRIVATE',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-  //------------------------------------------------
-  const Dubai = await prisma.channel.create({
-    data: {
-      channelName: '42 Dubai',
-      channelType: 'PRIVATE',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-  //------------------------------------------------
-  const Sharjah = await prisma.channel.create({
-    data: {
-      channelName: 'Sharjah',
-      channelType: 'PRIVATE',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-  //------------------------------------------------
-  const ourTeam = await prisma.channel.create({
-    data: {
-      channelName: 'ourTeam',
-      channelType: 'PRIVATE',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-  
-  //================================================================================================================
-  // await prisma.messages.create({
-  //   data: {
-  //     senderId: samad.id,
-  //     receiverId: gabdoush.id,
-  //     content: 'Hello gabdoush1 from samad, how are you....?',
-  //   },
-  // });
 
+  // Send messages to gabdoush from all users.
+  await sendMessagesToGabdoush(users, gabdoush);
+  await sendMessagesToGabdoush(users, gabdoush);
+  await sendMessagesToGabdoush(users, gabdoush);
+  
+  // Send messages to all channels from all users and from gabdoush.
+  await sendMessagesToChannels(users, privateChannels);
+  await sendMessagesToChannels(users, publicChannels);
 
-  // await prisma.messages.create({
-  //   data: {
-  //     senderId: samad.id,
-  //     channelId: AbuDhabi.id,
-  //     content: 'Hello Yonatan, how are you?',
-  //   },
-  // });
   //================================================================================================================
 }
 

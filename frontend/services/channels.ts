@@ -1,7 +1,6 @@
 import { ChannelsProps } from "@/components/Chat/types";
 import { getData } from "./api";
 
-
 /**
  * Helper function to fetch the channels of a user.
  * @param login The login of the user
@@ -9,10 +8,13 @@ import { getData } from "./api";
  * @returns The channels of the user
  */
 export const getChannelsData = async (login: string, endpoint: string) => {
-	try {
-	  const channels: ChannelsProps[] = await getData<ChannelsProps[]>(login, endpoint);
-	  return channels;
-	} catch (error: any) {
-	  throw new Error(error.message);
-	}
-  };
+  try {
+    const channels: ChannelsProps[] = await getData<ChannelsProps[]>(
+      login,
+      endpoint
+    );
+    return channels;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};

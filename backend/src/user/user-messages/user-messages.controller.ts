@@ -29,4 +29,21 @@ export class UserMessagesController {
     }
   }
   //================================================================================================
+    // 👇 get the user latest messages from other users.
+    
+    @Get('/friend-chat/:login/:friendLogin')
+    async getFriendChat(@Param('login') login: string, @Param('friendLogin') friendLogin: string) {
+      try {
+        const userId = await this.userMessagesService.getUserIdByLogin(login);
+        const friendId = await this.userMessagesService.getUserIdByLogin(friendLogin);
+
+        return this.userMessagesService.userFriendChat(userId, friendId);
+      } catch (error) {
+        throw new HttpException(
+          'Unexpected Error while Getting user latest messages',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+    //================================================================================================
 }

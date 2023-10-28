@@ -39,8 +39,19 @@ export const activateClickedChannel = create<AppState>((set) => ({
     channelMembers: [],
     Messages: [],
   } as ChannelsProps,
-  
+
   setActiveChannel: (channel) => set({ activeChannel: channel }),
+}));
+
+// ---------------------------------------------------------------------------------------------
+type BtnState = {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+};
+
+export const activateClickedTab = create<BtnState>((set) => ({
+  activeTab: "Messages",
+  setActiveTab: (tab) => set({ activeTab: tab }),
 }));
 
 // ---------------------------------------------------------------------------------------------

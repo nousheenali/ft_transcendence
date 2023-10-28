@@ -49,11 +49,16 @@ export interface ChannelsProps {
 }
 
 /*-------------------------------------------------------------------*/
+export interface ChannelsBtn {
+  activeChannelType: string;
+  setActiveChannelType: React.Dispatch<React.SetStateAction<string>>;
+}
 
 
 
 
 
+/*-------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------*/
 export interface ChatFriendsProps {
@@ -65,18 +70,6 @@ export interface ChatFriendsProps {
       src: string;
     };
   };
-}
-
-/*-------------------------------------------------------------------*/
-export interface MsgChannelBtnProps {
-  activeTab: string;
-  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-}
-
-/*-------------------------------------------------------------------*/
-export interface ChannelsBtn {
-  activeChannelType: string;
-  setActiveChannelType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 /*-------------------------------------------------------------------*/

@@ -1,33 +1,19 @@
-import ChatElements from "@/components/Chat/ChatElements";
-import { getServerSession } from "next-auth/next";
-import { options } from "@/app/api/auth/[...nextauth]/options";
-import { getChannelsData } from "../../../../services/channels";
-import { getUserLatestMessages } from "../../../../services/userMessages";
+"use client";
 
-import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
-import { ChannelsProps, MessagesProps } from "@/components/Chat/types";
+import React from "react";
+import { activateClickedTab } from "@/context/store";
+import Friends from "@/components/Chat/Friends/Friends";
+import Channels from "@/components/Chat/Channels/Channels";
 
 //============================================================================================//
-export default async function Chat() {
-  const session = await getServerSession(options);
-  const login = session?.user.login!;
+export default function Chat() {
+  const activeTab = activateClickedTab((state) => state.activeTab);
 
-  const privateChannels: ChannelsProps[] = await getChannelsData(
-    login,
-    API_ENDPOINTS.privateChannels
-  );
-
-  const publicChannels: ChannelsProps[] = await getChannelsData(
-    login,
-    API_ENDPOINTS.publicChannels
-  );
-
-  const latestMessages: MessagesProps[] = await getUserLatestMessages(
-    login,
-    API_ENDPOINTS.userLatestMessages
-  );
   return (
-    <ChatElements channels={allChannels} latestMessages={latestMessages} />
+    <div className="flex w-full h-screen px-4 justify-center">
+      {activeTab === "Channels" && <Channels />}
+      {activeTab === "Messages" && <Friends />}
+    </div>
   );
 }
 
