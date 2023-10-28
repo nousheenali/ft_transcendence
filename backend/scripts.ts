@@ -413,26 +413,27 @@ async function main() {
   });
   console.log(gabdoushYonatanMessages);
 
+  const yonis_id = "97cba20c-1709-4774-a4af-3d4c56bd1348"
   /*Create a tmp notification*/
   await prisma.notification.create({
     data: {
       content: "FriendRequest_Recieved",
-      senderId: yonatan.id,
-      userId: "1f9783e0-2157-46fd-8d66-0e083458a116",
+      senderId: gabdoush.id,
+      userId: yonis_id,
     },
   });
   await prisma.notification.create({
     data: {
       content: "DirectMessage_Recieved",
       senderId: yonatan.id,
-      userId: "1f9783e0-2157-46fd-8d66-0e083458a116",
+      userId: yonis_id,
     },
   });
   await prisma.notification.create({
     data: {
       content: "ChannelInvite_Recieved",
-      senderId: yonatan.id,
-      userId: "1f9783e0-2157-46fd-8d66-0e083458a116",
+      senderId: samad.id,
+      userId: yonis_id,
     },
   });
 
@@ -440,7 +441,7 @@ async function main() {
     data: {
       content: "FriendRequest_Recieved",
       senderId: samad.id,
-      userId: "1f9783e0-2157-46fd-8d66-0e083458a116",
+      userId: yonis_id,
     },
   });
 

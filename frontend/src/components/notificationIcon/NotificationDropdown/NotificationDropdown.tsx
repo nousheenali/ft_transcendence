@@ -2,31 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { NotificationDropdownProps } from "../types";
 
-const fetchAndGetName = async (id: string) => {
-  try {
-    const getUserById = await fetch("http://localhost:3001/user/getById/" + id)
-      .then((res) => res.json());
-    if (getUserById) {
-      return getUserById.login;
-    }
-    return "";
-  }
-  catch (error) {
-    return "";
-  }
-}
 
-const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
-  NotificationList,
-}) => {
-  console.log("notif: ", NotificationList);
+const NotificationDropdown: React.FC<NotificationDropdownProps> = ({NotificationList}) => {
+  // console.log("data: ", new Date() - new Date(NotificationList[0].recivedAt));
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
+  const [IsNewNotification, setIsNewNotification] = useState("");
 
   const openDropdown = () => {
     if (!isOpen)
       setIsOpen(true);
+    setIsNewNotification("hidden");
   };
 
   useEffect(() => {
@@ -55,9 +43,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-
-
-
   return (
     <div>
       <div>
@@ -99,7 +84,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                 strokeWidth="1.5"
                 strokeMiterlimit="10"
               />
-              <circle cx="12" cy="13" r="3" fill="#CD5555" fillOpacity="0.93" />
+              <circle cx="12" cy="13" r="3" fill="#CD5555" fillOpacity="0.93"  className={IsNewNotification}/>
             </svg>
           </div>
         </button>
@@ -117,32 +102,31 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
           ) : (
             <div className="py-2 space-y-2">
               {NotificationList.map((item, index) => (
-                // <div
-                //   key={index}
-                //   className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
-                // >
-                //   <a href="#" className="flex space-x-6 w-full">
-                //     <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
-                //       <Image
-                //         src="/avatar1.png"
-                //         alt="tmp"
-                //         width={40}
-                //         height={40}
-                //       />
-                //       <h1 className="truncate max-w-[70px] pt-4">
-                //         {fetchAndGetName()}
-                //       </h1>
-                //       <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
-                //     </div>
-                //     <div className="truncate w-3/5 py-1 pt-4 max-w-[200px]">
-                //       {item.content}
-                //     </div>
-                //     <div className="w-1/5 grow py-1 pt-4 text-end pr-2 text-dimmed-text">
-                //       {item.recivedAt}
-                //     </div>
-                //   </a>
-                // </div>
-                <h1>hello world</h1>
+                <div
+                  key={index}
+                  className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
+                >
+                  <a href="#" className="flex space-x-6 w-full">
+                    <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
+                      <Image
+                        src="/avatar1.png"
+                        alt="tmp"
+                        width={40}
+                        height={40}
+                      />
+                      <h1 className="truncate max-w-[70px] pt-4">
+                        {item.sender.login}
+                      </h1>
+                      <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
+                    </div>
+                    <div className="truncate w-3/5 py-1 pt-4 max-w-[200px]">
+                      {item.content}
+                    </div>
+                    <div className="w-1/5 grow py-1 pt-4 text-end pr-2 text-dimmed-text">
+                      {item.recivedAt}
+                    </div>
+                  </a>
+                </div>
               ))}
             </div>
           )}

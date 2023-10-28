@@ -2,6 +2,7 @@
 /*---------- All the Types required in Notification Window ----------*/
 /*-------------------------------------------------------------------*/
 
+import { userInformation } from "../Profile/types";
 import { playerData } from "../commonTypes/types";
 
 // export type NotificationItem = {
@@ -21,13 +22,9 @@ export interface NotificationItems {
   content: Content;
   read: boolean;
   recivedAt: string; // You can use a Date type if you prefer
-  sender: User;
+  sender: userInformation;
 }
 
-export interface User {
-  id: string;
-  // Define other user fields as needed
-}
 
 export enum Content {
   DirectMessage_Recieved = 'DirectMessage_Recieved',

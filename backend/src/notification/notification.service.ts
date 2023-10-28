@@ -20,6 +20,10 @@ export class NotificationService {
       {
         where: {
           userId: userId
+        },
+        include:{
+          sender: true,
+          User: true
         }
       }
     );
@@ -34,3 +38,6 @@ export class NotificationService {
     return `This action removes a #${id} notification`;
   }
 }
+
+
+//TODO  CHANGE FONT

@@ -4,17 +4,15 @@ import { NotificationItems } from './types';
 import { useSession } from 'next-auth/react';
 import { Session } from 'inspector';
 
-const fetchData = async (session: any) => {
+const fetchData = async (activeUser: string | null) => {
   try {
-    // console.log("sessin: ", session.user.login);
-    const getUserByLogin = await fetch("http://localhost:3001/user/getByLogin/" + session.user.login)
+    const getUserByLogin = await fetch("http://localhost:3001/user/getByLogin/" + activeUser)
       .then((res) => res.json());
     if (getUserByLogin) {
       const data = await fetch("http://localhost:3001/notification/getById/" + getUserByLogin.id)
         .then((res) => res.json());
       return data;
     }
-    console.log("data: ", getUserByLogin);
     return [];
   }
   catch (error) {
@@ -25,6 +23,7 @@ const fetchData = async (session: any) => {
 export default function NotificationIcon() {
   const [isChecked, setIsChecked] = useState(true);
   const session = useSession();
+  const activeUser = session.data?.user.name || null;
 
   const handleToggleChange = () => {
     setIsChecked(!isChecked);
@@ -33,10 +32,10 @@ export default function NotificationIcon() {
   const [notifications, setNotifications] = useState<NotificationItems[]>([]);
 
   useEffect(() => {
-    fetchData(session).then((data) => {
+    fetchData(activeUser).then((data) => {
       setNotifications(data);
     });
-  }, []);
+  }, [activeUser]);
 
   return (
     <div className=" flex  justify-between w-17 h-17 bg-heading-fill rounded-t-2xl border-b-[1px] border-heading-stroke p-2">
