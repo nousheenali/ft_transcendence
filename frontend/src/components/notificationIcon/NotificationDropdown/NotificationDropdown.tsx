@@ -1,17 +1,31 @@
-import React, { useState, useRef, useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { NotificationDropdownProps } from "../types";
 
+const fetchAndGetName = async (id: string) => {
+  try {
+    const getUserById = await fetch("http://localhost:3001/user/getById/" + id)
+      .then((res) => res.json());
+    if (getUserById) {
+      return getUserById.login;
+    }
+    return "";
+  }
+  catch (error) {
+    return "";
+  }
+}
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   NotificationList,
 }) => {
+  console.log("notif: ", NotificationList);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
   const openDropdown = () => {
-    if(!isOpen)
+    if (!isOpen)
       setIsOpen(true);
   };
 
@@ -42,7 +56,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     };
   }, [isOpen]);
 
-  
+
 
   return (
     <div>
@@ -101,36 +115,38 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
               No New Notifications.
             </p>
           ) : (
-          <div className="py-2 space-y-2">
-            {NotificationList.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
-              >
-                <a href="#" className="flex space-x-6 w-full">
-                  <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
-                    <Image
-                      src={item.userInfo.profileImage.src}
-                      alt={item.userInfo.profileImage.alt}
-                      width={40}
-                      height={40}
-                    />
-                    <h1 className="truncate max-w-[70px] pt-4">
-                      {item.userInfo.username}
-                    </h1>
-                    <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
-                  </div>
-                  <div className="truncate w-3/5 py-1 pt-4 truncate max-w-[200px]">
-                    {item.messageContent}
-                  </div>
-                  <div className="w-1/5 grow py-1 pt-4 text-end pr-2 text-dimmed-text">
-                    {item.messageTime}
-                  </div>
-                </a>
-              </div>
-            ))}
-          </div>
+            <div className="py-2 space-y-2">
+              {NotificationList.map((item, index) => (
+                // <div
+                //   key={index}
+                //   className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
+                // >
+                //   <a href="#" className="flex space-x-6 w-full">
+                //     <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
+                //       <Image
+                //         src="/avatar1.png"
+                //         alt="tmp"
+                //         width={40}
+                //         height={40}
+                //       />
+                //       <h1 className="truncate max-w-[70px] pt-4">
+                //         {fetchAndGetName()}
+                //       </h1>
+                //       <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
+                //     </div>
+                //     <div className="truncate w-3/5 py-1 pt-4 max-w-[200px]">
+                //       {item.content}
+                //     </div>
+                //     <div className="w-1/5 grow py-1 pt-4 text-end pr-2 text-dimmed-text">
+                //       {item.recivedAt}
+                //     </div>
+                //   </a>
+                // </div>
+                <h1>hello world</h1>
+              ))}
+            </div>
           )}
+
         </div>
       )}
     </div>
