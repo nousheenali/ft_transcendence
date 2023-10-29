@@ -8,7 +8,9 @@ export class NotificationService {
   constructor(private prisma: PrismaService) {}
 
   create(createNotificationDto: CreateNotificationDto) {
-    return 'This action adds a new notification';
+    return this.prisma.notification.create({
+      data: createNotificationDto
+    });
   }
 
   findAll() {

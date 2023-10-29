@@ -413,7 +413,7 @@ async function main() {
   });
   console.log(gabdoushYonatanMessages);
 
-  const yonis_id = "97cba20c-1709-4774-a4af-3d4c56bd1348"
+  const yonis_id = "7872e1aa-4958-41b3-a53c-84374934bc9b"
   /*Create a tmp notification*/
   await prisma.notification.create({
     data: {

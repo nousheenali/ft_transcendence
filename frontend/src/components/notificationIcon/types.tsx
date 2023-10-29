@@ -32,3 +32,11 @@ export enum Content {
   GameInvite_Recieved = 'GameInvite_Recieved',
   FriendRequest_Recieved = 'FriendRequest_Recieved',
 }
+
+
+export interface SendNotification{
+  content: string,
+  userId: string,
+  senderId: string,
+  read: boolean,
+}
