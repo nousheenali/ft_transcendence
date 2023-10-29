@@ -5,21 +5,24 @@ import ReceiverChatBox from "./Receiver/Receiver";
 import React, { useEffect, useState } from "react";
 import { getMessages } from "../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
+import { activateClickedFriend } from "../../../../../context/store";
 
 export default function FriendChat() {
   const session = useSession();
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
+  const activeFriend = activateClickedFriend((state) => state.activeFriend);
 
   useEffect(() => {
+    if (activeFriend === "" || activeFriend === "DefaultFriend") return;
     const fetchData = async () => {
       const chat: MessagesProps[] = await getMessages(
         session?.data?.user.login!,
-        API_ENDPOINTS.userMessages
+        API_ENDPOINTS.userMessages + activeFriend + "/"
       );
       setFriendChat(chat);
     };
     fetchData();
-  }, [session]);
+  }, [session, activeFriend]);
 
   return (
     <div className="overflow-y-scroll px-3">

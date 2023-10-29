@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { MessagesProps } from "../../../../types";
+import { activateClickedFriend } from "../../../../../../context/store";
 
 // const extractRealTime = (time: String) => {
 //   console.log("Time befor splitting =>", time);
@@ -16,10 +17,17 @@ import { MessagesProps } from "../../../../types";
 // };
 
 export default function ChatMessage({ message }: { message: MessagesProps }) {
+  const setActiveFriend = activateClickedFriend(
+    (state) => state.setActiveFriend
+  );
+
   return (
     <div
       className="flex flex-row justify-center items-center w-80 h-20 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer
 						bg-gradient-to-b from-latest-msg-s to-latest-msg-e"
+      onClick={() => {
+        setActiveFriend(message.sender.login);
+      }}
     >
       {/**
        * [1]: The indicator is a div that contains the profile image of the sender and a small circle that indicates

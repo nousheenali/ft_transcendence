@@ -55,3 +55,15 @@ export const activateClickedTab = create<BtnState>((set) => ({
 }));
 
 // ---------------------------------------------------------------------------------------------
+type clickedFriendState = {
+  activeFriend: string;
+  setActiveFriend: (login: string) => void;
+};
+
+export const activateClickedFriend = create<clickedFriendState>((set) => ({
+  activeFriend: "DefaultFriend",
+  setActiveFriend: (login) => set({ activeFriend: login }),
+}));
+
+
+// ---------------------------------------------------------------------------------------------

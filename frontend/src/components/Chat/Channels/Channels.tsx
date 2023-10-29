@@ -14,7 +14,6 @@ export default function Channels() {
   const session = useSession();
   const login = session.data?.user.login!;
 
-  
   const activeChannel = activateClickedChannel((state) => state.activeChannel);
 
   const [privateChannels, setPrivateChannels] = React.useState<ChannelsProps[]>(
