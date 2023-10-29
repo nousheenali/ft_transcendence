@@ -23,6 +23,6 @@ export const API_ENDPOINTS = {
   publicChannels: "/channel/public-channels/",
 
   // User Messsages
-  userMessages: "/user-messages/received/",
+  userMessages: "/user-messages/friend-chat/user_1/",
   userLatestMessages: "/user-messages/latest-messages/",
 };

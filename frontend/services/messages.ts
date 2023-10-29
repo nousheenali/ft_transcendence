@@ -17,6 +17,7 @@ export const getMessages = async (login: string, endpoint: string) => {
     );
     return messages;
   } catch (error: any) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 };

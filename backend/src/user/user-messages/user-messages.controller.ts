@@ -31,7 +31,7 @@ export class UserMessagesController {
   //================================================================================================
     // 👇 get the user latest messages from other users.
     
-    @Get('/friend-chat/:login/:friendLogin')
+    @Get('/friend-chat/:friendLogin/:login/')
     async getFriendChat(@Param('login') login: string, @Param('friendLogin') friendLogin: string) {
       try {
         const userId = await this.userMessagesService.getUserIdByLogin(login);
@@ -39,6 +39,7 @@ export class UserMessagesController {
 
         return this.userMessagesService.userFriendChat(userId, friendId);
       } catch (error) {
+        console.log(error);
         throw new HttpException(
           'Unexpected Error while Getting user latest messages',
           HttpStatus.INTERNAL_SERVER_ERROR,

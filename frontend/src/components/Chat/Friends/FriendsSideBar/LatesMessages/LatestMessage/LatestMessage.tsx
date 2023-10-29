@@ -1,19 +1,19 @@
 import Image from "next/image";
 import { MessagesProps } from "../../../../types";
 
-const extractRealTime = (time: String) => {
-  console.log("Time befor splitting =>", time);
-  const newTime = time.split("T");
-  console.log("After split => ", newTime);
-  const date = new Date(newTime[0] + " " + newTime[1]);
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
+// const extractRealTime = (time: String) => {
+//   console.log("Time befor splitting =>", time);
+//   const newTime = time.split("T");
+//   console.log("After split => ", newTime);
+//   const date = new Date(newTime[0] + " " + newTime[1]);
+//   const hours = date.getHours();
+//   const minutes = date.getMinutes();
 
-  console.log("hours => ", hours);
-  console.log("minutes => ", minutes);
+//   console.log("hours => ", hours);
+//   console.log("minutes => ", minutes);
 
-  return `${hours} h:${minutes}m`;
-};
+//   return `${hours} h:${minutes}m`;
+// };
 
 export default function ChatMessage({ message }: { message: MessagesProps }) {
   return (
@@ -25,7 +25,7 @@ export default function ChatMessage({ message }: { message: MessagesProps }) {
        * [1]: The indicator is a div that contains the profile image of the sender and a small circle that indicates
        * whether the sender is online or not.
        */}
-      <div className="indicator w-36 h-12 basis-1/6 -mt-4 -ml-2">
+      <div className="indicator w-36 h-12 basis-1/6 -mt-4">
         <Image
           alt={message.sender.name}
           src={"/av1.svg"}
@@ -57,7 +57,7 @@ export default function ChatMessage({ message }: { message: MessagesProps }) {
        * [3]: The message time.
        * */}
       <div className="text-xs font-saira-condensed font-thin text-dimmed-text basis-1/6 -mt-12 -mr-4">
-        {extractRealTime(message.createdAt)}
+        {message.createdAt}
       </div>
     </div>
   );

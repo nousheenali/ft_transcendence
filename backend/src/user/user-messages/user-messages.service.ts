@@ -50,7 +50,7 @@ export class UserMessagesService {
   // Get the chat between the user and his friend.
   async userFriendChat(userId: string, friendId: string) {
     try {
-      const friendChat = await this.prisma.user.findUnique({
+      const chat = await this.prisma.user.findUnique({
         where: {
           id: userId,
         },
@@ -107,6 +107,11 @@ export class UserMessagesService {
           },
         },
       });
+      const friendChat =[...chat.recievedMessages, ...chat.sentMessages];
+      friendChat.sort((a, b) => {
+          return a.createdAt.getTime() - b.createdAt.getTime();
+        },
+      );
       return friendChat;
     } catch (error) {
       throw new BadRequestException('Unable to get user messages');

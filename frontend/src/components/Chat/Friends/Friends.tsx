@@ -19,7 +19,6 @@ export default function Friends() {
         session?.data?.user.login!,
         API_ENDPOINTS.userLatestMessages
       );
-
       setLatestMessages(messages);
     };
     fetchData();

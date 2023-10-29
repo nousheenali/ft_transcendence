@@ -106,11 +106,24 @@ async function main() {
   };
 
   //================================================================================================================
+  const sendFromGabdoush = async (recievers, gabdoush) => {
+    for (const reciever of recievers) {
+      await prisma.messages.create({
+        data: {
+          senderId: gabdoush.id,
+          receiverId: reciever.id,
+          content: `Hello ${reciever.login} from gabdoush, how are you....?`,
+        },
+      });
+    }
+  };
+
+  //================================================================================================================
   const sendMessagesToChannels = async (users, channels) => {
     for (const channel of channels) {
       for (let i = 0; i < 10; i++) {
         for (const user of users.concat(gabdoush)) {
-          const senderId = user.login === "gabdoush" ? gabdoush.id : user.id;
+          const senderId = user.login === 'gabdoush' ? gabdoush.id : user.id;
           await prisma.messages.create({
             data: {
               senderId: senderId,
@@ -139,7 +152,12 @@ async function main() {
   await sendMessagesToGabdoush(users, gabdoush);
   await sendMessagesToGabdoush(users, gabdoush);
   await sendMessagesToGabdoush(users, gabdoush);
-  
+
+  // Send messages from gabdoush to all users.
+  await sendFromGabdoush(users, gabdoush);
+  await sendFromGabdoush(users, gabdoush);
+  await sendFromGabdoush(users, gabdoush);
+
   // Send messages to all channels from all users and from gabdoush.
   await sendMessagesToChannels(users, privateChannels);
   await sendMessagesToChannels(users, publicChannels);
