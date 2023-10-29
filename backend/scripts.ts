@@ -137,6 +137,20 @@ async function main() {
   };
 
   //================================================================================================================
+  // Create friend relation between the users and gabdoush.
+  const createFriendRelation = async (users, gabdoush) => {
+    for (const user of users) {
+      await prisma.friendRelation.create({
+        data: {
+          userId: user.id,
+          friendId: gabdoush.id,
+          friendStatus: 'ACCEPTED',
+        },
+      });
+    }
+  };
+
+  //================================================================================================================
   // Create 5 users, and add gabdoush to them.
   const users = await createUsers(5);
   users.push(gabdoush);
@@ -148,6 +162,9 @@ async function main() {
   // Add all users to all channels.
   await createChannelUserRelations(privateChannels);
 
+  // Create friend relation between the users and gabdoush.
+  await createFriendRelation(users, gabdoush);
+  
   // Send messages to gabdoush from all users.
   await sendMessagesToGabdoush(users, gabdoush);
   await sendMessagesToGabdoush(users, gabdoush);

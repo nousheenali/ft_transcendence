@@ -12,6 +12,7 @@ import MessagesSideBar from "@/components/Chat/Friends/FriendsSideBar/MessagesSi
 export default function Friends() {
   const session = useSession();
   const [latestMessages, setLatestMessages] = useState<MessagesProps[]>([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,9 +21,15 @@ export default function Friends() {
         API_ENDPOINTS.userLatestMessages
       );
       setLatestMessages(messages);
+      setLoading(false);
     };
     fetchData();
   }, [session]);
+
+  if (isLoading)
+  return (
+    <span className="loading loading-ring loading-lg text-main-yellow"></span>
+  );
 
   return (
     <div className="flex w-full h-screen px-4 justify-center">

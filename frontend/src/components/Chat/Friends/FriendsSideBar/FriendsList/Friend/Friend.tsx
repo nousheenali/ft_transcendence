@@ -1,8 +1,8 @@
 import Image from "next/image";
-import {ChatFriendsProps} from "@/components/Chat/types";
+import { userInformation } from "@/components/Profile/types";
 
 
-export default function Friend({friend}: ChatFriendsProps) {
+export default function Friend({friend}: {friend: userInformation}) {
 	return (
 		<div
 		  className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer">
@@ -11,8 +11,9 @@ export default function Friend({friend}: ChatFriendsProps) {
 		  {/* [1] */}
 		  <div className="indicator profile w-36 h-12 basis-1/6">
 			<Image
-			  alt={friend.profileImage.alt}
-			  src={friend.profileImage.src}
+			  alt={friend.name}
+			  src={"/av1.svg"}
+			//   src={friend.avatar}
 			  width={45}
 			  height={45}
 			/>
@@ -27,7 +28,6 @@ export default function Friend({friend}: ChatFriendsProps) {
 		  <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2">
 			<span className="font-saira-condensed text-main-text font-light truncate ...">{friend.name}</span>
 		  </div>
-		
 		</div>
 	  );
 }

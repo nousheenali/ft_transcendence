@@ -11,6 +11,7 @@ export default function FriendChat() {
   const session = useSession();
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
   const activeFriend = activateClickedFriend((state) => state.activeFriend);
+  // const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     if (activeFriend === "" || activeFriend === "DefaultFriend") return;
@@ -20,9 +21,15 @@ export default function FriendChat() {
         API_ENDPOINTS.userMessages + activeFriend + "/"
       );
       setFriendChat(chat);
+      // setLoading(false);
     };
     fetchData();
   }, [session, activeFriend]);
+
+  // if (isLoading)
+  // return (
+  //   <span className="loading loading-ring loading-lg text-main-yellow"></span>
+  // );
 
   return (
     <div className="overflow-y-scroll px-3">
