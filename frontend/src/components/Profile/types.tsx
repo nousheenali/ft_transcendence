@@ -2,9 +2,6 @@
 /*------------ All the Types required in Profile page ---------------*/
 /*-------------------------------------------------------------------*/
 
-import { TableRowData } from '../Table/types';
-import { playerData } from '../commonTypes/types';
-
 export interface ProfileInfoProps {
   name: string;
   email: string;

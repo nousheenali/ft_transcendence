@@ -11,7 +11,6 @@ export const options: NextAuthOptions = {
   providers: [
     FortyTwoProvider({
       profile(profile: FortyTwoProfile) {
-        // console.log(profile);
         return {
           ...profile,
           id: profile.id.toString(),
@@ -32,11 +31,8 @@ export const options: NextAuthOptions = {
         token.name = user.name;
         token.image = user.image;
       }
-      // console.log("token", token);
-      // console.log("profile ", profile);
       return token;
     },
-    //if i want to use it in client component
     async session({ session, token }) {
       if (token && session.user) {
         session.user.login = token.name;
@@ -46,10 +42,8 @@ export const options: NextAuthOptions = {
         session.userId = token.userId;
         session.accessToken = token.accessToken;
       }
-      // console.log("session: ", session);
       return session;
     },
-    //this accesses the backend api when user logs into the website
     async signIn({ user }) {
       const userData = {
         login: user.name,

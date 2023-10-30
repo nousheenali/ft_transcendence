@@ -19,12 +19,10 @@ import { verifyTwoFa } from '../../../../services/twoFa';
  * */
 
 export default function Home() {
-  const router = useRouter();
   const ref = useRef<HTMLDialogElement>(null);
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
-  const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +48,6 @@ export default function Home() {
         code,
         API_ENDPOINTS.verifyTwoFa
       );
-      // console.log(JSON.parse(message));
       let parsedResult = JSON.parse(message);
       console.log(parsedResult);
 
@@ -59,7 +56,6 @@ export default function Home() {
         handleShow();
       } else {
         toast.success('WELCOME BACK');
-        // router.push('/');
         location.replace('/');
       }
     } catch (error: any) {
@@ -69,8 +65,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-
-  // const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // Use URLSearchParams to work with query strings

@@ -1,8 +1,6 @@
-
-import SettingDetails from '@/components/Setting/SettingDetails/SettingDetails';
-import SettingHeader from '@/components/Setting/SettingHeader/SettingHeader';
-import SettingAvatar from '@/components/Setting/SettingAvatar/SettingAvatar';
-
+import SettingDetails from "@/components/Setting/SettingDetails/SettingDetails";
+import SettingHeader from "@/components/Setting/SettingHeader/SettingHeader";
+import SettingAvatar from "@/components/Setting/SettingAvatar/SettingAvatar";
 
 export default async function Settings() {
   return (

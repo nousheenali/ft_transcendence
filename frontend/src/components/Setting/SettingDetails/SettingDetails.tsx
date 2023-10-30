@@ -1,15 +1,15 @@
-'use client';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { SettingDetailsProps } from '@/components/Setting/types';
-import { useSession } from 'next-auth/react';
-import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { activateTwoFa, verifyTwoFa } from '../../../../services/twoFa';
-import { Modal } from 'react-daisyui';
-import Image from 'next/image';
-import { userInformation } from '@/components/Profile/types';
-import { getUserData } from '../../../../services/user';
+"use client";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { SettingDetailsProps } from "@/components/Setting/types";
+import { useSession } from "next-auth/react";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { activateTwoFa, verifyTwoFa } from "../../../../services/twoFa";
+import { Modal } from "react-daisyui";
+import Image from "next/image";
+import { userInformation } from "@/components/Profile/types";
+import { getUserData } from "../../../../services/user";
 
 function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const { data: session } = useSession();
@@ -17,19 +17,19 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
-  const [qrCode, setQrCode] = useState('');
-  const [code, setCode] = useState('');
+  const [qrCode, setQrCode] = useState("");
+  const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = (buttonId: string) => {
-    console.log(buttonId + ' button clicked');
+    console.log(buttonId + " button clicked");
   };
 
   const handleActivateTwoFa = async () => {
     try {
       setIsLoading(true);
       if (userInfo?.TFAEnabled === true) {
-        toast.error('ALREADY ACTIVE');
+        toast.error("ALREADY ACTIVE");
         return;
       }
       const message = await activateTwoFa(
@@ -48,13 +48,14 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
       setIsLoading(false);
     }
   };
+
   const [isModalOpen, setModalOpen] = useState(false);
   const handleVerify = async () => {
     try {
       setIsLoading(true);
 
-      if (code === '') {
-        toast.error('CODE IS REQUIRED');
+      if (code === "") {
+        toast.error("CODE IS REQUIRED");
         return;
       }
 
@@ -70,9 +71,9 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
 
       ref.current?.close();
       if (parsedResult.isValid === false) {
-        toast.error('CODE IS NOT VALID');
+        toast.error("CODE IS NOT VALID");
       } else {
-        toast.success('TWO-FACTOR AUTHENTICATION SET SUCCESSFULLY');
+        toast.success("TWO-FACTOR AUTHENTICATION SET SUCCESSFULLY");
       }
     } catch (error: any) {
       console.log(error);
@@ -99,12 +100,6 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
     fetchData();
   }, [session]);
 
-  // if (isLoading) {
-  //   return (
-  //     <span className="loading loading-ring loading-lg text-main-yellow"></span>
-  //   );
-  // }
-
   return (
     <div className="flex flex-col ml-10 mb-10 font-saira-condensed font-bold text-main-text justify-start pl-6">
       <div className="grid grid-cols-5">
@@ -113,7 +108,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
         <div className="col-span-1" />
         <button
           className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-          onClick={() => handleClick('Edit username')}
+          onClick={() => handleClick("Edit username")}
         >
           Edit username
         </button>
@@ -122,17 +117,11 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
         <div className="text-xl ml-10"> Email:</div>
         <div className="text-md truncate">{userInfo?.email}</div>
         <div className="col-span-1" />
-        <button
-          className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-          onClick={() => handleClick('Edit email')}
-        >
-          Edit email
-        </button>
       </div>
       <div className="grid grid-cols-5 mt-10">
         <div className="text-xl ml-10"> 2FA:</div>
         <div className="text-md truncate ">
-          {userInfo?.TFAEnabled ? 'Activated' : 'Not Activated'}
+          {userInfo?.TFAEnabled ? "Activated" : "Not Activated"}
         </div>
         <div className="col-span-1" />
         <button
@@ -142,17 +131,6 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           Activate 2FA
         </button>
       </div>
-      <div className="grid grid-cols-5 mt-10">
-        <div className="text-xl ml-10"> Wallpaper:</div>
-        <div className="col-span-2" />
-        <button
-          className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-          onClick={() => handleClick('Edit wallpaper')}
-        >
-          Edit Game wallpaper
-        </button>
-      </div>
-
       <Modal
         className="overflow-hidden w-[267px] h-[310px] m-0 p-0 gap-0 bg-aside-fill-70  border-b-start-game border-b-2 rounded-2xl "
         ref={ref}
@@ -177,7 +155,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
               placeholder="Enter Authenticator Code"
               onChange={(e) => {
                 setCode(e.target.value);
-                console.log('c', code);
+                console.log("c", code);
               }}
             />
           </div>
@@ -191,7 +169,6 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           </button>
         </Modal.Actions>
       </Modal>
-
     </div>
   );
 }
