@@ -1,14 +1,14 @@
 "use client";
 import Breaker from "@/components/br/Br";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { useState } from "react";
-import { VscBellDot } from "react-icons/vsc";
-import Image from "next/image";
-import MobileSidebar from "@/components/mobileSidebar/mobileSideBar";
 import NotificationIcon from "../../notificationIcon";
 import UserProfileSide from "../../userProfileSide/userProfileSide";
 import MenuSideBar from "../../menuSideBar/menuSideBar";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { getUserData } from "../../../../services/user";
+import { userInformation } from "@/components/Profile/types";
 
 interface AsideBarProps {
   isMobile: boolean;
@@ -16,6 +16,20 @@ interface AsideBarProps {
 
 const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
   const { data: session } = useSession();
+  const [userData, setUserData] = useState<userInformation>();
+
+  useEffect(() => {
+    if (session) {
+      getUserData(session?.user.login!, API_ENDPOINTS.getUserbyLogin)
+        .then((userData) => {
+          setUserData(userData);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    }
+  }, [session]);
+
   return (
     <>
       <aside
@@ -25,10 +39,14 @@ const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
       >
         <NotificationIcon />
 
-        <UserProfileSide
-          image={session?.user.image!}
-          name={session?.user.login!}
-        />
+        {userData ? (
+          <UserProfileSide
+            image={userData?.avatar || "image"}
+            name={userData?.login || "name"}
+          />
+        ) : (
+          <UserProfileSide image="load" name="load" />
+        )}
 
         <MenuSideBar />
       </aside>
