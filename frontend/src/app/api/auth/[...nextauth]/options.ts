@@ -1,9 +1,10 @@
-import type { NextAuthOptions } from "next-auth";
-import FortyTwoProvider from "next-auth/providers/42-school";
-import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
-import GitHubProfile from "next-auth/providers/github";
-import { FortyTwoProfile } from "next-auth/providers/42-school";
-import axios from "axios";
+import type { NextAuthOptions } from 'next-auth';
+import FortyTwoProvider from 'next-auth/providers/42-school';
+import GitHubProvider, { GithubProfile } from 'next-auth/providers/github';
+import GitHubProfile from 'next-auth/providers/github';
+import { FortyTwoProfile } from 'next-auth/providers/42-school';
+import axios from 'axios';
+import { NextResponse } from 'next/server';
 
 const backendUrl = process.env.NESTJS_URL; //http://localhost:3001
 export const options: NextAuthOptions = {
@@ -57,13 +58,10 @@ export const options: NextAuthOptions = {
         name: user.displayname,
       };
 
-      const endpoint="/user/create"
+      const endpoint = '/user/create';
       const apiUrl = `${backendUrl}${endpoint}`;
-
-      const response = await axios.post(
-        apiUrl,
-        userData
-      );
+      const response = await axios.post(apiUrl, userData);
+      console.log(response);
       if (response.status === 200) {
         return true;
       } else {

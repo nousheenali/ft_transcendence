@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto';
 import { UserService } from './user.service';
 import { NotFoundError } from 'rxjs';
@@ -13,6 +22,9 @@ export class UserController {
     const user = await this.userService.getUserByLogin(dto.login);
     try {
       if (user) {
+        if (user.TFAEnabled === true) {
+          await this.userService.setTFAVerificationRequired(user.login);
+        }
         res.status(200).json(user);
       } else {
         const newUser = await this.userService.createUser(dto);
@@ -38,15 +50,18 @@ export class UserController {
 
   //gets a single user information from user table using uuid
   @Get('getByLogin/:login')
-  getUserByLogin(@Param('login') login: string) {
+  async getUserByLogin(@Res() res, @Param('login') login: string) {
     try {
-      return this.userService.getUserByLogin(login);
+      console.log('calling');
+      const user = await this.userService.getUserByLogin(login);
+      res.status(200).json(user);
+      // return this.userService.getUserByLogin(login);
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         'Unexpected Error getting user by Login',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-
 }
