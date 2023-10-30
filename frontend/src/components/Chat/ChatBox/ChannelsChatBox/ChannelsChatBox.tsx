@@ -8,7 +8,7 @@ export default function ChannelsChatBox() {
       <ChannelChatBoxHeader
         ChannelName={"42AbuDhabi"}
         ChannelAvatar={{ alt: "42AbuDhabi", src: "av1.svg" }}
-        isPublic={true}
+        isPublic={false}
       />
       <ChannelChat />
       <SendMessageBox />
