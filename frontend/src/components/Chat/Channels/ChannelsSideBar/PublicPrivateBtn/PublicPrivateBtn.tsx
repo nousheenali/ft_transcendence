@@ -1,5 +1,6 @@
 import { ChannelsBtn } from "../../../types";
 
+//============================================================================================//
 /**
  * @param {string} activeChannel - The active channel
  * @param {function} setActiveChannel - The function that sets the active channel
@@ -43,3 +44,5 @@ export default function PublicPrivateBtn({
     </div>
   );
 }
+
+//============================================================================================//

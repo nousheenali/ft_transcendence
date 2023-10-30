@@ -65,5 +65,4 @@ export const activateClickedFriend = create<clickedFriendState>((set) => ({
   setActiveFriend: (login) => set({ activeFriend: login }),
 }));
 
-
 // ---------------------------------------------------------------------------------------------

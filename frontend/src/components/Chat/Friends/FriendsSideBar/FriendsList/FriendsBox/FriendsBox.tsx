@@ -4,11 +4,15 @@ import { userInformation } from "@/components/Profile/types";
 import { getFriendsData } from "../../../../../../../services/friends";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import Friend from "@/components/Chat/Friends/FriendsSideBar/FriendsList/Friend/Friend";
+import { activateClickedFriend } from "@/context/store";
 
 export default function FriendsBox() {
   const session = useSession();
   const [friends, setFriends] = useState<userInformation[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const setActiveFriend = activateClickedFriend(
+    (state) => state.setActiveFriend
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,6 +21,7 @@ export default function FriendsBox() {
         API_ENDPOINTS.getAllFriends
       );
       setFriends(friendsData);
+      if (friendsData.length > 0) setActiveFriend(friendsData[0].login);
       setLoading(false);
     };
     fetchData();

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ChannelUser from "@/components/Chat/Channels/ChannelsSideBar/ChannelUsers/User/ChannelUser";
 import { ChannelUserProps } from "@/components/Chat/types";
 
+//============================================================================================//
 export default function ChannelsUsersBox(data: { users: ChannelUserProps[] }) {
   const [isLoading, setLoading] = useState(true);
 
@@ -27,3 +28,6 @@ export default function ChannelsUsersBox(data: { users: ChannelUserProps[] }) {
     </div>
   );
 }
+
+
+//============================================================================================//
