@@ -55,7 +55,7 @@ export const options: NextAuthOptions = {
       const endpoint = '/user/create';
       const apiUrl = `${backendUrl}${endpoint}`;
       const response = await axios.post(apiUrl, userData);
-      console.log(response);
+
       if (response.status === 200) {
         return true;
       } else {

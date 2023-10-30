@@ -49,7 +49,6 @@ export default function Home() {
         API_ENDPOINTS.verifyTwoFa
       );
       let parsedResult = JSON.parse(message);
-      console.log(parsedResult);
 
       if (parsedResult.isValid === false) {
         toast.error('CODE IS NOT VALID');
@@ -59,7 +58,6 @@ export default function Home() {
         location.replace('/');
       }
     } catch (error: any) {
-      console.log(error);
       toast.error(error.message);
     } finally {
       setIsLoading(false);
@@ -71,7 +69,7 @@ export default function Home() {
     const queryParams = new URLSearchParams(window.location.search);
     if (queryParams.get('show2faModal') === 'true') {
       handleShow();
-      console.log('yes');
+
     }
   }, []);
   return (
@@ -103,7 +101,7 @@ export default function Home() {
                 placeholder="Enter Authenticator Code"
                 onChange={(e) => {
                   setCode(e.target.value);
-                  console.log('c', code);
+              
                 }}
               />
             </div>

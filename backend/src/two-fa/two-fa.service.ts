@@ -12,14 +12,12 @@ export class TwoFaService {
     // check if user exists
     try {
       const secret = speakeasy.generateSecret({ length: 10 });
-      console.log(secret);
       await this.prisma.user.update({
         where: { login: login },
         data: { TFAKey: secret.base32 },
       });
       return secret;
     } catch (error) {
-      console.log(error);
       throw new BadRequestException('Unable to generate secret');
     }
   }
@@ -60,7 +58,6 @@ export class TwoFaService {
 
       return isValid;
     } catch (error) {
-      console.log(error);
       throw new BadRequestException('Unable to verify token.');
     }
   }

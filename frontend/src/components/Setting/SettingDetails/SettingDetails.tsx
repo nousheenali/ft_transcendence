@@ -36,13 +36,11 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
         session?.user.login!,
         API_ENDPOINTS.generateSecret
       );
-      console.log(JSON.parse(message));
       let parsedResult = JSON.parse(message);
       setQrCode(parsedResult.qrCodeUrl);
-      console.log(qrCode);
+  
       handleShow();
     } catch (error: any) {
-      console.log(error);
       toast.error(error.message);
     } finally {
       setIsLoading(false);
@@ -66,7 +64,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
       );
       // console.log(JSON.parse(message));
       let parsedResult = JSON.parse(message);
-      console.log(parsedResult);
+
       setQrCode(parsedResult.qrCodeUrl);
 
       ref.current?.close();
@@ -76,7 +74,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
         toast.success("TWO-FACTOR AUTHENTICATION SET SUCCESSFULLY");
       }
     } catch (error: any) {
-      console.log(error);
+
       toast.error(error.message);
     } finally {
       setIsLoading(false);
@@ -88,14 +86,14 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      console.log(session?.user.login!);
+
       const user: userInformation = await getUserData(
         session?.user.login!,
         API_ENDPOINTS.getUserbyLogin
       );
       setUserInfo(user);
       setIsLoading(false);
-      console.log(user);
+
     };
     fetchData();
   }, [session]);
@@ -155,7 +153,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
               placeholder="Enter Authenticator Code"
               onChange={(e) => {
                 setCode(e.target.value);
-                console.log("c", code);
+    
               }}
             />
           </div>

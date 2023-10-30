@@ -52,12 +52,11 @@ export class UserController {
   @Get('getByLogin/:login')
   async getUserByLogin(@Res() res, @Param('login') login: string) {
     try {
-      console.log('calling');
+
       const user = await this.userService.getUserByLogin(login);
       res.status(200).json(user);
       // return this.userService.getUserByLogin(login);
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         'Unexpected Error getting user by Login',
         HttpStatus.INTERNAL_SERVER_ERROR,

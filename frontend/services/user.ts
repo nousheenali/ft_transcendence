@@ -9,7 +9,6 @@ export const getUserData = async (login: string, endpoint: string) => {
     );
     return user;
   } catch (error: any) {
-    console.log(error);
     throw new Error(error.message);
   }
 };
