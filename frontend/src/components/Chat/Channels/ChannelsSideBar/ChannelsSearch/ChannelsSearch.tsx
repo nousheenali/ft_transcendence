@@ -1,11 +1,5 @@
 import Image from "next/image";
 
-/**
- * @function ChannelsSearch
- * @returns JSX.Element
- * @description The ChannelsSearch component is responsible for rendering the search box in the ChannelsSideBar component.
- * @component
- */
 export default function ChannelsSearch() {
   return (
     <div className="flex justify-stretch items-center rounded-md bg-search-box-fill w-80 h-8 border-[0.5px] border-chat-search-stroke">

@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
-import Channels from "./ChannelsList/ChannelsList";
+import ChannelsList from "./ChannelsList/ChannelsList";
 import { activateClickedChannel } from "@/context/store";
 import CreateChannel from "./CreateChannel/CreateChannel";
 import { ChannelsProps, ChannelUserProps } from "../../types";
@@ -85,12 +85,12 @@ export default function ChannelsSideBar() {
       <hr className="w-80 border-line-break" />
       {activeChannelType === "Public" && (
         <>
-          <Channels channels={publicChannels} />
+          <ChannelsList channels={publicChannels} />
         </>
       )}
       {activeChannelType === "Private" && (
         <>
-          <Channels channels={privateChannels} />
+          <ChannelsList channels={privateChannels} />
           <ChannelUserHeader />
           <UsersSearch />
           <ChannelsUsersBox users={channelUsers} />

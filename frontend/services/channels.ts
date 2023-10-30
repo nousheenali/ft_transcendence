@@ -15,6 +15,7 @@ export const getChannelsData = async (login: string, endpoint: string) => {
     );
     return channels;
   } catch (error: any) {
+    console.log(error.message);
     throw new Error(error.message);
   }
 };
