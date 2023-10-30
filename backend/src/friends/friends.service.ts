@@ -162,7 +162,7 @@ export class FriendsService {
       return 'Friend Request Cancelled';
     } else {
       throw new BadRequestException(
-        'Friend Request already Accepted/Declined/Blocked',
+        'Friend Request already Accepted/Blocked',
       );
     }
   }
@@ -195,7 +195,7 @@ export class FriendsService {
       return 'Friend Request Accepted';
     } else {
       throw new BadRequestException(
-        'Friend Request already Accepted/Declined/Blocked',
+        'Friend Request already Accepted/Blocked',
       );
     }
   }
@@ -216,19 +216,16 @@ export class FriendsService {
     }
 
     if (relation.friendStatus === 'PENDING') {
-      await this.prisma.friendRelation.updateMany({
+      await this.prisma.friendRelation.deleteMany({
         where: {
           userId: reqFromData.id,
           friendId: userData.id,
-        },
-        data: {
-          friendStatus: 'DECLINED',
-        },
+        }
       });
       return 'Friend Request Declined';
     } else {
       throw new BadRequestException(
-        'Friend Request already Accepted/Declined/Blocked',
+        'Friend Request already Accepted/Blocked',
       );
     }
   }
@@ -306,7 +303,7 @@ export class FriendsService {
       return 'Friend has been Blocked';
     } else {
       /* User will not be able to block the other user, if friendStatus is 
-      PENDING/DECLINED/BLOCKED(by other user) */
+      PENDING/BLOCKED(by other user) */
       throw new BadRequestException('This user is not a friend');
     }
   }
