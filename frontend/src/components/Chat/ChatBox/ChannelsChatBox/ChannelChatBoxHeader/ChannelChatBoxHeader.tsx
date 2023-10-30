@@ -33,12 +33,13 @@ export default function ChannelChatBoxHeader({
 
       {isPublic === false && (
         <div className="flex flex-row gap-5 px-3">
-          <button className="flex flex-row gap-1 text-dimmed-text font-thin">
+          <button className="flex flex-row gap-1 text-dimmed-text font-thin ">
             <Image
               alt={"invite"}
               src={"./chat/user-cirlce-add.svg"}
               width={25}
               height={25}
+              className="mt-0.5"
             />
             <span className=" text-main-text text-sm font-light">Invite</span>
           </button>
@@ -48,6 +49,7 @@ export default function ChannelChatBoxHeader({
               src={"./chat/Sign_out_circle_duotone_line.svg"}
               width={25}
               height={25}
+              className="mt-0.5"
             />
             <span className=" text-main-text text-sm font-light">Leave</span>
           </button>
