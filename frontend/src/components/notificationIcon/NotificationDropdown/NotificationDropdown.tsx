@@ -3,6 +3,8 @@ import Image from "next/image";
 import { NotificationDropdownProps } from "../types";
 
 
+//animate-ping -> for new notification gives animation
+
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({NotificationList}) => {
   // console.log("data: ", new Date() - new Date(NotificationList[0].recivedAt));
 
@@ -14,10 +16,18 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
   const openDropdown = () => {
     if (!isOpen)
       setIsOpen(true);
-    setIsNewNotification("hidden");
   };
-
+  const checkNewNotification = () => {
+    if(NotificationList.length > 0)
+      setIsNewNotification("hidden");
+    NotificationList.map((item, index) => {
+      if (item.read === false) {
+        setIsNewNotification("");
+      }
+    })
+  }
   useEffect(() => {
+    checkNewNotification()
     function handleClickOutside(event: MouseEvent) {
       // contains is a method that checks whether the DOM element referenced by dropdownRef contains the event.target.
       // If dropdownRef contains event.target, it means the click occurred inside the dropdown.
