@@ -51,7 +51,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
         endpoint = API_ENDPOINTS.acceptFriendRequest;
         break;
       case "DECLINE":
-        action = updateFriendRelation;
+        action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.declineFriendRequest;
         break;
       case "ADDFRIEND":

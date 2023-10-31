@@ -107,7 +107,6 @@ enum FriendStatus {
   PENDING
   BLOCKED
   ACCEPTED
-  DECLINED
 }
 
 // =====================================================================

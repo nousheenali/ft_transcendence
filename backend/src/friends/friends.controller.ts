@@ -76,7 +76,7 @@ export class FriendsController {
   }
 
   /* When a user declines a request from another user*/
-  @Put('declineRequest')
+  @Delete('declineRequest')
   declineRequest(@Body() dto: FriendsDto) {
     try {
       return this.friendsService.declineRequest(dto.userLogin, dto.friendLogin);
