@@ -9,8 +9,12 @@ import {
   updateFriendRelation,
 } from "../../../services/friends";
 
-
-const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
+const TableCell: React.FC<TableCellProps> = ({
+  dataItem,
+  login,
+  activeButton,
+  reloadPageData,
+}) => {
   const { data: session } = useSession();
 
   if (typeof dataItem === "string") {
@@ -41,7 +45,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
   }
 
   // Calls the appropriate API end point based on the button clicked and friendid
-  const buttonClickEvent = async (friendLogin: string, buttonId: string) => {
+  const buttonClickEvent = async (friendLogin: string, buttonId: string, activeButton: string, reloadPageData : any) => {
     let action;
     let endpoint;
 
@@ -85,6 +89,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
           friendLogin,
           endpoint
         );
+        reloadPageData(activeButton);
         toast.success(message);
       } catch (error: any) {
         toast.error(error.message);
@@ -96,7 +101,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
   return (
     <div className="py-2 flex-1 text-center">
       <div className="flex items-center justify-center flex-row hover:cursor-pointer">
-        <button onClick={() => buttonClickEvent(login, dataItem.iconName)}>
+        <button onClick={() => buttonClickEvent(login, dataItem.iconName, activeButton, reloadPageData)}>
           <Image
             height={25}
             width={25}
