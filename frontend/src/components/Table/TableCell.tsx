@@ -45,7 +45,7 @@ const TableCell: React.FC<TableCellProps> = ({
   }
 
   // Calls the appropriate API end point based on the button clicked and friendid
-  const buttonClickEvent = async (friendLogin: string, buttonId: string, activeButton: string, reloadPageData : any) => {
+  const buttonClickEvent = async (friendLogin: string, buttonId: string) => {
     let action;
     let endpoint;
 
@@ -101,7 +101,7 @@ const TableCell: React.FC<TableCellProps> = ({
   return (
     <div className="py-2 flex-1 text-center">
       <div className="flex items-center justify-center flex-row hover:cursor-pointer">
-        <button onClick={() => buttonClickEvent(login, dataItem.iconName, activeButton, reloadPageData)}>
+        <button onClick={() => buttonClickEvent(login, dataItem.iconName)}>
           <Image
             height={25}
             width={25}
