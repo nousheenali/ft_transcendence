@@ -1,11 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { NotificationDropdownProps } from "../types";
-
+import { useSession } from "next-auth/react";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { getUserData } from "../../../../services/user";
+import { io } from "socket.io-client";
 
 //animate-ping -> for new notification gives animation
 
-const NotificationDropdown: React.FC<NotificationDropdownProps> = ({NotificationList}) => {
+const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
+  NotificationList,
+}) => {
   // console.log("data: ", new Date() - new Date(NotificationList[0].recivedAt));
 
   const [isOpen, setIsOpen] = useState(false);
@@ -14,20 +19,18 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
   const [IsNewNotification, setIsNewNotification] = useState("");
 
   const openDropdown = () => {
-    if (!isOpen)
-      setIsOpen(true);
+    if (!isOpen) setIsOpen(true);
   };
   const checkNewNotification = () => {
-    if(NotificationList.length > 0)
-      setIsNewNotification("hidden");
+    if (NotificationList.length > 0) setIsNewNotification("hidden");
     NotificationList.map((item, index) => {
       if (item.read === false) {
         setIsNewNotification("");
       }
-    })
-  }
+    });
+  };
   useEffect(() => {
-    checkNewNotification()
+    checkNewNotification();
     function handleClickOutside(event: MouseEvent) {
       // contains is a method that checks whether the DOM element referenced by dropdownRef contains the event.target.
       // If dropdownRef contains event.target, it means the click occurred inside the dropdown.
@@ -56,10 +59,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
   return (
     <div>
       <div>
-        <button
-          onClick={openDropdown}
-          className="btn-xs btn-ghost btn-circle"
-        >
+        <button onClick={openDropdown} className="btn-xs btn-ghost btn-circle">
           <div className="flex items-center justify-center rounded-2xl w-6 h-6 bg-gray-500 hover:bg-[#696A71] opacity-70 p-1 ">
             <svg
               className=""
@@ -94,7 +94,14 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
                 strokeWidth="1.5"
                 strokeMiterlimit="10"
               />
-              <circle cx="12" cy="13" r="3" fill="#CD5555" fillOpacity="0.93"  className={IsNewNotification}/>
+              <circle
+                cx="12"
+                cy="13"
+                r="3"
+                fill="#CD5555"
+                fillOpacity="0.93"
+                className={IsNewNotification}
+              />
             </svg>
           </div>
         </button>
@@ -140,7 +147,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({Notification
               ))}
             </div>
           )}
-
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 import { friendRelationDto } from "@/components/Profile/types";
 
-const backendUrl = "http://localhost:3001";
+const backendUrl = "http://10.11.1.8:3001";
 
 // Helper function to make GET requests
 export async function getData<T>(login: string, endpoint: string): Promise<T> {
