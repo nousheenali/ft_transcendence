@@ -12,7 +12,7 @@ export default function ChannelsChatBox({
     <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
       <ChannelChatBoxHeader channel={channel} />
       <ChannelChat channel={channel} />
-      <SendMessageBox />
+      <SendMessageBox receiver={channel}/>
     </div>
   );
 }

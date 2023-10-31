@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { ChannelsProps } from "@/components/Chat/types";
+import { Socket, io } from "socket.io-client";
+// ---------------------------------------------------------------------------------------------
 
 type TGameColor = {
   ballColor: string;
@@ -64,5 +66,16 @@ export const activateClickedFriend = create<clickedFriendState>((set) => ({
   activeFriend: "DefaultFriend",
   setActiveFriend: (login) => set({ activeFriend: login }),
 }));
+
+// ---------------------------------------------------------------------------------------------
+// type SocketState = {
+//   currentSocket: Socket;
+//   setCurrentSocket: (socket: Socket) => void;
+// };
+
+// export const useSocket = create<SocketState>((set) => ({
+//   currentSocket: {} as Socket,
+//   setCurrentSocket: (currentSocket: Socket) => set({ currentSocket }),
+// }));
 
 // ---------------------------------------------------------------------------------------------

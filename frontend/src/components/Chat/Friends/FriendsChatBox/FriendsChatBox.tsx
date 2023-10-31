@@ -27,7 +27,7 @@ export default function FriendsChatBox() {
     <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
       <FriendsChatBoxHeader friend={user} />
       <FriendChat />
-      <SendMessageBox />
+      <SendMessageBox receiver={user!}/>
     </div>
   );
 }
