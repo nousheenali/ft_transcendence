@@ -69,13 +69,13 @@ export const activateClickedFriend = create<clickedFriendState>((set) => ({
 
 // ---------------------------------------------------------------------------------------------
 // type SocketState = {
-//   currentSocket: Socket;
-//   setCurrentSocket: (socket: Socket) => void;
+//   socket: Socket;
+//   setSocket: (socket: any) => void;
 // };
 
-// export const useSocket = create<SocketState>((set) => ({
-//   currentSocket: {} as Socket,
-//   setCurrentSocket: (currentSocket: Socket) => set({ currentSocket }),
+// export const useChatSocketState = create<SocketState>((set) => ({
+//   socket: {} as Socket,
+//   setSocket: (socket: Socket) => set({ socket }),
 // }));
 
 // ---------------------------------------------------------------------------------------------

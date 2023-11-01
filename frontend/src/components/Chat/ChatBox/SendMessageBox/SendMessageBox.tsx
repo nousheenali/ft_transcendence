@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { ChannelsProps } from "@/components/Chat/types";
 import { userInformation } from "@/components/Profile/types";
-// import { useSocket } from "@/context/store";
+import { use } from "matter";
+// import { useChatSocketState } from "@/context/store";
 
 //========================================================================
 interface Message {
@@ -24,35 +25,39 @@ export default function SendMessageBox({
   //---------------------------------------------------------------
   const session = useSession();
   const [currentMessage, setCurrentMessage] = useState<string>("");
-  const activeUser = session.data?.user.name!;
-  const socket = io("http://localhost:3001", {
-    query: { userLogin: activeUser },
-  });
+  const [socket, setSocket] = useState<Socket>();
+
   //---------------------------------------------------------------
+  // use socket state from the context store
+  // const { socket, setSocket } = useChatSocketState();
+
   // use effect for socket connection, disconnection, and message
   useEffect(() => {
+    //--------------------------------------------------
+    const socket = io("http://localhost:3001", {
+      query: { userLogin: session.data?.user.name! },
+    });
+    setSocket(socket);
     //--------------------------------------------------
     // connect to the server
     socket.on("connection", () => {
       console.log(`Connected to the server with socket id: ${socket.id}`);
     });
+
     //--------------------------------------------------
     // listen for messages from the server
-    if (socket)
-      socket.on("ServerToClient", (data: any) => {
-        console.log(data);
-      });
+    socket.on("ServerToClient", (data: any) => {
+      console.log(data);
+    });
 
     //--------------------------------------------------
     // cleanup function, will be called when the component unmounts
     return () => {
-      if (socket) {
-        socket.off("connect");
-        socket.off("disconnect");
-        socket.off("ServerToClient");
-      }
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("ServerToClient");
     };
-  }, [receiver, activeUser]);
+  }, [session]);
 
   //---------------------------------------------------------------
   // send message to the server and then to the receiver.
@@ -63,25 +68,21 @@ export default function SendMessageBox({
     }
 
     // Send the message to the a user or a channel
-    if ("login" in receiver) {
+    if ("login" in receiver && socket) {
       // It's a user
       socket.emit("ClientToServer", {
-        message: {
-          socketId: socket.id,
-          username: session?.data?.user?.name,
-          receiver: receiver.login,
-          message: trimmedMessage,
-        },
+        socketId: socket.id,
+        username: session?.data?.user?.name,
+        receiver: receiver.login,
+        message: trimmedMessage,
       });
-    } else if ("channelName" in receiver) {
+    } else if ("channelName" in receiver && socket) {
       // It's a channel
       socket.emit("ClientToServer", {
-        message: {
-          socketId: socket.id,
-          username: session?.data?.user?.name,
-          receiver: receiver.channelName,
-          message: trimmedMessage,
-        },
+        socketId: socket.id,
+        username: session?.data?.user?.name,
+        receiver: receiver.channelName,
+        message: trimmedMessage,
       });
     }
 
