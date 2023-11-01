@@ -1,30 +1,34 @@
 import { friendRelationDto, userInformation } from "@/components/Profile/types";
 import { deleteData, getData, postData, updateData } from "./api";
 import { Content, SendNotification } from "@/components/notificationIcon/types";
-
+import { Socket } from "socket.io-client";
+import { sendNotificationSound } from "@/components/notificationIcon";
 
 // a function to send a notification to a user, now used for a friend request, can be used for all differnt types of notifications
 const sendNotification = async (
   senderId: string,
   userId: string,
-  content: Content
+  content: Content,
+  SocketToSend: Socket
 ) => {
-
   try {
-  const user = await getData<userInformation>(userId, "/user/getByLogin/");
-  const friend = await getData<userInformation>(senderId, "/user/getByLogin/");
-  const notification: SendNotification = {
-    content: content,
-    userId: user.id,
-    senderId: friend.id,
-    read: false,
-  };
-  return postData<SendNotification>(notification, "/notification/create");
+    const user = await getData<userInformation>(userId, "/user/getByLogin/");
+    const friend = await getData<userInformation>(
+      senderId,
+      "/user/getByLogin/"
+    );
+    const notification: SendNotification = {
+      content: content,
+      userId: user.id,
+      senderId: friend.id,
+      read: false,
+    };
+    sendNotificationSound(SocketToSend, notification);
+    return postData<SendNotification>(notification, "/notification/create");
   } catch (error: any) {
     throw new Error(error.message);
   }
-}
-
+};
 
 export const getFriendsData = async (
   login: string,
@@ -39,13 +43,13 @@ export const getFriendsData = async (
   } catch (error: any) {
     throw new Error(error.message);
   }
-}
-
+};
 
 export const createFriendRelation = async (
   login: string,
   friendLogin: string,
-  endpoint: string
+  endpoint: string,
+  SocketToSend: Socket
 ) => {
   try {
     const data: friendRelationDto = {
@@ -53,7 +57,12 @@ export const createFriendRelation = async (
       friendLogin: friendLogin,
     };
     const res = await postData<friendRelationDto>(data, endpoint);
-    sendNotification(login, friendLogin, Content.FriendRequest_Recieved); // send a notification to the friend that they get a friend request
+    sendNotification(
+      login,
+      friendLogin,
+      Content.FriendRequest_Recieved,
+      SocketToSend
+    ); // send a notification to the friend that they get a friend request
     return res;
   } catch (error: any) {
     throw new Error(error.message);
@@ -75,7 +84,6 @@ export const updateFriendRelation = async (
     throw new Error(error.message);
   }
 };
-
 
 export const deleteFriendRelation = async (
   login: string,

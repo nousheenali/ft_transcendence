@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import NotificationDropdown from "./NotificationDropdown/NotificationDropdown";
 import { NotificationItems, SendNotification } from "./types";
@@ -25,6 +26,20 @@ const fetchData = async (activeUser: string | null) => {
   }
 };
 
+// const notificationData: SendNotification = {
+//   content: "FriendRequest_Recieved",
+//   read: true,
+//   senderId: "2699479c-379b-4d96-8b43-fdabe2178aef",
+//   userId: "7872e1aa-4958-41b3-a53c-84374934bc9b",
+// };
+export const sendNotificationSound = (
+  sendTo: Socket,
+  notification: SendNotification
+) => {
+  if (sendTo) {
+    sendTo.emit("newNotif", notification);
+  }
+};
 export default function NotificationIcon() {
   const [isChecked, setIsChecked] = useState(true);
   const session = useSession();
@@ -55,6 +70,7 @@ export default function NotificationIcon() {
       socket.on("connect", () => {
         console.log("connected", socket.id);
         setSocket(socket);
+        setCurrentSocket(socket);
       });
       socket.on("newNotif", (data) => {
         setNewNotification(true);
@@ -89,22 +105,8 @@ export default function NotificationIcon() {
       });
     }
   }, [activeUser, session, newNotification]);
-  const notificationData: SendNotification = {
-    content: "FriendRequest_Recieved",
-    read: true,
-    senderId: "2699479c-379b-4d96-8b43-fdabe2178aef",
-    userId: "7872e1aa-4958-41b3-a53c-84374934bc9b",
-  };
-  const sendNotification = () => {
-    // Emit a notification event to the server
-    console.log("currentSocke:  ", currentSocket);
-    if (socket) {
-      socket.emit("newNotif", notificationData);
-    }
-  };
   return (
     <div className=" flex  justify-between w-17 h-17 bg-heading-fill rounded-t-2xl border-b-[1px] border-heading-stroke p-2">
-      <button onClick={sendNotification}>Send Notification</button>
       <NotificationDropdown NotificationList={notifications} />
       <h1>
         <span className="text-yellow-300 text-stroke-3 ">Spin</span>

@@ -18,21 +18,19 @@ export class GatewayNotifGateway {
   @WebSocketServer()
   server: Server;
 
-  printUserSocketMapContents() {
-    for (const [userId, socket] of this.userSocketMap) {
-      console.log(`User ID: ${userId}, Socket ID: ${socket.id}`);
-    }
-  }
+  // printUserSocketMapContents() {
+  //   for (const [userId, socket] of this.userSocketMap) {
+  //     console.log(`User ID: ${userId}, Socket ID: ${socket.id}`);
+  //   }
+  // }
 
   handleConnection(client: Socket, ...args: any[]) {
     // Access userId from the query parameter
     const userId = client.handshake.query.userId as string;
 
-    console.log('New connection: ', client.id);
-
     // Store the mapping between userId and socket
     this.userSocketMap.set(userId, client);
-    this.printUserSocketMapContents();
+    // this.printUserSocketMapContents();
   }
 
   @SubscribeMessage('newNotif')
@@ -41,10 +39,8 @@ export class GatewayNotifGateway {
     @ConnectedSocket() sender: Socket,
   ) {
     const recipientSocket = this.userSocketMap.get(body.userId);
-    console.log('recipientSocket: ', body);
     if (recipientSocket) {
       recipientSocket.emit('newNotif', body);
     }
-    return this.gatewayNotifService.newNotification();
   }
 }

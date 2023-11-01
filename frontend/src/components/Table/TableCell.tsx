@@ -8,10 +8,11 @@ import {
   deleteFriendRelation,
   updateFriendRelation,
 } from "../../../services/friends";
-
+import { useSocket } from "@/context/store";
 
 const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
   const { data: session } = useSession();
+  const { currentSocket } = useSocket();
 
   if (typeof dataItem === "string") {
     return <div className="py-2 flex-1 text-center">{dataItem}</div>;
@@ -83,7 +84,8 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
         const message = await action(
           session?.user.login!,
           friendLogin,
-          endpoint
+          endpoint,
+          currentSocket
         );
         toast.success(message);
       } catch (error: any) {

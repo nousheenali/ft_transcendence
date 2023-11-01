@@ -10,19 +10,7 @@ export class GatewayNotifService {
   //   return 'This action adds a new gatewayNotif';
   // }
 
-  newNotification() {
-    return `This action returns all gatewayNotif`;
-  }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} gatewayNotif`;
-  // }
-
-  // update(id: number, updateGatewayNotifDto: UpdateGatewayNotifDto) {
-  //   return `This action updates a #${id} gatewayNotif`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} gatewayNotif`;
+  // newNotification() {
+  //   return `This action returns all gatewayNotif`;
   // }
 }
