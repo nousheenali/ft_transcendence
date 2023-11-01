@@ -38,6 +38,7 @@ export default function SendMessageBox({
       query: { userLogin: session.data?.user.name! },
     });
     setSocket(socket);
+
     //--------------------------------------------------
     // connect to the server
     socket.on("connection", () => {
@@ -85,7 +86,11 @@ export default function SendMessageBox({
         message: trimmedMessage,
       });
     }
-
+    // ##############################################################
+    // POST THE MESSAGE TO THE DATABASE
+    //----------------------------------
+    
+    // ##############################################################
     setCurrentMessage("");
   };
 

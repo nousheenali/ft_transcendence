@@ -28,12 +28,6 @@ interface Message {
   message: string;
 }
 
-interface onConnection {
-  socketId: string;
-  username: string;
-  receiver: string;
-}
-
 //================================================================================================
 // ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
 // the frontend to connect to the websocket server
@@ -61,15 +55,14 @@ export class ChatGateway
   @SubscribeMessage('connection')
   async handleConnection(@ConnectedSocket() client: Socket) {
     const userLogin = client.handshake.query.userLogin;
+    if (userLogin === undefined) return;
     this.logger.log(
       `New Client connected: id => ${client.id} name => ${userLogin}`,
     );
     // Add the user to the (usersMap) and (roomsArray) and join the user's room
-    if (userLogin) {
       usersMap.set(userLogin, client.id);
       client.join(userLogin);
       if (roomsArray.indexOf(userLogin) == -1) roomsArray.push(userLogin);
-    }
     
     console.log('--------------------------------------------');
     console.log("[" + usersMap.size + "] users connected");
@@ -85,13 +78,21 @@ export class ChatGateway
   // (roomsArray)
   //================================================================================================
   @SubscribeMessage('ClientToServer')
-  async sendToUser(@MessageBody() data: onConnection) {
+  async sendToUser(@MessageBody() data: Message ) {
+    
+    //-----------------------------------------------------------------------------
+    //Note: The receiver will have a room when he connects to the websocket server
+    // so this is only for testing purposes
     const userRoom = roomsArray.find((room) => room === data.receiver);
     if (userRoom === undefined) {
       if (roomsArray.indexOf(data.receiver) == -1)
         roomsArray.push(data.receiver);
     }
-    this.server.to(userRoom).emit('ServerToClient', data);
+    console.log("userRoom ---->", userRoom);
+    console.log("data.receiver ---->", data.receiver);
+    //-----------------------------------------------------------------------------
+
+    this.server.to(data.receiver).emit('ServerToClient', data);
   }
 
   //================================================================================================

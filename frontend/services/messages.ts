@@ -1,5 +1,5 @@
 import { MessagesProps } from "@/components/Chat/types";
-import { getData } from "./api";
+import { getData, postData } from "./api";
 
 //============================================================================================//
 
@@ -16,6 +16,22 @@ export const getMessages = async (login: string, endpoint: string) => {
       endpoint
     );
     return messages;
+  } catch (error: any) {
+    console.log(error.message);
+    throw new Error(error.message);
+  }
+};
+
+//============================================================================================//
+/**
+ * Helper function to post the message to the database.
+ * @param login The login of the user
+ * @param endpoint The endpoint in the messages service to fetch the data from
+ * @returns The channels of the user
+ */
+export const postMessages = async (data: MessagesProps, endpoint: string) => {
+  try {
+    await postData<MessagesProps>(data, endpoint);
   } catch (error: any) {
     console.log(error.message);
     throw new Error(error.message);
