@@ -8,8 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GameRoom, GameRoomService } from './game-room/game-room.service';
-import { GameService, Player } from './game.service';
-import { GameState } from './model/game-state.model';
+import { PlayerService, Player } from './player/player.service';
 
 @WebSocketGateway({ namespace: '/game' })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -17,7 +16,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   constructor(
-    private readonly gameService: GameService,
+    private readonly playerService: PlayerService,
     private readonly gameRoomService: GameRoomService,
   ) {}
 
@@ -25,7 +24,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleConnection(client: Socket) {
     const username = client.handshake.query.username;
     if (!Array.isArray(username)) {
-      this.gameService.addPlayer(client.id, username);
+      this.playerService.addPlayer(client.id, username);
     }
     console.log(`Player connected: ${client.id} --- ${username}`);
     this.server.to(client.id).emit('connected');
@@ -33,94 +32,212 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: Socket) {
     // Handle player disconnection
-    this.gameService.removePlayer(client.id);
+    this.playerService.removePlayer(client.id);
     console.log(`Player disconnected: ${client.id}`);
   }
 
   @SubscribeMessage('addToQueue')
-  handleFindMatch(client: Socket, worldWidth: number, worldHeight: number) {
-    this.gameService.addToQueue(client.id);
-    const players: Player[] | null = this.gameService.matchQueuedPlayers();
+  handleFindMatch(client: Socket, data: any) {
+    this.playerService.addToQueue(client.id, data.width, data.height);
+    const players: Player[] | null = this.playerService.matchQueuedPlayers();
 
     if (players !== null) {
-      const player1 = players[0];
-      const player2 = players[1];
-      const roomID = this.gameRoomService.createGameRoom(player1, player2);
-      this.server.to(player1.id).emit('matched', roomID);
-      this.server.to(player2.id).emit('matched', roomID);
-      const initialVelocity = { x: 5, y: 2 };
+      const p1 = players[0];
+      const p2 = players[1];
+      const roomID = this.gameRoomService.createGameRoom(p1, p2);
+      const room = this.gameRoomService.getGameRoom(roomID);
+      this.server
+        .to(p1.id)
+        .emit(
+          'matched',
+          roomID,
+          p1.name,
+          p2.name,
+          room.worldWidth,
+          room.worldHeight,
+        );
+      this.server
+        .to(p2.id)
+        .emit(
+          'matched',
+          roomID,
+          p1.name,
+          p2.name,
+          room.worldWidth,
+          room.worldHeight,
+        );
     }
   }
+
+  @SubscribeMessage('matchFriend')
+  handleMatchFriend(client: Socket, data: any) {
+    const p1: Player = this.playerService.getPlayerByID(client.id);
+    const p2: Player = this.playerService.getPlayerByName(data.friendName);
+
+    if (p1 && p2) {
+      const roomID = this.gameRoomService.createGameRoom(p1, p2);
+      const room = this.gameRoomService.getGameRoom(roomID);
+      this.server
+        .to(p1.id)
+        .emit(
+          'matched',
+          roomID,
+          p1.name,
+          p2.name,
+          room.worldWidth,
+          room.worldHeight,
+        );
+      this.server
+        .to(p2.id)
+        .emit(
+          'matched',
+          roomID,
+          p1.name,
+          p2.name,
+          room.worldWidth,
+          room.worldHeight,
+        );
+    }
+  }
+
+  @SubscribeMessage('updateSpritePositions')
+  handleSpritePositions(client: Socket, data: any) {
+    const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
+    gameRoom.ballWidth = data.ballWidth;
+    gameRoom.paddleWidth = data.paddleWidth;
+    gameRoom.paddleHeight = data.paddleHeight;
+    gameRoom.ballPosition.x = data.ballPosition.x;
+    gameRoom.ballPosition.y = data.ballPosition.y;
+    gameRoom.players[0].position.x = data.p0Position.x;
+    gameRoom.players[0].position.y = data.p0Position.y;
+    gameRoom.players[1].position.x = data.p1Position.x;
+    gameRoom.players[1].position.y = data.p1Position.y;
+  }
+
   @SubscribeMessage('playerReady')
   handleplayerReady(client: Socket) {
-    this.gameService.playerReady(client.id);
+    this.playerService.playerReady(client.id);
     this.server.to(client.id).emit('ready');
   }
 
-  @SubscribeMessage('initBallVelocity')
+  @SubscribeMessage('initSettings')
   handleInitBallVelocity(client: Socket, roomID: string) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(roomID);
-    const player1 = gameRoom.players[0];
-    const player2 = gameRoom.players[1];
-    const initialVelocity = { x: 100, y: 70 };
-    if (player1.readyToStart && player2.readyToStart) {
-      this.server.to(player1.id).emit('initialVelocity', initialVelocity);
-      this.server.to(player2.id).emit('initialVelocity', initialVelocity);
+
+    // const initialiseData = { velocityX: 100, velocityY: 70, controls};
+    if (gameRoom.players[0].readyToStart && gameRoom.players[1].readyToStart) {
+      this.server.to(gameRoom.players[0].id).emit('initialise', {
+        x: gameRoom.ballPosition.x,
+        y: gameRoom.ballPosition.y,
+        controls: 'arrows',
+      });
+      this.server.to(gameRoom.players[1].id).emit('initialise', {
+        x: gameRoom.ballPosition.x,
+        y: gameRoom.ballPosition.y,
+        controls: 'ws',
+      });
     }
   }
 
-  @SubscribeMessage('updateBallPosition')
-  handleBallPosition(client: Socket, obj) {
-    const gameRoom: GameRoom = this.gameRoomService.getGameRoom(obj.roomID);
-    const player1 = gameRoom.players[0];
-    const player2 = gameRoom.players[1];
-    this.server.to(player1.id).emit('ballMove', obj.x, obj.y);
-    this.server.to(player2.id).emit('ballMove', obj.x, obj.y);
+  @SubscribeMessage('ballPosition')
+  handleBallPosition(client: any, data) {
+    const gm: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
+
+    if(!gm.gameOver){
+
+      if (gm.players[0].readyToStart && gm.players[1].readyToStart) {
+        gm.ballPosition.x += gm.ballVelocity.x;
+        gm.ballPosition.y += gm.ballVelocity.y;
+
+        // Handle collision on right paddle
+        const buffer = gm.paddleWidth / 3; // this required otherwise ball skids through the wall
+        if (gm.ballPosition.x > gm.worldWidth - buffer - gm.paddleWidth) {
+          if (
+            gm.ballPosition.y >=
+              gm.players[0].position.y - gm.paddleHeight / 2 - buffer &&
+            gm.ballPosition.y <=
+              gm.players[0].position.y + gm.paddleHeight / 2 + buffer &&
+            gm.ballVelocity.x > 0 // This is included so that the ball doesn't get stuck inside the paddle
+          ) {
+            gm.ballVelocity.x *= -1;
+          }
+        }
+        // Handle collison on left paddle
+        if (gm.ballPosition.x < buffer + gm.paddleWidth) {
+          if (
+            gm.ballPosition.y >
+              gm.players[1].position.y - gm.paddleHeight / 2 - buffer &&
+            gm.ballPosition.y <
+              gm.players[1].position.y + gm.paddleHeight / 2 + buffer &&
+            gm.ballVelocity.x < 0
+          ) {
+            gm.ballVelocity.x *= -1;
+          }
+        }
+
+        // Handle wall collisions
+        if (gm.ballPosition.x < buffer) {
+          gm.ballVelocity.x *= -1; // Reverse the x velocity for left and right wall
+          gm.players[0].score += 1;
+          if (gm.players[0].score === 7)
+          {
+            gm.gameOver = true;
+            this.server.to(gm.players[0].id).emit('gameOver', gm.players[0].name);
+            this.server.to(gm.players[1].id).emit('gameOver', gm.players[0].name);
+          }
+        }
+        if (gm.ballPosition.x > gm.worldWidth - buffer) {
+          gm.ballVelocity.x *= -1;
+          gm.players[1].score += 1;
+          if (gm.players[1].score === 7) {
+            gm.gameOver = true;
+            this.server.to(gm.players[0].id).emit('gameOver', gm.players[1].name);
+            this.server.to(gm.players[1].id).emit('gameOver', gm.players[1].name);
+          }
+        }
+        if (
+          gm.ballPosition.y < buffer ||
+          gm.ballPosition.y > gm.worldHeight - buffer
+        ) {
+          gm.ballVelocity.y *= -1; // Reverse the y velocity for top and bottom walls
+        }
+        this.server
+          .to(gm.players[0].id)
+          .emit(
+            'updateBallPosition',
+            gm.ballPosition,
+            gm.players[0].score,
+            gm.players[1].score,
+          );
+        this.server
+          .to(gm.players[1].id)
+          .emit(
+            'updateBallPosition',
+            gm.ballPosition,
+            gm.players[0].score,
+            gm.players[1].score,
+          );
+      }
+    }
   }
 
-  // @SubscribeMessage('updatePaddle')
-  // handleUpdatePaddle(client: Socket, paddleY: number) {
-  // if (client.id === 'player1') {
-  //   this.gameState.paddle1Y = paddleY;
-  // } else if (client.id === 'player2') {
-  //   this.gameState.paddle2Y = paddleY;
-  // }
+  @SubscribeMessage('movePaddle')
+  handleMovePaddle(client: Socket, data) {
 
-  // Broadcast the updated game state to all clients
-  // this.server.emit('gameStateUpdate', this.gameState);
-  // }
-  // const player1 = this.gameService.getQueuedPlayer();
-  // if (!player1) {
-  //   console.log(`Player added to queue ${client.id}`);
-  // } else {
-  //   const player2 = this.gameService.getPlayer(client.id);
-  //   // const roomId = this.gameRoomService.createGameRoom(player1, player2);
-  //   console.log(`Matched players...`);
-  //   this.server.to(player1.id).emit('matched', player1.name, player2.name);
-  //   this.server.to(player2.id).emit('matched', player1.name, player2.name);
-  // }
-
-  // //to prevent string|string[] error, we do this check
-  // if (!Array.isArray(username)) {
-  //   // console.log(`Player connected: ${client.id} --- ${username}`);
-  //   const player1ID = this.gameService.getQueuedPlayer();
-
-  //   if (!player1ID) {
-  //     this.gameService.addToQueue(client, username);
-  //     console.log(`Player added to queue ${client.id}`);
-  //   } else {
-  //     // const player1 = this.playersService.getPlayer(player1ID);
-  //     // const player2 = this.playersService.getPlayer(client.id);
-  //     // const roomId = this.gameRoomService.createGameRoom(player1, player2);
-  //     // console.log(`Matched players...`);
-  //     // this.server.to(player1ID).emit('matched', player1.name, player2.name);
-  //     // this.server.to(player2.id).emit('matched', player1.name, player2.name);
-  //   }
-  // }
-  // }
-
-  // @SubscribeMessage('updateSpritePosition')
-  // handleSpritePosition(client: Socket, spriteData: any) {
-  //   client.broadcast.emit('syncSpritePosition', spriteData);
-  // }
+    const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
+    if(!gameRoom.gameOver){
+      if (client.id === gameRoom.players[0].id) {
+        gameRoom.players[0].position.y = data.y;
+        this.server
+          .to(gameRoom.players[1].id)
+          .emit('updateRemotePaddle', data.y, data.velocity);
+      } else {
+        gameRoom.players[1].position.y = data.y;
+        this.server
+          .to(gameRoom.players[0].id)
+          .emit('updateRemotePaddle', data.y, data.velocity);
+      }
+    }
+  }
 }
+

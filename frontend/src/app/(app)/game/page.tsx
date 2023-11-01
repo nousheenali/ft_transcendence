@@ -1,17 +1,17 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useGameColor } from "@/context/store";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Image from "next/image";
 
 export default function GamePage() {
-
-  const { ballColor, racketColor, bgColor } = useGameColor() //for the time being im saving the colors in the context store
+  const { ballColor, racketColor, bgColor } = useGameColor(); //for the time being im saving the colors in the context store
 
   const { data: session } = useSession();
   const login: string = session?.user.login!;
   const joinQueue = true;
+  const gameContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     async function initPhaser() {
@@ -19,56 +19,71 @@ export default function GamePage() {
       const { default: Preloader } = await import(
         "../../../components/GameComponents/Scenes/Preloader"
       );
-      const { default: Menu } = await import(
-        "../../../components/GameComponents/Scenes/Menu"
-      );
       const { default: Game } = await import(
         "../../../components/GameComponents/Scenes/Game"
       );
-      const worldWidth = 1000;
-      const worldHeight = 750;
 
-      var config: any = {
-        type: Phaser.AUTO,
-        parent: "game-container",
-        width: worldWidth,
-        height: worldHeight,
-        // width: window.innerWidth * window.devicePixelRatio,
-        // height: window.innerHeight * window.devicePixelRatio,
-        // backgroundColor: bgColor, // "#87CEEB", "#60b922", "#44b18b",
-        scene: [Preloader, Menu, Game],
-        physics: {
-          default: "arcade",
-          arcade: {
-            gravity: false,
-          },
-        },
-        scale: {
-          mode: Phaser.Scale.FIT,
-          autoCenter: Phaser.Scale.CENTER_BOTH,
-        },
-      };
-      
       const socket = io("http://localhost:3001/game", {
         withCredentials: true, // If you need to include credentials
         transports: ["websocket"],
         query: {
-            "username": login,
+          username: login,
         },
       });
-      socket.on("connect", () => {  
-        if(joinQueue){
-          socket.emit("addToQueue", worldWidth, worldHeight);
-          socket.on("matched", (roomID) => {
-            const loadingText = document.getElementById("loading-text");
-            loadingText?.remove();
-            var phaserGame = new Phaser.Game(config);
-            phaserGame.registry.set("roomID", roomID);
-            phaserGame.registry.set('socket', socket);
-            phaserGame.registry.set("paddleColor", racketColor);
-            phaserGame.registry.set("ballColor", ballColor);
+      socket.on("connect", () => {
+        if (joinQueue) {
+          socket.emit("addToQueue", {
+            width: (window.innerWidth * 2) / 3,
+            height: (window.innerHeight * 2) / 3,
           });
         }
+        else {
+          const userID = "tester"
+          socket.emit("matchFriend", {
+            friendName: userID,
+            width: (window.innerWidth * 2) / 3,
+            height: (window.innerHeight * 2) / 3,
+          });
+          //create a room with the user id
+        }
+        socket.on(
+          "matched",
+          (roomID, player0, player1, worldWidth, worldHeight) => {
+            const loadingText = document.getElementById("loading-text");
+            loadingText?.remove();
+
+            var config: any = {
+              type: Phaser.AUTO,
+              parent: "game-container",
+              width: worldWidth,
+              height: worldHeight,
+              // backgroundColor: bgColor, // "#87CEEB", "#60b922", "#44b18b",
+              scene: [Preloader, Game],
+              physics: {
+                default: "arcade",
+                arcade: {
+                  gravity: false,
+                },
+                // fps: 30,
+                scale: {
+                  mode: Phaser.Scale.FIT,
+                  autoCenter: Phaser.Scale.CENTER_BOTH,
+                },
+              },
+            };
+            var phaserGame = new Phaser.Game(config);
+            phaserGame.registry.merge({
+              roomID,
+              player0,
+              player1,
+              socket,
+              paddleColor: racketColor,
+              ballColor: ballColor,
+              worldWidth,
+              worldHeight,
+            });
+          }
+        );
       });
     }
     initPhaser();
@@ -79,6 +94,7 @@ export default function GamePage() {
       <div
         id="game-container"
         key="game-container"
+        ref={gameContainerRef}
         className="border-[#D0F223] border-[1px]"
       >
         {/* Phaser Game window appears here.*/}

@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { GameState } from './model/game-state.model';
-import { type } from 'os';
-import { Socket } from 'socket.io';
 
 @Injectable()
-export class GameService {
+export class PlayerService {
   private players: Map<string, Player> = new Map();
   private queue: Player[] = [];
 
@@ -17,6 +14,9 @@ export class GameService {
         name: userName,
         position: { x: 0, y: 0 },
         readyToStart: false,
+        worldWidth: 0,
+        worldHeight: 0,
+        score: 0,
       };
       this.players.set(clientID, player);
     }
@@ -28,7 +28,7 @@ export class GameService {
     }
   }
 
-  getPlayer(clientID: string): Player | null {
+  getPlayerByID(clientID: string): Player | null {
     if (this.players.has(clientID)) {
       const player: Player = this.players.get(clientID);
       return player;
@@ -36,15 +36,25 @@ export class GameService {
     return null;
   }
 
+  getPlayerByName(name: string): Player | undefined {
+    for (const player of this.players.values()) {
+      if (player.name === name) {
+        return player;
+      }
+    }
+    return null;
+  }
+
   playerReady(clientID: string): void {
     const player: Player = this.players.get(clientID);
-    if(player)
-      player.readyToStart = true;
+    if (player) player.readyToStart = true;
   }
 
   // add player to queue
-  addToQueue(clientID: string) {
-    const player: Player = this.getPlayer(clientID);
+  addToQueue(clientID: string, width: number, height: number) {
+    const player: Player = this.getPlayerByID(clientID);
+    player.worldWidth = width;
+    player.worldHeight = height;
     if (player) {
       this.queue.push(player);
     }
@@ -66,10 +76,12 @@ export class GameService {
   // }
 }
 
-
 export type Player = {
   id: string;
   name: string;
   position: { x: number; y: number };
   readyToStart: boolean;
-}
+  worldWidth: number;
+  worldHeight: number;
+  score: number;
+};

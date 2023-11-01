@@ -10,15 +10,15 @@ export default class Game extends Scene {
   private gameStarted: boolean = false;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keys: Record<string, Phaser.Input.Keyboard.Key> = {};
-  private paddlespeed = 350;
+  private paddlespeed = 0;
   private messages: Phaser.GameObjects.Text[] = [];
   private controls: Phaser.Physics.Arcade.Sprite[] = [];
-  private player_score = [];
-  private scoreText: Phaser.GameObjects.Text[] = [];
-  // private p1_score = 0;
-  // private p1ScoreText!: Phaser.GameObjects.Text;
-  // private p2_score = 0;
-  // private p2ScoreText!: Phaser.GameObjects.Text;
+  private results: Phaser.GameObjects.Text[] = [];
+  private keysAssigned!: string;
+  private p0_score = 0;
+  private p1_score = 0;
+  private line!: Phaser.GameObjects.Line;
+  private circle!: Phaser.GameObjects.Arc;
 
   constructor() {
     super({ key: "game" });
@@ -37,25 +37,28 @@ export default class Game extends Scene {
     // display text messages
     this.messages = gameObj.initialDisplay(wH, wW, this.messages);
     this.controls = gameObj.displayControls(wH, wW, this.controls);
-    this.scoreText = gameObj.displayScoreTexts(wH, wW, this.scoreText);
+    this.results = gameObj.displayResults(wH, wW, this.results);
+    this.line = gameObj.createBackgroundLine(wW / 2, wH * 2);
+    this.circle = gameObj.createBackgroundCircle(wW / 2, wH / 2);
 
     //render sprites
-    this.ball = gameObj.renderBall(
-      wW / 2,
-      wH / 2,
-      this.registry.get("ballColor")
-    );
+    this.ball = gameObj.renderBall(wW / 2, wH / 2);
     const ballWidth = this.ball.body.width;
-    this.player[0] = gameObj.renderPaddle(
-      wW - (ballWidth / 2 + 1),
-      wH / 2,
-      this.registry.get("paddleColor")
-    );
-    this.player[1] = gameObj.renderPaddle(
-      ballWidth / 2 + 1,
-      wH / 2,
-      this.registry.get("paddleColor")
-    );
+    this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
+    this.player[1] = gameObj.renderPaddle(ballWidth / 2, wH / 2);
+
+    //update game room sprite positions
+    this.socket.emit("updateSpritePositions", {
+      roomID: this.roomID,
+      ballPosition: { x: this.ball.x, y: this.ball.y },
+      p0Position: { x: this.player[0].x, y: this.player[0].y },
+      p1Position: { x: this.player[1].x, y: this.player[1].y },
+      paddleWidth: this.player[0].body.width,
+      paddleHeight: this.player[0].body.height,
+      ballWidth: ballWidth,
+    });
+
+    this.paddlespeed = 350;
 
     this.physics.add.collider(this.ball, this.player[0]);
     this.physics.add.collider(this.ball, this.player[1]);
@@ -76,62 +79,95 @@ export default class Game extends Scene {
 
       this.socket
         .on("ready", () => this.messages[1].setVisible(true))
-        .emit("initBallVelocity", this.roomID)
-        .on("initialVelocity", (initialVelocity: any) => {
+        .emit("initSettings", this.roomID)
+        .on("initialise", (initialData: any) => {
           this.messages[1].setVisible(false);
-          this.ball?.setVelocityX(initialVelocity.x);
-          this.ball?.setVelocityY(initialVelocity.y);
+          this.keysAssigned = initialData.controls;
+          this.ball.setPosition(initialData.x, initialData.y);
         });
-
       this.gameStarted = true;
     }
+
     if (this.gameStarted) {
-      // this.socket
-      //   .emit("updateBallPosition", { x: this.ball.x, y: this.ball.y , roomID: this.roomID})
-      //   .on("ballMove", (position: any) => {
-      //       this.ball?.setPosition(position.x, position.y);
-      //   });
+      this.socket
+        .emit("ballPosition", { roomID: this.roomID })
+        .on(
+          "updateBallPosition",
+          (
+            position: { x: number; y: number },
+            p0_score: number,
+            p1_score: number
+          ) => {
+            this.ball.setPosition(position.x, position.y);
+            this.p0_score = p0_score;
+            this.p1_score = p1_score;
+            this.results[0].setText(
+              this.registry.get("player0") + " : " + this.p0_score.toString()
+            );
+            this.results[1].setText(
+              this.registry.get("player1") + " : " + this.p1_score.toString()
+            );
+          }
+        );
       this.player[0].setVelocityY(0);
-      if (this.cursors.up.isDown) {
-        this.player[0].setVelocityY(-this.paddlespeed);
+      this.player[1].setVelocityY(0);
+
+      //when arrows are used paddle moves for player on right side
+      if (this.keysAssigned === "arrows") {
+        if (this.cursors.up.isDown) {
+          this.player[0].setVelocityY(-this.paddlespeed);
+          this.socket.emit("movePaddle", {
+            roomID: this.roomID,
+            y: this.player[0].y,
+            velocity: -this.paddlespeed,
+          });
+        }
+        if (this.cursors.down.isDown) {
+          this.player[0].setVelocityY(+this.paddlespeed);
+          this.socket.emit("movePaddle", {
+            roomID: this.roomID,
+            y: this.player[0].y,
+            velocity: +this.paddlespeed,
+          });
+        }
+        this.socket.on("updateRemotePaddle", (y: number, velocity: number) => {
+          this.player[1].setVelocityY(velocity);
+        });
       }
-      if (this.cursors.down.isDown) {
-        this.player[0].setVelocityY(+this.paddlespeed);
+
+      //when 'W' and 'S' keys are used paddle moves for player on left side
+      if (this.keysAssigned === "ws") {
+        if (this.keys.w.isDown) {
+          this.player[1].setVelocityY(-this.paddlespeed);
+          this.socket.emit("movePaddle", {
+            roomID: this.roomID,
+            y: this.player[1].y,
+            velocity: -this.paddlespeed,
+          });
+        }
+        if (this.keys.s.isDown) {
+          this.player[1].setVelocityY(+this.paddlespeed);
+          this.socket.emit("movePaddle", {
+            roomID: this.roomID,
+            y: this.player[1].y,
+            velocity: +this.paddlespeed,
+          });
+        }
+        this.socket.on("updateRemotePaddle", (y: number, velocity: number) => {
+          this.player[0].setVelocityY(velocity);
+        });
       }
+
+      // On game Over
+      this.socket.on("gameOver", (name: string) => {
+        this.line.setVisible(false);
+        this.circle.setVisible(false);
+        this.ball.setVisible(false);
+        this.player[0].setVisible(false);
+        this.player[1].setVisible(false);
+        this.messages[2].setVisible(true);
+        this.results[2].setText(name + " WINS!").setVisible(true);
+      });
     }
-
-    // if (this.gameStarted) {
-    //   this.player1?.setVelocityY(0);
-    //   if (this.cursors.up.isDown) {
-    //     this.player1?.setVelocityY(-this.paddlespeed);
-    //   }
-
-    //   if (this.cursors.down.isDown) {
-    //     this.player1?.setVelocityY(+this.paddlespeed);
-    //   }
-
-    //   this.player2?.setVelocityY(0);
-    //   if (this.keys.w.isDown) {
-    //     this.player2?.setVelocityY(-this.paddlespeed);
-    //   }
-
-    //   if (this.keys.s.isDown) {
-    //     this.player2?.setVelocityY(+this.paddlespeed);
-    //   }
-
-    //   if (this.ball.body.velocity.y < -this.paddlespeed) {
-    //     this.ball.setVelocityY(this.paddlespeed);
-    //   }
-
-    //   if (this.ball.body.x > this.player1.body.x) {
-    //     this.p2_score += 1;
-    //     this.p2ScoreText.setText(this.p2_score.toString());
-    //   }
-
-    //   if (this.ball.body.x < this.player2.body.x) {
-    //     this.p1_score += 1;
-    //     this.p1ScoreText.setText(this.p1_score.toString());
-    //   }
-    // }
   }
 }

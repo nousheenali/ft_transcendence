@@ -6,9 +6,7 @@ export default class GameObjects {
   }
 
   initialDisplay(wH: number, wW: number, msg: Phaser.GameObjects.Text[]) {
-    this.createBackgroundLine(wW / 2, wH * 2);
-    this.createBackgroundCircle(wW / 2, wH / 2);
-
+    
     msg[0] = this.showText(
       wW / 2,
       (wH * 2) / 3,
@@ -27,6 +25,9 @@ export default class GameObjects {
       .setOrigin(0.55)
       .setVisible(false);
 
+    msg[2] = this.showText(wW / 2, wH / 3, "Game OVER!", 50, "#FFFFFF")
+      .setOrigin(0.55)
+      .setVisible(false);
     return msg;
   }
 
@@ -40,35 +41,53 @@ export default class GameObjects {
     return controls;
   }
 
-  displayScoreTexts(wH: number, wW: number, scores: Phaser.GameObjects.Text[]) {
-    scores[0] = this.showText(wW / 2 + 70, 50, "0", 50, "#D0F223");
-    scores[1] = this.showText(wW / 2 - 100, 50, "0", 50, "#D0F223");
-    return scores;
+  displayResults(wH: number, wW: number, results: Phaser.GameObjects.Text[]) {
+    results[0] = this.showText(
+      wW / 2 + 70,
+      50,
+      this.scene.registry.get("player0") + ": 0",
+      30,
+      "#D0F223"
+    ).setOrigin(-0.2, 0);
+
+    results[1] = this.showText(
+      wW / 2 - 100,
+      50,
+      this.scene.registry.get("player1") + ": 0",
+      30,
+      "#D0F223"
+    ).setOrigin(1, 0);
+
+    results[2] = this.showText(wW / 2, (wH * 2) / 3, "", 70, "#D0F223")
+      .setOrigin(0.5)
+      .setVisible(false);
+
+    return results;
   }
 
   createBackgroundLine(x: number, y: number) {
-    this.scene.add.line(x, 0, 0, 0, 0, y, 0xffffff, 1).setLineWidth(2.5, 2.5);
+    return this.scene.add.line(x, 0, 0, 0, 0, y, 0xffffff, 1).setLineWidth(2.5, 2.5);
   }
 
   createBackgroundCircle(x: number, y: number) {
-    this.scene.add.circle(x, y, 80).setStrokeStyle(5, 0xffffff, 1);
+    return this.scene.add.circle(x, y, 80).setStrokeStyle(5, 0xffffff, 1);
   }
 
-  renderBall(x: number, y: number, color: number) {
-    const ball =  this.scene.physics.add
+  renderBall(x: number, y: number) {
+    const ball = this.scene.physics.add
       .sprite(x, y, "ball")
       .setCollideWorldBounds(true)
       .setBounce(1, 1);
-    ball.tint = color;
+    ball.tint = this.scene.registry.get("ballColor");
     return ball;
   }
 
-  renderPaddle(x: number, y: number, color :number) {
+  renderPaddle(x: number, y: number) {
     const paddle = this.scene.physics.add
       .sprite(x, y, "paddle")
       .setCollideWorldBounds(true)
       .setImmovable(true);
-    paddle.tint = color;
+    paddle.tint = this.scene.registry.get("paddleColor");
     return paddle;
   }
 
