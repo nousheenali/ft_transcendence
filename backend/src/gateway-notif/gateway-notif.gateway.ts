@@ -5,15 +5,12 @@ import {
   WebSocketServer,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { GatewayNotifService } from './gateway-notif.service';
 import { CreateGatewayNotifDto } from './dto/create-gateway-notif.dto';
-import { UpdateGatewayNotifDto } from './dto/update-gateway-notif.dto';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway(8001, { cors: '*' })
 export class GatewayNotifGateway {
   private userSocketMap = new Map<string, Socket>();
-  constructor(private readonly gatewayNotifService: GatewayNotifService) {}
 
   @WebSocketServer()
   server: Server;
