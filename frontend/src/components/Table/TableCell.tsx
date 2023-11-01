@@ -9,8 +9,12 @@ import {
   updateFriendRelation,
 } from "../../../services/friends";
 
-
-const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
+const TableCell: React.FC<TableCellProps> = ({
+  dataItem,
+  login,
+  activeButton,
+  reloadPageData,
+}) => {
   const { data: session } = useSession();
 
   if (typeof dataItem === "string") {
@@ -85,6 +89,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
           friendLogin,
           endpoint
         );
+        reloadPageData(activeButton);
         toast.success(message);
       } catch (error: any) {
         toast.error(error.message);

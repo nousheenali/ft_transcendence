@@ -14,6 +14,8 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
   headings,
   data,
   maxHeight,
+  activeButton,
+  reloadPageData
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [filteredData, setFilteredData] = useState(data);
@@ -87,7 +89,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
           style={{ maxHeight }}
         >
           {/* table rows */}
-          {filteredData.map((rowData:any, rowIndex) => (
+          {filteredData.map((rowData: any, rowIndex) => (
             <div
               key={rowIndex}
               className="bg-table-row-bg rounded-[10px] flex mt-3 justify-center items-center"
@@ -97,6 +99,8 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
                   key={columnIndex}
                   dataItem={dataItem}
                   login={rowData[0].playerName}
+                  activeButton={activeButton}
+                  reloadPageData={reloadPageData}
                 />
               ))}
             </div>

@@ -79,6 +79,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={friendsProfileHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="friends"
+              reloadPageData={fetchTableData}
             />
           );
         case "search":
@@ -90,6 +92,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={searchProfileHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="search"
+              reloadPageData={fetchTableData}
             />
           );
         case "blocked":
@@ -101,6 +105,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={blockedFriendsHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="blocked"
+              reloadPageData={fetchTableData}
             />
           );
         case "friendRequests":
@@ -112,6 +118,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={friendsRequestHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="friendRequests"
+              reloadPageData={fetchTableData}
             />
           );
         case "pendingRequests":
@@ -123,6 +131,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={pendingRequestHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="pendingRequests"
+              reloadPageData={fetchTableData}
             />
           );
         default:
