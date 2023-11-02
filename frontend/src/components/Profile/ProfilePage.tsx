@@ -11,7 +11,7 @@ import {
   friendsRequestHeadings,
   pendingRequestHeadings,
 } from "@/data/Table/profileTableHeadings";
-import { ProfilePageProps } from "./types";
+
 import { generateProfileSearchData } from "@/data/Table/search";
 import { generateProfileBlockedData } from "@/data/Table/blocked";
 import { generateProfileFriendsData } from "@/data/Table/friends";
@@ -20,35 +20,46 @@ import { generatePendingRequestsData } from "@/data/Table/pendingFriendRequests"
 import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { userInformation } from "./types";
+import { getUserData } from "../../../services/user";
+import { useSession } from "next-auth/react";
+import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 
-const ProfilePage: React.FC<ProfilePageProps> = ({
-  userInfo
-}) => {
+const ProfilePage = () => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
+  const [userInfo, setUserInfo] = useState<userInformation>();
+  const { data: session } = useSession();
 
 
   let data: TableRowData[];
   
   const fetchTableData = async (buttonId: string) => {
     try {
-      const dataGeneratorMap: any = {
-        friends: generateProfileFriendsData,
-        search: generateProfileSearchData,
-        blocked: generateProfileBlockedData,
-        friendRequests: generateFriendRequestsData,
-        pendingRequests: generatePendingRequestsData,
-      };
-      const dataGenerator = dataGeneratorMap[buttonId];
+      const userData = await getUserData(
+        session?.user.login!,
+        API_ENDPOINTS.getUserbyLogin
+      );
+      setUserInfo(userData);
+      if(userData){
+        const dataGeneratorMap: any = {
+          friends: generateProfileFriendsData,
+          search: generateProfileSearchData,
+          blocked: generateProfileBlockedData,
+          friendRequests: generateFriendRequestsData,
+          pendingRequests: generatePendingRequestsData,
+        };
+        const dataGenerator = dataGeneratorMap[buttonId];
 
-      if (dataGenerator) {
-        const data = await dataGenerator(userInfo.login);
-        setTableData(data);
-        setIsLoading(false)
+        if (dataGenerator) {
+          const data = await dataGenerator(userData.login);
+          setTableData(data);
+          setIsLoading(false)
+        }
+        else
+          throw new Error("Invalid Button Click");
       }
-      else
-        throw new Error("Invalid Button Click");
     } catch (error: any) {
       toast.error(error.message);
       setIsLoading(false); 
@@ -145,10 +156,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     <>
       <div className="w-full h-full text-center text-white flex flex-col p-6">
         <ProfileInfo
-          name={userInfo.name}
-          email={userInfo.email}
+          name={userInfo?.name || "name"}
+          email={userInfo?.email || "email"}
           rank="12"
-          avatar={userInfo.avatar}
+          avatar={userInfo?.avatar || "avatar"}
           activeButton={activeButton}
           handleButtonClick={handleButtonClick}
         />
