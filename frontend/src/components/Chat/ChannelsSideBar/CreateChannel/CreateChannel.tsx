@@ -1,49 +1,52 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ChannelCreateBtn from "./ChannelCreateBtn/ChannelCreateBtn";
-import { Button, Dropdown, Input, Modal } from "react-daisyui";
+import { Button, Modal } from "react-daisyui";
 import ChannelNameTextBox from "./ChannelNameTextBox/ChannelNameTextBox";
 import ChannelTypeDD from "./ChannelTypeDD/ChannelTypeDD";
 import { useChannelInfo } from "@/context/store";
-import { useSession } from "next-auth/react";
 import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
 import { getData, postData } from "../../../../../services/api";
 import { userInformation } from "@/components/Profile/types";
 import { CreateChannelItems } from "./ChannelTypes/ChannelType";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CreateChannel({ userName }: { userName: string }) {
-  console.log("user: ", userName);
   const modalRef = useRef<HTMLDialogElement>(null);
-  // const { data: session } = useSession();
-  const [data, setData] = useState<string>();
-  // const userName = session?.user.name!;
+  const [data, setData] = useState<string>("");
   const handleClick = useCallback(() => {
     modalRef.current?.showModal();
   }, []);
 
   const { channelName, channelType, channelPassword } = useChannelInfo();
 
-  const createChannelButton = async () => {
-    // console.log("userName: ", userName);
-    const userData: userInformation = await getData(
-      userName,
-      API_ENDPOINTS.getUserbyLogin
-    );
-    console.log("userData", userData.id);
-    setData(userData.id);
+  useEffect(() => {
+    const getUserData = async () => {
+      const userData: userInformation = await getData(
+        userName,
+        API_ENDPOINTS.getUserbyLogin
+      );
+      setData(userData.id);
+    };
+    getUserData();
+  }, []);
 
+  const createChannelButton = async () => {
     const newChannel: CreateChannelItems = {
       channelName: channelName,
       channelType: channelType,
-      createdBy: data!,
+      createdBy: data,
       password: channelPassword!,
     };
-
-    console.log("newChannel", newChannel);
-    // const channel = await postData();
-    // console.log("userData", data);
-    // console.log("channelName", channelName);
-    // console.log("channelType", channelType);
-    // console.log("channelPassword", channelPassword);
+    try {
+      const chan = await postData<CreateChannelItems>(
+        newChannel,
+        API_ENDPOINTS.createChannel
+      );
+      toast.success("Channel created successfully");
+    } catch (error) {
+      toast.error("Channel creation failed");
+    }
   };
   return (
     <div>
