@@ -28,9 +28,6 @@ export default function SendMessageBox({
   const [socket, setSocket] = useState<Socket>();
 
   //---------------------------------------------------------------
-  // use socket state from the context store
-  // const { socket, setSocket } = useChatSocketState();
-
   // use effect for socket connection, disconnection, and message
   useEffect(() => {
     //--------------------------------------------------
@@ -39,21 +36,31 @@ export default function SendMessageBox({
       autoConnect: false,
     });
     setSocket(socket);
-
+    socket.connect();
     //--------------------------------------------------
     // connect to the server
-    socket.on("connection", () => {
+    socket.on("connect", () => {
       console.log(`Connected to the server with socket id: ${socket.id}`);
+    });
+
+    //--------------------------------------------------
+    // handle the error during connection
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
     });
 
     //--------------------------------------------------
     // listen for messages from the server
     socket.on("ServerToClient", (data: any) => {
-      console.log(data);
+      console.log("Message received from a client: => ", data);
     });
 
     //--------------------------------------------------
-    socket.connect();
+    // listen for messages from the server
+    socket.on("ServerToChannel", (data: any) => {
+      console.log("Message received from a channel: => ", data);
+    });
+   
     //--------------------------------------------------
     // cleanup function, will be called when the component unmounts
     return () => {
@@ -80,12 +87,13 @@ export default function SendMessageBox({
         receiver: receiver.login,
         message: trimmedMessage,
       });
-    } else if ("channelName" in receiver && socket) {
+    }
+    else if ("channelName" in receiver && socket) {
       // It's a channel
-      socket.emit("ClientToServer", {
+      socket.emit("ChannelToServer", {
         socketId: socket.id,
         username: session?.data?.user?.name,
-        receiver: receiver.channelName,
+        channel: receiver.channelName,
         message: trimmedMessage,
       });
     }

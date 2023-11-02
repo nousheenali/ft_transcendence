@@ -1,20 +1,6 @@
 import { Injectable } from '@nestjs/common';
-
-//===============================================================================
-/**
- * ❂➤ Rooms interface:
- * name: name of the room
- * 			=>(channel name or user login name)
- * admin: the user that created the room
- * 			=>(channel creator or user that send the private message)
- * users: array of users in the room
- * 			=>(channel users or only the user that send the private message)
- */
-interface Room {
-  name: string;
-  admin: string;
-  users: string[];
-}
+import { Room } from './types';
+import { Socket } from 'socket.io';
 
 //===============================================================================
 /**
@@ -72,6 +58,26 @@ export class RoomsService {
       };
       newRoom.users.push(admin);
       this.rooms.push(newRoom);
+    }
+  }
+
+  //===============================================================================
+  /**
+   * create a room if it doesn't exist and join the user to the room
+   * @param roomName
+   * @param userName the login name for the user that want to join the room
+   * @param socket the socket of the client that want to join the room
+   */
+  joinRoom(roomName: string, userName: string, socket: Socket) {
+    if (this.isRoomExist(roomName)) {
+      const room = this.getRoom(roomName);
+      if (room.users.indexOf(userName) === -1) {
+        socket.join(roomName);
+        room.users.push(userName);
+      }
+    } else {
+      this.createRoom(roomName, userName);
+      socket.join(roomName);
     }
   }
 
@@ -152,5 +158,12 @@ export class RoomsService {
     }
   }
 
+  //===============================================================================
+  printAllRooms() {
+    console.log('----------------------------------------------------------------');
+    console.log('[' + this.rooms.length + '] rooms exists');
+    this.rooms.forEach(room=>console.log(room));
+    console.log('----------------------------------------------------------------');
+  }
   //===============================================================================
 }
