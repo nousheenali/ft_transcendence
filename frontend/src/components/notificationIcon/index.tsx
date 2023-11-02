@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import NotificationDropdown from "./NotificationDropdown/NotificationDropdown";
 import { NotificationItems, SendNotification } from "./types";
 import { useSession } from "next-auth/react";
-import { Session } from "inspector";
 import { Socket, io } from "socket.io-client";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { getUserData } from "../../../services/user";
