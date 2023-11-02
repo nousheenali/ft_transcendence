@@ -34,7 +34,7 @@ export default function SendMessageBox({
   // use effect for socket connection, disconnection, and message
   useEffect(() => {
     //--------------------------------------------------
-    const socket = io("http://localhost:3001", {
+    const socket = io("http://10.11.3.8:3001", {
       query: { userLogin: session.data?.user.name! },
     });
     setSocket(socket);
@@ -89,7 +89,7 @@ export default function SendMessageBox({
     // ##############################################################
     // POST THE MESSAGE TO THE DATABASE
     //----------------------------------
-    
+
     // ##############################################################
     setCurrentMessage("");
   };

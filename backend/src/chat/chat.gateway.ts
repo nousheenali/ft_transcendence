@@ -26,9 +26,9 @@ interface Message {
 }
 
 //================================================================================================
-// ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
+// ❂➤ cors: { origin: 'http://10.11.3.8:3000' }: This is to allow
 // the frontend to connect to the websocket server
-@WebSocketGateway({ cors: { origin: 'http://localhost:3000' } })
+@WebSocketGateway({ cors: { origin: 'http://10.11.3.8:3000' } })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

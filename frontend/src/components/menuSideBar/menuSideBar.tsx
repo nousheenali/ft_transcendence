@@ -1,14 +1,14 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Breaker from "../br/Br";
 import { signOut } from "next-auth/react";
- 
-import { usePathname } from 'next/navigation'
+
+import { usePathname } from "next/navigation";
 
 export default function MenuSideBar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
   // return <p>Current pathname: {pathname}</p>
   const [activeButton, setActiveButton] = useState(pathname);
 
@@ -148,7 +148,7 @@ export default function MenuSideBar() {
         <Link
           href=""
           onClick={() =>
-            signOut({ callbackUrl: "http://localhost:3000/login" })
+            signOut({ callbackUrl: "http://10.11.3.8:3000/login" })
           }
           className={getButtonStyles("/logout") + " mb-10"}
         >
