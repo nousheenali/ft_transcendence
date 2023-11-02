@@ -36,6 +36,7 @@ export default function SendMessageBox({
     //--------------------------------------------------
     const socket = io("http://10.11.3.8:3001", {
       query: { userLogin: session.data?.user.name! },
+      autoConnect: false,
     });
     setSocket(socket);
 
@@ -51,6 +52,8 @@ export default function SendMessageBox({
       console.log(data);
     });
 
+    //--------------------------------------------------
+    socket.connect();
     //--------------------------------------------------
     // cleanup function, will be called when the component unmounts
     return () => {
