@@ -75,7 +75,9 @@ export class ChatGateway
    */
   @SubscribeMessage('ChannelToServer')
   async sendToChannel(@MessageBody() data: Message) {
+    
     this.server.to(data.channel).emit('ServerToChannel', data);
+    console.log("Channel: [" + data.channel + "] => " + data.message);
   }
   //================================================================================================
   /**
