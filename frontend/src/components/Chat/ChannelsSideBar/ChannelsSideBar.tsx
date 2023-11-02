@@ -11,6 +11,7 @@ import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeade
 import UsersSearch from "./ChannelUsers/UsersSearch/UsersSearch";
 import ChannelsUsersBox from "./ChannelUsers/ChannelsUsersBox/ChannelsUsersBox";
 import CreateChannel from "./CreateChannel/CreateChannel";
+import { useSession } from "next-auth/react";
 
 /**
  * The ChannelsSideBar component is responsible for rendering the ChannelsSideBar part of the Chat page,
@@ -24,6 +25,8 @@ import CreateChannel from "./CreateChannel/CreateChannel";
  */
 export default function ChannelsSideBar() {
   const [activeChannel, setActiveChannel] = useState<string>("Public");
+  const session = useSession();
+  // const userName = session.data?.user.name!;
 
   return (
     <>
@@ -32,7 +35,7 @@ export default function ChannelsSideBar() {
         activeChannel={activeChannel}
         setActiveChannel={setActiveChannel}
       />
-      <CreateChannel />
+      <CreateChannel userName={session.data?.user.name!} />
       <hr className="w-80 border-line-break" />
       {activeChannel === "Public" && (
         <>
