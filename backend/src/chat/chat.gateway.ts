@@ -11,11 +11,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-//================================================================================================
-// ❂➤ Map that will store the users that are connected to
-// the websocket server, the key will be the login of the
-// user and the value will be the socketId
-export const usersMap = new Map<string | string[], string>(); // key: username, value: socketId
+import { RoomsService } from './rooms.service';
+
 //================================================================================================
 // ❂➤ Array that will store the rooms that are created
 type UserLoginType = string | string[];
@@ -59,15 +56,11 @@ export class ChatGateway
     this.logger.log(
       `New Client connected: id => ${client.id} name => ${userLogin}`,
     );
-    // Add the user to the (usersMap) and (roomsArray) and join the user's room
-      usersMap.set(userLogin, client.id);
-      client.join(userLogin);
-      if (roomsArray.indexOf(userLogin) == -1) roomsArray.push(userLogin);
-    
+    client.join(userLogin);
+    if (roomsArray.indexOf(userLogin) == -1) roomsArray.push(userLogin);
+
     console.log('--------------------------------------------');
-    console.log("[" + usersMap.size + "] users connected");
-    console.log(`usersMap: => ${[...usersMap.entries()]}`);
-    console.log("[" + roomsArray.length + "] rooms exists");
+    console.log('[' + roomsArray.length + '] rooms exists');
     console.log(`roomsMap: => ${roomsArray}`);
     console.log('--------------------------------------------');
   }
@@ -78,8 +71,7 @@ export class ChatGateway
   // (roomsArray)
   //================================================================================================
   @SubscribeMessage('ClientToServer')
-  async sendToUser(@MessageBody() data: Message ) {
-    
+  async sendToUser(@MessageBody() data: Message) {
     //-----------------------------------------------------------------------------
     //Note: The receiver will have a room when he connects to the websocket server
     // so this is only for testing purposes
@@ -88,8 +80,8 @@ export class ChatGateway
       if (roomsArray.indexOf(data.receiver) == -1)
         roomsArray.push(data.receiver);
     }
-    console.log("userRoom ---->", userRoom);
-    console.log("data.receiver ---->", data.receiver);
+    console.log('userRoom ---->', userRoom);
+    console.log('data.receiver ---->', data.receiver);
     //-----------------------------------------------------------------------------
 
     this.server.to(data.receiver).emit('ServerToClient', data);

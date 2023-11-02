@@ -10,6 +10,21 @@ export class UserMessagesService {
   constructor(private prisma: PrismaService) {}
 
   //===============================================================================
+  // async createUserMessage(senderId: string, receiverId: string, content: string) {
+  //   try {
+  //     const message = await this.prisma.messages.create({
+  //       data: {
+  //         senderId: senderId,
+  //         receiverId: receiverId,
+  //         content: content,
+  //       },
+  //     });
+  //     return message;
+  //   } catch (error) {
+  //     throw new BadRequestException('Unable to create message');
+  //   }
+  // }
+  //===============================================================================
   /* Helper function to get the user using login */
   async getUserIdByLogin(login: string) {
     const user = await this.prisma.user.findUnique({
