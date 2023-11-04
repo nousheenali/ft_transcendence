@@ -14,8 +14,10 @@ export default function DashBoardPage() {
 
   const gameHistoryData = generateGameHistoryData();
   const liveGamesData = generateLiveGamesData();
+  
   // Initialize the socket connection and set the socket
-  const socket = useChatSocket();
+  useChatSocket();
+
   return (
     <div className="p-2 h-full flex flex-col mr-[35px]">
       <GameStatus

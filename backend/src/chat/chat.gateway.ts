@@ -45,9 +45,9 @@ export class ChatGateway
   //================================================================================================
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
-    // ❂➤ Extractin the user login from the handshake's query
-    const userLogin = await client.handshake.query.userLogin as string;
-    if (userLogin === undefined) return;
+    // ❂➤ Extracting the user login from the handshake's query
+    const userLogin = client.handshake.query.userLogin as string;
+    if (userLogin === undefined || userLogin === null) return;
     this.logger.log(
       `New Client connected: id => ${client.id} name => ${userLogin}`,
     );

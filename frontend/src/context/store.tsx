@@ -69,13 +69,13 @@ export const activateClickedFriend = create<clickedFriendState>((set) => ({
 
 // ---------------------------------------------------------------------------------------------
 type SocketState = {
-  socket: Socket;
+  socket: Socket | null;
   setSocket: (socket: Socket) => void;
 };
 
 export const useSocket = create<SocketState>((set) => ({
-  socket: io(),
-  setSocket: (socket) => set({ socket }),
+  socket: null,
+  setSocket: (socket: Socket) => set({ socket }),
 }));
 
 // ---------------------------------------------------------------------------------------------
