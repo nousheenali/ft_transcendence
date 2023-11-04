@@ -60,37 +60,84 @@ export class ChannelService {
    * * @param login: string, the login of the user
    */
   async getPrivateChannels(login: string) {
-    const channels: Channel[] = [];
-    const userRelations = await this.prisma.user.findUnique({
+    const channels = await this.prisma.user.findMany({
       where: {
         login: login,
       },
-      include: {
+      select: {
         channelRelation: {
-          include: {
+          select: {
             channel: {
-              include: {
+              select: {
+                channelName: true,
+                channelType: true,
+                createdBy: true,
                 channelMembers: {
-                  include: {
-                    user: true,
+                  select: {
+                    user: {
+                      select: {
+                        login: true,
+                        isOnline: true,
+                        name: true,
+                        avatar: true,
+                      },
+                    },
                   },
                 },
-                Messages: {
-                  include: {
-                    sender: true,
-                  },
-                },
+                // Messages: {
+                //   select: {
+                //     sender: {
+                //       select: {
+                //         login: true,
+                //         isOnline: true,
+                //         name: true,
+                //         avatar: true,
+                //       },
+                //     },
+                //     content: true,
+                //     createdAt: true,
+                //   },
+                // },
               },
             },
           },
         },
       },
-    });
-    userRelations.channelRelation.forEach((relation) => {
-      channels.push(relation.channel);
-    });
+    })
     return channels;
   }
+  // async getPrivateChannels(login: string) {
+  //   const channels: Channel[] = [];
+  //   const userRelations = await this.prisma.user.findUnique({
+  //     where: {
+  //       login: login,
+  //     },
+  //     include: {
+  //       channelRelation: {
+  //         include: {
+  //           channel: {
+  //             include: {
+  //               channelMembers: {
+  //                 include: {
+  //                   user: true,
+  //                 },
+  //               },
+  //               Messages: {
+  //                 include: {
+  //                   sender: true,
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   });
+  //   userRelations.channelRelation.forEach((relation) => {
+  //     channels.push(relation.channel);
+  //   });
+  //   return channels;
+  // }
   /** ------------------------------------------------------------------------------------------- *
    * 🌼 Method that return all the public channels from the database.
    */

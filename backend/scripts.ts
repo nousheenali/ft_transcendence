@@ -156,8 +156,8 @@ async function main() {
   users.push(gabdoush);
 
   // Create 5 private channels and 5 public channels, and add gabdoush to them.
-  const privateChannels = await createChannels(users, 20, 'PRIVATE');
-  const publicChannels = await createChannels(users, 10, 'PUBLIC');
+  const privateChannels = await createChannels(users, 2, 'PRIVATE');
+  const publicChannels = await createChannels(users, 2, 'PUBLIC');
 
   // Add all users to all channels.
   await createChannelUserRelations(privateChannels);

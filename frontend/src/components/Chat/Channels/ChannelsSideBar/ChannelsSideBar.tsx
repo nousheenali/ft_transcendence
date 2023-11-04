@@ -24,15 +24,21 @@ export default function ChannelsSideBar() {
     (state) => state.setActiveChannel
   );
 
-  const channelUsers: ChannelUserProps[] = [];
   const [isLoading, setLoading] = useState(true);
 
-  // 
+  const privateChannelUsers: ChannelUserProps[] = [];
   if (activeChannel.channelName && activeChannel.channelType === "PRIVATE") {
     activeChannel.channelMembers.forEach((channelUser) => {
-      channelUsers.push(channelUser.user);
+      privateChannelUsers.push(channelUser.user);
     });
   }
+
+  // const publicChannelUsers: ChannelUserProps[] = [];
+  // if (activeChannel.channelName && activeChannel.channelType === "PUBLIC") {
+  //   activeChannel.channelMembers.forEach((channelUser) => {
+  //     publicChannelUsers.push(channelUser.user);
+  //   });
+  // }
 
   const [privateChannels, setPrivateChannels] = React.useState<ChannelsProps[]>(
     []
@@ -86,6 +92,9 @@ export default function ChannelsSideBar() {
       {activeChannelType === "Public" && (
         <>
           <ChannelsList channels={publicChannels} />
+          {/* <ChannelUserHeader />
+          <UsersSearch />
+          <ChannelsUsersBox users={publicChannelUsers} /> */}
         </>
       )}
       {activeChannelType === "Private" && (
@@ -93,7 +102,7 @@ export default function ChannelsSideBar() {
           <ChannelsList channels={privateChannels} />
           <ChannelUserHeader />
           <UsersSearch />
-          <ChannelsUsersBox users={channelUsers} />
+          <ChannelsUsersBox users={privateChannelUsers} />
         </>
       )}
       <hr className="w-80 border-line-break" />
