@@ -1,12 +1,12 @@
-// import EmojiPicker from "emoji-picker-react";
-import React, { useState, useEffect } from "react";
-import { io, Socket } from "socket.io-client";
 import Image from "next/image";
+import { env } from "process";
 import { useSession } from "next-auth/react";
+import EmojiPicker from "emoji-picker-react";
+import { io, Socket } from "socket.io-client";
+import { useSocket } from "@/context/store";
+import React, { useState, useEffect } from "react";
 import { ChannelsProps } from "@/components/Chat/types";
 import { userInformation } from "@/components/Profile/types";
-import { use } from "matter";
-// import { useChatSocketState } from "@/context/store";
 
 //========================================================================
 interface Message {
@@ -25,52 +25,8 @@ export default function SendMessageBox({
   //---------------------------------------------------------------
   const session = useSession();
   const [currentMessage, setCurrentMessage] = useState<string>("");
-  const [socket, setSocket] = useState<Socket>();
+  const {socket} = useSocket();
 
-  //---------------------------------------------------------------
-  // use effect for socket connection, disconnection, and message
-  useEffect(() => {
-    //--------------------------------------------------
-    const socket = io("http://localhost:3001", {
-      query: { userLogin: session.data?.user.name! },
-      autoConnect: false,
-    });
-    setSocket(socket);
-    socket.connect();
-    //--------------------------------------------------
-    // connect to the server
-    socket.on("connect", () => {
-      console.log(`Connected to the server with socket id: ${socket.id}`);
-    });
-
-    //--------------------------------------------------
-    // handle the error during connection
-    socket.on("connect_error", (err) => {
-      console.log(`connect_error due to ${err.message}`);
-    });
-
-    //--------------------------------------------------
-    // listen for messages from the server
-    socket.on("ServerToClient", (data: any) => {
-      console.log("Message received from a client: => ", data);
-    });
-
-    //--------------------------------------------------
-    // listen for messages from the server
-    socket.on("ServerToChannel", (data: any) => {
-      console.log("Message received from a channel: => ", data);
-    });
-
-    //--------------------------------------------------
-    // cleanup function, will be called when the component unmounts
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("ServerToClient");
-    };
-  }, [session]);
-
-  //---------------------------------------------------------------
   // send message to the server and then to the receiver.
   const sendMessage = (e: any) => {
     const trimmedMessage = currentMessage.trim();

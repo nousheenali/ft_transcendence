@@ -1,10 +1,12 @@
-// import SideBar from "@/components/SideBar";
+"use client";
 
-import GameStatus from "@/components/GameStatus/Gamestatus";
-import ResponsiveTable from "@/components/Table/Table";
-import { generateGameHistoryData } from "@/data/Table/gameHistory";
-import { generateLiveGamesData } from "@/data/Table/liveGames";
+import React from "react";
 import Image from "next/image";
+import ResponsiveTable from "@/components/Table/Table";
+import GameStatus from "@/components/GameStatus/Gamestatus";
+import useChatSocket from "@/components/ChatSocket/Socket";
+import { generateLiveGamesData } from "@/data/Table/liveGames";
+import { generateGameHistoryData } from "@/data/Table/gameHistory";
 
 export default function DashBoardPage() {
   const gameHistoryHeading = ["Player 1", "Score", "Date", "Moves", "Result"];
@@ -12,7 +14,8 @@ export default function DashBoardPage() {
 
   const gameHistoryData = generateGameHistoryData();
   const liveGamesData = generateLiveGamesData();
-
+  // Initialize the socket connection and set the socket
+  const socket = useChatSocket();
   return (
     <div className="p-2 h-full flex flex-col mr-[35px]">
       <GameStatus

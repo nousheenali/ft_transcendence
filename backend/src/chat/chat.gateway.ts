@@ -21,7 +21,7 @@ import { RoomsService } from './rooms.service';
 //================================================================================================
 // ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
 // the frontend to connect to the websocket server
-@WebSocketGateway({ cors: { origin: 'http://localhost:3000' } })
+@WebSocketGateway({ cors: { origin: process.env.NEXT_PUBLIC_GATEWAY_URL } })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -46,7 +46,7 @@ export class ChatGateway
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
     // ❂➤ Extractin the user login from the handshake's query
-    const userLogin = client.handshake.query.userLogin as string;
+    const userLogin = await client.handshake.query.userLogin as string;
     if (userLogin === undefined) return;
     this.logger.log(
       `New Client connected: id => ${client.id} name => ${userLogin}`,
