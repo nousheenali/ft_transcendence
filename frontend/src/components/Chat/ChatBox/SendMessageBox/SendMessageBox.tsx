@@ -31,7 +31,7 @@ export default function SendMessageBox({
   // use effect for socket connection, disconnection, and message
   useEffect(() => {
     //--------------------------------------------------
-    const socket = io("http://10.11.3.8:3001", {
+    const socket = io("http://localhost:3001", {
       query: { userLogin: session.data?.user.name! },
       autoConnect: false,
     });
@@ -60,7 +60,7 @@ export default function SendMessageBox({
     socket.on("ServerToChannel", (data: any) => {
       console.log("Message received from a channel: => ", data);
     });
-   
+
     //--------------------------------------------------
     // cleanup function, will be called when the component unmounts
     return () => {
@@ -87,8 +87,7 @@ export default function SendMessageBox({
         receiver: receiver.login,
         message: trimmedMessage,
       });
-    }
-    else if ("channelName" in receiver && socket) {
+    } else if ("channelName" in receiver && socket) {
       // It's a channel
       socket.emit("ChannelToServer", {
         socketId: socket.id,

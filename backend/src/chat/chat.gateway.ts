@@ -19,9 +19,9 @@ import { RoomsService } from './rooms.service';
 // type UserLoginType = string | string[];
 // export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
 //================================================================================================
-// ❂➤ cors: { origin: 'http://10.11.3.8:3000' }: This is to allow
+// ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
 // the frontend to connect to the websocket server
-@WebSocketGateway({ cors: { origin: 'http://10.11.3.8:3000' } })
+@WebSocketGateway({ cors: { origin: 'http://localhost:3000' } })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -54,7 +54,6 @@ export class ChatGateway
 
     // ❂➤ Joining the user's room at connection
     this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
-    this.roomsService.printAllRooms();
   }
 
   //================================================================================================
@@ -65,6 +64,8 @@ export class ChatGateway
   @SubscribeMessage('ClientToServer')
   async sendToUser(@MessageBody() data: Message) {
     this.server.to(data.receiver).emit('ServerToClient', data);
+    this.roomsService.printAllRooms();
+    console.log('Message To: [' + data.receiver + '] => ' + data.message);
   }
 
   //================================================================================================
@@ -82,7 +83,8 @@ export class ChatGateway
     const roomName = data.channel + data.channelType;
     this.roomsService.joinRoom(roomName, userLogin, client, 'CHANNELS');
     this.server.to(data.channel).emit('ServerToChannel', data);
-    console.log('Channel: [' + data.channel + '] => ' + data.message);
+    this.roomsService.printAllRooms();
+    console.log('Message To: [' + data.channel + '] => ' + data.message);
   }
   //================================================================================================
   /**
