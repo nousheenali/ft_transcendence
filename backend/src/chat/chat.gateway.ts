@@ -54,7 +54,7 @@ export class ChatGateway
     );
 
     // ❂➤ Joining the user's room at connection
-    this.roomsService.joinRoom(userLogin, userLogin, client);
+    this.roomsService.joinRoom(userLogin, userLogin, client, "USERS");
     this.roomsService.printAllRooms();
   }
 

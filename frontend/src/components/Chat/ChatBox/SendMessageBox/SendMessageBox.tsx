@@ -94,6 +94,7 @@ export default function SendMessageBox({
         socketId: socket.id,
         username: session?.data?.user?.name,
         channel: receiver.channelName,
+        channelType: receiver.channelType,
         message: trimmedMessage,
       });
     }

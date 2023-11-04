@@ -20,7 +20,11 @@ export interface Message {
 	username: string;
 	receiver?: string;
 	channel?: string;
+	channelType?: string;
 	message: string;
   }
   
+//===============================================================================
+export type RoomType = "CHANNELS" | "USERS";
+
 //===============================================================================
