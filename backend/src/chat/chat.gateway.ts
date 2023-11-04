@@ -25,9 +25,8 @@ import { RoomsService } from './rooms.service';
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(
-    private readonly chatService: ChatService) {}
-    private roomsService: RoomsService = new RoomsService();
+  constructor(private readonly chatService: ChatService) {}
+  private roomsService: RoomsService = new RoomsService();
   //================================================================================================
   // ❂➤ Initializing instance of the websocket server
   @WebSocketServer() server: Server;
@@ -54,7 +53,7 @@ export class ChatGateway
     );
 
     // ❂➤ Joining the user's room at connection
-    this.roomsService.joinRoom(userLogin, userLogin, client, "USERS");
+    this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
     this.roomsService.printAllRooms();
   }
 
@@ -74,10 +73,16 @@ export class ChatGateway
    * to the channel room.
    */
   @SubscribeMessage('ChannelToServer')
-  async sendToChannel(@MessageBody() data: Message) {
-    
+  async sendToChannel(
+    @MessageBody() data: Message,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const userLogin = client.handshake.query.userLogin as string;
+    if (userLogin === undefined) return;
+    const roomName = data.channel + data.channelType;
+    this.roomsService.joinRoom(roomName, userLogin, client, 'CHANNELS');
     this.server.to(data.channel).emit('ServerToChannel', data);
-    console.log("Channel: [" + data.channel + "] => " + data.message);
+    console.log('Channel: [' + data.channel + '] => ' + data.message);
   }
   //================================================================================================
   /**
