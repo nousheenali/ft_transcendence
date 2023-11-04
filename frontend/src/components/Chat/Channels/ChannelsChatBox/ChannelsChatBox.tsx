@@ -8,11 +8,15 @@ export default function ChannelsChatBox({
 }: {
   channel: ChannelsProps;
 }) {
+  if (channel === null || channel === undefined || channel.channelName === "")
+    return (
+      <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl"></div>
+    );
   return (
     <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
       <ChannelChatBoxHeader channel={channel} />
       <ChannelChat channel={channel} />
-      <SendMessageBox receiver={channel}/>
+      <SendMessageBox receiver={channel} />
     </div>
   );
 }

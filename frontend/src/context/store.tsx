@@ -33,11 +33,11 @@ type AppState = {
 // Initialize activeChannel with a default value
 export const activateClickedChannel = create<AppState>((set) => ({
   activeChannel: {
-    channelName: "default",
-    channelType: "default",
-    createdBy: "default",
-    createdAt: "default",
-    updatedAt: "default",
+    channelName: "",
+    channelType: "",
+    createdBy: "",
+    createdAt: "",
+    updatedAt: "",
     channelMembers: [],
     Messages: [],
   } as ChannelsProps,
@@ -63,7 +63,7 @@ type clickedFriendState = {
 };
 
 export const activateClickedFriend = create<clickedFriendState>((set) => ({
-  activeFriend: "DefaultFriend",
+  activeFriend: "",
   setActiveFriend: (login) => set({ activeFriend: login }),
 }));
 

@@ -25,7 +25,7 @@ export default function SendMessageBox({
   //---------------------------------------------------------------
   const session = useSession();
   const [currentMessage, setCurrentMessage] = useState<string>("");
-  const {socket} = useSocket();
+  const { socket } = useSocket();
 
   // send message to the server and then to the receiver.
   const sendMessage = (e: any) => {
@@ -78,6 +78,10 @@ export default function SendMessageBox({
 
   //---------------------------------------------------------------
 
+  if (receiver === undefined)
+    return (
+      <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
+    );
   return (
     <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
       <input

@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ChannelsProps } from "../../../types";
 
 export default function ChannelChatBoxHeader({channel}: { channel: ChannelsProps }) {
-  if (channel.channelName === "" || channel.channelName === "default") return;
+  if (channel.channelName === "" || channel.channelName === null) return;
   return (
     <div
       className="indicator w-full h-32 flex items-center rounded-xl bg-main-theme text-main-texts 

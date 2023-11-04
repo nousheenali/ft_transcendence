@@ -12,7 +12,7 @@ export default function FriendsChatBox() {
   const [user, setUser] = React.useState<userInformation>();
 
   useEffect(() => {
-    if (activeFriend === "" || activeFriend === "DefaultFriend") return;
+    if (activeFriend === "" || activeFriend === null) return;
     const fetchData = async () => {
       const userData: userInformation = await getUserData(
         activeFriend,
