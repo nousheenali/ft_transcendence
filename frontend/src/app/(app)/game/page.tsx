@@ -40,7 +40,7 @@ export default function GamePage() {
             height: (window.innerHeight * 2) / 3,
           });
         } else {
-          
+
           const userID = "tester";
           socket.emit("matchFriend", {
             friendName: userID,

@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { GameRoom, GameRoomService } from './game-room/game-room.service';
 import { PlayerService, Player } from './player/player.service';
 
-@WebSocketGateway(8005, { cors: { origin: process.env.FRONTEND_URL } }) //http://localhost:3000
+@WebSocketGateway(8005, { cors: { origin: "http://localhost:3000" } })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
