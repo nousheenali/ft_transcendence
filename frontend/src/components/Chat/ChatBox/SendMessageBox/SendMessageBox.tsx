@@ -1,22 +1,10 @@
 import Image from "next/image";
-import { env } from "process";
 import { useSession } from "next-auth/react";
 import EmojiPicker from "emoji-picker-react";
-import { io, Socket } from "socket.io-client";
 import { useSocket } from "@/context/store";
 import React, { useState, useEffect } from "react";
-import { ChannelsProps } from "@/components/Chat/types";
+import { ChannelsProps, Message } from "@/components/Chat/types";
 import { userInformation } from "@/components/Profile/types";
-
-//========================================================================
-export interface Message {
-	socketId: string;
-	username: string;
-	receiver?: string;
-	channel?: string;
-	channelType?: string;
-	message: string;
-  }
 
 //========================================================================
 export default function SendMessageBox({
@@ -68,7 +56,7 @@ export default function SendMessageBox({
   }, [socket]);
   //---------------------------------------------------------------
   // send message to the server and then to the receiver.
-  const sendMessage = (e: any) => {
+  const sendMessage = () => {
     const trimmedMessage = currentMessage.trim();
     if (trimmedMessage === "") {
       return;
@@ -107,7 +95,7 @@ export default function SendMessageBox({
     const listener = (event: any) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
-        sendMessage(event);
+        sendMessage();
       }
     };
     document.addEventListener("keydown", listener);

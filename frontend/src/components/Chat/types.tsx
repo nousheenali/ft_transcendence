@@ -54,12 +54,6 @@ export interface ChannelsBtn {
   setActiveChannelType: React.Dispatch<React.SetStateAction<string>>;
 }
 
-
-
-
-
-/*-------------------------------------------------------------------*/
-
 /*-------------------------------------------------------------------*/
 export interface ChatFriendsProps {
   friend: {
@@ -71,5 +65,15 @@ export interface ChatFriendsProps {
     };
   };
 }
+
+/*-------------------------------------------------------------------*/
+export interface Message {
+	socketId: string;
+	username: string;
+	receiver?: string;
+	channel?: string;
+	channelType?: string;
+	message: string;
+  }
 
 /*-------------------------------------------------------------------*/
