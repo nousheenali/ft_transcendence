@@ -15,6 +15,9 @@ export default function StartGameCustomize() {
   const router = useRouter();
   const openGame = () => {
     router.push("/game");
+    // router.push({ pathname: "/game", query: { key: Math.random() } });
+    // const randomKey = Math.random();
+    // router.push(`/game?key=${randomKey}`);
   };
   return (
     <div className="flex items-center justify-center p-4 mb-6">
