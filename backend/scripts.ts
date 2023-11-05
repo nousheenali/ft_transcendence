@@ -114,7 +114,16 @@ async function main() {
   await prisma.channel.deleteMany();
   await prisma.friendRelation.deleteMany();
   await prisma.messages.deleteMany();
-  await prisma.user.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.user.deleteMany(
+    {
+      where: {
+        login: {
+          not: 'yonamog2',
+        },
+      },
+    },
+  );
 
   //================================================================================================================
   // Creating 3 users.
@@ -403,6 +412,39 @@ async function main() {
     },
   });
   console.log(gabdoushYonatanMessages);
+
+  const yonis_id = "7872e1aa-4958-41b3-a53c-84374934bc9b"
+  /*Create a tmp notification*/
+  await prisma.notification.create({
+    data: {
+      content: "FriendRequest_Recieved",
+      senderId: gabdoush.id,
+      userId: yonis_id,
+    },
+  });
+  await prisma.notification.create({
+    data: {
+      content: "DirectMessage_Recieved",
+      senderId: yonatan.id,
+      userId: yonis_id,
+    },
+  });
+  await prisma.notification.create({
+    data: {
+      content: "ChannelInvite_Recieved",
+      senderId: samad.id,
+      userId: yonis_id,
+    },
+  });
+
+  await prisma.notification.create({
+    data: {
+      content: "FriendRequest_Recieved",
+      senderId: samad.id,
+      userId: yonis_id,
+    },
+  });
+
   //================================================================================================================
   console.log('==============================================================');
   console.log('Seeding finished.');
