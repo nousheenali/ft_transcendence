@@ -67,7 +67,7 @@ export default function NotificationIcon() {
         query: { userId: userData },
       });
       socket.on("connect", () => {
-        console.log("connected", socket.id);
+        // console.log("connected", socket.id);
         setSocket(socket);
         setCurrentSocket(socket);
       });
@@ -77,7 +77,7 @@ export default function NotificationIcon() {
       });
 
       return () => {
-        console.log("unregistering");
+        // console.log("unregistering");
         socket.off("connect");
         socket.off("newNotif");
       };

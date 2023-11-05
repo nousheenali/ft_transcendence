@@ -16,44 +16,7 @@ export default function SendMessageBox({
   const session = useSession();
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const { socket } = useChatSocket();
-  //---------------------------------------------------------------
-  useEffect(() => {
-    //--------------------------------------------------
-    // connect to the server
-    if (socket) {
-      socket.on("connect", () => {
-        console.log(`Connected to the server with socket id: ${socket.id}`);
-      });
 
-      //--------------------------------------------------
-      // handle the error during connection
-      socket.on("connect_error", (err) => {
-        console.log(`connect_error due to ${err.message}`);
-      });
-
-      //--------------------------------------------------
-      // listen for messages from the server
-      socket.on("ServerToClient", (data: Message) => {
-        console.log("Message received from a client: => ", data);
-      });
-
-      //--------------------------------------------------
-      // listen for messages from the server
-      socket.on("ServerToChannel", (data: Message) => {
-        console.log("Message received from a channel: => ", data);
-      });
-
-      //--------------------------------------------------
-      // cleanup function, will be called when the component unmounts
-      return () => {
-        socket.off("connect");
-        socket.off("connect_error");
-        socket.off("disconnect");
-        socket.off("ServerToClient");
-        socket.off("ServerToChannel");
-      };
-    }
-  }, [socket]);
   //---------------------------------------------------------------
   // send message to the server and then to the receiver.
   const sendMessage = () => {
@@ -81,11 +44,6 @@ export default function SendMessageBox({
         message: trimmedMessage,
       });
     }
-    // ##############################################################
-    // POST THE MESSAGE TO THE DATABASE
-    //----------------------------------
-
-    // ##############################################################
     setCurrentMessage("");
   };
 

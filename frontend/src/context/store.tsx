@@ -79,12 +79,14 @@ export const activateClickedFriend = create<clickedFriendState>((set) => ({
 
 // ---------------------------------------------------------------------------------------------
 type ChatSocketState = {
-  socket: Socket | null;
+  socket: Socket;
   setSocket: (socket: Socket) => void;
 };
 
 export const useChatSocket = create<ChatSocketState>((set) => ({
-  socket: null,
+  socket: io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
+    autoConnect: false,
+  }),
   setSocket: (socket: Socket) => set({ socket }),
 }));
 

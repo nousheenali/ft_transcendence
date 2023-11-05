@@ -63,9 +63,10 @@ export class ChatGateway
    */
   @SubscribeMessage('ClientToServer')
   async sendToUser(@MessageBody() data: Message) {
+    // this.server.emit('ServerToClient', data);
     this.server.to(data.receiver).emit('ServerToClient', data);
-    this.roomsService.printAllRooms();
-    console.log('Message To: [' + data.receiver + '] => ' + data.message);
+    // this.roomsService.printAllRooms();
+    // console.log('Message To: [' + data.receiver + '] => ' + data.message);
   }
 
   //================================================================================================
