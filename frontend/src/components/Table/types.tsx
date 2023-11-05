@@ -19,9 +19,13 @@ export interface ResponsiveTableProps {
   headings: string[];
   data: TableRowData[];
   maxHeight: string;
+  activeButton: string;
+  reloadPageData: (buttonId: string) => void;
 }
 
 export type TableCellProps = {
   dataItem: string | PlayerData | ActionIconData;
   login: string;
+  activeButton: string;
+  reloadPageData: (buttonId: string) => void;
 };

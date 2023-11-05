@@ -9,8 +9,12 @@ import {
   updateFriendRelation,
 } from "../../../services/friends";
 import { useSocket } from "@/context/store";
-
-const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
+const TableCell: React.FC<TableCellProps> = ({
+  dataItem,
+  login,
+  activeButton,
+  reloadPageData,
+}) => {
   const { data: session } = useSession();
   const { currentSocket } = useSocket();
 
@@ -32,9 +36,9 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
             />
           </div>
           <div>
-            {dataItem.playerName?.length > 3
-              ? `${dataItem.playerName.substring(0, 10)}..`
-              : dataItem.playerName}
+            {dataItem.name?.length > 10
+              ? `${dataItem.name.substring(0, 10)}..`
+              : dataItem.name}
           </div>
         </div>
       </div>
@@ -52,7 +56,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
         endpoint = API_ENDPOINTS.acceptFriendRequest;
         break;
       case "DECLINE":
-        action = updateFriendRelation;
+        action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.declineFriendRequest;
         break;
       case "ADDFRIEND":
@@ -87,6 +91,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
           endpoint,
           currentSocket
         );
+        reloadPageData(activeButton);
         toast.success(message);
       } catch (error: any) {
         toast.error(error.message);

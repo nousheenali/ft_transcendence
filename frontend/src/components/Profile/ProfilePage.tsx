@@ -22,12 +22,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ProfilePage: React.FC<ProfilePageProps> = ({
-  friendsRecords,
   userInfo
 }) => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
-  const [tableData, setTableData] = useState<TableRowData[]>(friendsRecords);
+  const [tableData, setTableData] = useState<TableRowData[]>([]);
 
 
   let data: TableRowData[];
@@ -80,6 +79,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={friendsProfileHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="friends"
+              reloadPageData={fetchTableData}
             />
           );
         case "search":
@@ -91,6 +92,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={searchProfileHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="search"
+              reloadPageData={fetchTableData}
             />
           );
         case "blocked":
@@ -102,6 +105,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={blockedFriendsHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="blocked"
+              reloadPageData={fetchTableData}
             />
           );
         case "friendRequests":
@@ -113,6 +118,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={friendsRequestHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="friendRequests"
+              reloadPageData={fetchTableData}
             />
           );
         case "pendingRequests":
@@ -124,6 +131,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headings={pendingRequestHeadings}
               data={tableData}
               maxHeight="585px"
+              activeButton="pendingRequests"
+              reloadPageData={fetchTableData}
             />
           );
         default:
@@ -136,9 +145,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     <>
       <div className="w-full h-full text-center text-white flex flex-col p-6">
         <ProfileInfo
-          name={userInfo.login}
+          name={userInfo.name}
           email={userInfo.email}
           rank="12"
+          avatar={userInfo.avatar}
           activeButton={activeButton}
           handleButtonClick={handleButtonClick}
         />
