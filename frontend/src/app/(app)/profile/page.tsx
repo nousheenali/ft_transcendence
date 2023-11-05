@@ -1,19 +1,20 @@
 import React from "react";
+import { NextRequest } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { options } from "@/app/api/auth/[...nextauth]/options";
+import { TableRowData } from "@/components/Table/types";
+import { generateProfileFriendsData } from "@/data/Table/friends";
+import ProfilePage from "@/components/Profile/ProfilePage";
+import { userInformation } from "@/components/Profile/types";
+import { getUserData } from "../../../../services/user";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 
-export default function Profile() {
-  return (
-    <>
-      <div className="w-full h-full text-center text-white flex flex-col">
-        <div className="bg-black h-[156px] border-2 border-[#667030]">
-          PROFILE
-        </div>
-        <div className="bg-black mt-[10px] h-[37px] border-2 border-[#667030]">
-          PROFILE_NAV
-        </div>
-        <div className="bg-black h-full mt-[10px] overflow-y-scroll max-h-[450px] scroll-mr-6 border-2 border-[#667030]">
-          FRIENDS
-        </div>
-      </div>
-    </>
-  );
+export default async function page(req: NextRequest) {
+  const session = await getServerSession(options);
+  const login = await session?.user.login!;
+
+  // Fetch user data
+  const userInfo: userInformation= await getUserData(login, API_ENDPOINTS.getUserbyLogin);
+
+  return <ProfilePage userInfo={userInfo} />;
 }

@@ -1,8 +1,11 @@
-import { Title } from "@/components/Title/Title";
-import { IntraAuthButton } from "@/components/AuthButton/IntraAuth";
-import Team from "@/components/Team/Team";
-import { Footer } from "@/components/Footer/Footer";
+"use client";
+import { Title } from "@/components/Login/Title/Title";
+import { IntraAuthButton } from "@/components/Login/AuthButton/IntraAuth";
+import Team from "@/components/Login/Team/Team";
+import { Footer } from "@/components/Login/Footer/Footer";
 import React from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "react-daisyui";
 
 /*
  * TODO: Put more spacing between the button and the team section.
@@ -11,13 +14,22 @@ import React from "react";
  * */
 
 export default function Home() {
+  const { data: session } = useSession();
+
+  const callbackUrl = "/";
+  const handleLogin = async () => {
+    await signIn("42-school", {
+      redirect: true,
+      callbackUrl,
+    });
+  };
   return (
     <>
       <main className="w-screen h-full flex flex-col items-center gap-20 mt-32">
-          <Title />
-          <IntraAuthButton />
-          <Team />
-          <Footer />
+        <Title />
+        <button onClick={handleLogin}><IntraAuthButton /></button>
+        <Team />
+        <Footer />
       </main>
     </>
   );

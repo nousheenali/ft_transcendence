@@ -1,0 +1,89 @@
+{
+    "notifications": [
+        {
+            "userInfo": {
+                "username": "Yonatan",
+                "score": 1920,
+                "profileImage": {
+                    "alt": "Yonatan Profile Picture",
+                    "src": "av1.svg"
+                },
+                "rank": 1,
+                "email": "user@email.com"
+            },
+            "messageContent": "Requested your friendship",
+            "messageTime": "2 min ago"
+        },
+        {
+            "userInfo": {
+                "username": "Ghaiath",
+                "score": 1900,
+                "profileImage": {
+                    "alt": "Gaith Profile Picture",
+                    "src": "av1.svg"
+                },
+                "rank": 2,
+                "email": "user@email.com"
+            },            
+            "messageContent": "Sent you a message",
+            "messageTime": "4 min ago"
+        },
+        {
+            "userInfo": {
+                "username": "Abdul Samad",
+                "score": 1820,
+                "profileImage": {
+                    "alt": "Abdul Samad Profile Picture",
+                    "src": "av1.svg"
+                },
+                "rank": 3,
+                "email": "user@email.com"
+            },
+            "messageContent": "Invited you to play a match",
+            "messageTime": "5 min ago"
+        },
+        {
+            "userInfo": {
+                "username": "Sumaiya Fathima",
+                "score": 1800,
+                "profileImage": {
+                    "alt": "Sumaiya Fathima Profile Picture",
+                    "src": "av1.svg"
+                },
+                "rank": 4,
+                "email": "user@email.com"
+            },
+            "messageContent": "Sent you a message",
+            "messageTime": "8 min ago"
+        },
+        {
+            "userInfo": {
+                "username": "Nousheen Ali",
+                "score": 1720,
+                "profileImage": {
+                    "alt": "Nousheen Ali Profile Picture",
+                    "src": "av1.svg"
+                },
+                "rank": 5,
+                "email": "user@email.com"
+            },
+            "messageContent": "Invited you to play a match",
+            "messageTime": "10 min ago"
+        },
+        {
+            "userInfo":{
+                "username": "42 Abudhabi",
+                "score": 1700,
+                "profileImage": {
+                    "alt": "Nousheen Ali Profile Picture",
+                    "src": "av1.svg"
+                },
+                "rank": 6,
+                "email": "user@email.com"
+            },
+            "messageContent": "Sent you a message",
+            "messageTime": "11 min ago"
+        }
+    ]
+}
+  

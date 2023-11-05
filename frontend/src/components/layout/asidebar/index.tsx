@@ -1,35 +1,55 @@
 "use client";
-import Breaker from "@/components/br";
-import React, { FC } from "react";
+import Breaker from "@/components/br/Br";
+import React, { FC, useEffect } from "react";
 import { useState } from "react";
-import { VscBellDot } from "react-icons/vsc";
-import Image from "next/image";
-import MobileSidebar from "@/components/mobileSidebar";
-import NotificationIcon from "../notificationIcon";
-import UserProfileSide from "../userProfileSide";
-import MenuSideBar from "../menuSideBar";
-import FooterSideBar from "../FooterSideBar";
+import NotificationIcon from "../../notificationIcon";
+import UserProfileSide from "../../userProfileSide/userProfileSide";
+import MenuSideBar from "../../menuSideBar/menuSideBar";
+import { useSession } from "next-auth/react";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { getUserData } from "../../../../services/user";
+import { userInformation } from "@/components/Profile/types";
 
 interface AsideBarProps {
   isMobile: boolean;
 }
 
+const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
+  const { data: session } = useSession();
+  const [userData, setUserData] = useState<userInformation>();
 
-const AsideBar : FC<AsideBarProps> = ({isMobile}) => {
+  useEffect(() => {
+    if (session) {
+      getUserData(session?.user.login!, API_ENDPOINTS.getUserbyLogin)
+        .then((userData) => {
+          setUserData(userData);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    }
+  }, [session]);
 
   return (
     <>
-    <aside className={`${!isMobile && "hidden my-[18px] ml-[35px]"} w-full lg:w-[400px]  border-2  border-aside-border bg-aside-fill rounded-3xl overflow-hidden lg:flex flex-col justify-start`}>
+      <aside
+        className={`${
+          !isMobile && "hidden my-[18px] ml-[35px]"
+        }  w-80 lg:w-[400px]  border-2  border-aside-border bg-aside-fill rounded-3xl overflow-hidden lg:flex flex-col justify-start`}
+      >
+        <NotificationIcon />
 
-    <NotificationIcon />
+        {userData ? (
+          <UserProfileSide
+            image={userData?.avatar || "image"}
+            name={userData?.login || "name"}
+          />
+        ) : (
+          <UserProfileSide image="load" name="load" />
+        )}
 
-    <UserProfileSide />
-
-    <MenuSideBar />
-
-    <FooterSideBar />
-
-    </aside>
+        <MenuSideBar />
+      </aside>
     </>
   );
 };
