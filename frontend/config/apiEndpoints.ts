@@ -1,4 +1,3 @@
-
 export const API_ENDPOINTS = {
   //USER module
   getUserbyLogin: "/user/getByLogin/",
@@ -17,4 +16,13 @@ export const API_ENDPOINTS = {
   declineFriendRequest: "/friends/declineRequest/",
   blockFriend: "/friends/block/",
   unBlockFriend: "/friends/unBlock/",
+
+  //CHANNEL module
+  // end point for getting all channels that the user have relation with.
+  privateChannels: "/channel/private-channels/",
+  publicChannels: "/channel/public-channels/",
+
+  // User Messsages
+  userMessages: "/user-messages/friend-chat/",
+  userLatestMessages: "/user-messages/latest-messages/",
 };

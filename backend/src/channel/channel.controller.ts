@@ -1,40 +1,60 @@
-import {Controller,Get,Post,Body,Patch,Param,Delete,} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
-import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; // 👈 Import CreateChannelRelationDto
 import { CreateChannelDto } from './dto/create-channel.dto';
+import { HttpException, HttpStatus } from '@nestjs/common'; // 👈 Import HttpException and HttpStatus
 
 @Controller('channel')
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 
-  // 👇 create a new channel relation between a user table and a certain channel.
-  @Post('/createChannelRelation/')
-  create(@Body() createChannelRelationDto: CreateChannelRelationDto) {
-    return this.channelService.createChannelRelation(createChannelRelationDto);
+  //================================================================================================
+  // 👇 get all channels according to the channel type
+  @Get('/private-channels/:login')
+  GetPrivateChannels(@Param('login') login: string) {
+    try {
+      return this.channelService.getPrivateChannels(login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Private Channels of the user ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  // 👇 get all members of a channel.
-  @Get('/getMembers/:id')
-  findAll(@Param('id') id: string) {
-    return this.channelService.findChannelMembers(id);
+    //================================================================================================
+  // 👇 get all channels according to the channel type
+  @Get('/public-channels/:login')
+  GetPublicChannels() {
+    try {
+      return this.channelService.getPublicChannels();
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Public Channels of the server ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
-
-  // 👇 delete a channel relation between a user table and a channel.
-  @Delete('/deleteChannelRelation/:userID/:channelID')
-  remove(@Param('userID') userID: string, @Param('channelID') channelID: string) {
-    return this.channelService.remove(userID, channelID);
-  }
-
-  /**
-   * create a new channel.
-   */
+  
+  //================================================================================================
+  // 👇 create a new channel
   @Post('/create')
   CreateChannel(@Body() CreateChannelDto: CreateChannelDto) {
     return this.channelService.createChannel(CreateChannelDto);
   }
 
+  //================================================================================================
+  // 👇 delete a channel
   @Delete('/delete/:id')
-  DeleteChannel(@Param('id') id : string) {
+  DeleteChannel(@Param('id') id: string) {
     return this.channelService.DeleteChannel(id);
   }
+  //================================================================================================
 }

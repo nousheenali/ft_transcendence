@@ -2,102 +2,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 //================================================================================================================
-// Testing the friends and user
-/**
-async function main() {
-  console.log('Seeding started:');
-  console.log('-------------------------------');
-
-  // Delete all the user at the beginning from the database.
-  await prisma.user.deleteMany();
-
-  //------------------------------------------------
-  // Creating the main user.
-  const newUser = await prisma.user.create({
-    data: {
-      login: 'gabdoush',
-      email: 'gabdoush@hotmail.com',
-      name: 'Ghaiath',
-      lastName: 'Abdoush',
-    },
-  });
-  console.log('The user: ', newUser.id, newUser.login, ' has been created.');
-  
-
-  //------------------------------------------------
-  const newFriend1 = await prisma.user.create({
-    data: {
-      login: 'yonatan',
-      email: 'yonatan@hotmail.com',
-      name: 'Yonathan',
-      lastName: 'Monges',
-    },
-  });
-  console.log('The user: ', newFriend1.id, newFriend1.login, ' has been created.');
-
-  const newFriend2 = await prisma.user.create({
-    data: {
-      login: 'Samad',
-      email: 'Samad@hotmail.com',
-      name: 'Abdul',
-      lastName: 'Samad',
-    },
-  });
-  console.log('The user: ', newFriend2.id, newFriend2.login, ' has been created.');
-  
-  //------------------------------------------------
-  // Creating a friend relations.
-  await prisma.friend.create({
-    data: {
-      friendId: newFriend1.id,
-      userId: newUser.id,
-    }
-  })
-  console.log("friend relation created: [", newUser.login, "+", newFriend1.login, "]");
-
-
-
-  // Creating a friend relations.
-  await prisma.friend.create({
-    data: {
-      friendId: newFriend2.id,
-      userId: newUser.id,
-    }
-  })
-  console.log("friend relation created: [", newUser.login, "+", newFriend2.login, "]");
-
-
-
-  console.log('-------------------------------');
-  console.log("All the friends of the user: ", newUser.login);
-
-  const userFriends = await prisma.friend.findMany({
-    where: { userId: newUser.id }
-  });
-  
-  for (const friend of userFriends) {
-    const friendTable = await prisma.user.findUnique({
-      where: { id: friend.friendId }
-    });
-    console.log(friend.friendId, friendTable);
-    
-  };
-
-
-
-  console.log('-------------------------------');
-  console.log('Seeding finished.');
-}
-
- */
-
-//================================================================================================================
 // Testing the Channels and the channels members.
 
 async function main() {
-  console.log('Seeding started:');
-  console.log('==============================================================');
-
   //================================================================================================================
   // Delete all data from the DataBase at the beginning to avoid any errors.
 
@@ -126,8 +33,6 @@ async function main() {
   );
 
   //================================================================================================================
-  // Creating 3 users.
-
   const gabdoush = await prisma.user.create({
     data: {
       login: 'gabdoush',
@@ -137,317 +42,153 @@ async function main() {
       score: 120,
     },
   });
+  //================================================================================================================
+  const createUsers = async (numberOfUsers: any) => {
+    const users = [];
 
-  console.log(
-    'The user: [',
-    gabdoush.id,
-    '] [',
-    gabdoush.login,
-    '] has been created.',
-  );
+    for (let i = 0; i < numberOfUsers; i++) {
+      const newUser = await prisma.user.create({
+        data: {
+          login: `user_${i}`,
+          email: `user_${i}@example.com`,
+          name: `User ${i}`,
+          isOnline: true,
+          score: 120,
+        },
+      });
+      users.push(newUser);
+    }
 
-  //------------------------------------------------
-
-  const yonatan = await prisma.user.create({
-    data: {
-      login: 'yonatan',
-      email: 'yonatan@hotmail.com',
-      name: 'Yonathan Monges',
-      isOnline: true,
-      score: 120,
-    },
-  });
-
-  console.log(
-    'The user: [',
-    yonatan.id,
-    '] [',
-    yonatan.login,
-    '] has been created.',
-  );
-
-  //------------------------------------------------
-
-  const samad = await prisma.user.create({
-    data: {
-      login: 'samad',
-      email: 'samad@hotmail.com',
-      name: 'Samad Abdul',
-      isOnline: true,
-      score: 120,
-    },
-  });
-
-  console.log(
-    'The user: [',
-    samad.id,
-    '] [',
-    samad.login,
-    '] has been created.',
-  );
+    return users;
+  };
 
   //================================================================================================================
-  console.log('-------------------------------------------------------------');
-  //================================================================================================================
-  // Creating '42 AbuDhabi' channel
+  const createChannels = async (users, numberOfChannels, channelType) => {
+    const channels = [];
 
-  const AbuDhabi = await prisma.channel.create({
-    data: {
-      channelName: '42 AbuDhabi',
-      channelType: 'PUBLIC',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
+    for (let i = 0; i < numberOfChannels; i++) {
+      const creatorIndex = i % users.length;
+      const creator = users[creatorIndex];
+
+      const newChannel = await prisma.channel.create({
+        data: {
+          channelName: `Ch-${i}-${channelType}`,
+          channelType: channelType,
+          createdBy: creator.id,
+          channelMembers: {
+            create: {
+              userId: creator.id,
+            },
+          },
+        },
+      });
+
+      channels.push(newChannel);
+    }
+
+    return channels;
+  };
+
+  //================================================================================================================
+  const createChannelUserRelations = async (channels) => {
+    for (const channel of channels) {
+      await prisma.channelRelation.create({
+        data: {
+          channelId: channel.id,
           userId: gabdoush.id,
         },
-      },
-    },
-  });
-
-  console.log(
-    'The channel: [',
-    AbuDhabi.id,
-    '] [',
-    AbuDhabi.channelName,
-    '] has been created.',
-  );
-
-  //------------------------------------------------
-  // Creating 'FourTwo' channel
-
-  const FourTwo = await prisma.channel.create({
-    data: {
-      channelName: 'FourTwo',
-      channelType: 'PUBLIC',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-
-  console.log(
-    'The channel: [',
-    FourTwo.id,
-    '] [',
-    FourTwo.channelName,
-    '] has been created.',
-  );
-
-  //------------------------------------------------
-  // Creating Dubai channel
-
-  const Dubai = await prisma.channel.create({
-    data: {
-      channelName: '42 Dubai',
-      channelType: 'PUBLIC',
-      createdBy: gabdoush.id,
-      channelMembers: {
-        create: {
-          userId: gabdoush.id,
-        },
-      },
-    },
-  });
-
-  console.log(
-    'The channel: [',
-    Dubai.id,
-    '] [',
-    Dubai.channelName,
-    '] has been created.',
-  );
+      });
+    }
+  };
 
   //================================================================================================================
-  console.log('-------------------------------------------------------------');
-  //================================================================================================================
-  // Adding channelRelation between the users to the channel.
-
-  const relation_1 = await prisma.channelRelation.create({
-    data: {
-      channelId: Dubai.id,
-      userId: yonatan.id,
-    },
-  });
-  console.log(
-    'channelRelation created: [',
-    relation_1.id,
-    '] [channelId ->',
-    relation_1.channelId,
-    '+ userId ->',
-    relation_1.userId,
-    ']',
-  );
-
-  //------------------------------------------------
-  const relation_2 = await prisma.channelRelation.create({
-    data: {
-      channelId: AbuDhabi.id,
-      userId: samad.id,
-    },
-  });
-  console.log(
-    'channelRelation created: [',
-    relation_2.id,
-    '] [channelId ->',
-    relation_2.channelId,
-    '+ userId ->',
-    relation_2.userId,
-    ']',
-  );
-
-  //------------------------------------------------
-  const relation_3 = await prisma.channelRelation.create({
-    data: {
-      channelId: AbuDhabi.id,
-      userId: yonatan.id,
-    },
-  });
-  console.log(
-    'channelRelation created: [',
-    relation_3.id,
-    '] [channelId ->',
-    relation_3.channelId,
-    '+ userId ->',
-    relation_3.userId,
-    ']',
-  );
-
-  //================================================================================================================
-  // Sending first time friend request from Gabdoush to Yonatan.
-  await prisma.friendRelation.create({
-    data: {
-      userId: gabdoush.id,
-      friendId: yonatan.id,
-      friendStatus: 'PENDING',
-    },
-  });
-
-  // Gabdoush blocking Yonatan.
-  await prisma.friendRelation.updateMany({
-    where: {
-      userId: gabdoush.id,
-      friendId: yonatan.id,
-    },
-    data: {
-      friendStatus: 'BLOCKED',
-      blockedBy: gabdoush.id,
-    },
-  });
-
-  //Yonatan sends a friend request to Samad
-  await prisma.friendRelation.create({
-    data: {
-      userId: yonatan.id,
-      friendId: samad.id,
-      friendStatus: 'BLOCKED',
-      blockedBy: samad.id,
-    },
-  });
-
-  //================================================================================================================
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      receiverId: yonatan.id,
-      content: 'Hello Yonatan, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      receiverId: gabdoush.id,
-      content: 'Hello Gabdoush, I am fine, how are you?',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      receiverId: yonatan.id,
-      content: 'everything is fine',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      receiverId: gabdoush.id,
-      content: 'yes, everything is fine',
-    },
-  });
-  
-  //-------------------------------------------------------------
-  // Sending a message to the channel.
-
-  await prisma.messages.create({
-    data: {
-      senderId: gabdoush.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  await prisma.messages.create({
-    data: {
-      senderId: yonatan.id,
-      channelId: AbuDhabi.id,
-      content: 'Hello Abudhabi',
-    },
-  });
-  //================================================================================================================
-  console.log("All the DMs between ");
-  // retrieve all the messages between gabdoush and yonatan:
-  const gabdoushYonatanMessages = await prisma.messages.findMany({
-    where: {
-      OR: [
-        {
-          senderId: gabdoush.id,
-          receiverId: yonatan.id,
-        },
-        {
-          senderId: yonatan.id,
+  const sendMessagesToGabdoush = async (senders, gabdoush) => {
+    for (const sender of senders) {
+      await prisma.messages.create({
+        data: {
+          senderId: sender.id,
           receiverId: gabdoush.id,
+          content: `Hello gabdoush from ${sender.login}, how are you....?`,
         },
-      ],
-    },
-  });
-  console.log(gabdoushYonatanMessages);
-
-  const yonis_id = "7872e1aa-4958-41b3-a53c-84374934bc9b"
-  /*Create a tmp notification*/
-  await prisma.notification.create({
-    data: {
-      content: "FriendRequest_Recieved",
-      senderId: gabdoush.id,
-      userId: yonis_id,
-    },
-  });
-  await prisma.notification.create({
-    data: {
-      content: "DirectMessage_Recieved",
-      senderId: yonatan.id,
-      userId: yonis_id,
-    },
-  });
-  await prisma.notification.create({
-    data: {
-      content: "ChannelInvite_Recieved",
-      senderId: samad.id,
-      userId: yonis_id,
-    },
-  });
-
-  await prisma.notification.create({
-    data: {
-      content: "FriendRequest_Recieved",
-      senderId: samad.id,
-      userId: yonis_id,
-    },
-  });
+      });
+    }
+  };
 
   //================================================================================================================
-  console.log('==============================================================');
-  console.log('Seeding finished.');
+  const sendFromGabdoush = async (recievers, gabdoush) => {
+    for (const reciever of recievers) {
+      await prisma.messages.create({
+        data: {
+          senderId: gabdoush.id,
+          receiverId: reciever.id,
+          content: `Hello ${reciever.login} from gabdoush, how are you....?`,
+        },
+      });
+    }
+  };
+
+  //================================================================================================================
+  const sendMessagesToChannels = async (users, channels) => {
+    for (const channel of channels) {
+      for (let i = 0; i < 10; i++) {
+        for (const user of users.concat(gabdoush)) {
+          const senderId = user.login === 'gabdoush' ? gabdoush.id : user.id;
+          await prisma.messages.create({
+            data: {
+              senderId: senderId,
+              channelId: channel.id,
+              content: `Hello from ${user.login} to ${channel.channelName}`,
+            },
+          });
+        }
+      }
+    }
+  };
+
+  //================================================================================================================
+  // Create friend relation between the users and gabdoush.
+  const createFriendRelation = async (users, gabdoush) => {
+    for (const user of users) {
+      await prisma.friendRelation.create({
+        data: {
+          userId: user.id,
+          friendId: gabdoush.id,
+          friendStatus: 'ACCEPTED',
+        },
+      });
+    }
+  };
+
+  //================================================================================================================
+  // Create 5 users, and add gabdoush to them.
+  const users = await createUsers(10);
+  users.push(gabdoush);
+
+  // Create 5 private channels and 5 public channels, and add gabdoush to them.
+  const privateChannels = await createChannels(users, 2, 'PRIVATE');
+  const publicChannels = await createChannels(users, 2, 'PUBLIC');
+
+  // Add all users to all channels.
+  await createChannelUserRelations(privateChannels);
+
+  // Create friend relation between the users and gabdoush.
+  await createFriendRelation(users, gabdoush);
+  
+  // Send messages to gabdoush from all users.
+  await sendMessagesToGabdoush(users, gabdoush);
+  await sendMessagesToGabdoush(users, gabdoush);
+  await sendMessagesToGabdoush(users, gabdoush);
+
+  // Send messages from gabdoush to all users.
+  await sendFromGabdoush(users, gabdoush);
+  await sendFromGabdoush(users, gabdoush);
+  await sendFromGabdoush(users, gabdoush);
+
+  // Send messages to all channels from all users and from gabdoush.
+  await sendMessagesToChannels(users, privateChannels);
+  await sendMessagesToChannels(users, publicChannels);
+
+  //================================================================================================================
 }
 
 main()

@@ -7,11 +7,13 @@ import { ChannelModule } from './channel/channel.module';
 import { FriendsModule } from './friends/friends.module';
 import { NotificationModule } from './notification/notification.module';
 import { GatewayNotifModule } from './gateway-notif/gateway-notif.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
     PrismaModule,
     UserModule,
+    ChatModule,
     ChannelModule,
     FriendsModule,
     NotificationModule,

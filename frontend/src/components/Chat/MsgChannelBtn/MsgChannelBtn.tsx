@@ -1,21 +1,10 @@
 import Image from "next/image";
-import { MsgChannelBtnProps } from "../types";
+import { activateClickedTab } from "@/context/store";
 
-/**
- * A component that uses the {activeTab} state to determine which tab is active
- * and render the appropriate tab. it is also using the {setActiveTab} state to
- * change the activeTab state when the user clicks on the tab.
- *
- * {activeTab} is a string that can be either "Messages" or "Channels"
- * {setActiveTab} is a function that takes a string as an argument and sets the activeTab state to that string
- *
- * both are received as props from the Chat component (frontend/src/app/(app)/chat/page.tsx).
- */
-
-export default function MsgChannelBtn({
-  activeTab,
-  setActiveTab,
-}: MsgChannelBtnProps) {
+export default function MsgChannelBtn() {
+  const activeTab = activateClickedTab((state) => state.activeTab);
+  const setActiveTab = activateClickedTab((state) => state.setActiveTab);
+  
   return (
     <div className="w-full h-11 flex justify-between rounded-xl bg-main-theme text-main-texts font-saira-condensed border-b border-main-yellow">
       <div

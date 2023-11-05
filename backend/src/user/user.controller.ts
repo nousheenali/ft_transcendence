@@ -7,7 +7,7 @@ import { NotFoundError } from 'rxjs';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  //creates a user entry in the user table
+  // creates a user entry in the user table
   @Post('create')
   async createUser(@Res() res, @Body() dto: CreateUserDto) {
     const user = await this.userService.getUserByLogin(dto.login);
