@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Player } from '../player/player.service';
+import { Player, PlayerService } from '../player/player.service';
 
 @Injectable()
 export class GameRoomService {
   private gameRooms: Map<string, GameRoom> = new Map();
+
+  constructor(private playerService: PlayerService) {}
 
   generateUniqueRoomId(): string {
     const timestamp = new Date().getTime();
@@ -34,6 +36,10 @@ export class GameRoomService {
       ballWidth: 0,
       gameOver: false,
     };
+    player1.gameRoom = roomID;
+    player2.gameRoom = roomID;
+    this.playerService.removeFromQueue(player1.id);
+    this.playerService.removeFromQueue(player2.id);
     this.gameRooms.set(roomID, newRoom);
     return roomID;
   }

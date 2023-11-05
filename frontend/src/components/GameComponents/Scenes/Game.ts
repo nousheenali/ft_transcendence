@@ -157,17 +157,27 @@ export default class Game extends Scene {
           this.player[0].setVelocityY(velocity);
         });
       }
-
-      // On game Over
-      this.socket.on("gameOver", (name: string) => {
-        this.line.setVisible(false);
-        this.circle.setVisible(false);
-        this.ball.setVisible(false);
-        this.player[0].setVisible(false);
-        this.player[1].setVisible(false);
-        this.messages[2].setVisible(true);
-        this.results[2].setText(name + " WINS!").setVisible(true);
-      });
     }
+    // On game Over
+    this.socket.on("gameOver", (message: string, name: string) => {
+      this.line.setVisible(false);
+      this.circle.setVisible(false);
+      this.ball.setVisible(false);
+      this.player[0].setVisible(false);
+      this.player[1].setVisible(false);
+      this.results[3].setText(message).setVisible(true);
+      this.messages[2].setVisible(true);
+      this.messages[0].setVisible(false);
+      this.messages[1].setVisible(false);
+      this.controls[0].setVisible(false);
+      this.controls[1].setVisible(false);
+      if(this.gameStarted)
+        this.results[2].setText(name + " WINS!").setVisible(true);
+      const router = this.registry.get("router");
+      setTimeout(() => {
+        this.game.destroy(true);
+        router.push("/");
+      }, 3000);
+    });
   }
 }

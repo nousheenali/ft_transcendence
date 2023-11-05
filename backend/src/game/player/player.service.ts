@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class PlayerService {
@@ -7,18 +8,20 @@ export class PlayerService {
 
   constructor() {}
 
-  addPlayer(clientID: string, userName: string) {
-    if (!this.players.has(clientID)) {
+  addPlayer(client: Socket, userName: string) {
+    if (!this.players.has(client.id)) {
       const player: Player = {
-        id: clientID,
+        id: client.id,
         name: userName,
         position: { x: 0, y: 0 },
         readyToStart: false,
         worldWidth: 0,
         worldHeight: 0,
         score: 0,
+        gameRoom: null,
+        socketInfo: client,
       };
-      this.players.set(clientID, player);
+      this.players.set(client.id, player);
     }
   }
 
@@ -60,6 +63,14 @@ export class PlayerService {
     }
   }
 
+  removeFromQueue(playerIdToRemove: string) {
+    const indexToRemove = this.queue.findIndex(
+      (player) => player.id === playerIdToRemove,
+    );
+    if (indexToRemove !== -1)
+      this.queue.splice(indexToRemove, 1);
+  }
+
   matchQueuedPlayers(): Player[] | null {
     if (this.queue.length >= 2) {
       // Get and remove the first two players from the queue
@@ -84,4 +95,6 @@ export type Player = {
   worldWidth: number;
   worldHeight: number;
   score: number;
+  gameRoom: string;
+  socketInfo: Socket;
 };

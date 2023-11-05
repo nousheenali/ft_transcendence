@@ -25,9 +25,16 @@ export default class GameObjects {
       .setOrigin(0.55)
       .setVisible(false);
 
-    msg[2] = this.showText(wW / 2, wH / 3, "Game OVER!", 50, "#FFFFFF")
+    msg[2] = this.showText(
+      wW / 2,
+      (wH * 4) / 5,
+      "Exiting Game...",
+      30,
+      "#FFFFFF"
+    )
       .setOrigin(0.55)
       .setVisible(false);
+
     return msg;
   }
 
@@ -59,6 +66,10 @@ export default class GameObjects {
     ).setOrigin(1, 0);
 
     results[2] = this.showText(wW / 2, (wH * 2) / 3, "", 70, "#D0F223")
+      .setOrigin(0.5)
+      .setVisible(false);
+
+    results[3] = this.showText(wW / 2, wH / 3, "", 50, "#FFFFFF")
       .setOrigin(0.5)
       .setVisible(false);
 

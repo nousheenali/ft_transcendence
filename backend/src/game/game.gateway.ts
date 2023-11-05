@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { GameRoom, GameRoomService } from './game-room/game-room.service';
 import { PlayerService, Player } from './player/player.service';
 
-@WebSocketGateway({ namespace: '/game' })
+@WebSocketGateway(8005, { cors: { origin: process.env.FRONTEND_URL } }) //http://localhost:3000
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -24,7 +24,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleConnection(client: Socket) {
     const username = client.handshake.query.username;
     if (!Array.isArray(username)) {
-      this.playerService.addPlayer(client.id, username);
+      this.playerService.addPlayer(client, username);
     }
     console.log(`Player connected: ${client.id} --- ${username}`);
     this.server.to(client.id).emit('connected');
@@ -32,6 +32,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: Socket) {
     // Handle player disconnection
+    const player = this.playerService.getPlayerByID(client.id);
+    if (player.gameRoom) {
+      const gameRoom = this.gameRoomService.getGameRoom(player.gameRoom);
+
+      // Get the ID of the other player
+      const otherPlayer =
+        gameRoom.players[0].id === client.id
+          ? gameRoom.players[1]
+          : gameRoom.players[0];
+      // Emit a game over event to the other player and disconnect them
+      if (!gameRoom.gameOver) {
+        this.server
+          .to(otherPlayer.id)
+          .emit('gameOver', 'Other Player Disconnected', otherPlayer.name);
+        otherPlayer.socketInfo.disconnect(true);
+      }
+    }
     this.playerService.removePlayer(client.id);
     console.log(`Player disconnected: ${client.id}`);
   }
@@ -46,6 +63,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const p2 = players[1];
       const roomID = this.gameRoomService.createGameRoom(p1, p2);
       const room = this.gameRoomService.getGameRoom(roomID);
+
       this.server
         .to(p1.id)
         .emit(
@@ -143,8 +161,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleBallPosition(client: any, data) {
     const gm: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
 
-    if(!gm.gameOver){
-
+    if (gm && !gm.gameOver) {
       if (gm.players[0].readyToStart && gm.players[1].readyToStart) {
         gm.ballPosition.x += gm.ballVelocity.x;
         gm.ballPosition.y += gm.ballVelocity.y;
@@ -179,11 +196,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (gm.ballPosition.x < buffer) {
           gm.ballVelocity.x *= -1; // Reverse the x velocity for left and right wall
           gm.players[0].score += 1;
-          if (gm.players[0].score === 7)
-          {
+          if (gm.players[0].score === 7) {
             gm.gameOver = true;
-            this.server.to(gm.players[0].id).emit('gameOver', gm.players[0].name);
-            this.server.to(gm.players[1].id).emit('gameOver', gm.players[0].name);
+            this.server
+              .to(gm.players[0].id)
+              .emit('gameOver', 'Game Over!', gm.players[0].name);
+            this.server
+              .to(gm.players[1].id)
+              .emit('gameOver', 'Game Over!', gm.players[0].name);
+            gm.players[0].socketInfo.disconnect(true);
+            gm.players[1].socketInfo.disconnect(true);
           }
         }
         if (gm.ballPosition.x > gm.worldWidth - buffer) {
@@ -191,8 +213,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           gm.players[1].score += 1;
           if (gm.players[1].score === 7) {
             gm.gameOver = true;
-            this.server.to(gm.players[0].id).emit('gameOver', gm.players[1].name);
-            this.server.to(gm.players[1].id).emit('gameOver', gm.players[1].name);
+            this.server
+              .to(gm.players[0].id)
+              .emit('gameOver', 'Game Over!', gm.players[1].name);
+            this.server
+              .to(gm.players[1].id)
+              .emit('gameOver', 'Game Over!', gm.players[1].name);
+            gm.players[0].socketInfo.disconnect(true);
+            gm.players[1].socketInfo.disconnect(true);
           }
         }
         if (
@@ -223,9 +251,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('movePaddle')
   handleMovePaddle(client: Socket, data) {
-
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
-    if(!gameRoom.gameOver){
+    if (!gameRoom.gameOver) {
       if (client.id === gameRoom.players[0].id) {
         gameRoom.players[0].position.y = data.y;
         this.server
@@ -240,4 +267,3 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 }
-
