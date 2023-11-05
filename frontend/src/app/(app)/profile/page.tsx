@@ -17,9 +17,6 @@ export default async function page(req: NextRequest) {
 
   // Fetch user data
   const userInfo: userInformation= await getUserData(login, API_ENDPOINTS.getUserbyLogin);
-  // Fetching friends Data on serverside so that when the page loads
-  // the friends tab is not empty
-  const friendData: TableRowData[] = await generateProfileFriendsData(login);
 
-  return <ProfilePage friendsRecords={friendData} userInfo={userInfo} />;
+  return <ProfilePage userInfo={userInfo} />;
 }

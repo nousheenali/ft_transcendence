@@ -9,6 +9,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   name,
   email,
   rank,
+  avatar,
   activeButton,
   handleButtonClick,
 }) => {
@@ -31,8 +32,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
           </div>
         </div>
         <div className="flex flex-row h-[130px] border-b rounded-b-lg border-main-yellow">
-          <div className="flex flex-shrink-0 w-1/5 justify-center">
-            <Image height={100} width={100} src="/av1.svg" alt="avatar" />
+          <div className="flex flex-shrink-0 w-1/5 justify-center p-3">
+            <img className="w-24 h-24 rounded-full object-cover" src={avatar} />
           </div>
           <div className="flex flex-col w-4/5 ml-2 mt-5 mb-5 mr-10 rounded-xl font-light font-saira-condensed text-lg text-main-text justify-start pl-6 pt-1 bg-table-row-bg">
             <div className="flex flex-row">

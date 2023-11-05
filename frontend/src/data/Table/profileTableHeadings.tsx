@@ -5,7 +5,7 @@ export const friendsProfileHeadings = [
   'Wins',
   'Losses',
   'Block',
-  'Delete',
+  'Unfriend',
 ];
 
 export const searchProfileHeadings = [
@@ -24,7 +24,7 @@ export const blockedFriendsHeadings = [
   'Wins',
   'Losses',
   'UnBlock',
-  'Delete',
+  'Unfriend',
 ];
 
 export const friendsRequestHeadings = [

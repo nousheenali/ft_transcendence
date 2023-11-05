@@ -8,10 +8,15 @@ import {
   deleteFriendRelation,
   updateFriendRelation,
 } from "../../../services/friends";
-
-
-const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
+import { useSocket } from "@/context/store";
+const TableCell: React.FC<TableCellProps> = ({
+  dataItem,
+  login,
+  activeButton,
+  reloadPageData,
+}) => {
   const { data: session } = useSession();
+  const { currentSocket } = useSocket();
 
   if (typeof dataItem === "string") {
     return <div className="py-2 flex-1 text-center">{dataItem}</div>;
@@ -31,9 +36,9 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
             />
           </div>
           <div>
-            {dataItem.playerName?.length > 3
-              ? `${dataItem.playerName.substring(0, 10)}..`
-              : dataItem.playerName}
+            {dataItem.name?.length > 10
+              ? `${dataItem.name.substring(0, 10)}..`
+              : dataItem.name}
           </div>
         </div>
       </div>
@@ -51,7 +56,7 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
         endpoint = API_ENDPOINTS.acceptFriendRequest;
         break;
       case "DECLINE":
-        action = updateFriendRelation;
+        action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.declineFriendRequest;
         break;
       case "ADDFRIEND":
@@ -83,8 +88,10 @@ const TableCell: React.FC<TableCellProps> = ({ dataItem, login }) => {
         const message = await action(
           session?.user.login!,
           friendLogin,
-          endpoint
+          endpoint,
+          currentSocket
         );
+        reloadPageData(activeButton);
         toast.success(message);
       } catch (error: any) {
         toast.error(error.message);

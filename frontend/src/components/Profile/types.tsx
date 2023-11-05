@@ -9,6 +9,7 @@ export interface ProfileInfoProps {
   name: string;
   email: string;
   rank: string;
+  avatar: string;
   activeButton: string;
   handleButtonClick: (buttonId: string) => void;
 }
@@ -31,7 +32,6 @@ export interface userInformation {
 }
 
 export interface ProfilePageProps {
-  friendsRecords: TableRowData[];
   userInfo: userInformation;
 }
 

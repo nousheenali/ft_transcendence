@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 datasource db {
@@ -107,7 +108,6 @@ enum FriendStatus {
   PENDING
   BLOCKED
   ACCEPTED
-  DECLINED
 }
 
 // =====================================================================
@@ -126,7 +126,6 @@ model Channel {
 
   channelMembers ChannelRelation[]
 
-  // channelMessages ChannelMessages[]
   Messages Messages[]
 }
 
@@ -145,7 +144,7 @@ model ChannelRelation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Channel   Channel @relation(fields: [channelId], references: [id])
+  channel   Channel @relation(fields: [channelId], references: [id])
   channelId String
 }
 
