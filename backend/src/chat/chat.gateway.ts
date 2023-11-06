@@ -14,14 +14,15 @@ import { ChatService } from './chat.service';
 import { Message } from './types';
 import { RoomsService } from './rooms.service';
 
-/** ================================================================================================
- * ❂➤ Array that will store the rooms that are created
- * type UserLoginType = string | string[];
- * export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
- * ================================================================================================
- * ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
- * the frontend to connect to the websocket server
- * ================================================================================================*/
+/**╭──🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼
+ * │ ❂➤ Array that will store the rooms that are created
+ * │ type UserLoginType = string | string[];
+ * │ export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
+ * │ ========================================================================================== **
+ * │ ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
+ * │ the frontend to connect to the websocket server
+ * ╰──========================================================================================= **/
+
 @WebSocketGateway({ cors: { origin: process.env.NEXT_PUBLIC_GATEWAY_URL } })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -101,7 +102,11 @@ export class ChatGateway
     const roomName = data.channel + data.channelType;
 
     // ❂➤ Creating the channel room if it doesn't exist and joining the user to it
-    const channelRoom = this.roomsService.createRoom(roomName, userLogin, 'CHANNELS');    
+    const channelRoom = this.roomsService.createRoom(
+      roomName,
+      userLogin,
+      'CHANNELS',
+    );
     this.server.in(client.id).socketsJoin(roomName);
     // this.roomsService.joinRoom(roomName, userLogin, client, 'CHANNELS');
 

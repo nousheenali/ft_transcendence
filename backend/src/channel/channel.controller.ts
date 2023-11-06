@@ -11,38 +11,10 @@ import { ChannelService } from './channel.service'; // 👈 Import ChannelServic
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { HttpException, HttpStatus } from '@nestjs/common'; // 👈 Import HttpException and HttpStatus
 
-@Controller('channel')
+@Controller('channels')
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 
-  //================================================================================================
-  // 👇 get all channels according to the channel type
-  @Get('/private-channels/:login')
-  GetPrivateChannels(@Param('login') login: string) {
-    try {
-      return this.channelService.getPrivateChannels(login);
-    } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting The Private Channels of the user ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-    //================================================================================================
-  // 👇 get all channels according to the channel type
-  @Get('/public-channels/:login')
-  GetPublicChannels() {
-    try {
-      return this.channelService.getPublicChannels();
-    } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting The Public Channels of the server ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-  
   //================================================================================================
   // 👇 create a new channel
   @Post('/create')
@@ -56,5 +28,101 @@ export class ChannelController {
   DeleteChannel(@Param('id') id: string) {
     return this.channelService.DeleteChannel(id);
   }
-  //================================================================================================
+
+  /**===============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get all private channels according to the user login
+   * └── 🌼
+   * @param login: string, the login of the user
+   * @returns all the private channels that the user have relation with.
+   * @throws HttpException if there is an error while getting the private channels
+   * @throws HttpStatus.INTERNAL_SERVER_ERROR if there is an error while getting the private channels
+   * @example GET /channels/private-channels/:login
+   * ==============================================================================================*/
+  @Get('/private-channels/:login')
+  GetPrivateChannels(@Param('login') login: string) {
+    try {
+      return this.channelService.getPrivateChannels(login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Private Channels of the user ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**===============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get all the public channels according to the user login
+   * └── 🌼
+   * @param login: string, the login of the user
+   * @returns all the public channels that the user have relation with.
+   * @throws HttpException if there is an error while getting the public channels
+   * @throws HttpStatus.INTERNAL_SERVER_ERROR if there is an error while getting the public channels
+   * @example GET /channels/public-channels/:login
+   * ==============================================================================================*/
+  @Get('/public-channels/:login')
+  GetPublicChannels(@Param('login') login: string) {
+    try {
+      return this.channelService.getPublicChannels(login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Public Channels of the server ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  /**===============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get channel users according to the user login and the channel name
+   * └── 🌼
+   * @param login: string, the login of the user
+   * @param channelName: string, the name of the channel
+   * @returns all the users that are members of the channel
+   * @throws HttpException if there is an error while getting the channel's users
+   * @throws HttpStatus.INTERNAL_SERVER_ERROR
+   * @example GET /channels/users/:channelName/:login
+   * ==============================================================================================*/
+  @Get('/users/:channelName/:login')
+  GetPrivateChannelUsers(
+    @Param('login') login: string,
+    @Param('channelName') channelName: string,
+  ) {
+    try {
+      return this.channelService.getChannelUsers(channelName);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Channels of the user ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**===============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get private channel messages according to the user login and the channel name
+   * └── 🌼
+   * @param login: string, the login of the user
+   * @param channelName: string, the name of the channel
+   * @returns all the messages of the channel
+   * @throws HttpException if there is an error while getting the channel's messages
+   * @throws HttpStatus.INTERNAL_SERVER_ERROR
+   * @example GET /channels/messages/:channelName/:login
+   * ==============================================================================================*/
+  @Get('/messages/:channelName/:login')
+  GetPrivateChannelMessages(
+    @Param('login') login: string,
+    @Param('channelName') channelName: string,
+  ) {
+    try {
+      return this.channelService.getChannelMessages(channelName);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Private Channels of the user ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**===============================================================================================*/
 }

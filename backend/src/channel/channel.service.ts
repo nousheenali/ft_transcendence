@@ -55,106 +55,167 @@ export class ChannelService {
     return `This action removes all channelMember and channels`;
   }
 
-  /** ------------------------------------------------------------------------------------------- *
-   * 🌼 Method that return all the private channels that the users have relations with.
-   * * @param login: string, the login of the user
-   */
-  // async getPrivateChannels(login: string) {
-  //   const channels = await this.prisma.user.findMany({
-  //     where: {
-  //       login: login,
-  //     },
-  //     select: {
-  //       channelRelation: {
-  //         select: {
-  //           channel: {
-  //             select: {
-  //               channelName: true,
-  //               channelType: true,
-  //               createdBy: true,
-  //               channelMembers: {
-  //                 select: {
-  //                   user: {
-  //                     select: {
-  //                       login: true,
-  //                       isOnline: true,
-  //                       name: true,
-  //                       avatar: true,
-  //                     },
-  //                   },
-  //                 },
-  //               },
-  //               Messages: {
-  //                 select: {
-  //                   sender: {
-  //                     select: {
-  //                       login: true,
-  //                       isOnline: true,
-  //                       name: true,
-  //                       avatar: true,
-  //                     },
-  //                   },
-  //                   content: true,
-  //                   createdAt: true,
-  //                 },
-  //               },
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   })
-  //   return channels;
-  // }
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get all private channels according to the user login
+   * └── 🌼
+   * @param login: string, the login of the user
+   * @returns all the private channels that the user have relation with.
+   * @throws BadRequestException if there is an error while getting the private channels
+   * ==============================================================================================*/
   async getPrivateChannels(login: string) {
-    const channels: Channel[] = [];
-    const userRelations = await this.prisma.user.findUnique({
-      where: {
-        login: login,
-      },
-      include: {
-        channelRelation: {
-          include: {
-            channel: {
-              include: {
-                channelMembers: {
-                  include: {
-                    user: true,
-                  },
-                },
-                Messages: {
-                  include: {
-                    sender: true,
-                  },
+    try {
+      const privateChannels = [];
+      const data = await this.prisma.user.findMany({
+        where: {
+          login: login,
+        },
+        select: {
+          channelRelation: {
+            where: {
+              channel: {
+                channelType: Type.PRIVATE,
+              },
+            },
+            select: {
+              channel: {
+                select: {
+                  channelName: true,
+                  channelType: true,
                 },
               },
             },
           },
         },
-      },
-    });
-    userRelations.channelRelation.forEach((relation) => {
-      channels.push(relation.channel);
-    });
-    return channels;
+      });
+      data[0].channelRelation.forEach((element) => {
+        privateChannels.push(element.channel);
+      });
+      return privateChannels;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET PRIVATE CHANNELS');
+    }
   }
-  /** ------------------------------------------------------------------------------------------- *
-   * 🌼 Method that return all the public channels from the database.
-   */
-  async getPublicChannels() {
-    const publicChannels = await this.prisma.channel.findMany({
-      where: {
-        channelType: 'PUBLIC',
-      },
-      include: {
-        Messages: {
-          include: {
-            sender: true,
-          }
-        }
-      }
-    });
-    return publicChannels;
+
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get all the public channels according to the user login
+   * └── 🌼
+   * @param login: string, the login of the user
+   * @returns all the public channels that the user have relation with.
+   * @throws BadRequestException if there is an error while getting the public channels
+   * ==============================================================================================*/
+  async getPublicChannels(login: string) {
+    try {
+      const publicChannels = [];
+      const data = await this.prisma.user.findMany({
+        where: {
+          login: login,
+        },
+        select: {
+          channelRelation: {
+            where: {
+              channel: {
+                channelType: Type.PUBLIC,
+              },
+            },
+            select: {
+              channel: {
+                select: {
+                  channelName: true,
+                  channelType: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      data[0].channelRelation.forEach((element) => {
+        publicChannels.push(element.channel);
+      });
+      return publicChannels;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET PUBLIC CHANNELS');
+    }
   }
-  /** ------------------------------------------------------------------------------------------- **/
+  
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get channel users according to the channel name
+   * └── 🌼
+   * @param channelName: string, the name of the channel
+   * @returns all the users that are members of the channel
+   * @throws BadRequestException if there is an error while getting the channel users
+   * ==============================================================================================*/
+  async getChannelUsers(channelName: string) {
+    try {
+      const channelUsers = [];
+      const data = await this.prisma.channel.findMany({
+        where: {
+          channelName: channelName,
+        },
+        select: {
+          channelMembers: {
+            select: {
+              user: {
+                select: {
+                  login: true,
+                  avatar: true,
+                  name: true,
+                  isOnline: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      data[0].channelMembers.forEach((element) => {
+        channelUsers.push(element.user);
+      });
+      return channelUsers;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET CHANNEL USERS');
+    }
+  }
+
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get channel messages according to the channel name
+   * └── 🌼
+   * @param channelName: string, the name of the channel
+   * @returns all the messages of the channel
+   * @throws BadRequestException if there is an error while getting the channel messages
+   * ==============================================================================================*/
+  async getChannelMessages(channelName: string) {
+    try {
+      const channelMessages = [];
+      const data = await this.prisma.channel.findMany({
+        where: {
+          channelName: channelName,
+        },
+        select: {
+          Messages: {
+            select: {
+              content: true,
+              createdAt: true,
+              sender: {
+                select: {
+                  login: true,
+                  avatar: true,
+                  name: true,
+                  isOnline: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      data[0].Messages.forEach((element) => {
+        channelMessages.push(element);
+      });
+      return channelMessages;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET CHANNEL MESSAGES');
+    }
+  }
 }
