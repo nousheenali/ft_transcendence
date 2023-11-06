@@ -31,9 +31,6 @@ export interface userInformation {
   score: number;
 }
 
-export interface ProfilePageProps {
-  userInfo: userInformation;
-}
 
 export interface friendRelationDto {
   userLogin: string;
