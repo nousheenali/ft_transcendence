@@ -1,7 +1,13 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto';
 import { NotFoundError } from 'rxjs';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UserService {
@@ -9,7 +15,7 @@ export class UserService {
 
   async createUser(dto: CreateUserDto) {
     try {
-      const newUser = await this.prisma.user.create({
+      return await this.prisma.user.create({
         data: {
           login: dto.login,
           email: dto.email,
@@ -41,4 +47,36 @@ export class UserService {
     });
     return user;
   }
+
+
+  async update(login: string, updateUserDto: UpdateUserDto) {
+    try {
+      console.log('updatedt', updateUserDto);
+      
+      const updatedUser = await this.prisma.user.update({
+        where: { login: login },
+        data: {
+          name: updateUserDto.name,
+          avatar: updateUserDto.avatar,
+          updatedAt: new Date(),
+          refreshToken: updateUserDto.refreshToken,
+          TFAKey: updateUserDto.TFAKey,
+          TFAEnabled: updateUserDto.TFAEnabled,
+        },
+      });
+  
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        // Handle known Prisma errors
+        console.error('Prisma error:', error.message);
+        throw error;
+      }
+  
+      // Handle any other errors
+      console.error('Unexpected error occurred:', error);
+      throw new Error('An unexpected error occurred while updating the user');
+    }
+  }
+  
 }

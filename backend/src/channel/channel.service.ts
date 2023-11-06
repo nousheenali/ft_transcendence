@@ -36,12 +36,16 @@ export class ChannelService {
    * @example
    * createChannelRelation({ userId: 1, channelId: 1 })
    */
-  async createChannelRelation(createChannelRelationDto: CreateChannelRelationDto) {
+  async createChannelRelation(
+    createChannelRelationDto: CreateChannelRelationDto,
+  ) {
     const { userId, channelId } = createChannelRelationDto;
     const isRelationExist = await this.isRelationExist(channelId, userId);
 
     if (isRelationExist) {
-      throw new BadRequestException('User is already a member of this channel.');
+      throw new BadRequestException(
+        'User is already a member of this channel.',
+      );
     } else {
       const newChannelRelation = await this.prisma.channelRelation.create({
         data: {
@@ -83,15 +87,13 @@ export class ChannelService {
       return this.prisma.channelRelation.deleteMany({
         where: {
           userId: userID,
-          channelId: channelID
-        }
+          channelId: channelID,
+        },
       });
     }
   }
 
   /** ------------------------------------------------------------------------------------------- **/
-
-
 
   /**
    * create channel and add the creator as a member
@@ -99,9 +101,9 @@ export class ChannelService {
   async createChannel(CreateChannelDto) {
     const find_duplicate = await this.prisma.channel.findMany({
       where: {
-        channelName: CreateChannelDto.channelName
-      }
-    })
+        channelName: CreateChannelDto.channelName,
+      },
+    });
 
     if (find_duplicate.length > 0) {
       throw new BadRequestException('Channel already exists');
@@ -110,26 +112,26 @@ export class ChannelService {
       data: {
         channelName: CreateChannelDto.channelName,
         channelType: CreateChannelDto.channelType,
-        createdBy: CreateChannelDto.createdBy
-      }
-    })
+        createdBy: CreateChannelDto.createdBy,
+      },
+    });
     const res = await this.prisma.channelRelation.create({
       data: {
         channelId: create_channel.id,
         userId: CreateChannelDto.createdBy,
-      }
-    })
+      },
+    });
     return create_channel;
   }
-  async DeleteChannel(id : string) {
+  async DeleteChannel(id: string) {
     await this.prisma.channelRelation.deleteMany({
       where: {
-        channelId: id
-      }
+        channelId: id,
+      },
     });
     await this.prisma.channel.deleteMany({
-      where: { 
-        id: id
+      where: {
+        id: id,
       },
     });
     return `This action removes all channelMember and channels`;

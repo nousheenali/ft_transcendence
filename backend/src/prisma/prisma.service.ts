@@ -14,13 +14,16 @@ export class PrismaService extends PrismaClient {
       },
     });
   }
-  
+
   // 👇 This function enable Shutdown Hooks ensures the application can gracefully shutdown. 👇
   // ----------------------------------------------------------------------------------------
   async enableShutdownHooks(app: INestApplication) {
-    (this.$on as (event: string, listener: () => void) => void)('beforeExit', async () => {
-		await app.close();
-    });
+    (this.$on as (event: string, listener: () => void) => void)(
+      'beforeExit',
+      async () => {
+        await app.close();
+      },
+    );
   }
   // ----------------------------------------------------------------------------------------
 }

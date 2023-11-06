@@ -17,11 +17,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isOnline  Boolean  @default(true)
+  refreshToken String?
 
   // Two factor authentication-----------------------------------------
   TFAEnabled Boolean @default(false)
   TFAKey     String?
-
+  
   // Relation to notifications-----------------------------------------
   receiverdNotification Notification[] @relation(name: "receiver")
   sentNotification      Notification[] @relation(name: "sender")

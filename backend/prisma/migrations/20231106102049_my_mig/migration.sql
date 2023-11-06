@@ -5,7 +5,7 @@ CREATE TYPE "GameStatus" AS ENUM ('LIVE', 'QUEUED', 'FINISHED');
 CREATE TYPE "Content" AS ENUM ('DirectMessage_Recieved', 'ChannelInvite_Recieved', 'GameInvite_Recieved', 'FriendRequest_Recieved');
 
 -- CreateEnum
-CREATE TYPE "FriendStatus" AS ENUM ('PENDING', 'BLOCKED', 'ACCEPTED', 'DECLINED');
+CREATE TYPE "FriendStatus" AS ENUM ('PENDING', 'BLOCKED', 'ACCEPTED');
 
 -- CreateEnum
 CREATE TYPE "Type" AS ENUM ('PUBLIC', 'PRIVATE');
@@ -20,6 +20,7 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "isOnline" BOOLEAN NOT NULL DEFAULT true,
+    "refreshToken" TEXT,
     "TFAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "TFAKey" TEXT,
     "losses" INTEGER NOT NULL DEFAULT 0,

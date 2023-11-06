@@ -1,5 +1,4 @@
-
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsDate, IsOptional } from 'class-validator';
 
 /**
@@ -7,19 +6,18 @@ import { IsInt, IsDate, IsOptional } from 'class-validator';
  */
 
 enum Type {
-    PUBLIC,
-    PRIVATE
+  PUBLIC,
+  PRIVATE,
 }
 
 export class CreateChannelDto {
-    @ApiProperty()
-    channelName: string | null;
+  @ApiProperty()
+  channelName: string | null;
 
-    @ApiProperty()
-    channelType: Type;
+  @ApiProperty()
+  channelType: Type;
 
-    @ApiProperty()
-    @IsOptional()
-    createdBy: number;
-
+  @ApiProperty()
+  @IsOptional()
+  createdBy: number;
 }

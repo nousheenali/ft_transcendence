@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FriendsDto } from './dto/friends.dto';
 import { UserService } from 'src/user/user.service';
@@ -161,9 +165,7 @@ export class FriendsService {
       });
       return 'Friend Request Cancelled';
     } else {
-      throw new BadRequestException(
-        'Friend Request already Accepted/Blocked',
-      );
+      throw new BadRequestException('Friend Request already Accepted/Blocked');
     }
   }
 
@@ -194,9 +196,7 @@ export class FriendsService {
       });
       return 'Friend Request Accepted';
     } else {
-      throw new BadRequestException(
-        'Friend Request already Accepted/Blocked',
-      );
+      throw new BadRequestException('Friend Request already Accepted/Blocked');
     }
   }
 
@@ -220,13 +220,11 @@ export class FriendsService {
         where: {
           userId: reqFromData.id,
           friendId: userData.id,
-        }
+        },
       });
       return 'Friend Request Declined';
     } else {
-      throw new BadRequestException(
-        'Friend Request already Accepted/Blocked',
-      );
+      throw new BadRequestException('Friend Request already Accepted/Blocked');
     }
   }
 
@@ -399,7 +397,7 @@ export class FriendsService {
     ) {
       await this.prisma.friendRelation.deleteMany({
         where: {
-          id: relation.id
+          id: relation.id,
         },
       });
       return 'Unfriended the user';
