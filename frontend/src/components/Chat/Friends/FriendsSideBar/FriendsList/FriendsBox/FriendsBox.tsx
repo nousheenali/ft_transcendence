@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+import { activateClickedFriend } from "@/context/store";
 import { userInformation } from "@/components/Profile/types";
 import { getFriendsData } from "../../../../../../../services/friends";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import Friend from "@/components/Chat/Friends/FriendsSideBar/FriendsList/Friend/Friend";
-import { activateClickedFriend } from "@/context/store";
 
 export default function FriendsBox() {
   const session = useSession();
@@ -33,7 +33,14 @@ export default function FriendsBox() {
     fetchData();
   }, [session, friends]);
 
+  /**
+   * NOTE:
+   * ======
+   * If you uncomment this part, it will set the first friend in the friends list as the active friend always,
+   * cause we rerender the component every time the friends array changes.
+   */
   // if (friends.length > 0) setActiveFriend(friends[0].login);
+
   if (isLoading)
     return (
       <span className="loading loading-ring loading-lg text-main-yellow"></span>

@@ -78,6 +78,19 @@ export class ChatGateway
    * ❂➤ Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
    */
+
+  /**
+   * ================================================================================================
+   * TODO:
+   * ===========
+   * [IMPORTANT]
+   * ===========
+   *     ❂➤ Try to join the channel at the moment when youL
+   *          - accept the invitation to the private channel
+   *          - Joined the public channel
+   *          - Joined the private channel by entering the password correctly
+   * ================================================================================================
+   */
   @SubscribeMessage('ChannelToServer')
   async sendToChannel(
     @MessageBody() data: Message,
@@ -86,8 +99,14 @@ export class ChatGateway
     const userLogin = data.sender;
     if (userLogin === undefined) return;
     const roomName = data.channel + data.channelType;
-    this.roomsService.joinRoom(roomName, userLogin, client, 'CHANNELS');
-    this.server.to(data.channel).emit('ServerToChannel', data);
+
+    // ❂➤ Creating the channel room if it doesn't exist and joining the user to it
+    const channelRoom = this.roomsService.createRoom(roomName, userLogin, 'CHANNELS');    
+    this.server.in(client.id).socketsJoin(roomName);
+    // this.roomsService.joinRoom(roomName, userLogin, client, 'CHANNELS');
+
+    // ❂➤ Emitting the message to the channel room
+    this.server.to(channelRoom.name).emit('ServerToChannel', data);
     this.roomsService.printAllRooms();
     console.log('Message To: [' + data.channel + '] => ' + data.message);
   }
