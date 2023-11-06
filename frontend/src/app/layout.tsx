@@ -1,12 +1,12 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import React from "react";
-import Background from "@/components/Background/Background";
-import AuthProvider from "./context/AuthProvider";
+import './globals.css';
+import type { Metadata } from 'next';
+import React from 'react';
+import Background from '@/components/Background/Background';
+import AuthProvider from './context/AuthProvider';
 
 export const metadata: Metadata = {
-  title: "Spin Masters",
-  description: "Transcendence project",
+  title: 'Spin Masters',
+  description: 'Transcendence project',
 };
 
 export default function RootLayout({

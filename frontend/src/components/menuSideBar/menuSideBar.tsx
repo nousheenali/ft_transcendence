@@ -1,14 +1,14 @@
-'use client'
-import React, { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import Breaker from "../br/Br";
-import { signOut } from "next-auth/react";
- 
-import { usePathname } from 'next/navigation'
+'use client';
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import Breaker from '../br/Br';
+import { signOut } from 'next-auth/react';
+
+import { usePathname } from 'next/navigation';
 
 export default function MenuSideBar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
   // return <p>Current pathname: {pathname}</p>
   const [activeButton, setActiveButton] = useState(pathname);
 
@@ -20,8 +20,8 @@ export default function MenuSideBar() {
     return `border-2 border-transparent pl-6 hover:bg-black hover:border-[#696D7D] hover:border-opacity-30 hover:border-2 hover:rounded-l-xl no-underline hover:no-underline 
       ${
         activeButton === buttonId
-          ? "bg-black border-[#696D7D] border-opacity-30 rounded-l-xl border-2"
-          : ""
+          ? 'bg-black border-[#696D7D] border-opacity-30 rounded-l-xl border-2'
+          : ''
       }`;
   };
   return (
@@ -32,8 +32,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/"
-          onClick={() => handleButtonClick("/")}
-          className={getButtonStyles("/")}
+          onClick={() => handleButtonClick('/')}
+          className={getButtonStyles('/')}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -51,8 +51,8 @@ export default function MenuSideBar() {
         <Link
           href="/leaderboard"
           passHref
-          onClick={() => handleButtonClick("/leaderboard")}
-          className={getButtonStyles("/leaderboard")}
+          onClick={() => handleButtonClick('/leaderboard')}
+          className={getButtonStyles('/leaderboard')}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -70,8 +70,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/chat"
-          onClick={() => handleButtonClick("/chat")}
-          className={getButtonStyles("/chat")}
+          onClick={() => handleButtonClick('/chat')}
+          className={getButtonStyles('/chat')}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -88,8 +88,8 @@ export default function MenuSideBar() {
 
         <Link
           passHref
-          onClick={() => handleButtonClick("/profile")}
-          className={getButtonStyles("/profile")}
+          onClick={() => handleButtonClick('/profile')}
+          className={getButtonStyles('/profile')}
           href="/profile"
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -107,8 +107,8 @@ export default function MenuSideBar() {
 
         <Link
           passHref
-          onClick={() => handleButtonClick("/settings")}
-          className={getButtonStyles("/settings")}
+          onClick={() => handleButtonClick('/settings')}
+          className={getButtonStyles('/settings')}
           href="/settings"
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -129,8 +129,8 @@ export default function MenuSideBar() {
         <Link
           passHref
           href="/help"
-          onClick={() => handleButtonClick("/help")}
-          className={getButtonStyles("/help")}
+          onClick={() => handleButtonClick('/help')}
+          className={getButtonStyles('/help')}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
@@ -146,11 +146,11 @@ export default function MenuSideBar() {
         </Link>
 
         <Link
-          href=""
-          onClick={() =>
-            signOut({ callbackUrl: "http://localhost:3000/login" })
-          }
-          className={getButtonStyles("/logout") + " mb-10"}
+          href={`${process.env.NESTJS_URL}/auth/logout`}
+          // onClick={() =>
+          //   // signOut({ callbackUrl: "http://localhost:3000/login" })
+          // }
+          className={getButtonStyles('/logout') + ' mb-10'}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
             <Image
