@@ -48,11 +48,8 @@ export class ChatGateway
   async handleConnection(@ConnectedSocket() client: Socket) {
     // ❂➤ Extracting the user login from the handshake's query
     const userLogin = client.handshake.query.userLogin as string;
-    // ❂➤ Extracting the user status from the handshake's query
-    const userStatus = client.handshake.query.userStatus as string;
     // ❂➤ changing the user status in the database
-    this.chatService.updateUserStatus(userLogin, userStatus);
-
+    this.chatService.updateUserStatus(userLogin, true);
 
     if (userLogin === undefined || userLogin === null) return;
     this.logger.log(
@@ -62,8 +59,7 @@ export class ChatGateway
     // ❂➤ Joining the user's room at connection
     // this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
     this.roomsService.createRoom(userLogin, userLogin, 'USERS');
-    this.server.in(client.id).socketsJoin(userLogin)
-
+    this.server.in(client.id).socketsJoin(userLogin);
   }
 
   /** ================================================================================================
@@ -99,10 +95,13 @@ export class ChatGateway
   /** ================================================================================================
    * ❂➤ Handling disconnection
    */
+  @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {
+    const userLogin = client.handshake.query.userLogin as string;
     this.logger.log(
       `The client with id of ${client.id} has been disconnected!!`,
     );
+    this.chatService.updateUserStatus(userLogin, false);
   }
   //================================================================================================
 }

@@ -17,8 +17,8 @@ export default function Friend({ friend }: { friend: userInformation }) {
       <div className="indicator profile w-36 h-12 basis-1/6">
         <Image
           alt={friend.name}
-          src={"/av1.svg"}
-          //   src={friend.avatar}
+          // src={"/av1.svg"}
+            src={friend.avatar}
           width={45}
           height={45}
         />

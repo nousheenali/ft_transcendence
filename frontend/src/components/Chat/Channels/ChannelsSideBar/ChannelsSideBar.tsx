@@ -1,3 +1,16 @@
+/**
+ * ===================================================================
+ * TODO: | ChannelsSideBar Component (ChannelsSideBar.tsx)
+ * ===================================================================
+ ** When optimizing the endpoints, you should have one endpoint
+ ** to fetch for all users for specific channel, and you should
+ ** fetch the users in useEffect, and the dependency should be
+ ** the users, so it will be updated when a new user is added
+ ** to the channel, or when a user is removed from the channel,
+ ** or if the status of a user is changed.
+ * ===================================================================
+ */
+
 "use client";
 
 import { useSession } from "next-auth/react";

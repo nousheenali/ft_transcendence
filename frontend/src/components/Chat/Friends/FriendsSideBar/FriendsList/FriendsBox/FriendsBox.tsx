@@ -14,6 +14,13 @@ export default function FriendsBox() {
     (state) => state.setActiveFriend
   );
 
+  /** ================================================================================================
+   * ❂➤ This useEffect is used to fetch the friends data from the server,
+   * the dependencies are the session and the friends array,
+   * we depend on the friends array to update the friends list when a new friend is added,
+   * or if the status of a friend is changed.
+   * ================================================================================================
+   */
   useEffect(() => {
     const fetchData = async () => {
       const friendsData: userInformation[] = await getFriendsData(
@@ -25,7 +32,7 @@ export default function FriendsBox() {
       setLoading(false);
     };
     fetchData();
-  }, [session]);
+  }, [session, friends]);
 
   if (isLoading)
     return (
