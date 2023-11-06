@@ -28,12 +28,12 @@ export default function FriendsBox() {
         API_ENDPOINTS.getAllFriends
       );
       setFriends(friendsData);
-      if (friendsData.length > 0) setActiveFriend(friendsData[0].login);
       setLoading(false);
     };
     fetchData();
   }, [session, friends]);
 
+  // if (friends.length > 0) setActiveFriend(friends[0].login);
   if (isLoading)
     return (
       <span className="loading loading-ring loading-lg text-main-yellow"></span>
