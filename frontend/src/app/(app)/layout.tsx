@@ -1,8 +1,8 @@
-import Background from '@/components/Background/Background'
-import MainLayout from '@/components/layout'
-// import './globals.css'
 import type { Metadata } from 'next'
+import MainLayout from '@/components/layout'
 import { ToastContainer } from 'react-toastify'
+import Background from '@/components/Background/Background'
+import ChatSocket from '@/components/Chat/ChatSocket/ChatSocket'
 
 export const metadata: Metadata = {
   title: 'ft_transcendence',
@@ -19,7 +19,7 @@ export default function RootLayout({
       <body>
 				<Background />
         <MainLayout>
-          {children}
+          <ChatSocket>{children}</ChatSocket>
           <ToastContainer position='top-right'/>
         </MainLayout>
       </body>

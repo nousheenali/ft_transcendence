@@ -65,6 +65,7 @@ export class RoomsService {
       this.createRoom(roomName, userName, roomType);
       socket.join(roomName);
     }
+    console.log('User: [' + userName + '] joined room: [' + roomName + ']');
   }
 
   //===============================================================================

@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import EmojiPicker from "emoji-picker-react";
 import { useChatSocket } from "@/context/store";
 import React, { useState, useEffect } from "react";
-import { ChannelsProps, Message } from "@/components/Chat/types";
+import { ChannelsProps } from "@/components/Chat/types";
 import { userInformation } from "@/components/Profile/types";
 
 //========================================================================
@@ -30,7 +30,7 @@ export default function SendMessageBox({
       // It's a user
       socket.emit("ClientToServer", {
         socketId: socket.id,
-        username: session?.data?.user?.name,
+        sender: session?.data?.user?.name,
         receiver: receiver.login,
         message: trimmedMessage,
       });
@@ -38,7 +38,7 @@ export default function SendMessageBox({
       // It's a channel
       socket.emit("ChannelToServer", {
         socketId: socket.id,
-        username: session?.data?.user?.name,
+        sender: session?.data?.user?.name,
         channel: receiver.channelName,
         channelType: receiver.channelType,
         message: trimmedMessage,

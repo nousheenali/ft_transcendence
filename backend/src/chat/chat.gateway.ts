@@ -14,13 +14,14 @@ import { ChatService } from './chat.service';
 import { Message } from './types';
 import { RoomsService } from './rooms.service';
 
-//================================================================================================
-// // ❂➤ Array that will store the rooms that are created
-// type UserLoginType = string | string[];
-// export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
-//================================================================================================
-// ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
-// the frontend to connect to the websocket server
+/** ================================================================================================
+ * ❂➤ Array that will store the rooms that are created
+ * type UserLoginType = string | string[];
+ * export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
+ * ================================================================================================
+ * ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
+ * the frontend to connect to the websocket server
+ * ================================================================================================*/
 @WebSocketGateway({ cors: { origin: process.env.NEXT_PUBLIC_GATEWAY_URL } })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -39,10 +40,10 @@ export class ChatGateway
     this.logger.log('Chat GateWay has been initialized!!');
   }
 
-  //================================================================================================
-  // ❂➤ Handling connection by subscribing to the event "connection" and adding the user to the
-  // (usersMap) and (roomsArray) and join the user's room.
-  //================================================================================================
+  /** ================================================================================================
+   * ❂➤ Handling connection by subscribing to the event "connection" and adding the user to the
+   * (usersMap) and (roomsArray) and join the user's room.
+   * ================================================================================================*/
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
     // ❂➤ Extracting the user login from the handshake's query
@@ -53,24 +54,25 @@ export class ChatGateway
     );
 
     // ❂➤ Joining the user's room at connection
-    this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
+    // this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
+    this.roomsService.createRoom(userLogin, userLogin, 'USERS');
+    this.server.in(client.id).socketsJoin(userLogin)
+
   }
 
-  //================================================================================================
-  /**
+  /** ================================================================================================
    * ❂➤ Handling event by subscribing to the event "ClientToServer" and emitting the message
    * to the receiver room.
    */
   @SubscribeMessage('ClientToServer')
   async sendToUser(@MessageBody() data: Message) {
-    // this.server.emit('ServerToClient', data);
-    this.server.to(data.receiver).emit('ServerToClient', data);
-    // this.roomsService.printAllRooms();
-    // console.log('Message To: [' + data.receiver + '] => ' + data.message);
+    const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
+    this.server.to(receiverRoom.name).emit('ServerToClient', data);
+    this.roomsService.printAllRooms();
+    console.log('Message To: [' + data.receiver + '] => ' + data.message);
   }
 
-  //================================================================================================
-  /**
+  /** ================================================================================================
    * ❂➤ Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
    */
@@ -79,7 +81,7 @@ export class ChatGateway
     @MessageBody() data: Message,
     @ConnectedSocket() client: Socket,
   ) {
-    const userLogin = client.handshake.query.userLogin as string;
+    const userLogin = data.sender;
     if (userLogin === undefined) return;
     const roomName = data.channel + data.channelType;
     this.roomsService.joinRoom(roomName, userLogin, client, 'CHANNELS');
@@ -87,8 +89,8 @@ export class ChatGateway
     this.roomsService.printAllRooms();
     console.log('Message To: [' + data.channel + '] => ' + data.message);
   }
-  //================================================================================================
-  /**
+
+  /** ================================================================================================
    * ❂➤ Handling disconnection
    */
   handleDisconnect(client: Socket) {

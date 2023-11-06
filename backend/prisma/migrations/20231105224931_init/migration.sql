@@ -5,7 +5,7 @@ CREATE TYPE "GameStatus" AS ENUM ('LIVE', 'QUEUED', 'FINISHED');
 CREATE TYPE "Content" AS ENUM ('DirectMessage_Recieved', 'ChannelInvite_Recieved', 'GameInvite_Recieved', 'FriendRequest_Recieved');
 
 -- CreateEnum
-CREATE TYPE "FriendStatus" AS ENUM ('PENDING', 'BLOCKED', 'ACCEPTED', 'DECLINED');
+CREATE TYPE "FriendStatus" AS ENUM ('PENDING', 'BLOCKED', 'ACCEPTED');
 
 -- CreateEnum
 CREATE TYPE "Type" AS ENUM ('PUBLIC', 'PRIVATE');

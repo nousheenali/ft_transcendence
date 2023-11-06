@@ -69,7 +69,7 @@ export interface ChatFriendsProps {
 /*-------------------------------------------------------------------*/
 export interface Message {
 	socketId: string;
-	username: string;
+	sender: string;
 	receiver?: string;
 	channel?: string;
 	channelType?: string;
