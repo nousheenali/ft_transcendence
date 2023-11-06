@@ -48,6 +48,12 @@ export class ChatGateway
   async handleConnection(@ConnectedSocket() client: Socket) {
     // ❂➤ Extracting the user login from the handshake's query
     const userLogin = client.handshake.query.userLogin as string;
+    // ❂➤ Extracting the user status from the handshake's query
+    const userStatus = client.handshake.query.userStatus as string;
+    // ❂➤ changing the user status in the database
+    this.chatService.updateUserStatus(userLogin, userStatus);
+
+
     if (userLogin === undefined || userLogin === null) return;
     this.logger.log(
       `New Client connected: id => ${client.id} name => ${userLogin}`,

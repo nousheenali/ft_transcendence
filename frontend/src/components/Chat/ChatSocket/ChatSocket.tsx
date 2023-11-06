@@ -16,6 +16,7 @@ export default function ChatSocket({
 }: {
   children: React.ReactNode;
 }) {
+  const [isConnected, setIsConnected] = useState(false);
   const { socket, setSocket } = useChatSocket();
   const session = useSession();
 
@@ -26,12 +27,13 @@ export default function ChatSocket({
   useEffect(() => {
     try {
       const chatSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
-        query: { userLogin: session.data?.user.name! },
+        query: { userLogin: session.data?.user.name!, userStatus: isConnected },
         autoConnect: false,
       });
       if (chatSocket && session && session.data?.user.name) {
         setSocket(chatSocket);
         chatSocket.connect();
+        setIsConnected(true);
       }
     } catch (error) {
       console.log(error);
@@ -48,9 +50,14 @@ export default function ChatSocket({
     try {
       socket.on("connect", () => {
         console.log(`Connected to the server with socket id: ${socket.id}`);
+        setIsConnected(true);
+      });
+      socket.on("disconnect", (reason) => {
+        console.log("Disconnected from the server for reason: ", reason);
+        setIsConnected(false);
       });
       socket.on("reconnect", (attempt) => {
-        console.info("Reconnected to the server on attempt number: ", attempt);
+        console.log("Reconnected to the server on attempt number: ", attempt);
       });
       socket.on("ServerToClient", (data: Message) => {
         console.log("Message received from a ", data.sender, " : => ", data);
