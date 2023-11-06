@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Dropdown } from "react-daisyui";
 import Image from "next/image";
-import ChannelPasswordTextBox from "../ChannelPassword/ChannelPassword";
 import { ChannelType, useChannelInfo } from "@/context/store";
+import ChannelPasswordTextBox from "@/components/Chat/ChannelsSideBar/CreateChannel/ChannelPassword/ChannelPassword";
 
 export default function ChannelTypeDD() {
   const [isPrivate, setIsPrivate] = useState<boolean>(false);

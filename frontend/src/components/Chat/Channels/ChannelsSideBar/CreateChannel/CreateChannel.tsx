@@ -4,12 +4,12 @@ import { Button, Modal } from "react-daisyui";
 import ChannelNameTextBox from "./ChannelNameTextBox/ChannelNameTextBox";
 import ChannelTypeDD from "./ChannelTypeDD/ChannelTypeDD";
 import { useChannelInfo } from "@/context/store";
-import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
-import { getData, postData } from "../../../../../services/api";
-import { userInformation } from "@/components/Profile/types";
-import { CreateChannelItems } from "./ChannelTypes/ChannelType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { userInformation } from "@/components/Profile/types";
+import { getData, postData } from "../../../../../../services/api";
+import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
+import { CreateChannelItems } from "@/components/Chat/ChannelsSideBar/CreateChannel/ChannelTypes/ChannelType";
 
 export default function CreateChannel({ userName }: { userName: string }) {
   const modalRef = useRef<HTMLDialogElement>(null);

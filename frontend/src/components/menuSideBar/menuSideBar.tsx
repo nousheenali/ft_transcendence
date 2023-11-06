@@ -147,7 +147,7 @@ export default function MenuSideBar() {
         <Link
           href=""
           onClick={() =>
-            signOut({ callbackUrl: "http://localhost:3000/login" })
+            signOut({ callbackUrl: "http://10.11.1.8:3000/login" })
           }
           className={getButtonStyles("/logout") + " mb-10"}
         >

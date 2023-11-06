@@ -19,7 +19,7 @@ import { RoomsService } from './rooms.service';
 // type UserLoginType = string | string[];
 // export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
 //================================================================================================
-// ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
+// ❂➤ cors: { origin: 'http://10.11.1.8:3000' }: This is to allow
 // the frontend to connect to the websocket server
 @WebSocketGateway({ cors: { origin: process.env.NEXT_PUBLIC_GATEWAY_URL } })
 export class ChatGateway

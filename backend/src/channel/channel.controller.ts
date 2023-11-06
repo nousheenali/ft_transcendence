@@ -8,6 +8,8 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
 import { CreateChannelDto } from './dto/create-channel.dto';
@@ -30,7 +32,7 @@ export class ChannelController {
     }
   }
 
-    //================================================================================================
+  //================================================================================================
   // 👇 get all channels according to the channel type
   @Get('/public-channels/:login')
   GetPublicChannels() {
@@ -56,11 +58,8 @@ export class ChannelController {
   /**
    * create a new channel.
    */
-  @Post('create')
-  
-  //================================================================================================
-  // 👇 create a new channel
   @Post('/create')
+  @UsePipes(ValidationPipe)
   CreateChannel(@Body() CreateChannelDto: CreateChannelDto) {
     try {
       return this.channelService.createChannel(CreateChannelDto);
@@ -72,11 +71,11 @@ export class ChannelController {
     }
   }
 
-  //================================================================================================
-  // 👇 delete a channel
+  /**
+   * Delete an existing channel.
+   */
   @Delete('/delete/:id')
   DeleteChannel(@Param('id') id: string) {
     return this.channelService.DeleteChannel(id);
   }
-  //================================================================================================
 }

@@ -87,7 +87,7 @@ export default function ChannelsSideBar() {
         activeChannelType={activeChannelType}
         setActiveChannelType={setActiveChannelType}
       />
-      <CreateChannel />
+      <CreateChannel userName={session?.data?.user.login!} />
       <hr className="w-80 border-line-break" />
       {activeChannelType === "Public" && (
         <>

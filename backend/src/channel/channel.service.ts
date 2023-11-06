@@ -9,7 +9,7 @@ import { Type } from '@prisma/client';
 export class ChannelService {
   constructor(private prisma: PrismaService) {} // 👈 Inject PrismaService class into the constructor.
 
-  /** -------------------------------------------------------------------------------------------
+  /*
    * create channel and add the creator as a member
    */
   async createChannel(CreateChannelDto) {
@@ -38,7 +38,7 @@ export class ChannelService {
     return create_channel;
   }
 
-  /** -------------------------------------------------------------------------------------------
+  /*
    * delete channel
    */
   async DeleteChannel(id: string) {
@@ -103,7 +103,7 @@ export class ChannelService {
           },
         },
       },
-    })
+    });
     return channels;
   }
   // async getPrivateChannels(login: string) {
@@ -150,9 +150,9 @@ export class ChannelService {
         Messages: {
           include: {
             sender: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
     return publicChannels;
   }

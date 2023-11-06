@@ -5,7 +5,7 @@ import GitHubProfile from "next-auth/providers/github";
 import { FortyTwoProfile } from "next-auth/providers/42-school";
 import axios from "axios";
 
-const backendUrl = process.env.NESTJS_URL; //http://localhost:3001
+const backendUrl = process.env.NESTJS_URL; //http://10.11.1.8:3001
 export const options: NextAuthOptions = {
   providers: [
     FortyTwoProvider({
