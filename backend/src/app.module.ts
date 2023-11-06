@@ -20,7 +20,8 @@ import { GameModule } from './game/game.module';
     FriendsModule,
     NotificationModule,
     GatewayNotifModule,
-  , GameModule],
+    GameModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
