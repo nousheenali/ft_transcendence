@@ -22,21 +22,23 @@ export default function Channels() {
    **/
 
   useEffect(() => {
-    const fetchData = async () => {
-      const publicChannels: ChannelsProps[] = await getChannelsData(
-        session?.data?.user.login!,
-        API_ENDPOINTS.publicChannels
-      );
-      setPublicChannels(publicChannels);
+    if (session && session?.data?.user.login) {
+      const fetchData = async () => {
+        const publicChannels: ChannelsProps[] = await getChannelsData(
+          session?.data?.user.login!,
+          API_ENDPOINTS.publicChannels
+        );
+        setPublicChannels(publicChannels);
 
-      const privateChannels: ChannelsProps[] = await getChannelsData(
-        session?.data?.user.login!,
-        API_ENDPOINTS.privateChannels
-      );
-      setPrivateChannels(privateChannels);
-      setLoading(false);
-    };
-    fetchData();
+        const privateChannels: ChannelsProps[] = await getChannelsData(
+          session?.data?.user.login!,
+          API_ENDPOINTS.privateChannels
+        );
+        setPrivateChannels(privateChannels);
+        setLoading(false);
+      };
+      fetchData();
+    }
   }, [session]);
 
   /**
@@ -86,3 +88,5 @@ export default function Channels() {
     </div>
   );
 }
+
+/**============================================================================================*/

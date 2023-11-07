@@ -13,7 +13,7 @@ export default function FriendChat() {
   const activeFriend = activateClickedFriend((state) => state.activeFriend);
 
   useEffect(() => {
-    if (activeFriend === "" || activeFriend === "DefaultFriend") return;
+    if (activeFriend === "" || !activeFriend) return;
     const fetchData = async () => {
       const chat: MessagesProps[] = await getMessages(
         session?.data?.user.login!,

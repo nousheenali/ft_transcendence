@@ -1,15 +1,12 @@
 "use client";
 
 import React from "react";
-import { activateClickedChannel } from "@/context/store";
-
 import MsgChannelBtn from "@/components/Chat/MsgChannelBtn/MsgChannelBtn";
 import ChannelsSideBar from "@/components/Chat/Channels/ChannelsSideBar/ChannelsSideBar";
 import ChannelsChatBox from "@/components/Chat/Channels/ChannelsChatBox/ChannelsChatBox";
 
 //============================================================================================//
 export default function Channels() {
-  const activeChannel = activateClickedChannel((state) => state.activeChannel);
 
   return (
     <div className="flex w-full h-screen px-4 justify-center">
@@ -17,7 +14,7 @@ export default function Channels() {
         <MsgChannelBtn />
         <ChannelsSideBar />
       </div>
-      <ChannelsChatBox channel={activeChannel} />
+      <ChannelsChatBox />
     </div>
   );
 }

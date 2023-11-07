@@ -14,32 +14,21 @@ export default function FriendsBox() {
     (state) => state.setActiveFriend
   );
 
-  /** ================================================================================================
-   * ❂➤ This useEffect is used to fetch the friends data from the server,
-   * the dependencies are the session and the friends array,
-   * we depend on the friends array to update the friends list when a new friend is added,
-   * or if the status of a friend is changed.
-   * ================================================================================================
-   */
   useEffect(() => {
-    const fetchData = async () => {
-      const friendsData: userInformation[] = await getFriendsData(
-        session?.data?.user.login!,
-        API_ENDPOINTS.getAllFriends
-      );
-      setFriends(friendsData);
-      setLoading(false);
-    };
-    fetchData();
-  }, [session, friends]);
+    if (session && session?.data?.user.login) {
+      const fetchData = async () => {
+        const friendsData: userInformation[] = await getFriendsData(
+          session?.data?.user.login!,
+          API_ENDPOINTS.getAllFriends
+        );
+        setFriends(friendsData);
+        setLoading(false);
+      };
+      fetchData();
+    }
+  }, [session]);
 
-  /**
-   * NOTE:
-   * ======
-   * If you uncomment this part, it will set the first friend in the friends list as the active friend always,
-   * cause we rerender the component every time the friends array changes.
-   */
-  // if (friends.length > 0) setActiveFriend(friends[0].login);
+  if (friends.length > 0) setActiveFriend(friends[0].login);
 
   if (isLoading)
     return (

@@ -2,21 +2,8 @@ import Image from "next/image";
 import { MessagesProps } from "../../../../types";
 import { activateClickedFriend } from "../../../../../../context/store";
 
-// const extractRealTime = (time: String) => {
-//   console.log("Time befor splitting =>", time);
-//   const newTime = time.split("T");
-//   console.log("After split => ", newTime);
-//   const date = new Date(newTime[0] + " " + newTime[1]);
-//   const hours = date.getHours();
-//   const minutes = date.getMinutes();
 
-//   console.log("hours => ", hours);
-//   console.log("minutes => ", minutes);
-
-//   return `${hours} h:${minutes}m`;
-// };
-
-export default function ChatMessage({ message }: { message: MessagesProps }) {
+export default function Message({ message }: { message: MessagesProps }) {
   const setActiveFriend = activateClickedFriend(
     (state) => state.setActiveFriend
   );
