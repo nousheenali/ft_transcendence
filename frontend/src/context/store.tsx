@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { ChannelsProps } from "@/components/Chat/types";
 import { Socket, io } from "socket.io-client";
-// ---------------------------------------------------------------------------------------------
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 
 type TGameColor = {
   ballColor: string;
@@ -23,6 +23,8 @@ export const useGameColor = create<TGameColor>((set) => ({
   setBgColor: (bgColor: string) => set({ bgColor }),
 }));
 
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
+
 type SocketState = {
   currentSocket: Socket;
   setCurrentSocket: (socket: any) => void;
@@ -33,14 +35,16 @@ export const useSocket = create<SocketState>((set) => ({
   setCurrentSocket: (currentSocket: Socket) => set({ currentSocket }),
 }));
 
-// ---------------------------------------------------------------------------------------------
-
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the active and clicked channel globally
+ * └── 🌼
+ **/
 type AppState = {
   activeChannel: ChannelsProps;
   setActiveChannel: (channel: ChannelsProps) => void;
 };
 
-// Initialize activeChannel with a default value
 export const activateClickedChannel = create<AppState>((set) => ({
   activeChannel: {
     channelName: "",
@@ -55,7 +59,11 @@ export const activateClickedChannel = create<AppState>((set) => ({
   setActiveChannel: (channel) => set({ activeChannel: channel }),
 }));
 
-// ---------------------------------------------------------------------------------------------
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the active tab (Messages, Channels) globally
+ * └── 🌼
+ **/
 type BtnState = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -66,7 +74,11 @@ export const activateClickedTab = create<BtnState>((set) => ({
   setActiveTab: (tab) => set({ activeTab: tab }),
 }));
 
-// ---------------------------------------------------------------------------------------------
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the selected friend box globally
+ * └── 🌼
+ **/
 type clickedFriendState = {
   activeFriend: string;
   setActiveFriend: (login: string) => void;
@@ -77,7 +89,11 @@ export const activateClickedFriend = create<clickedFriendState>((set) => ({
   setActiveFriend: (login) => set({ activeFriend: login }),
 }));
 
-// ---------------------------------------------------------------------------------------------
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the chat socket connection globally
+ * └── 🌼
+ **/
 type ChatSocketState = {
   socket: Socket;
   setSocket: (socket: Socket) => void;
@@ -90,4 +106,20 @@ export const useChatSocket = create<ChatSocketState>((set) => ({
   setSocket: (socket: Socket) => set({ socket }),
 }));
 
-// ---------------------------------------------------------------------------------------------
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the active channel type globally
+ * └── 🌼
+ **/
+type ChannelTypeState = {
+  activeChannelType: string;
+  setActiveChannelType: (channelType: string) => void;
+};
+
+export const useChannelType = create<ChannelTypeState>((set) => ({
+  activeChannelType: "Public",
+  setActiveChannelType: (channelType: string) =>
+    set({ activeChannelType: channelType }),
+}));
+
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/

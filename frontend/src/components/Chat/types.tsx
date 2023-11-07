@@ -49,12 +49,6 @@ export interface ChannelsProps {
 }
 
 /*-------------------------------------------------------------------*/
-export interface ChannelsBtn {
-  activeChannelType: string;
-  setActiveChannelType: React.Dispatch<React.SetStateAction<string>>;
-}
-
-/*-------------------------------------------------------------------*/
 export interface ChatFriendsProps {
   friend: {
     name: string;
