@@ -1,9 +1,6 @@
 import { useChannelCreateValidate, useChannelInfo } from "@/context/store";
 import React, { useEffect, useState } from "react";
 import { Input } from "react-daisyui";
-import { Icon } from "react-icons-kit";
-import { eyeOff } from "react-icons-kit/feather/eyeOff";
-import { eye } from "react-icons-kit/feather/eye";
 
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/Ai";
 
@@ -55,7 +52,6 @@ export default function ChannelPasswordTextBox(isPrivate: {
             onClick={handleToggle}
           >
             {icon === "eyeOff" ? <AiFillEyeInvisible /> : <AiFillEye />}
-            {/* <Icon className="absolute " icon={AiFillEyeInvisible} size={15} /> */}
           </span>
         </div>
       ) : null}
