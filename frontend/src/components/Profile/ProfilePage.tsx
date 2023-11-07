@@ -19,55 +19,50 @@ import { generatePendingRequestsData } from "@/data/Table/pendingFriendRequests"
 import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { userInformation } from "./types";
+import { ProfilePageProps, userInformation } from "./types";
 import { useSession } from "next-auth/react";
 import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 
-const ProfilePage = () => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ login }) => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
   const [userInfo, setUserInfo] = useState<userInformation>();
-  const { data: session } = useSession();
-
 
   let data: TableRowData[];
-  
+
   const fetchTableData = async (buttonId: string) => {
     try {
-      const userData = await getUserData(
-        session?.user.login!,
-        API_ENDPOINTS.getUserbyLogin
-      );
-      if(userData){
-        setUserInfo(userData);
-        const dataGeneratorMap: any = {
-          friends: generateProfileFriendsData,
-          search: generateProfileSearchData,
-          blocked: generateProfileBlockedData,
-          friendRequests: generateFriendRequestsData,
-          pendingRequests: generatePendingRequestsData,
-        };
-        const dataGenerator = dataGeneratorMap[buttonId];
+      if (login) {
+        const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
+        if (userData) {
+          setUserInfo(userData);
+          const dataGeneratorMap: any = {
+            friends: generateProfileFriendsData,
+            search: generateProfileSearchData,
+            blocked: generateProfileBlockedData,
+            friendRequests: generateFriendRequestsData,
+            pendingRequests: generatePendingRequestsData,
+          };
+          const dataGenerator = dataGeneratorMap[buttonId];
 
-        if (dataGenerator) {
-          const data = await dataGenerator(userData.login);
-          setTableData(data);
-          setIsLoading(false)
+          if (dataGenerator) {
+            const data = await dataGenerator(login);
+            setTableData(data);
+            setIsLoading(false);
+          } else throw new Error("Invalid Button Click");
         }
-        else
-          throw new Error("Invalid Button Click");
       }
     } catch (error: any) {
       toast.error(error.message);
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setIsLoading(true)
-    fetchTableData(activeButton); 
+    setIsLoading(true);
+    fetchTableData(activeButton);
   }, [activeButton]); // fetch data when button clicked
 
   const handleButtonClick = (buttonId: string) => {
@@ -76,9 +71,10 @@ const ProfilePage = () => {
 
   const renderTable = () => {
     if (isLoading) {
-      return <span className="loading loading-ring loading-lg text-main-yellow"></span>;
-    } 
-    else {
+      return (
+        <span className="loading loading-ring loading-lg text-main-yellow"></span>
+      );
+    } else {
       switch (activeButton) {
         case "friends":
           return (

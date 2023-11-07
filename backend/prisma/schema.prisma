@@ -51,7 +51,7 @@ model User {
 
 model Game {
   id         String     @id @default(uuid())
-  gameStatus GameStatus @default(QUEUED)
+  gameStatus GameStatus @default(LIVE)
   startTime  DateTime   @default(now())
 
   winnerId String?

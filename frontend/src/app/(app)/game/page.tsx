@@ -14,18 +14,26 @@ export default function GamePage() {
   const joinQueue = true;
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
-  var socket : Socket;
-  
+  var socket: Socket;
+
+  // const confirmBack = (socket: Socket) => {
+  //   if (confirm("Your current game progress will be lost!")) {
+  //     socket.disconnect();
+  //     window.removeEventListener("popstate", () => confirmBack(socket));
+  //   } 
+  //   else
+  //     return false;
+  // };
+
   useEffect(() => {
     async function initPhaser() {
       const Phaser = await import("phaser");
       const { default: Preloader } = await import(
         "../../../components/GameComponents/Scenes/Preloader"
-        );
-        const { default: Game } = await import(
-          "../../../components/GameComponents/Scenes/Game"
-          );
-          
+      );
+      const { default: Game } = await import(
+        "../../../components/GameComponents/Scenes/Game"
+      );
       const backendUrl = process.env.NEXT_PUBLIC_GAME_GATEWAY_URL;
       socket = io(backendUrl!, {
         query: {
@@ -33,14 +41,12 @@ export default function GamePage() {
         },
       });
       socket.on("connect", () => {
-
         if (joinQueue) {
           socket.emit("addToQueue", {
             width: (window.innerWidth * 2) / 3,
             height: (window.innerHeight * 2) / 3,
           });
         } else {
-
           const userID = "tester";
           socket.emit("matchFriend", {
             friendName: userID,
@@ -49,46 +55,56 @@ export default function GamePage() {
           });
           //create a room with the user id
         }
-        socket.on(
-          "matched",
-          (roomID, player0, player1, worldWidth, worldHeight) => {
-            const loadingText = document.getElementById("loading-text");
-            loadingText?.remove();
+        socket.on("matched", (data) => {
+          const loadingText = document.getElementById("loading-text");
+          loadingText?.remove();
 
-            var config: any = {
-              type: Phaser.AUTO,
-              parent: "game-container",
-              width: worldWidth,
-              height: worldHeight,
-              // backgroundColor: bgColor, // "#87CEEB",//, "#60b922", "#44b18b",
-              scene: [Preloader, Game],
-              physics: {
-                default: "arcade",
-                arcade: {
-                  gravity: false,
-                },
-                // fps: 30,
-                scale: {
-                  mode: Phaser.Scale.FIT,
-                  autoCenter: Phaser.Scale.CENTER_BOTH,
-                },
+          var config: any = {
+            type: Phaser.AUTO,
+            parent: "game-container",
+            width: data.worldWidth,
+            height: data.worldHeight,
+            // backgroundColor: bgColor, // "#87CEEB",//, "#60b922", "#44b18b",
+            scene: [Preloader, Game],
+            physics: {
+              default: "arcade",
+              arcade: {
+                gravity: false,
               },
-            };
-            var phaserGame = new Phaser.Game(config);
-            phaserGame.registry.merge({
-              roomID,
-              player0,
-              player1,
-              socket,
-              paddleColor: racketColor,
-              ballColor: ballColor,
-              worldWidth,
-              worldHeight,
-              router
-            });
-          }
-        );
+              // fps: 30,
+              scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+              },
+            },
+          };
+          var phaserGame = new Phaser.Game(config);
+          phaserGame.registry.merge({
+            roomID: data.roomID,
+            player0: data.p0Name,
+            player1: data.p1Name,
+            socket,
+            paddleColor: racketColor,
+            ballColor: ballColor,
+            worldWidth: data.worldWidth,
+            worldHeight: data.worldHeight,
+            router,
+          });
+        });
       });
+      // window.addEventListener("popstate", () => confirmBack(socket));
+      // return () => {
+      //   window.removeEventListener("popstate", () => confirmBack(socket));
+      // };
+
+      // user clicks back navigation in browswer
+      const handlePopstate = () => {
+        socket.disconnect();
+      };
+      window.addEventListener("popstate", handlePopstate);
+      return () => {
+        window.removeEventListener("popstate", handlePopstate);
+      };
     }
     initPhaser();
   }, []);
@@ -117,7 +133,6 @@ export default function GamePage() {
           <div className="mt-2"> Matching Players...</div>
         </div>
       </div>
-      <div>BUTTON</div>
-      </div>
+    </div>
   );
 }
