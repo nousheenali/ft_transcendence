@@ -18,4 +18,7 @@ export const API_ENDPOINTS = {
   unBlockFriend: '/friends/unBlock/',
   generateSecret: '/two-fa/generateSecret',
   verifyTwoFa: '/two-fa/verify',
+
+  updateName: '/user/update-name/',
+  updateAvatar: '/user/upload-avatar/',
 };
