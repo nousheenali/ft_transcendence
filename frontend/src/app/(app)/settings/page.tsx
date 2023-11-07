@@ -7,8 +7,8 @@ export default async function Settings() {
     <div className="w-full flex p-6">
       <div className="w-full bg-box-fill bg-opacity-70 rounded-2xl border-b border-grid-border border-opacity-80 relative">
         <SettingHeader />
-        <SettingAvatar />
-        <hr className="mx-20 mt-10 mb-10  border-heading-stroke-30" />
+        {/* <SettingAvatar />
+        <hr className="mx-20 mt-10 mb-10  border-heading-stroke-30" /> */}
         <SettingDetails
           name="Sumaiya Fathima"
           email="sfathima@student.42abudhabi.ae"

@@ -51,4 +51,32 @@ export class UserService {
       throw new BadRequestException('Unable to update TFA verification status');
     }
   }
+
+  async updateName(login: string, name: string) {
+    const updatedName = await this.prisma.user.update({
+      where: {
+        login: login,
+      },
+      data:  { name },
+    });
+    if (!updatedName) {
+      throw new BadRequestException(`Unable to update name`);
+    }
+    return updatedName;
+  }
+
+  async getSavedFileURL(login: string, img: Express.Multer.File) {
+    if (!img) {
+    throw new Error("Invalid file object received.");
+  }
+  const filePath = `${img.filename}`;
+  const fileURL = `http://localhost:3001/user/getfile?avatar=` + filePath;
+  const updatedName = await this.prisma.user.update({
+    where: {
+      login: login,
+    },
+    data:  { avatar: fileURL },
+  });
+  return updatedName;
+  }  
 }

@@ -9,7 +9,8 @@ import { activateTwoFa, verifyTwoFa } from "../../../../services/twoFa";
 import { Modal } from "react-daisyui";
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
-import { getUserData } from "../../../../services/user";
+import { getUserData, updateUserName } from "../../../../services/user";
+import SettingAvatar from "@/components/Setting/SettingAvatar/SettingAvatar";
 
 function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const { data: session } = useSession();
@@ -20,6 +21,8 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const [qrCode, setQrCode] = useState("");
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState("");
 
   const handleClick = (buttonId: string) => {
     console.log(buttonId + " button clicked");
@@ -81,44 +84,84 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
     }
   };
 
+  const handleSaveName = async () => {
+    try {
+      setIsLoading(true);
+      const updatedUser = await updateUserName(session?.user.login!, newName,  API_ENDPOINTS.updateName);
+      const updatedData = JSON.parse(updatedUser);
+      setNewName(updatedData.name);
+      setIsEditingName(false);
+      toast.success("Name updated successfully!!!");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const [userInfo, setUserInfo] = useState<userInformation>();
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
 
-      const user: userInformation = await getUserData(
-        session?.user.login!,
-        API_ENDPOINTS.getUserbyLogin
-      );
-      setUserInfo(user);
+      if (session && session.user && session.user.login) {
+        const user: userInformation = await getUserData(
+          session.user.login,
+          API_ENDPOINTS.getUserbyLogin
+        );
+        setUserInfo(user);
+        setNewName(user.name);
+      }
       setIsLoading(false);
-
     };
     fetchData();
   }, [session]);
 
   return (
+    <div>
+    <SettingAvatar avatarUrl={userInfo?.avatar} />
+    <hr className="mx-20 mt-10 mb-10  border-heading-stroke-30" />
     <div className="flex flex-col ml-10 mb-10 font-saira-condensed font-bold text-main-text justify-start pl-6">
       <div className="grid grid-cols-5">
         <div className="text-xl ml-10"> Name:</div>
-        <div className="text-md truncate">{userInfo?.name}</div>
-        <div className="col-span-1" />
-        <button
-          className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-          onClick={() => handleClick("Edit username")}
-        >
-          Edit username
-        </button>
+        {isEditingName ? ( 
+          <div className="text-md truncate">
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+            />
+          </div>
+        ) : (
+          <div className="text-md truncate">{newName}</div>
+        )}
+        <div className="col-span-3 ml-20">
+          {isEditingName ? ( 
+            <button
+              className="w-40 h-7 rounded-md items-center text-md bg-button-background"
+              onClick={() => handleSaveName()}
+            >
+              Save
+            </button>
+          ) : (
+            <button
+              className="w-40 h-7 rounded-md items-center text-md bg-button-background"
+              onClick={() => setIsEditingName(true)} 
+            >
+              Edit Name
+            </button>
+          )}
+        </div>
       </div>
       <div className="grid grid-cols-5 mt-10">
         <div className="text-xl ml-10"> Email:</div>
-        <div className="text-md truncate">{userInfo?.email}</div>
+        <div className="text-md">{userInfo?.email}</div>
         <div className="col-span-1" />
       </div>
-      <div className="grid grid-cols-5 mt-10">
+      <div className="grid grid-cols-6 mt-10">
         <div className="text-xl ml-10"> 2FA:</div>
-        <div className="text-md truncate ">
+        <div className="text-md truncate ml-8">
           {userInfo?.TFAEnabled ? "Activated" : "Not Activated"}
         </div>
         <div className="col-span-1" />
@@ -167,6 +210,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           </button>
         </Modal.Actions>
       </Modal>
+    </div>
     </div>
   );
 }
