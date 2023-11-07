@@ -4,6 +4,9 @@ import { Input } from "react-daisyui";
 import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
+
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/Ai";
+
 export default function ChannelPasswordTextBox(isPrivate: {
   isPrivate: boolean;
 }) {
@@ -11,7 +14,7 @@ export default function ChannelPasswordTextBox(isPrivate: {
   const { validPassword, setValidPassword } = useChannelCreateValidate();
   const [password, setPassword] = useState("");
   const [type, setType] = useState("password");
-  const [icon, setIcon] = useState(eyeOff);
+  const [icon, setIcon] = useState<any>("eyeOff");
   const HandleInput = (e: any) => {
     if (e.target.value.length >= 4) setValidPassword(true);
     else setValidPassword(false);
@@ -20,10 +23,10 @@ export default function ChannelPasswordTextBox(isPrivate: {
   };
   const handleToggle = () => {
     if (type === "password") {
-      setIcon(eye);
+      setIcon("eye");
       setType("text");
     } else {
-      setIcon(eyeOff);
+      setIcon("eyeOff");
       setType("password");
     }
   };
@@ -46,7 +49,8 @@ export default function ChannelPasswordTextBox(isPrivate: {
             className="flex justify-around items-center"
             onClick={handleToggle}
           >
-            <Icon className="absolute " icon={icon} size={15} />
+            {icon === "eyeOff" ? <AiFillEyeInvisible /> : <AiFillEye />}
+            {/* <Icon className="absolute " icon={AiFillEyeInvisible} size={15} /> */}
           </span>
         </div>
       ) : null}
