@@ -1,6 +1,9 @@
 import Image from "next/image";
+import DOMPurify from "dompurify";
+import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import EmojiPicker from "emoji-picker-react";
+import "react-toastify/dist/ReactToastify.css";
 import { useChatSocket } from "@/context/store";
 import React, { useState, useEffect } from "react";
 import { ChannelsProps } from "@/components/Chat/types";
@@ -22,6 +25,14 @@ export default function SendMessageBox({
   const sendMessage = () => {
     const trimmedMessage = currentMessage.trim();
     if (trimmedMessage === "") {
+      toast.error("Message cannot be empty");
+      return;
+    }
+
+    // Sanitize the message using DOMPurify
+    const sanitizedMessage = DOMPurify.sanitize(trimmedMessage);
+    if (sanitizedMessage !== trimmedMessage) {
+      toast.error("Message contains invalid characters");
       return;
     }
 

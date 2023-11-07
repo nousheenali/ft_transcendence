@@ -1,8 +1,6 @@
-import { Channel } from './entities/channel.entity';
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; // 👈 Import CreateChannelRelationDto
-import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
 import { Type } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()

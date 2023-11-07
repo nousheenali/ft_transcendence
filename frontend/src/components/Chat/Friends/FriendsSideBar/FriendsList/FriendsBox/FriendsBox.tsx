@@ -10,9 +10,7 @@ export default function FriendsBox() {
   const session = useSession();
   const [friends, setFriends] = useState<userInformation[]>([]);
   const [isLoading, setLoading] = useState(true);
-  const setActiveFriend = activateClickedFriend(
-    (state) => state.setActiveFriend
-  );
+  const {setActiveFriend} = activateClickedFriend();
 
   useEffect(() => {
     if (session && session?.data?.user.login) {
@@ -26,15 +24,15 @@ export default function FriendsBox() {
       };
       fetchData();
     }
+    if (friends.length > 0) setActiveFriend(friends[0].login);
   }, [session]);
-
-  if (friends.length > 0) setActiveFriend(friends[0].login);
-
+  
+  
   if (isLoading)
-    return (
-      <span className="loading loading-ring loading-lg text-main-yellow"></span>
+  return (
+    <span className="loading loading-ring loading-lg text-main-yellow"></span>
     );
-  if (!friends) return <p>No friends data</p>;
+  if (!friends) return <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container"></div>;
   return (
     <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
       {friends.map((OneFriend, index) => (

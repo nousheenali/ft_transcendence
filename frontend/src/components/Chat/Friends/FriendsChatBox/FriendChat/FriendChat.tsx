@@ -12,16 +12,18 @@ export default function FriendChat() {
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
   const activeFriend = activateClickedFriend((state) => state.activeFriend);
 
+  
   useEffect(() => {
-    if (activeFriend === "" || !activeFriend) return;
-    const fetchData = async () => {
-      const chat: MessagesProps[] = await getMessages(
-        session?.data?.user.login!,
-        API_ENDPOINTS.userMessages + activeFriend + "/"
-      );
-      setFriendChat(chat);
-    };
-    fetchData();
+    if (activeFriend) {
+      const fetchData = async () => {
+        const chat: MessagesProps[] = await getMessages(
+          session?.data?.user.login!,
+          API_ENDPOINTS.userMessages + activeFriend + "/"
+        );
+        setFriendChat(chat);
+      };
+      fetchData();
+    }
   }, [session, activeFriend]);
 
   return (

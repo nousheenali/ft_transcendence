@@ -7,13 +7,20 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   ConnectedSocket,
+  WsException,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Message } from './types';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { Message } from './types';
 import { RoomsService } from './rooms.service';
-
+import { CreateChatDto } from './dto/create-chat.dto';
+import {
+  HttpException,
+  HttpStatus,
+  Logger,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 /**╭──🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼🌼
  * │ ❂➤ Array that will store the rooms that are created
  * │ type UserLoginType = string | string[];
@@ -68,11 +75,28 @@ export class ChatGateway
    * to the receiver room.
    */
   @SubscribeMessage('ClientToServer')
-  async sendToUser(@MessageBody() data: Message) {
-    const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
-    this.server.to(receiverRoom.name).emit('ServerToClient', data);
-    this.roomsService.printAllRooms();
-    console.log('Message To: [' + data.receiver + '] => ' + data.message);
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      enableDebugMessages: true,
+      skipUndefinedProperties: false,
+      exceptionFactory: (errors) => {
+        const errorMessages = errors.map((error) =>
+          Object.values(error.constraints),
+        );
+        return new WsException(errorMessages);
+      },
+    }),
+  )
+  async sendToUser(@MessageBody() data: CreateChatDto) {
+    try {
+      const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
+      this.server.to(receiverRoom.name).emit('ServerToClient', data);
+      this.roomsService.printAllRooms();
+      console.log('Message To: [' + data.receiver + '] => ' + data.message);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   /** ================================================================================================

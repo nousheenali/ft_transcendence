@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useChatSocket } from "@/context/store";
 import { io } from "socket.io-client";
@@ -18,7 +18,6 @@ export default function ChatSocket({
 }) {
   const { socket, setSocket } = useChatSocket();
   const session = useSession();
-
   /**
    * ❂➤ This useEffect is used to initialize the socket connection with the server,
    * without any dependency, so it will be called only once.
