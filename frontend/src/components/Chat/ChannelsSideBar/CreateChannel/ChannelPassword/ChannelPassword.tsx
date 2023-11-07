@@ -1,5 +1,5 @@
 import { useChannelCreateValidate, useChannelInfo } from "@/context/store";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "react-daisyui";
 import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
@@ -15,6 +15,11 @@ export default function ChannelPasswordTextBox(isPrivate: {
   const [password, setPassword] = useState("");
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState<any>("eyeOff");
+
+  useEffect(() => {
+    setValidPassword(false);
+  }, []);
+
   const HandleInput = (e: any) => {
     if (e.target.value.length >= 4) setValidPassword(true);
     else setValidPassword(false);

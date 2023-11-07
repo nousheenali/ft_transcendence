@@ -24,6 +24,7 @@ export default function CreateChannel({ userName }: { userName: string }) {
     useChannelInfo();
 
   const { validChannelName, validPassword } = useChannelCreateValidate();
+  const { setValidChannelName, setValidPassword } = useChannelCreateValidate();
 
   useEffect(() => {
     const getUserData = async () => {
@@ -38,6 +39,11 @@ export default function CreateChannel({ userName }: { userName: string }) {
 
   // update the status of the button
   useEffect(() => {
+    // console.log("validChannelName: ", validChannelName);
+    // console.log("validPassword: ", validPassword);
+    // console.log("channelType: ", channelType);
+    // console.log("channelName: ", channelName);
+    // console.log("channelPassword: ", channelPassword);
     if (channelType === "PUBLIC" && validChannelName) {
       setIsValid(true);
     } else if (channelType === "PRIVATE" && validChannelName && validPassword) {
@@ -59,13 +65,15 @@ export default function CreateChannel({ userName }: { userName: string }) {
       );
       setChannelName("");
       setChannelPassword("");
-      setChannelType("PUBLIC");
+      setValidChannelName(false);
+      setValidPassword(false);
       modalRef.current?.close();
       toast.success("Channel created successfully");
     } catch (error: any) {
       setChannelName("");
       setChannelPassword("");
-      setChannelType("PUBLIC");
+      setValidChannelName(false);
+      setValidPassword(false);
       modalRef.current?.close();
       toast.error("Channel creation failed: " + error.message);
     }
