@@ -7,6 +7,7 @@ import {
   Contains,
   IsNotEmpty,
   Length,
+  Matches,
 } from 'class-validator';
 
 /**
@@ -20,10 +21,11 @@ enum Type {
 
 export class CreateChannelDto {
   @ApiProperty()
-  @IsString({ message: 'channelName must be a string' })
-  @Contains(' ', { message: 'channelName must not contain spaces' })
   @IsNotEmpty({ message: 'channelName must not be empty' })
-  @Length(4, 20)
+  @Matches(/^[a-zA-Z0-9]+$/, {
+    message: 'channelName must contain only letters and numbers',
+  })
+  @Length(4, 20, { message: 'channelName must be between 4 and 20 characters' })
   channelName: string;
 
   @ApiProperty()

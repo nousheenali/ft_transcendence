@@ -5,7 +5,7 @@ import { Input } from "react-daisyui";
 export default function ChannelPasswordTextBox(isPrivate: {
   isPrivate: boolean;
 }) {
-  const { setChannelPassword } = useChannelInfo();
+  const { channelPassword, setChannelPassword } = useChannelInfo();
   return (
     <>
       {isPrivate.isPrivate ? (
@@ -14,6 +14,7 @@ export default function ChannelPasswordTextBox(isPrivate: {
             Password
           </h1>
           <Input
+            value={channelPassword}
             onChange={(e) => {
               setChannelPassword(e.target.value);
             }}

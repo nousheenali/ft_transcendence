@@ -14,11 +14,14 @@ import { CreateChannelItems } from "@/components/Chat/ChannelsSideBar/CreateChan
 export default function CreateChannel({ userName }: { userName: string }) {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [data, setData] = useState<string>("");
+  const [isValid, setIsValid] = useState<boolean>(false);
   const handleClick = useCallback(() => {
     modalRef.current?.showModal();
   }, []);
 
   const { channelName, channelType, channelPassword } = useChannelInfo();
+  const { setChannelName, setChannelType, setChannelPassword } =
+    useChannelInfo();
 
   useEffect(() => {
     const getUserData = async () => {
@@ -43,9 +46,17 @@ export default function CreateChannel({ userName }: { userName: string }) {
         newChannel,
         API_ENDPOINTS.createChannel
       );
+      setChannelName("");
+      setChannelPassword("");
+      setChannelType("PUBLIC");
+      modalRef.current?.close();
       toast.success("Channel created successfully");
-    } catch (error) {
-      toast.error("Channel creation failed");
+    } catch (error: any) {
+      setChannelName("");
+      setChannelPassword("");
+      setChannelType("PUBLIC");
+      modalRef.current?.close();
+      toast.error("Channel creation failed: " + error.message);
     }
   };
   return (
