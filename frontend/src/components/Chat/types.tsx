@@ -6,14 +6,14 @@ import { userInformation } from "../Profile/types";
 
 export interface MessagesProps {
   id: integer;
-  senderId: String;
+  senderId: string;
   sender: userInformation;
-  receiverId?: String;
+  receiverId?: string;
   reciever: userInformation;
-  channelId?: String;
+  channelId?: string;
   channel: ChannelsProps;
-  content: String;
-  createdAt: String;
+  content: string;
+  createdAt: string;
 }
 
 /*-------------------------------------------------------------------*/

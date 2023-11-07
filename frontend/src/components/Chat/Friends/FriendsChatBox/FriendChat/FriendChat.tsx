@@ -3,6 +3,7 @@ import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
 import React, { useEffect, useState, useRef } from "react";
+import { getUserData } from "../../../../../../services/user";
 import { userInformation } from "@/components/Profile/types";
 import { getMessages } from "../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
@@ -15,10 +16,30 @@ import {
 export default function FriendChat() {
   const session = useSession();
   const { sentMessage } = useSentMessageState();
+  const { activeFriend } = activateClickedFriend();
+  // const [user, setUser] = useState<userInformation>();
   const { receivedMessage } = useReceivedMessageState();
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
-  const activeFriend = activateClickedFriend((state) => state.activeFriend);
+
+  /**
+   **╭── 🌼
+   **├ 👇 Fetch the user and the friend data from the database
+   **└── 🌼
+   **/
+
+  // useEffect(() => {
+  //   if (sentMessage || receivedMessage) {
+  //     const fetchData = async () => {
+  //       const userData: userInformation = await getUserData(
+  //         session?.data?.user.login!,
+  //         API_ENDPOINTS.getUserbyLogin
+  //       );
+  //       setUser(userData);
+  //     };
+  //     fetchData();
+  //   }
+  // }, [session]);
 
   /**
    **╭── 🌼
