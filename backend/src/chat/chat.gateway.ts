@@ -9,11 +9,12 @@ import {
   ConnectedSocket,
   WsException,
 } from '@nestjs/websockets';
-import { Message } from './types';
+import { SocketMessage } from './types';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { RoomsService } from './rooms.service';
 import { CreateChatDto } from './dto/create-chat.dto';
+import { UserMessagesService } from '../user/user-messages/user-messages.service';
 import {
   HttpException,
   HttpStatus,
@@ -34,7 +35,10 @@ import {
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly userMessagesService: UserMessagesService,
+  ) {}
   private roomsService: RoomsService = new RoomsService();
   //================================================================================================
   // ❂➤ Initializing instance of the websocket server
@@ -91,9 +95,16 @@ export class ChatGateway
   async sendToUser(@MessageBody() data: CreateChatDto) {
     try {
       const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
+
+      // ❂➤ Emitting the message to the receiver room
       this.server.to(receiverRoom.name).emit('ServerToClient', data);
+
+      // ❂➤ Creating the message in the database
+      await this.userMessagesService.createUserMessage(data);
+
       this.roomsService.printAllRooms();
       console.log('Message To: [' + data.receiver + '] => ' + data.message);
+
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
@@ -118,7 +129,7 @@ export class ChatGateway
    */
   @SubscribeMessage('ChannelToServer')
   async sendToChannel(
-    @MessageBody() data: Message,
+    @MessageBody() data: SocketMessage,
     @ConnectedSocket() client: Socket,
   ) {
     const userLogin = data.sender;

@@ -61,7 +61,7 @@ export interface ChatFriendsProps {
 }
 
 /*-------------------------------------------------------------------*/
-export interface Message {
+export interface SocketMessage {
 	socketId: string;
 	sender: string;
 	receiver?: string;

@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useChatSocket } from "@/context/store";
 import { io } from "socket.io-client";
-import { Message } from "../types";
-
+import { SocketMessage } from "../types";
+import { useSession } from "next-auth/react";
+import { useChatSocket, useReceivedMessageState } from "@/context/store";
 /**
  * ================================================================================================
  * ❂➤ ChatSocket: initialize the socket connection with the server.
@@ -16,8 +15,9 @@ export default function ChatSocket({
 }: {
   children: React.ReactNode;
 }) {
-  const { socket, setSocket } = useChatSocket();
   const session = useSession();
+  const { socket, setSocket } = useChatSocket();
+  const { setReceivedMessage } = useReceivedMessageState();
   /**
    * ❂➤ This useEffect is used to initialize the socket connection with the server,
    * without any dependency, so it will be called only once.
@@ -54,16 +54,11 @@ export default function ChatSocket({
       socket.on("reconnect", (attempt) => {
         console.log("Reconnected to the server on attempt number: ", attempt);
       });
-      socket.on("ServerToClient", (data: Message) => {
+      socket.on("ServerToClient", (data: SocketMessage) => {
+        setReceivedMessage(data);
         console.log("Message received from a ", data.sender, " : => ", data);
-        alert(
-          "Message received from : => [" +
-            data.sender +
-            "] : => " +
-            data.message
-        );
       });
-      socket.on("ServerToChannel", (data: Message) => {
+      socket.on("ServerToChannel", (data: SocketMessage) => {
         console.log("Message received from a channel: => ", data);
         alert(
           "Message received from : => [" +

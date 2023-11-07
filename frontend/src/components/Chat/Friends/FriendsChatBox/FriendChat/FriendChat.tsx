@@ -1,18 +1,31 @@
-import SenderChatBox from "./Sender/Sender";
 import { useSession } from "next-auth/react";
-import { MessagesProps } from "../../../types";
-import ReceiverChatBox from "./Receiver/Receiver";
-import React, { useEffect, useState } from "react";
+import ReceiverChatBox from "./Sender/Sender";
+import SenderChatBox from "./Receiver/Receiver";
+import { MessagesProps } from "@/components/Chat/types";
+import React, { useEffect, useState, useRef } from "react";
+import { userInformation } from "@/components/Profile/types";
 import { getMessages } from "../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
-import { activateClickedFriend } from "../../../../../context/store";
+import {
+  activateClickedFriend,
+  useSentMessageState,
+  useReceivedMessageState,
+} from "../../../../../context/store";
 
 export default function FriendChat() {
   const session = useSession();
+  const { sentMessage } = useSentMessageState();
+  const { receivedMessage } = useReceivedMessageState();
+  const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
   const activeFriend = activateClickedFriend((state) => state.activeFriend);
 
-  
+  /**
+   **╭── 🌼
+   **├ 👇 Fetch the private and public channels data from the database
+   **└── 🌼
+   **/
+
   useEffect(() => {
     if (activeFriend) {
       const fetchData = async () => {
@@ -24,15 +37,30 @@ export default function FriendChat() {
       };
       fetchData();
     }
-  }, [session, activeFriend]);
+  }, [session, activeFriend, sentMessage, receivedMessage]);
+
+  /**
+   **╭── 🌼
+   **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
+   **└── 🌼
+   **/
+
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
+  }, [friendChat]);
 
   return (
-    <div className="overflow-y-scroll px-3">
+    <div className="overflow-y-scroll px-3" ref={chatScrollRef}>
       {friendChat.map((message, index) => {
-        if (message.sender.login === session?.data?.user.login) {
-          return <SenderChatBox key={index} message={message} />;
-        } else {
+        if (
+          session?.data?.user.login &&
+          message.sender.login === session?.data?.user.login
+        ) {
           return <ReceiverChatBox key={index} message={message} />;
+        } else {
+          return <SenderChatBox key={index} message={message} />;
         }
       })}
     </div>

@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import EmojiPicker from "emoji-picker-react";
 import "react-toastify/dist/ReactToastify.css";
-import { useChatSocket } from "@/context/store";
+import { useChatSocket, useSentMessageState } from "@/context/store";
 import React, { useState, useEffect } from "react";
-import { ChannelsProps } from "@/components/Chat/types";
+import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
 import { userInformation } from "@/components/Profile/types";
 
 //========================================================================
@@ -15,13 +15,16 @@ export default function SendMessageBox({
 }: {
   receiver: userInformation | ChannelsProps;
 }) {
-  //---------------------------------------------------------------
   const session = useSession();
-  const [currentMessage, setCurrentMessage] = useState<string>("");
   const { socket } = useChatSocket();
+  const { setSentMessage } = useSentMessageState();
+  const [currentMessage, setCurrentMessage] = useState<string>("");
 
-  //---------------------------------------------------------------
-  // send message to the server and then to the receiver.
+  /**
+   **╭── 🌼
+   **├ 👇 send message to the server and then to the receiver.
+   **└── 🌼
+   **/
   const sendMessage = () => {
     const trimmedMessage = currentMessage.trim();
     if (trimmedMessage === "") {
@@ -37,29 +40,42 @@ export default function SendMessageBox({
     }
 
     // Send the message to the a user or a channel
-    if ("login" in receiver && socket) {
+    if ("login" in receiver && socket && session?.data?.user?.name) {
       // It's a user
-      socket.emit("ClientToServer", {
+      let data: SocketMessage = {
         socketId: socket.id,
         sender: session?.data?.user?.name,
         receiver: receiver.login,
         message: trimmedMessage,
-      });
-    } else if ("channelName" in receiver && socket) {
-      // It's a channel
-      socket.emit("ChannelToServer", {
-        socketId: socket.id,
-        sender: session?.data?.user?.name,
-        channel: receiver.channelName,
-        channelType: receiver.channelType,
-        message: trimmedMessage,
-      });
-    }
+      };
+      socket.emit("ClientToServer", data);
+      setSentMessage(data);
+    } 
+    // else if (
+    //   "channelName" in receiver &&
+    //   socket &&
+    //   session?.data?.user?.name
+    // ) {
+    //   // It's a channel
+    //   let data: SocketMessage = {
+    //     socketId: socket.id,
+    //     sender: session?.data?.user?.name,
+    //     channel: receiver.channelName,
+    //     channelType: receiver.channelType,
+    //     message: trimmedMessage,
+    //   };
+    //   socket.emit("ChannelToServer", data);
+    //   setSentMessage(data);
+    // }
     setCurrentMessage("");
   };
 
-  //---------------------------------------------------------------
-  // use effect for enter key
+  /**
+   **╭── 🌼
+   **├ 👇 use effect for enter key
+   **└── 🌼
+   **/
+
   useEffect(() => {
     const listener = (event: any) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
@@ -73,12 +89,16 @@ export default function SendMessageBox({
     };
   }, [currentMessage]);
 
-  //---------------------------------------------------------------
-
+  /**
+   **╭── 🌼
+   **├ 👇 If there is no receiver, then return an empty div
+   **└── 🌼
+   **/
   if (receiver === undefined)
     return (
       <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
     );
+
   return (
     <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
       <input

@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { ChannelsProps } from "@/components/Chat/types";
+import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
 import { Socket, io } from "socket.io-client";
+
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 
 type TGameColor = {
@@ -120,6 +121,37 @@ export const useChannelType = create<ChannelTypeState>((set) => ({
   activeChannelType: "Public",
   setActiveChannelType: (channelType: string) =>
     set({ activeChannelType: channelType }),
+}));
+
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the message comming from the server to the client's socket globaly
+ * └── 🌼
+ **/
+type ReceivedMessageState = {
+  receivedMessage: SocketMessage;
+  setReceivedMessage: (message: SocketMessage) => void;
+};
+
+export const useReceivedMessageState = create<ReceivedMessageState>((set) => ({
+  receivedMessage: {} as SocketMessage,
+  setReceivedMessage: (message: SocketMessage) =>
+    set({ receivedMessage: message }),
+}));
+
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the message sent from the client's socket to the server globaly
+ * └── 🌼
+ **/
+type SentMessageState = {
+  sentMessage: SocketMessage;
+  setSentMessage: (message: SocketMessage) => void;
+};
+
+export const useSentMessageState = create<SentMessageState>((set) => ({
+  sentMessage: {} as SocketMessage,
+  setSentMessage: (message: SocketMessage) => set({ sentMessage: message }),
 }));
 
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/

@@ -1,29 +1,41 @@
 import {
+  UsePipes,
   Injectable,
+  ValidationPipe,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserMessageDto } from './dto/create-user-message.dto';
 
 @Injectable()
 export class UserMessagesService {
   constructor(private prisma: PrismaService) {}
 
   //===============================================================================
-  // async createUserMessage(senderId: string, receiverId: string, content: string) {
-  //   try {
-  //     const message = await this.prisma.messages.create({
-  //       data: {
-  //         senderId: senderId,
-  //         receiverId: receiverId,
-  //         content: content,
-  //       },
-  //     });
-  //     return message;
-  //   } catch (error) {
-  //     throw new BadRequestException('Unable to create message');
-  //   }
-  // }
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      enableDebugMessages: true,
+      skipUndefinedProperties: false,
+    }),
+  )
+  async createUserMessage(data: CreateUserMessageDto) {
+    try {
+      const senderId = await this.getUserIdByLogin(data.sender);
+      const receiverId = await this.getUserIdByLogin(data.receiver);
+      const message = await this.prisma.messages.create({
+        data: {
+          senderId: senderId,
+          receiverId: receiverId,
+          content: data.message,
+        },
+      });
+      return message;
+    } catch (error) {
+      throw new BadRequestException('Unable to create message');
+    }
+  }
   //===============================================================================
   /* Helper function to get the user using login */
   async getUserIdByLogin(login: string) {
@@ -122,11 +134,10 @@ export class UserMessagesService {
           },
         },
       });
-      const friendChat =[...chat.recievedMessages, ...chat.sentMessages];
+      const friendChat = [...chat.recievedMessages, ...chat.sentMessages];
       friendChat.sort((a, b) => {
-          return a.createdAt.getTime() - b.createdAt.getTime();
-        },
-      );
+        return a.createdAt.getTime() - b.createdAt.getTime();
+      });
       return friendChat;
     } catch (error) {
       throw new BadRequestException('Unable to get user messages');
@@ -134,5 +145,4 @@ export class UserMessagesService {
   }
 
   //===============================================================================
-
 }
