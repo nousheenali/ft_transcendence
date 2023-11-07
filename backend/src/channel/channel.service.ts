@@ -27,6 +27,7 @@ export class ChannelService {
         channelName: CreateChannelDto.channelName,
         channelType: CreateChannelDto.channelType,
         createdBy: CreateChannelDto.createdBy,
+        channelPassword: CreateChannelDto.channelPassword,
       },
     });
     const res = await this.prisma.channelRelation.create({

@@ -34,5 +34,6 @@ export class CreateChannelDto {
   @ApiProperty()
   createdBy: string;
 
-  password: string | null;
+  @ApiProperty()
+  channelPassword: string | null;
 }

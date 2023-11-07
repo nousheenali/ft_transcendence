@@ -3,6 +3,9 @@ import { ChannelsProps } from "@/components/Chat/types";
 import { Socket, io } from "socket.io-client";
 // ---------------------------------------------------------------------------------------------
 
+/**
+ * a global store for the game elements
+ */
 type TGameColor = {
   ballColor: string;
   racketColor: string;
@@ -110,3 +113,27 @@ export const useChatSocket = create<ChatSocketState>((set) => ({
 }));
 
 // ---------------------------------------------------------------------------------------------
+
+/**
+ * a global store for the create channel state 
+ * (channel name and password)
+ */
+
+type TCreateChannelValidate = {
+  validPassword: boolean;
+  validChannelName: boolean;
+
+  setValidPassword: (validInput: boolean) => void;
+  setValidChannelName: (validInput: boolean) => void;
+};
+
+export const useChannelCreateValidate = create<TCreateChannelValidate>(
+  (set) => ({
+    validPassword: false,
+    validChannelName: false,
+
+    setValidPassword: (validPassword: boolean) => set({ validPassword }),
+    setValidChannelName: (validChannelName: boolean) =>
+      set({ validChannelName }),
+  })
+);

@@ -3,7 +3,7 @@ import ChannelCreateBtn from "./ChannelCreateBtn/ChannelCreateBtn";
 import { Button, Modal } from "react-daisyui";
 import ChannelNameTextBox from "./ChannelNameTextBox/ChannelNameTextBox";
 import ChannelTypeDD from "./ChannelTypeDD/ChannelTypeDD";
-import { useChannelInfo } from "@/context/store";
+import { useChannelCreateValidate, useChannelInfo } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { userInformation } from "@/components/Profile/types";
@@ -23,6 +23,8 @@ export default function CreateChannel({ userName }: { userName: string }) {
   const { setChannelName, setChannelType, setChannelPassword } =
     useChannelInfo();
 
+  const { validChannelName, validPassword } = useChannelCreateValidate();
+
   useEffect(() => {
     const getUserData = async () => {
       const userData: userInformation = await getData(
@@ -34,12 +36,21 @@ export default function CreateChannel({ userName }: { userName: string }) {
     getUserData();
   }, []);
 
+  // update the status of the button
+  useEffect(() => {
+    if (channelType === "PUBLIC" && validChannelName) {
+      setIsValid(true);
+    } else if (channelType === "PRIVATE" && validChannelName && validPassword) {
+      setIsValid(true);
+    } else setIsValid(false);
+  }, [validChannelName, validPassword, channelType]);
+
   const createChannelButton = async () => {
     const newChannel: CreateChannelItems = {
       channelName: channelName,
       channelType: channelType,
       createdBy: data,
-      password: channelPassword!,
+      channelPassword: channelPassword!,
     };
     try {
       const chan = await postData<CreateChannelItems>(
@@ -79,15 +90,21 @@ export default function CreateChannel({ userName }: { userName: string }) {
             <ChannelTypeDD />
           </div>
         </Modal.Body>
-        <Modal.Actions className="p-2 mt-4 flex flex-col">
-          <Button
-            className="p-0 m-0"
-            onClick={() => {
-              createChannelButton();
-            }}
-          >
-            Create
-          </Button>
+        <Modal.Actions className="p-2 mt-4 flex flex-col px-16">
+          {isValid ? (
+            <Button
+              className="p-0 m-0 text-main-text bg-heading-fill hover:bg-main-text hover:text-heading-fill"
+              onClick={() => {
+                createChannelButton();
+              }}
+            >
+              Create
+            </Button>
+          ) : (
+            <Button className="p-0 m-0" disabled>
+              Create
+            </Button>
+          )}
         </Modal.Actions>
       </Modal>
     </div>

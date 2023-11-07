@@ -7,5 +7,5 @@ export type CreateChannelItems = {
   channelName: string | null;
   channelType: "PRIVATE" | "PUBLIC";
   createdBy: string;
-  password: string | null;
+  channelPassword: string | null;
 };
