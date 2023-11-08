@@ -10,7 +10,7 @@ export default function Message({ message }: { message: MessagesProps }) {
   });
   return (
     <div
-      className="flex flex-row justify-center items-center w-80 h-20 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer bg-gradient-to-b from-latest-msg-s to-latest-msg-e"
+      className="flex flex-row justify-center items-center w-80 h-20 rounded-xl ml-2 px-1 py-1 pr-2 overflow-hidden hover:cursor-pointer bg-gradient-to-b from-latest-msg-s to-latest-msg-e"
       onClick={() => {
         setActiveFriend(message.sender.login);
       }}

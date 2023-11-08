@@ -47,6 +47,15 @@ export default function ChannelChatBoxHeader() {
               width={45}
               height={45}
             />
+            <span className=" text-main-text text-sm font-light">JOIN</span>
+          </button>
+          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+            <Image
+              alt={"invite"}
+              src={"./chat/user-cirlce-add.svg"}
+              width={45}
+              height={45}
+            />
             <span className=" text-main-text text-sm font-light">INVITE</span>
           </button>
           <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
