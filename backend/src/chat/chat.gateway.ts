@@ -102,8 +102,8 @@ export class ChatGateway
       // ❂➤ Creating the message in the database
       await this.userMessagesService.createUserMessage(data);
 
-      this.roomsService.printAllRooms();
-      console.log('Message To: [' + data.receiver + '] => ' + data.message);
+      // this.roomsService.printAllRooms();
+      // console.log('Message To: [' + data.receiver + '] => ' + data.message);
 
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);

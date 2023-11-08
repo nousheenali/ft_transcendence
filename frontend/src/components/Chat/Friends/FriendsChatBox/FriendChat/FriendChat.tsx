@@ -3,8 +3,8 @@ import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
 import React, { useEffect, useState, useRef } from "react";
-import { getUserData } from "../../../../../../services/user";
-import { userInformation } from "@/components/Profile/types";
+// import { getUserData } from "../../../../../../services/user";
+// import { userInformation } from "@/components/Profile/types";
 import { getMessages } from "../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import {
@@ -18,6 +18,7 @@ export default function FriendChat() {
   const { sentMessage } = useSentMessageState();
   const { activeFriend } = activateClickedFriend();
   // const [user, setUser] = useState<userInformation>();
+  // const [friend, setFriend] = useState<userInformation>();
   const { receivedMessage } = useReceivedMessageState();
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
@@ -36,6 +37,11 @@ export default function FriendChat() {
   //         API_ENDPOINTS.getUserbyLogin
   //       );
   //       setUser(userData);
+  //       const friendData: userInformation = await getUserData(
+  //         activeFriend!,
+  //         API_ENDPOINTS.getUserbyLogin
+  //       );
+  //       setFriend(friendData);
   //     };
   //     fetchData();
   //   }

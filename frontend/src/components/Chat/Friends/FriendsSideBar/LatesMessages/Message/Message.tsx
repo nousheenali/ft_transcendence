@@ -4,9 +4,7 @@ import { activateClickedFriend } from "../../../../../../context/store";
 import { formatDistanceToNow } from "date-fns";
 
 export default function Message({ message }: { message: MessagesProps }) {
-  const setActiveFriend = activateClickedFriend(
-    (state) => state.setActiveFriend
-  );
+  const { setActiveFriend } = activateClickedFriend();
   const formattedTime = formatDistanceToNow(new Date(message.createdAt), {
     addSuffix: true,
   });

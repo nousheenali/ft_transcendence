@@ -4,11 +4,13 @@ import { MessagesProps } from "@/components/Chat/types";
 import { getMessages } from "../../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import Message from "@/components/Chat/Friends/FriendsSideBar/LatesMessages/Message/Message";
+import { useReceivedMessageState } from "../../../../../../context/store";
 
 export default function MessagesList() {
   const session = useSession();
   const [latestMessages, setLatestMessages] = useState<MessagesProps[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const { receivedMessage } = useReceivedMessageState();
 
   useEffect(() => {
     if (session && session?.data?.user.login) {
@@ -22,7 +24,7 @@ export default function MessagesList() {
       };
       fetchData();
     }
-  }, [session]);
+  }, [session, receivedMessage]);
 
   if (isLoading)
     return (

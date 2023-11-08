@@ -1,13 +1,13 @@
 import Image from "next/image";
 import DOMPurify from "dompurify";
+import Picker from "@emoji-mart/react";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
-import EmojiPicker from "emoji-picker-react";
 import "react-toastify/dist/ReactToastify.css";
-import { useChatSocket, useSentMessageState } from "@/context/store";
-import React, { useState, useEffect } from "react";
-import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
+import React, { useState, useEffect, useRef } from "react";
 import { userInformation } from "@/components/Profile/types";
+import { useChatSocket, useSentMessageState } from "@/context/store";
+import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
 
 //========================================================================
 export default function SendMessageBox({
@@ -18,7 +18,53 @@ export default function SendMessageBox({
   const session = useSession();
   const { socket } = useChatSocket();
   const { setSentMessage } = useSentMessageState();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const emojiPickerRef = useRef<HTMLDivElement | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [currentMessage, setCurrentMessage] = useState<string>("");
+
+  /**
+   **╭── 🌼
+   **├ 👇 toggle emoji picker, it will show or hide the emoji picker.
+   **└── 🌼
+   **/
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker((prevState) => !prevState);
+  };
+
+  /**
+   **╭── 🌼
+   **├ 👇 handle emoji select, when the user clicks on an emoji, it will be added to the message.
+   **└── 🌼
+   **/
+  const handleEmojiSelect = (emoji: { native: string }) => {
+    const updatedMessage = currentMessage + emoji.native;
+    setCurrentMessage(updatedMessage);
+  };
+
+  /**
+   **╭── 🌼
+   **├ 👇 use effect for emoji picker, it will close the emoji picker when the user clicks outside of it.
+   **└── 🌼
+   **/
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   /**
    **╭── 🌼
@@ -56,7 +102,7 @@ export default function SendMessageBox({
       };
       socket.emit("ClientToServer", data);
       setSentMessage(data);
-    } 
+    }
     // else if (
     //   "channelName" in receiver &&
     //   socket &&
@@ -108,13 +154,17 @@ export default function SendMessageBox({
   return (
     <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
       <input
+        ref={(el) => (inputRef.current = el)}
         className="flex-grow h-full px-4 py-2 rounded-xl focus:outline-none"
         placeholder="Type a message"
         value={currentMessage}
         onChange={(e) => setCurrentMessage(e.target.value)}
       />
       <div className="flex items-center space-x-2 hover:cursor-pointer">
-        <button className="p-2 rounded-full hover:bg-main-text focus:outline-none">
+        <button
+          onClick={toggleEmojiPicker}
+          className="p-2 rounded-full hover:bg-main-text focus:outline-none"
+        >
           <Image
             src="/chat/emoji.svg"
             alt="emoji icon"
@@ -122,6 +172,21 @@ export default function SendMessageBox({
             height={24}
           />
         </button>
+
+        {showEmojiPicker && (
+          <div
+            className="absolute bottom-16 right-40"
+            ref={(el) => (emojiPickerRef.current = el)}
+          >
+            <Picker
+              onEmojiSelect={handleEmojiSelect}
+              set="emojione"
+              title="Pick your emoji"
+              emoji="point_up"
+            />
+          </div>
+        )}
+
         <button
           onClick={sendMessage}
           className="p-2 rounded-full hover:bg-main-text focus:outline-none"
