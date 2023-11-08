@@ -191,7 +191,7 @@ export default function SendMessageBox({
           onClick={sendMessage}
           className="p-2 rounded-full hover:bg-main-text focus:outline-none"
         >
-          <Image src="/chat/send.svg" alt="send icon" width={24} height={24} />
+          <Image src="/chat/send.svg" alt="send icon" width={25} height={25} />
         </button>
       </div>
     </div>
