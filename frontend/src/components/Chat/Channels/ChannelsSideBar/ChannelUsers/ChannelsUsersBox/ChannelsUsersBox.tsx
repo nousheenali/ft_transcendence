@@ -38,6 +38,8 @@ export default function ChannelsUsersBox() {
    **├ 👇 Show the loading spinner while fetching the channel's users data
    **└── 🌼
    **/
+  if (activeChannel.channelName === undefined ) return <p>No channel selected</p>;
+
   if (isLoading)
     return (
       <span className="loading loading-ring loading-lg text-main-yellow"></span>

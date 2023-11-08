@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import {
   MessageBody,
   SubscribeMessage,
@@ -65,7 +66,10 @@ export class ChatGateway
 
     if (userLogin === undefined || userLogin === null) return;
     this.logger.log(
-      `New Client connected: id => ${client.id} name => ${userLogin}`,
+      chalk.blue("New Client connected: id => ") +
+      chalk.magenta(client.id) +
+      chalk.blue(" name => ") +
+      chalk.green(userLogin)
     );
 
     // ❂➤ Joining the user's room at connection
@@ -102,8 +106,14 @@ export class ChatGateway
       // ❂➤ Creating the message in the database
       await this.userMessagesService.createUserMessage(data);
 
-      // this.roomsService.printAllRooms();
-      // console.log('Message To: [' + data.receiver + '] => ' + data.message);
+      // ❂➤ Printing the rooms array to the console for debugging
+      this.roomsService.printAllRooms();
+      console.log(
+        chalk.greenBright('Message To: ') +
+          chalk.blue(`[${data.receiver}]`) +
+          chalk.white(' => ') +
+          chalk.yellow(data.message)
+      );
 
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
@@ -158,7 +168,9 @@ export class ChatGateway
   handleDisconnect(client: Socket) {
     const userLogin = client.handshake.query.userLogin as string;
     this.logger.log(
-      `The client with id of ${client.id} has been disconnected!!`,
+      chalk.red('The client with id of ') +
+        chalk.magenta(client.id) +
+        chalk.red(' has been disconnected!!')
     );
     this.chatService.updateUserStatus(userLogin, false);
   }

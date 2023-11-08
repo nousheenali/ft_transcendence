@@ -49,10 +49,9 @@ export default function Channels() {
   useEffect(() => {
     if (activeChannelType === "Public" && publicChannels.length > 0) {
       setActiveChannel(publicChannels[0]);
-    }
-    if (activeChannelType === "Private" && privateChannels.length > 0) {
+    } else if (activeChannelType === "Private" && privateChannels.length > 0) {
       setActiveChannel(privateChannels[0]);
-    }
+    } else setActiveChannel({} as ChannelsProps);
   }, [privateChannels, publicChannels, activeChannelType]);
 
   /**

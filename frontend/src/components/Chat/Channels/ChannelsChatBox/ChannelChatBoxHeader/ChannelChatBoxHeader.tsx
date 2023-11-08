@@ -5,8 +5,13 @@ import { activateClickedChannel } from "@/context/store";
 export default function ChannelChatBoxHeader() {
   const { activeChannel } = activateClickedChannel();
 
-  if (activeChannel.channelName === "" || activeChannel.channelName === null)
-    return;
+  if (activeChannel.channelName === undefined)
+    return (
+      <div
+        className="indicator w-full h-32 flex items-center rounded-xl bg-main-theme text-main-texts 
+                 border-b border-main-yellow px-3"
+      ></div>
+    );
   return (
     <div
       className="indicator w-full h-32 flex items-center rounded-xl bg-main-theme text-main-texts 

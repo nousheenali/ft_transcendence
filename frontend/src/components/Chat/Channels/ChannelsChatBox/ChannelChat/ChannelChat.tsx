@@ -19,14 +19,16 @@ const extractMessagesFromChannel = (channel: ChannelsProps) => {
    **/
 
   useEffect(() => {
-    const fetchData = async () => {
-      const channelMessages: MessagesProps[] = await getChannelMessagesData(
-        session?.data?.user.login!,
-        API_ENDPOINTS.channelMessages + channel.channelName + "/"
-      );
-      setMessages(channelMessages);
-    };
-    fetchData();
+    if (channel.channelName) {
+      const fetchData = async () => {
+        const channelMessages: MessagesProps[] = await getChannelMessagesData(
+          session?.data?.user.login!,
+          API_ENDPOINTS.channelMessages + channel.channelName + "/"
+        );
+        setMessages(channelMessages);
+      };
+      fetchData();
+    }
   }, [session, channel]);
 
   if (messages === undefined) return undefined;
@@ -37,24 +39,26 @@ const extractMessagesFromChannel = (channel: ChannelsProps) => {
 /**============================================================================================*/
 export default function ChannelChat() {
   const session = useSession();
-  const chatScrollRef = useRef<HTMLDivElement | null>(null);
+  const chatScrollRef = useRef<HTMLDivElement>();
   const { activeChannel } = activateClickedChannel();
   const channelMessages = extractMessagesFromChannel(activeChannel);
-
-  if (channelMessages === undefined)
-    return <div className="overflow-y-scroll px-3"></div>;
 
   /**
    **╭── 🌼
    **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
    **└── 🌼
    **/
-  
+
   useEffect(() => {
-    if (chatScrollRef.current) {
-      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    if (chatScrollRef && channelMessages && activeChannel.channelName) {
+      if (chatScrollRef.current) {
+        chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+      }
     }
-  }, [channelMessages]);
+  }, [activeChannel, channelMessages]);
+
+  if (channelMessages === undefined || activeChannel.channelName === undefined)
+    return <div className="overflow-y-scroll px-3"></div>;
 
   return (
     <div className="overflow-y-scroll px-3">

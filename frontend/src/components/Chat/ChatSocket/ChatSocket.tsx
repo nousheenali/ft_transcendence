@@ -69,6 +69,7 @@ export default function ChatSocket({
       });
       return () => {
         socket.off("connect");
+        socket.off("reconnect");
         socket.off("disconnect");
         socket.off("ServerToClient");
         socket.off("ServerToChannel");

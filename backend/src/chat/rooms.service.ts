@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { Room, RoomType } from './types';
+import chalk from "chalk";
+import Table from "cli-table3";
 import { Socket } from 'socket.io';
+import { Room, RoomType } from './types';
+import { Injectable } from '@nestjs/common';
 
 // =================================================================================================
 
@@ -143,32 +145,43 @@ export class RoomsService {
 
   // =================================================================================================
   printAllRooms() {
-    console.log(
-      '---------------------------------------- [Channels Rooms] ------------------------------------------',
-    );
+    const channelTable = new Table({
+      head: [
+        chalk.yellow('Room Name'),
+        chalk.yellow('Room Admin'),
+        chalk.yellow('Room Users'),
+      ],
+    });
+  
     this.channelRooms.forEach((room) => {
-      console.log(
-        'Room Name: ' + room.name,
-        'Room Admin: ' + room.admin,
-        'Room Users: ' + room.users,
-      );
-      console.log(
-        '----------------------------------------------------------------------------------------------------',
-      );
+      channelTable.push([
+        chalk.blue(room.name),
+        chalk.magenta(room.admin),
+        chalk.green(room.users.join(', ')),
+      ]);
     });
-    console.log(
-      '---------------------------------------- [Users Rooms] ---------------------------------------------',
-    );
+  
+    const userTable = new Table({
+      head: [
+        chalk.cyan('Room Name'),
+        chalk.cyan('Room Admin'),
+        chalk.cyan('Room Users'),
+      ],
+    });
+  
     this.userRooms.forEach((room) => {
-      console.log(
-        'Room Name: ' + room.name,
-        'Room Admin: ' + room.admin,
-        'Room Users: ' + room.users,
-      );
-      console.log(
-        '----------------------------------------------------------------------------------------------------',
-      );
+      userTable.push([
+        chalk.blue(room.name),
+        chalk.magenta(room.admin),
+        chalk.green(room.users.join(', ')),
+      ]);
     });
+  
+    console.log(chalk.green('👇 Channels Rooms 👇'));
+    console.log(channelTable.toString());
+  
+    console.log(chalk.green('👇 Users Rooms 👇'));
+    console.log(userTable.toString());
   }
   // =================================================================================================
 }
