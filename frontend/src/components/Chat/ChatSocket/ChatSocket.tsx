@@ -56,7 +56,7 @@ export default function ChatSocket({
       });
       socket.on("ServerToClient", (data: SocketMessage) => {
         setReceivedMessage(data);
-        console.log("Message received from a ", data.sender, " : => ", data);
+        // console.log("Message received from a ", data.sender, " : => ", data);
       });
       socket.on("ServerToChannel", (data: SocketMessage) => {
         console.log("Message received from a channel: => ", data);

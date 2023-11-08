@@ -24,7 +24,7 @@ export default function ReceverChatBox({ message }: { message: MessagesProps }) 
         <time className="text-xs opacity-50 px-2">{formattedTime}</time>
       </div>
 
-      <div className="chat-bubble font-thin bg-receiver-chatbox-bg max-h-50">
+      <div className="chat-bubble font-thin bg-receiver-chatbox-bg max-h-24 whitespace-normal break-words">
         {message.content}
       </div>
     </div>

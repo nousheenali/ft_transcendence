@@ -39,6 +39,12 @@ export default function SendMessageBox({
       return;
     }
 
+    // limit the message to 200 characters
+    if (trimmedMessage.length > 100) {
+      toast.error("Message cannot be longer than 200 characters");
+      return;
+    }
+
     // Send the message to the a user or a channel
     if ("login" in receiver && socket && session?.data?.user?.name) {
       // It's a user
