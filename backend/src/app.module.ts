@@ -18,7 +18,9 @@ import { GameModule } from './game/game.module';
     ChannelModule,
     FriendsModule,
     NotificationModule,
-    GatewayNotifModule, GameModule],
+    GatewayNotifModule,
+    GameModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
