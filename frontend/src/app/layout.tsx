@@ -2,7 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import React from 'react';
 import Background from '@/components/Background/Background';
-import AuthProvider from './context/AuthProvider';
+// import { AuthProvider } from './context/AuthProvider';
+import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
   title: 'Spin Masters',
@@ -20,7 +21,7 @@ export default function RootLayout({
         <link rel="icon" href="Logo.ico" sizes="any" />
       </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        {children}
       </body>
     </html>
   );

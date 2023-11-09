@@ -4,7 +4,7 @@ import { IntraAuthButton } from '@/components/Login/AuthButton/IntraAuth';
 import Team from '@/components/Login/Team/Team';
 import { Footer } from '@/components/Login/Footer/Footer';
 import React from 'react';
-import { useSession } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
 
 /*
  * TODO: Put more spacing between the button and the team section.
@@ -13,7 +13,7 @@ import { useSession } from 'next-auth/react';
  * */
 
 export default function Home() {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   // const callbackUrl = "/";
   // const handleLogin = async () => {

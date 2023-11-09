@@ -1,10 +1,18 @@
 export interface JwtPayload {
-  sub: string; // login
+  sub: string;
   email: string; // email
-  mfaEnabled: boolean;
-  mfaAuthenticated: boolean;
+  TFAEnabled: boolean;
+  TFAVerified: boolean;
   iat?: number; // issued at
   exp?: number; // expiration
+  id: string;
+  login: string;
+  name: string;
+  avatar: string;
+  createdAt: string;
+  updatedAt: string;
+  isOnline: boolean;
+  score: number;
 }
 
 export interface AuthTokens {

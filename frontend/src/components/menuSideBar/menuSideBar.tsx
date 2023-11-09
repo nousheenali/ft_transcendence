@@ -1,11 +1,10 @@
-'use client';
-import React, { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Breaker from '../br/Br';
-import { signOut } from 'next-auth/react';
+"use client";
+import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
 
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 export default function MenuSideBar() {
   const pathname = usePathname();

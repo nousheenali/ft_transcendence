@@ -23,12 +23,25 @@ export class JwtAuthService {
   private hashsecret: string = process.env.HASH_SECRET;
 
   private generatePayload(user: User, mfaAuthenticated = false) {
-    return {
-      sub: user.login,
-      email: user.email,
-      mfaEnabled: user.TFAEnabled,
-      mfaAuthenticated: mfaAuthenticated,
-    } as JwtPayload;
+    // return {
+    //   sub: user.login,
+    //   sub: String,
+    //   email: String, // email
+    //   TFAEnabled: booleanString,
+    //   TFAVerified: booleanString,
+    //   iat: numberString, // issued at
+    //   exp: numberString, // expiration
+    //   id: String,
+    //   login: String,
+    //   name: String,
+    //   avatar: String,
+    //   createdAt: String,
+    //   updatedAt: String,
+    //   isOnline: booleanString,
+    //   score: numberString,
+    // } as JwtPayload;
+    console.log('payload to send--------------------======', user);
+    return user;
   }
 
   private async updateRefreshToken(user: User, refreshToken: string) {
