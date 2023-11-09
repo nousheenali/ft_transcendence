@@ -28,6 +28,7 @@ export interface userInformation {
   createdAt: string;
   updatedAt: string;
   isOnline: boolean;
+  inAGame: boolean;
   score: number;
 }
 

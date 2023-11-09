@@ -11,6 +11,9 @@ import { GameRoom, GameRoomService } from './game-room/game-room.service';
 import { PlayerService, Player } from './player/player.service';
 import { GameLogicService } from './game-logic/game-logic.service';
 import { GameService } from './game.service';
+import { UserService } from 'src/user/user.service';
+import { GameDto } from './dto/game.dto';
+import { GameStatus } from '@prisma/client';
 
 @WebSocketGateway(8005, { cors: { origin: 'http://localhost:3000' } })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -22,6 +25,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly gameRoomService: GameRoomService,
     private readonly gameLogicService: GameLogicService,
     private readonly gamePrismaService: GameService,
+    private readonly userService: UserService,
   ) {}
 
   // Handle a new player connection
@@ -29,25 +33,41 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const username = client.handshake.query.username;
     if (!Array.isArray(username)) {
       this.playerService.addPlayer(client, username);
+      this.userService.updateUserGameStatus(username, true);
     }
     console.log(`Player connected to game: ${client.id} --- ${username}`);
-    // this.server.to(client.id).emit('connect');
   }
 
   // Handle player disconnection
   handleDisconnect(client: Socket) {
     const plyr = this.playerService.getPlayerByID(client.id);
-    this.playerService.removeFromQueue(plyr.id)
+    this.playerService.removeFromQueue(plyr.id);
     if (plyr.gameRoom != null) {
       const gm = this.gameRoomService.getGameRoom(plyr.gameRoom);
       if (gm) {
-        const otherPlyr =
-          gm.players[0].id === client.id ? gm.players[1] : gm.players[0];
-        if (!gm.gameOver) {
-          this.gameLogicService.updateResults(this.server, gm, otherPlyr, plyr);
+        if (gm.players.length === 2) {
+          const otherPlyr =
+            gm.players[0].id === client.id ? gm.players[1] : gm.players[0];
+          if (!gm.gameOver)
+            this.gameLogicService.updateResults(
+              this.server,
+              gm,
+              otherPlyr,
+              plyr,
+            );
+        } else {
+          //if invited user hasn't joined the room yet
+          this.gamePrismaService.updateGameEntry(
+            gm.roomID,
+            GameStatus.FINISHED,
+            null,
+            null,
+          );
+          this.gameRoomService.removeGameRoom(gm.roomID);
         }
       }
     }
+    this.userService.updateUserGameStatus(plyr.name, false);
     this.playerService.removePlayer(client.id);
     console.log(`Player disconnected from game: ${client.id}`);
   }
@@ -65,6 +85,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const data = {
         userLogin: p0.name,
         opponentLogin: p1.name,
+        gameStatus: GameStatus.LIVE,
       };
       const roomID = await this.gamePrismaService.createGameEntry(data);
       const room = this.gameRoomService.createGameRoom(roomID, p0, p1);
@@ -72,16 +93,60 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  //when user plays with a friend
-  @SubscribeMessage('matchFriend')
-  handleMatchFriend(client: Socket, data: any) {
-    // const p0: Player = this.playerService.getPlayerByID(client.id);
-    // const p1: Player = this.playerService.getPlayerByName(data.friendName);
-    // if (p0 && p1) {
-    //   const roomID = this.gameRoomService.createGameRoom(p0, p1);
-    //   const room = this.gameRoomService.getGameRoom(roomID);
-    //   this.gameLogicService.sendJoiningInformation(this.server, room, p0, p1);
-    // }
+  //when a user is waiting for a friend to join
+  @SubscribeMessage('createWaitingRoom')
+  async handleCreateWaitingRoom(client: Socket, data: any) {
+    const player: Player = this.playerService.getPlayerByID(client.id);
+    if (player) {
+      player.worldWidth = data.width;
+      player.worldHeight = data.height;
+      const input: GameDto = {
+        userLogin: player.name,
+        opponentLogin: data.friendName,
+        gameStatus: GameStatus.WAITING,
+      };
+      const roomID = await this.gamePrismaService.createGameEntry(input);
+      this.gameRoomService.createWaitingRoom(roomID, player);
+      console.log(`Player in waiting room: ${client.id} ${roomID}`);
+    }
+  }
+
+  @SubscribeMessage('joinWaitingRoom')
+  async handleJoinWaitingRoom(client: Socket, data: any) {
+    const player: Player = this.playerService.getPlayerByID(client.id);
+    if (player) {
+      player.worldWidth = data.width;
+      player.worldHeight = data.height;
+      const player2: Player = this.playerService.getPlayerByName(data.inviter);
+      const roomID = player2.gameRoom;
+      if (!data.accept) {
+        console.log("INVITATION DECLINED")
+        player.socketInfo.disconnect();
+        this.server.to(player2.socketInfo.id).emit('invitationDeclined');
+        return;
+      }
+      if (roomID) {
+        const room = this.gameRoomService.joinWaitingRoom(roomID, player);
+        this.gamePrismaService.updateGameEntry(
+          roomID,
+          GameStatus.LIVE,
+          null,
+          null,
+        );
+        console.log('WAITING ROOM LOOKS LIKE', room);
+        this.gameLogicService.sendJoiningInformation(
+          this.server,
+          room,
+          room.players[0],
+          room.players[1],
+        );
+        console.log(`Player joined waiting room: ${client.id}`);
+      } //if inviter disconnects before invitee joins
+      else
+        this.server
+          .to(client.id)
+          .emit('gameOver', 'Other Player Disconnected', null);
+    }
   }
 
   //initial positions of all sprites

@@ -7,13 +7,13 @@ export class GameRoomService {
 
   constructor(private playerService: PlayerService) {}
 
-  // generateUniqueRoomId(): string {
-  //   const timestamp = new Date().getTime();
-  //   const randomPart = Math.random().toString(36);
-  //   // Combine the timestamp and random part to create a unique ID
-  //   const uniqueId = `${timestamp}-${randomPart}`;
-  //   return uniqueId;
-  // }
+  generateUniqueRoomId(): string {
+    const timestamp = new Date().getTime();
+    const randomPart = Math.random().toString(36);
+    // Combine the timestamp and random part to create a unique ID
+    const uniqueId = `${timestamp}-${randomPart}`;
+    return uniqueId;
+  }
 
   // Create a new game room
   createGameRoom(roomID: string, player1: Player, player2: Player): GameRoom {
@@ -30,7 +30,7 @@ export class GameRoomService {
       },
       worldWidth: refPlayer.worldWidth,
       worldHeight: refPlayer.worldHeight,
-      ballVelocity: { x: 4, y: 2},
+      ballVelocity: { x: 4, y: 2 },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,
@@ -44,6 +44,42 @@ export class GameRoomService {
     this.playerService.removeFromQueue(player2.id);
     this.gameRooms.set(roomID, newRoom);
     return newRoom;
+  }
+
+  //when a user creates a room and waits for the other user to join
+  createWaitingRoom(roomID: string, player1: Player) {
+    const newRoom: GameRoom = {
+      roomID,
+      players: [player1],
+      ballPosition: {
+        x: 0,
+        y: 0,
+      },
+      worldWidth: player1.worldWidth,
+      worldHeight: player1.worldHeight,
+      ballVelocity: { x: 4, y: 2 },
+      paddleWidth: 0,
+      paddleHeight: 0,
+      ballWidth: 0,
+      gameOver: false,
+      gameStarted: false,
+      increaseSpeed: 0,
+    };
+    player1.gameRoom = roomID;
+    this.gameRooms.set(roomID, newRoom);
+  }
+
+  joinWaitingRoom(roomID: string, player2: Player): GameRoom {
+    const room = this.getGameRoom(roomID);
+    if (room && room.players.length == 1) {
+      room.players.push(player2);
+      if (room.worldWidth > player2.worldHeight) {
+        room.worldWidth = player2.worldWidth;
+        room.worldHeight = player2.worldHeight;
+      }
+      player2.gameRoom = roomID;
+      return room;
+    }
   }
 
   getGameRoom(roomID: string): GameRoom | null {

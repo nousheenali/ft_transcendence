@@ -3,6 +3,7 @@ import { GameGateway } from '../game.gateway';
 import { GameRoom, GameRoomService } from '../game-room/game-room.service';
 import { Player, PlayerService } from '../player/player.service';
 import { GameService } from '../game.service';
+import { GameStatus } from '@prisma/client';
 
 @Injectable()
 export class GameLogicService {
@@ -53,6 +54,7 @@ export class GameLogicService {
       server.to(gm.players[1].id).emit('gameOver', 'Game Over!', winner.name);
       this.gamePrismaService.updateGameEntry(
         gm.roomID,
+        GameStatus.FINISHED,
         winner.name,
         loser.name,
       );
@@ -94,14 +96,19 @@ export class GameLogicService {
   }
 
   updateResults(server: any, gm: GameRoom, otherPlyr: Player, player: Player) {
-    let winner = '';
-    let loser = '';
+    let winner = null;
+    let loser = null;
     //there will be winner /loser only if the game started
     if (gm.gameStarted) {
       winner = otherPlyr.name;
       loser = player.name;
     }
-    this.gamePrismaService.updateGameEntry(gm.roomID, winner, loser);
+    this.gamePrismaService.updateGameEntry(
+      gm.roomID,
+      GameStatus.FINISHED,
+      winner,
+      loser,
+    );
     server
       .to(otherPlyr.id)
       .emit('gameOver', 'Other Player Disconnected', winner);

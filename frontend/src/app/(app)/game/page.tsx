@@ -5,13 +5,17 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getUserData } from "../../../../services/user";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 
 export default function GamePage() {
   const { ballColor, racketColor, bgColor } = useGameColor(); //for the time being im saving the colors in the context store
 
   const { data: session } = useSession();
   const login: string = session?.user.login!;
-  const joinQueue = true;
+  const joinQueue = false;
+  const inviter = "nali";
+  const invitee = "sfathima";
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   var socket: Socket;
@@ -20,13 +24,19 @@ export default function GamePage() {
   //   if (confirm("Your current game progress will be lost!")) {
   //     socket.disconnect();
   //     window.removeEventListener("popstate", () => confirmBack(socket));
-  //   } 
+  //   }
   //   else
   //     return false;
   // };
 
   useEffect(() => {
     async function initPhaser() {
+      const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
+      if (userData.inAGame) {
+        alert("You are already in a game");
+        router.back();
+        return;
+      }
       const Phaser = await import("phaser");
       const { default: Preloader } = await import(
         "../../../components/GameComponents/Scenes/Preloader"
@@ -46,15 +56,35 @@ export default function GamePage() {
             width: (window.innerWidth * 2) / 3,
             height: (window.innerHeight * 2) / 3,
           });
-        } else {
-          const userID = "tester";
-          socket.emit("matchFriend", {
-            friendName: userID,
-            width: (window.innerWidth * 2) / 3,
-            height: (window.innerHeight * 2) / 3,
-          });
-          //create a room with the user id
         }
+        else {
+          if (login === inviter)
+          {
+            socket.emit("createWaitingRoom", {
+              friendName: invitee,
+              width: (window.innerWidth * 2) / 3,
+              height: (window.innerHeight * 2) / 3,
+            });
+          }
+          else if (login === invitee)
+          {
+            const accept = true;
+            socket.emit("joinWaitingRoom", {
+              inviter: inviter,
+              width: (window.innerWidth * 2) / 3,
+              height: (window.innerHeight * 2) / 3,
+              accept: accept,
+            });
+          }
+        }
+        socket.on("invitationDeclined", () => {
+          setTimeout(() => {
+            alert("Other player Declined your invitation");
+            socket.disconnect();
+            router.push("/");
+          }, 3000);
+
+        })
         socket.on("matched", (data) => {
           const loadingText = document.getElementById("loading-text");
           loadingText?.remove();
@@ -64,7 +94,7 @@ export default function GamePage() {
             parent: "game-container",
             width: data.worldWidth,
             height: data.worldHeight,
-            // backgroundColor: bgColor, // "#87CEEB",//, "#60b922", "#44b18b",
+            // backgroundColor: bgColor//"#6495ED",//"#87CEEB",//, "#60b922", "#44b18b",
             scene: [Preloader, Game],
             physics: {
               default: "arcade",
