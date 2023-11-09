@@ -42,7 +42,7 @@ const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
         {userData ? (
           <UserProfileSide
             image={userData?.avatar || "image"}
-            name={userData?.login || "name"}
+            name={userData?.name || "name"}
           />
         ) : (
           <UserProfileSide image="load" name="load" />

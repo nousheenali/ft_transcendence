@@ -28,12 +28,14 @@ export interface userInformation {
   createdAt: string;
   updatedAt: string;
   isOnline: boolean;
+  inAGame: boolean;
   score: number;
 }
 
-export interface ProfilePageProps {
-  userInfo: userInformation;
-}
+export interface ProfilePageProps{
+  login: string | undefined;
+};
+
 
 export interface friendRelationDto {
   userLogin: string;

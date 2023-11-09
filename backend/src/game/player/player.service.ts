@@ -79,12 +79,6 @@ export class PlayerService {
     }
     return null;
   }
-
-  // updateGame(player: string, position: number) {
-  //   this.gameState.updatePlayerPosition(player, position);
-  //   this.gameState.detectCollisions();
-  //   this.gameState.updateScores();
-  // }
 }
 
 export type Player = {
