@@ -1,43 +1,12 @@
 'use client';
-import { cookies } from 'next/headers';
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { redirect } from 'next/navigation';
 import { jwtDecode } from 'jwt-decode';
-import { API_ENDPOINTS } from '../../config/apiEndpoints';
-import { getUserData } from '../../services/user';
-import { userInformation } from '@/components/Profile/types';
+import { redirect, useRouter } from 'next/navigation';
 
-// type AuthContextType = {
-//   payload: TokenPayload;
-//   setPayload: React.Dispatch<React.SetStateAction<TokenPayload>>;
-//   user: User;
-//   setUser: React.Dispatch<React.SetStateAction<User>>;
-// };
-
-export type TokenPayload = {
-  sub: string;
-  email: string;
-  login: string;
-  mfaEnabled: boolean;
-  mfaAuthenticated: boolean;
-  iat: number;
-  exp: number;
-};
-
-// export type User = {
-//   id: string;
-//   login: string;
-//   displayName: string;
-//   email: string;
-//   avatar: string;
-//   status: 'online' | 'offline' | 'away' | 'busy';
-//   victory: number;
-//   mfaEnabled: boolean;
-// };
-
-type AuthProviderProps = {
-  children: React.ReactNode;
+type AuthContextType = {
+  user: any; // Adjust the type accordingly
+  setUser: React.Dispatch<React.SetStateAction<any>>; // Adjust the type accordingly
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -45,52 +14,40 @@ export const AuthContext = createContext<AuthContextType>(
 );
 
 export function signOut() {
-  Cookies.remove('accesssToken');
+  Cookies.remove('accessToken');
   Cookies.remove('refreshToken');
   redirect('/login');
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [payload, setPayload] = useState<TokenPayload>({} as TokenPayload);
-  const [user, setUser] = useState<userInformation>({} as userInformation);
-
-  const verifyToken = useCallback((token: string) => {
+export const AuthProvider: React.FC = ({ children }) => {
+  const [user, setUser] = useState({});
+  const router = useRouter();
+  const verifyToken = useCallback((token) => {
     try {
-      const decoded = jwtDecode(token); // Add your verification logic as necessary
+      const decoded = jwtDecode(token);
       return decoded;
     } catch (error) {
-      console.error('Token verification error:', error);
-      return {};
+      return null;
+      // console.log('error', error);
+      // signOut();
     }
   }, []);
 
   useEffect(() => {
     const accessToken = Cookies.get('accessToken');
-    console.log('accesssToken :::::::', accessToken);
     const decodedToken = verifyToken(accessToken);
-    console.log(decodedToken);
+
     if (accessToken && decodedToken) {
-      // const userData =
-
-      // const getUser = async () => {
-      //   await getUserData(decodedToken.login!, API_ENDPOINTS.getUserbyLogin);
-      // };
-
       setUser(decodedToken);
     } else {
-      signOut();
+      router.push('/login');
+      // signOut();
+      // Handle the case when there's no accessToken or it's not valid
     }
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{
-        payload,
-        setPayload,
-        user,
-        setUser,
-      }}
-    >
+    <AuthContext.Provider value={{ user, setUser }}>
       {children}
     </AuthContext.Provider>
   );

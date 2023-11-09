@@ -27,7 +27,7 @@ export default function Home() {
     <>
       <main className="w-screen h-full flex flex-col items-center gap-20 mt-32">
         <Title />
-        <a href={`${process.env.NESTJS_URL}/auth/intra`}>
+        <a href={`${process.env.NEXT_PUBLIC_SOCKET_URL}/auth/intra`}>
           <button>
             <IntraAuthButton />
           </button>

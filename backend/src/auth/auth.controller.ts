@@ -18,8 +18,10 @@ export class AuthController {
     try {
       const user = req.user as User;
       await this.jwtAuthService.removeTokensFromCookie(res);
+      console.log('Redireting');
       return await this.authService.logout(user, res);
     } catch (error) {
+      console.log(error);
       return error;
     }
   }

@@ -30,22 +30,86 @@ export class UserService {
 
   /* Get user information using uuid */
   async getUserById(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-    });
-    return user;
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Unable to get user by ID');
+    }
   }
 
   /* Get user information using login */
   async getUserByLogin(login: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        login: login,
-      },
-    });
-    return user;
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          login: login,
+        },
+      });
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Unable to get user by Login');
+    }
+  }
+
+  async updateUserScore(login: string, score: number, win: boolean) {
+    const user = await this.getUserByLogin(login);
+    if (!user) throw new NotFoundException('User Id does not exist');
+
+    try {
+      var newScore = 0;
+      //if user score is zero nothing will be deducted on losing the a game
+      if (!(score == -1 && user.score == 0)) newScore = user.score + score;
+      if (win) {
+        await this.prisma.user.updateMany({
+          where: {
+            login: login,
+          },
+          data: {
+            score: newScore,
+            wins: {
+              increment: 1, // Increment the wins by 1
+            },
+          },
+        });
+      } else {
+        await this.prisma.user.updateMany({
+          where: {
+            login: login,
+          },
+          data: {
+            score: newScore,
+            losses: {
+              increment: 1, // Increment the losses by 1
+            },
+          },
+        });
+      }
+    } catch (error) {
+      throw new BadRequestException('Unable to update User Score');
+    }
+  }
+
+  async updateUserGameStatus(login: string, status: boolean) {
+    const user = await this.getUserByLogin(login);
+    if (!user) throw new NotFoundException('User Id does not exist');
+
+    try {
+      await this.prisma.user.updateMany({
+        where: {
+          login: login,
+        },
+        data: {
+          inAGame: status,
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException('Unable to update User Status');
+    }
   }
 
 

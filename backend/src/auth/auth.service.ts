@@ -8,7 +8,6 @@ export class AuthService {
   constructor(private usersService: UserService) {}
   async logout(user: User, res: Response) {
     await this.usersService.update(user.login, { refreshToken: null });
-    res.redirect(`localhost:3000/login`);
+    res.redirect('http://localhost:3000/login');
   }
 }
-

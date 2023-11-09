@@ -18,13 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>
+        {/* <Providers> */}
           <Background />
           <MainLayout>
             {children}
             <ToastContainer position="top-right" />
           </MainLayout>
-        </Providers>
+        {/* </Providers> */}
       </body>
     </html>
   );

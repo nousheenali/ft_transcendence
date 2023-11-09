@@ -144,8 +144,8 @@ export default function MenuSideBar() {
           </li>
         </Link>
 
-        <Link
-          href={`${process.env.NESTJS_URL}/auth/logout`}
+        <a
+          href={`${process.env.NEXT_PUBLIC_SOCKET_URL}/auth/logout`}
           // onClick={() =>
           //   // signOut({ callbackUrl: "http://localhost:3000/login" })
           // }
@@ -162,7 +162,7 @@ export default function MenuSideBar() {
               Logout
             </h1>
           </li>
-        </Link>
+        </a>
       </ul>
     </>
   );
