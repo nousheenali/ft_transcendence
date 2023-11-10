@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import Table from "cli-table3";
+import chalk from 'chalk';
+import Table from 'cli-table3';
 import { Socket } from 'socket.io';
 import { Room, RoomType } from './types';
 import { Injectable } from '@nestjs/common';
@@ -55,13 +55,6 @@ export class RoomsService {
   }
 
   // =================================================================================================
-  /**
-   * =================================================================================================
-   * TODO:
-   * =======
-   *   ❂➤ Need to be fixed and refactored
-   * =================================================================================================
-   */
   joinRoom(
     roomName: string,
     userName: string,
@@ -70,15 +63,14 @@ export class RoomsService {
   ) {
     if (this.isRoomExist(roomName, roomType)) {
       const room = this.getRoom(roomName, roomType);
-      if (room.users.indexOf(userName) === -1) {
-        socket.join(roomName);
+      socket.join(roomName);
+      if (room.users.indexOf(userName) === -1)
         room.users.push(userName);
-      }
     } else {
       this.createRoom(roomName, userName, roomType);
       socket.join(roomName);
     }
-    console.log('User: [' + userName + '] joined room: [' + roomName + ']');
+    return this.getRoom(roomName, roomType);
   }
 
   // =================================================================================================
@@ -152,7 +144,7 @@ export class RoomsService {
         chalk.yellow('Room Users'),
       ],
     });
-  
+
     this.channelRooms.forEach((room) => {
       channelTable.push([
         chalk.blue(room.name),
@@ -160,7 +152,7 @@ export class RoomsService {
         chalk.green(room.users.join(', ')),
       ]);
     });
-  
+
     const userTable = new Table({
       head: [
         chalk.cyan('Room Name'),
@@ -168,7 +160,7 @@ export class RoomsService {
         chalk.cyan('Room Users'),
       ],
     });
-  
+
     this.userRooms.forEach((room) => {
       userTable.push([
         chalk.blue(room.name),
@@ -176,10 +168,10 @@ export class RoomsService {
         chalk.green(room.users.join(', ')),
       ]);
     });
-  
+
     console.log(chalk.green('👇 Channels Rooms 👇'));
     console.log(channelTable.toString());
-  
+
     console.log(chalk.green('👇 Users Rooms 👇'));
     console.log(userTable.toString());
   }

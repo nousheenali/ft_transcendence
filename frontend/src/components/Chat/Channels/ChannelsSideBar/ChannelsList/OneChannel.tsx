@@ -18,7 +18,7 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
   return (
     <div
       className="flex flex-row  gap-5 pr-2"
-      // onClick={() => socket.emit("LeaveChannel", socket, channel.channelName, channel.channelType)}
+      onClick={() => socket.emit("LeaveChannel", socket, channel.channelName, channel.channelType)}
     >
       <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
         <Image

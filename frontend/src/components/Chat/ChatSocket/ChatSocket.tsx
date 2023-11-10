@@ -59,10 +59,10 @@ export default function ChatSocket({
         setReceivedMessage(data);
         // console.log("Message received from a ", data.sender, " : => ", data);
       });
-      socket.on("JoinChannel", (joinMessage: string) => {
+      socket.on("JoinChannel", (data) => {
         // TODO // Display message on the channel that new user joined.
         setUserJoined(true);
-        console.log(joinMessage);
+        console.log(data);
       });
       socket.on("ServerToChannel", (data: SocketMessage) => {
         console.log("Message received from a channel: => ", data);
@@ -77,6 +77,7 @@ export default function ChatSocket({
         socket.off("connect");
         socket.off("reconnect");
         socket.off("disconnect");
+        socket.off("JoinChannel");
         socket.off("ServerToClient");
         socket.off("ServerToChannel");
       };

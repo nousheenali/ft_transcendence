@@ -1,3 +1,16 @@
+/**
+ * TODO:
+ * ===========
+ * # when the socket connect to the server:
+ * 1. check if the user any relation with any channel, if so, join the user to the all the channels
+ *   that he has relation with.
+ *
+ * # When the socket disconnect from the server:
+ * 1. check if the user has any relation with any channel, if so, leave the user from all the channels rooms
+ *  that he has relation with.
+ * ===============================================================================================================
+ */
+
 import {
   MessageBody,
   SubscribeMessage,
@@ -80,9 +93,7 @@ export class ChatGateway
     );
 
     // ❂➤ Joining the user's room at connection
-    // this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
-    this.roomsService.createRoom(userLogin, userLogin, 'USERS');
-    this.server.in(client.id).socketsJoin(userLogin);
+    this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
   }
 
   /** ================================================================================================
@@ -146,10 +157,11 @@ export class ChatGateway
       return;
     }
     const userLogin = client.handshake.query.userLogin as string;
+    if (userLogin === undefined || userLogin === null) return;
+
+    // ❂➤ get the user and the channel from the database
     const user = await this.userService.getUserByLogin(userLogin);
     const channel = await this.channelService.getChannelByName(channelName);
-    if (userLogin === undefined || userLogin === null) return;
-    // get the channel room
 
     // =====================  testing  =====================
     this.roomsService.createRoom(
@@ -159,21 +171,29 @@ export class ChatGateway
     );
     // =====================  testing  =====================
 
+    // ❂➤ get the channel room
     const channelRoom = this.roomsService.getRoom(
       channelName + channelType,
       'CHANNELS',
     );
-    // join the user socket to the channel room
-    this.server.in(client.id).socketsJoin(channelRoom.name);
-    // send message to channel that user has joined
-    this.server
-      .to(channelRoom.name)
-      .emit('JoinChannel', `${userLogin} has joined the channel`);
-    // create channel relation
+
+    // ❂➤join the user socket to the channel room
+    this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
+
+    // ❂➤ Emitting the message to the channel room to notify the other users that the user has joined the channel
+    this.server.to(channelRoom.name).emit('JoinChannel', {
+      newJoiner: user.name,
+      channelName: channelName,
+      channelType: channelType,
+    });
+
+    // ❂➤ create channel relation in the database between the user and the channel
     await this.channelRelationService.createChannelRelation({
       userId: user.id,
       channelId: channel.id,
     });
+
+
     this.roomsService.printAllRooms();
   }
 
@@ -185,7 +205,7 @@ export class ChatGateway
    * 3. remove the user from the channel's members by deleting the channel relation in the database
    *   between the user and the channel.
    */
-  @SubscribeMessage('JoinChannel')
+  @SubscribeMessage('LeaveChannel')
   async leaveChannel() {}
 
   /** ================================================================================================
