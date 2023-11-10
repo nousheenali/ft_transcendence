@@ -4,10 +4,10 @@ import { activateClickedChannel } from "@/context/store";
 import { ChannelUserProps } from "@/components/Chat/types";
 import { getChannelUsersData } from "../../../../../../../services/channels";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
-import ChannelUser from "@/components/Chat/Channels/ChannelsSideBar/ChannelUsers/User/ChannelUser";
+import User from "@/components/Chat/Channels/ChannelsSideBar/ChannelUsers/User/User";
 
 //============================================================================================//
-export default function ChannelsUsersBox() {
+export default function UsersList() {
   const session = useSession();
   const [isLoading, setLoading] = useState(true);
   const { activeChannel } = activateClickedChannel();
@@ -50,7 +50,7 @@ export default function ChannelsUsersBox() {
     <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
       {channelUsers.map((OneUser, index) => (
         <div key={index}>
-          <ChannelUser key={index} user={OneUser} />
+          <User key={index} user={OneUser} />
         </div>
       ))}
     </div>

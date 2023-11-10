@@ -52,6 +52,43 @@ export class ChannelService {
     });
     return `This action removes all channelMember and channels`;
   }
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get all channels in the server according to the type of the channel.
+   * ├    this method will pull all the channels from the database, then compare them with the channels
+   * ├    that the user have relation with, and filter the channels that the user dont have any relation
+   * ├    with.
+   * └── 🌼
+   * @returns all the private channels in the server according to the type of the channel.
+   * @throws BadRequestException if there is an error while getting the private channels
+   * ==============================================================================================*/
+  async getAllChannels(channelType: Type, login: string) {
+    try {
+      let joinedChannels = [];
+      if (channelType == Type.PRIVATE)
+        joinedChannels = await this.getUserPrivateChannels(login);
+      else if (channelType == Type.PUBLIC)
+        joinedChannels = await this.getUserPublicChannels(login);
+
+      const allChannels = await this.prisma.channel.findMany({
+        where: {
+          channelType: channelType,
+        },
+        select: {
+          channelName: true,
+          channelType: true,
+        },
+      });
+      const channels = allChannels.filter((channel) => {
+        return !joinedChannels.some((joinedChannel) => {
+          return joinedChannel.channelName == channel.channelName;
+        });
+      });
+      return channels;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET ALL CHANNELS');
+    }
+  }
 
   /**==============================================================================================
    * ╭── 🌼
@@ -61,7 +98,7 @@ export class ChannelService {
    * @returns all the private channels that the user have relation with.
    * @throws BadRequestException if there is an error while getting the private channels
    * ==============================================================================================*/
-  async getPrivateChannels(login: string) {
+  async getUserPrivateChannels(login: string) {
     try {
       const privateChannels = [];
       const data = await this.prisma.user.findMany({
@@ -103,7 +140,7 @@ export class ChannelService {
    * @returns all the public channels that the user have relation with.
    * @throws BadRequestException if there is an error while getting the public channels
    * ==============================================================================================*/
-  async getPublicChannels(login: string) {
+  async getUserPublicChannels(login: string) {
     try {
       const publicChannels = [];
       const data = await this.prisma.user.findMany({
@@ -136,7 +173,7 @@ export class ChannelService {
       throw new BadRequestException('UNABLE TO GET PUBLIC CHANNELS');
     }
   }
-  
+
   /**==============================================================================================
    * ╭── 🌼
    * ├ 👇 get channel users according to the channel name

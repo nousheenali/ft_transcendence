@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MdGroupOff } from "react-icons/md";
 import { ChannelsProps } from "../../../types";
 import { activateClickedChannel } from "@/context/store";
 
@@ -47,48 +48,7 @@ export default function ChannelChatBoxHeader() {
               width={45}
               height={45}
             />
-            <span className=" text-main-text text-sm font-light">JOIN</span>
-          </button>
-          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
-            <Image
-              alt={"invite"}
-              src={"./chat/user-cirlce-add.svg"}
-              width={45}
-              height={45}
-            />
             <span className=" text-main-text text-sm font-light">INVITE</span>
-          </button>
-          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
-            <Image
-              alt={"invite"}
-              src={"./chat/Sign_out_circle_duotone_line.svg"}
-              width={45}
-              height={45}
-            />
-            <span className=" text-main-text text-sm font-light">LEAVE</span>
-          </button>
-        </div>
-      )}
-
-      {activeChannel.channelType === "PUBLIC" && (
-        <div className="flex flex-row  gap-5 px-3">
-          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
-            <Image
-              alt={"invite"}
-              src={"./chat/user-cirlce-add.svg"}
-              width={45}
-              height={45}
-            />
-            <span className=" text-main-text text-sm font-light">JOIN</span>
-          </button>
-          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
-            <Image
-              alt={"invite"}
-              src={"./chat/Sign_out_circle_duotone_line.svg"}
-              width={45}
-              height={45}
-            />
-            <span className=" text-main-text text-sm font-light">LEAVE</span>
           </button>
         </div>
       )}

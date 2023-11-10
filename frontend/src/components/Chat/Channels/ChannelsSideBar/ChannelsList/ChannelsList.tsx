@@ -12,29 +12,54 @@ export default function Channels() {
   const [isLoading, setLoading] = useState(true);
   const { activeChannelType } = useChannelType();
   const { setActiveChannel } = activateClickedChannel();
-  const [publicChannels, setPublicChannels] = useState<ChannelsProps[]>([]);
-  const [privateChannels, setPrivateChannels] = useState<ChannelsProps[]>([]);
+
+  const [allPrivateChannels, setAllPrivateChannels] = useState<ChannelsProps[]>(
+    []
+  );
+  const [allPublicChannels, setAllPublicChannels] = useState<ChannelsProps[]>(
+    []
+  );
+  const [joinedPublicChannels, setJoinedPublicChannels] = useState<
+    ChannelsProps[]
+  >([]);
+  const [joinedPrivateChannels, setJoinedPrivateChannels] = useState<
+    ChannelsProps[]
+  >([]);
 
   /**
    **╭── 🌼
-   **├ 👇 Fetch the private and public channels data from the database
+   **├ 👇 Fetch the all the private and public channels data from the database
+   **├ 👇 Fetch the private and public channels that the user joined to.
    **└── 🌼
    **/
 
   useEffect(() => {
     if (session && session?.data?.user.login) {
       const fetchData = async () => {
+        const allPrivate: ChannelsProps[] = await getChannelsData(
+          session?.data?.user.login!,
+          API_ENDPOINTS.allChannels + "PRIVATE/"
+        );
+        setAllPrivateChannels(allPrivate);
+
+        const allPublic: ChannelsProps[] = await getChannelsData(
+          session?.data?.user.login!,
+          API_ENDPOINTS.allChannels + "PUBLIC/"
+        );
+        setAllPublicChannels(allPublic);
+
         const publicChannels: ChannelsProps[] = await getChannelsData(
           session?.data?.user.login!,
           API_ENDPOINTS.publicChannels
         );
-        setPublicChannels(publicChannels);
+        setJoinedPublicChannels(publicChannels);
 
         const privateChannels: ChannelsProps[] = await getChannelsData(
           session?.data?.user.login!,
           API_ENDPOINTS.privateChannels
         );
-        setPrivateChannels(privateChannels);
+        setJoinedPrivateChannels(privateChannels);
+
         setLoading(false);
       };
       fetchData();
@@ -43,16 +68,19 @@ export default function Channels() {
 
   /**
    **╭── 🌼
-   **├ 👇 Activate the chat with the first channel in the list according to the channel type
+   **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
    **└── 🌼
    **/
   useEffect(() => {
-    if (activeChannelType === "Public" && publicChannels.length > 0) {
-      setActiveChannel(publicChannels[0]);
-    } else if (activeChannelType === "Private" && privateChannels.length > 0) {
-      setActiveChannel(privateChannels[0]);
+    if (activeChannelType === "Public" && joinedPublicChannels.length > 0) {
+      setActiveChannel(joinedPublicChannels[0]);
+    } else if (
+      activeChannelType === "Private" &&
+      joinedPrivateChannels.length > 0
+    ) {
+      setActiveChannel(joinedPrivateChannels[0]);
     } else setActiveChannel({} as ChannelsProps);
-  }, [privateChannels, publicChannels, activeChannelType]);
+  }, [joinedPrivateChannels, joinedPublicChannels, activeChannelType]);
 
   /**
    **╭── 🌼
@@ -66,24 +94,59 @@ export default function Channels() {
 
   /**
    **╭── 🌼
-   **├ 👇 Render the channels list according to the channel type
+   **├ 👇 Render the channels list according to the channel type:
+   **├   First : render the channels that the user joined to.
+   **├   Second: render the channels that the user didn't join to
    **└── 🌼
    **/
-
+  let key = 0;
   return (
-    <div className="flex flex-col w-full h-2/4 px-1 rounded-xl overflow-y-scroll scroll-container">
-      {activeChannelType === "Private" &&
-        privateChannels.map((OneChannel: ChannelsProps, index: integer) => (
-          <div key={index}>
-            <Channel key={index} channel={OneChannel} />
-          </div>
-        ))}
-      {activeChannelType === "Public" &&
-        publicChannels.map((OneChannel: ChannelsProps, index: integer) => (
-          <div key={index}>
-            <Channel key={index} channel={OneChannel} />
-          </div>
-        ))}
+    <div className="flex flex-col items-center w-full h-2/4 px-1 rounded-xl overflow-y-scroll scroll-container">
+      {/* ================================================================================== */}
+      {/* Render the Private channels:
+       *  First render the private channels that the user joined.
+       *  Then render the private channels that the user did not join yet.
+       */}
+      {activeChannelType === "Private"
+        ? joinedPrivateChannels
+            .map((OneChannel: ChannelsProps, index: integer) => (
+              <div key={key++}>
+                <Channel channel={OneChannel} isJoined={true} />
+              </div>
+            ))
+            .concat(<hr className="w-3/4 py-2 border-line-break" key={key++} />)
+            .concat(
+              allPrivateChannels
+                .filter(
+                  (OneChannel: ChannelsProps) =>
+                    !joinedPrivateChannels.includes(OneChannel)
+                )
+                .map((OneChannel: ChannelsProps, index: integer) => (
+                  <div key={key++} >
+                    <Channel channel={OneChannel} isJoined={false} />
+                  </div>
+                ))
+            )
+        : joinedPublicChannels
+            .map((OneChannel: ChannelsProps, index: integer) => (
+              <div key={key++}>
+                <Channel channel={OneChannel} isJoined={true} />
+              </div>
+            ))
+            .concat(<hr className="w-3/4 py-2 border-line-break" key={key++} />)
+            .concat(
+              allPublicChannels
+                .filter(
+                  (OneChannel: ChannelsProps) =>
+                    !joinedPublicChannels.includes(OneChannel)
+                )
+                .map((OneChannel: ChannelsProps, index: integer) => (
+                  <div key={key++}>
+                    <Channel channel={OneChannel} isJoined={false} />
+                  </div>
+                ))
+            )}
+      {/* ================================================================================== */}
     </div>
   );
 }

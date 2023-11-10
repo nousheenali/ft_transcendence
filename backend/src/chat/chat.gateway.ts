@@ -28,7 +28,7 @@ import {
  * │ type UserLoginType = string | string[];
  * │ export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
  * │ ========================================================================================== **
- * │ ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
+ * │ ❂➤ cors: { origin: 'http://10.11.3.8:3000' }: This is to allow
  * │ the frontend to connect to the websocket server
  * ╰──========================================================================================= **/
 
@@ -66,10 +66,10 @@ export class ChatGateway
 
     if (userLogin === undefined || userLogin === null) return;
     this.logger.log(
-      chalk.blue("New Client connected: id => ") +
-      chalk.magenta(client.id) +
-      chalk.blue(" name => ") +
-      chalk.green(userLogin)
+      chalk.blue('New Client connected: id => ') +
+        chalk.magenta(client.id) +
+        chalk.blue(' name => ') +
+        chalk.green(userLogin),
     );
 
     // ❂➤ Joining the user's room at connection
@@ -112,9 +112,8 @@ export class ChatGateway
         chalk.greenBright('Message To: ') +
           chalk.blue(`[${data.receiver}]`) +
           chalk.white(' => ') +
-          chalk.yellow(data.message)
+          chalk.yellow(data.message),
       );
-
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
@@ -170,7 +169,7 @@ export class ChatGateway
     this.logger.log(
       chalk.red('The client with id of ') +
         chalk.magenta(client.id) +
-        chalk.red(' has been disconnected!!')
+        chalk.red(' has been disconnected!!'),
     );
     this.chatService.updateUserStatus(userLogin, false);
   }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { Type } from '@prisma/client';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { HttpException, HttpStatus } from '@nestjs/common'; // 👈 Import HttpException and HttpStatus
@@ -39,10 +40,32 @@ export class ChannelController {
    * @throws HttpStatus.INTERNAL_SERVER_ERROR if there is an error while getting the private channels
    * @example GET /channels/private-channels/:login
    * ==============================================================================================*/
+  @Get('/all-channels/:channelType/:login')
+  GetALLChannels(@Param('channelType') channelType: Type ,@Param('login') login: string) {
+    try {
+      return this.channelService.getAllChannels(channelType, login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting All Channels of the server ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**===============================================================================================
+   * ╭── 🌼
+   * ├ 👇 get all private channels according to the user login
+   * └── 🌼
+   * @param login: string, the login of the user
+   * @returns all the private channels that the user have relation with.
+   * @throws HttpException if there is an error while getting the private channels
+   * @throws HttpStatus.INTERNAL_SERVER_ERROR if there is an error while getting the private channels
+   * @example GET /channels/private-channels/:login
+   * ==============================================================================================*/
   @Get('/private-channels/:login')
   GetPrivateChannels(@Param('login') login: string) {
     try {
-      return this.channelService.getPrivateChannels(login);
+      return this.channelService.getUserPrivateChannels(login);
     } catch (error) {
       throw new HttpException(
         'Unexpected Error while Getting The Private Channels of the user ',
@@ -64,7 +87,7 @@ export class ChannelController {
   @Get('/public-channels/:login')
   GetPublicChannels(@Param('login') login: string) {
     try {
-      return this.channelService.getPublicChannels(login);
+      return this.channelService.getUserPublicChannels(login);
     } catch (error) {
       throw new HttpException(
         'Unexpected Error while Getting The Public Channels of the server ',

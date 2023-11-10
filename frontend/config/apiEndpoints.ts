@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
    * ├ 👇 All the Channels endpoints
    * └── 🌼
    **/
+  allChannels: "/channels/all-channels/",
   privateChannels: "/channels/private-channels/",
   publicChannels: "/channels/public-channels/",
   channelUsers: "/channels/users/",
