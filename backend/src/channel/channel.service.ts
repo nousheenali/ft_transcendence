@@ -1,13 +1,14 @@
 import { Type } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { hashPassword } from 'src/utils/bcrypt';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
 export class ChannelService {
   constructor(private prisma: PrismaService) {} // 👈 Inject PrismaService class into the constructor.
 
-  /** -------------------------------------------------------------------------------------------
+  /*
    * create channel and add the creator as a member
    */
   async createChannel(CreateChannelDto) {
@@ -20,11 +21,13 @@ export class ChannelService {
     if (find_duplicate.length > 0) {
       throw new BadRequestException('Channel already exists');
     }
+    const password = hashPassword(CreateChannelDto.channelPassword);
     const create_channel = await this.prisma.channel.create({
       data: {
         channelName: CreateChannelDto.channelName,
         channelType: CreateChannelDto.channelType,
         createdBy: CreateChannelDto.createdBy,
+        channelPassword: password,
       },
     });
     const res = await this.prisma.channelRelation.create({
@@ -36,7 +39,7 @@ export class ChannelService {
     return create_channel;
   }
 
-  /** -------------------------------------------------------------------------------------------
+  /*
    * delete channel
    */
   async DeleteChannel(id: string) {

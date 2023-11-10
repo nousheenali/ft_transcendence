@@ -7,14 +7,16 @@ import UsersList from "./ChannelUsers/UsersList/UsersList";
 import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeader";
 import ChannelsSearch from "@/components/Chat/Channels/ChannelsSideBar/ChannelsSearch/ChannelsSearch";
 import PublicPrivateBtn from "@/components/Chat/Channels/ChannelsSideBar/PublicPrivateBtn/PublicPrivateBtn";
+import { useSession } from "next-auth/react";
 
 //============================================================================================//
 export default function ChannelsSideBar() {
+  const session = useSession();
   return (
     <>
       <ChannelsSearch />
       <PublicPrivateBtn />
-      <CreateChannel />
+      <CreateChannel userName={session?.data?.user?.name!} />
       <hr className="w-3/4 border-line-break" />
       <ChannelsList />
       <ChannelUserHeader />

@@ -27,6 +27,8 @@ export const API_ENDPOINTS = {
   publicChannels: "/channels/public-channels/",
   channelUsers: "/channels/users/",
   channelMessages: "/channels/messages/",
+  createChannel: "/channels/create/",
+  deleteChannel: "/channels/delete/",
 
   /**==============================================================================================
    * ╭── 🌼

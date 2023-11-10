@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  HttpException,
+  HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Type } from '@prisma/client';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
 import { CreateChannelDto } from './dto/create-channel.dto';
-import { HttpException, HttpStatus } from '@nestjs/common'; // 👈 Import HttpException and HttpStatus
 
 @Controller('channels')
 export class ChannelController {
@@ -19,8 +22,16 @@ export class ChannelController {
   //================================================================================================
   // 👇 create a new channel
   @Post('/create')
+  @UsePipes(ValidationPipe)
   CreateChannel(@Body() CreateChannelDto: CreateChannelDto) {
-    return this.channelService.createChannel(CreateChannelDto);
+    try {
+      return this.channelService.createChannel(CreateChannelDto);
+    } catch (error) {
+      throw new HttpException(
+        'Error while Creating Channel.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   //================================================================================================
@@ -84,6 +95,8 @@ export class ChannelController {
    * @throws HttpStatus.INTERNAL_SERVER_ERROR if there is an error while getting the public channels
    * @example GET /channels/public-channels/:login
    * ==============================================================================================*/
+  //================================================================================================
+  // 👇 get all channels according to the channel type
   @Get('/public-channels/:login')
   GetPublicChannels(@Param('login') login: string) {
     try {

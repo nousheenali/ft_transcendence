@@ -4,6 +4,9 @@ import { Socket, io } from "socket.io-client";
 
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 
+/**
+ * a global store for the game elements
+ */
 type TGameColor = {
   ballColor: string;
   racketColor: string;
@@ -26,6 +29,30 @@ export const useGameColor = create<TGameColor>((set) => ({
 
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 
+export type ChannelType = "PUBLIC" | "PRIVATE";
+
+type TchannelInfo = {
+  channelName: string;
+  channelType: ChannelType;
+  channelPassword?: string;
+
+  setChannelName: (channelName: string) => void;
+  setChannelType: (channelType: ChannelType) => void;
+  setChannelPassword: (channelPassword: string) => void;
+};
+
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
+export const useChannelInfo = create<TchannelInfo>((set) => ({
+  channelName: "",
+  channelType: "PUBLIC",
+  channelPassword: "",
+
+  setChannelName: (channelName: string) => set({ channelName }),
+  setChannelType: (channelType: ChannelType) => set({ channelType }),
+  setChannelPassword: (channelPassword: string) => set({ channelPassword }),
+}));
+
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 type SocketState = {
   currentSocket: Socket;
   setCurrentSocket: (socket: any) => void;
@@ -169,4 +196,44 @@ export const useChannelUsersState = create<ChannelUsersState>((set) => ({
   setUserJoined: (userJoined: boolean) => set({ userJoined }),
 }));
 
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle if some user joined the channel globaly
+ * └── 🌼
+ **/
+type NewChannelType = {
+  newChannel: boolean;
+  setNewChannel: (newChannel: boolean) => void;
+};
+
+export const useNewChanelState = create<NewChannelType>((set) => ({
+  newChannel: false,
+  setNewChannel: (newChannel: boolean) => set({ newChannel }),
+}));
+
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * a global store for the create channel state 
+ * (channel name and password)
+ */
+
+type TCreateChannelValidate = {
+  validPassword: boolean;
+  validChannelName: boolean;
+
+  setValidPassword: (validInput: boolean) => void;
+  setValidChannelName: (validInput: boolean) => void;
+};
+
+export const useChannelCreateValidate = create<TCreateChannelValidate>(
+  (set) => ({
+    validPassword: false,
+    validChannelName: false,
+
+    setValidPassword: (validPassword: boolean) => set({ validPassword }),
+    setValidChannelName: (validChannelName: boolean) =>
+      set({ validChannelName }),
+  })
+);

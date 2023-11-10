@@ -22,15 +22,13 @@ async function main() {
   await prisma.friendRelation.deleteMany();
   await prisma.messages.deleteMany();
   await prisma.notification.deleteMany();
-  await prisma.user.deleteMany(
-    {
-      where: {
-        login: {
-          not: 'yonamog2',
-        },
+  await prisma.user.deleteMany({
+    where: {
+      login: {
+        not: 'yonamog2',
       },
     },
-  );
+  });
 
   //================================================================================================================
   const gabdoush = await prisma.user.create({
@@ -173,7 +171,7 @@ async function main() {
 
   // Create friend relation between the users and gabdoush.
   await createFriendRelation(users, gabdoush);
-  
+
   // Send messages to gabdoush from all users.
   await sendMessagesToGabdoush(users, gabdoush);
   await sendMessagesToGabdoush(users, gabdoush);

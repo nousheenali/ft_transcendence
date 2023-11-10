@@ -7,13 +7,15 @@ export default class Preloader extends Scene {
   }
 
   preload() {
-    this.load.image("ball", "/GameAssets/green_ball.png");
-    this.load.image("paddle", "/GameAssets/green_paddle.png");
-    this.load.image("logo", "/GameAssets/game_logo.png");
-    this.load.image("play", "/GameAssets/play_button.png");
+    this.load.image("ball", "/gameAssets/ball.png");
+    this.load.image("paddle", "/gameAssets/paddle1.png");
+    this.load.image("logo", "/gameAssets/game_logo.png");
+    this.load.image("play", "/gameAssets/play_button.png");
+    this.load.image("player1keys", "/gameAssets/keys1.png");
+    this.load.image("player2keys", "/gameAssets/keys2.png");
   }
 
   create() {
-    this.scene.start('menu')
+    this.scene.start('game')
   }
 }

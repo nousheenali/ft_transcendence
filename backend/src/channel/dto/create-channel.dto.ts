@@ -1,25 +1,39 @@
-
-import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsDate, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsInt,
+  IsDate,
+  IsOptional,
+  IsString,
+  Contains,
+  IsNotEmpty,
+  Length,
+  Matches,
+} from 'class-validator';
 
 /**
  * The data transfer object (DTO) that represents the data sent to create a new channel relation.
  */
 
 enum Type {
-    PUBLIC,
-    PRIVATE
+  PUBLIC,
+  PRIVATE,
 }
 
 export class CreateChannelDto {
-    @ApiProperty()
-    channelName: string | null;
+  @ApiProperty()
+  @IsNotEmpty({ message: 'channelName must not be empty' })
+  @Matches(/^[a-zA-Z0-9]+$/, {
+    message: 'channelName must contain only letters and numbers',
+  })
+  @Length(4, 20, { message: 'channelName must be between 4 and 20 characters' })
+  channelName: string;
 
-    @ApiProperty()
-    channelType: Type;
+  @ApiProperty()
+  channelType: Type;
 
-    @ApiProperty()
-    @IsOptional()
-    createdBy: number;
+  @ApiProperty()
+  createdBy: string;
 
+  @ApiProperty()
+  channelPassword: string | null;
 }

@@ -39,12 +39,16 @@ export class UserMessagesService {
   //===============================================================================
   /* Helper function to get the user using login */
   async getUserIdByLogin(login: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        login: login,
-      },
-    });
-    return user.id;
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          login: login,
+        },
+      });
+      return user.id;
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
   }
 
   //===============================================================================

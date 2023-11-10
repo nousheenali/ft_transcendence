@@ -4,7 +4,7 @@ import { ChannelsProps } from "../../../types";
 import React, { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelsData } from "../../../../../../services/channels";
-import { useChannelType, activateClickedChannel, useChannelUsersState } from "@/context/store";
+import { useChannelType, activateClickedChannel, useChannelUsersState, useNewChanelState } from "@/context/store";
 /**============================================================================================*/
 
 export default function Channels() {
@@ -13,6 +13,7 @@ export default function Channels() {
   const { activeChannelType } = useChannelType();
   const { setActiveChannel } = activateClickedChannel();
   const { userJoined, setUserJoined } = useChannelUsersState();
+  const { newChannel, setNewChannel } = useNewChanelState();
 
   const [allPrivateChannels, setAllPrivateChannels] = useState<ChannelsProps[]>(
     []
@@ -63,10 +64,11 @@ export default function Channels() {
 
         setLoading(false);
         if (userJoined) setUserJoined(false);
+        if (newChannel) setNewChannel(false);
       };
       fetchData();
     }
-  }, [session, userJoined]);
+  }, [session, userJoined, newChannel]);
 
   /**
    **╭── 🌼
