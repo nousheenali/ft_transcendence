@@ -1,22 +1,23 @@
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useContext } from "react";
 import { activateClickedFriend } from "@/context/store";
 import { userInformation } from "@/components/Profile/types";
 import { getFriendsData } from "../../../../../../../services/friends";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import Friend from "@/components/Chat/Friends/FriendsSideBar/FriendsList/Friend/Friend";
+import { AuthContext } from '@/context/AuthProvider';
 
 export default function FriendsBox() {
-  const session = useSession();
+  const { user } = useContext(AuthContext);
   const [friends, setFriends] = useState<userInformation[]>([]);
   const [isLoading, setLoading] = useState(true);
   const {setActiveFriend} = activateClickedFriend();
 
   useEffect(() => {
-    if (session && session?.data?.user.login) {
+    if (user && user.login) {
       const fetchData = async () => {
         const friendsData: userInformation[] = await getFriendsData(
-          session?.data?.user.login!,
+          user.login!,
           API_ENDPOINTS.getAllFriends
         );
         setFriends(friendsData);
@@ -25,7 +26,7 @@ export default function FriendsBox() {
       fetchData();
     }
     if (friends.length > 0) setActiveFriend(friends[0].login);
-  }, [session]);
+  }, [user]);
   
   
   if (isLoading)

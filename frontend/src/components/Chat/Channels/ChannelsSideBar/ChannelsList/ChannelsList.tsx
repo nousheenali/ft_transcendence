@@ -1,14 +1,16 @@
 import Channel from "./OneChannel";
-import { useSession } from "next-auth/react";
+
 import { ChannelsProps } from "../../../types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect,useContext, useState } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelsData } from "../../../../../../services/channels";
 import { useChannelType, activateClickedChannel, useChannelUsersState, useNewChanelState } from "@/context/store";
+import { AuthContext } from "@/context/AuthProvider";
 /**============================================================================================*/
 
 export default function Channels() {
-  const session = useSession();
+
+  const {user} = useContext(AuthContext)
   const [isLoading, setLoading] = useState(true);
   const { activeChannelType } = useChannelType();
   const { setActiveChannel } = activateClickedChannel();
@@ -36,28 +38,28 @@ export default function Channels() {
    **/
 
   useEffect(() => {
-    if (session && session?.data?.user.login) {
+    if (user && user.login) {
       const fetchData = async () => {
         const allPrivate: ChannelsProps[] = await getChannelsData(
-          session?.data?.user.login!,
+      user.login!,
           API_ENDPOINTS.allChannels + "PRIVATE/"
         );
         setAllPrivateChannels(allPrivate);
 
         const allPublic: ChannelsProps[] = await getChannelsData(
-          session?.data?.user.login!,
+         user.login!,
           API_ENDPOINTS.allChannels + "PUBLIC/"
         );
         setAllPublicChannels(allPublic);
 
         const publicChannels: ChannelsProps[] = await getChannelsData(
-          session?.data?.user.login!,
+         user.login!,
           API_ENDPOINTS.publicChannels
         );
         setJoinedPublicChannels(publicChannels);
 
         const privateChannels: ChannelsProps[] = await getChannelsData(
-          session?.data?.user.login!,
+         user.login!,
           API_ENDPOINTS.privateChannels
         );
         setJoinedPrivateChannels(privateChannels);
@@ -68,7 +70,7 @@ export default function Channels() {
       };
       fetchData();
     }
-  }, [session, userJoined, newChannel]);
+  }, [user, userJoined, newChannel]);
 
   /**
    **╭── 🌼

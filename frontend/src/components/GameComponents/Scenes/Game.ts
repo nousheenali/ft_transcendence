@@ -19,6 +19,8 @@ export default class Game extends Scene {
   private p1_score = 0;
   private line!: Phaser.GameObjects.Line;
   private circle!: Phaser.GameObjects.Arc;
+  private hitAudio!: Phaser.Sound.BaseSound;
+  private gameOver!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "game" });
@@ -58,7 +60,7 @@ export default class Game extends Scene {
       ballWidth: ballWidth,
     });
 
-    this.paddlespeed = 350;
+    this.paddlespeed = 380;
 
     this.physics.add.collider(this.ball, this.player[0]);
     this.physics.add.collider(this.ball, this.player[1]);
@@ -67,6 +69,9 @@ export default class Game extends Scene {
     this.keys.w = gameObj.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.keys.s = gameObj.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.keys.space = gameObj.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    this.hitAudio = this.sound.add("ballHit");
+    this.gameOver = this.sound.add("gameOver");
   }
 
   update() {
@@ -89,6 +94,10 @@ export default class Game extends Scene {
     }
 
     if (this.gameStarted) {
+      this.socket.on("hitPaddle", () => {
+        this.hitAudio.play();
+      });
+
       this.socket
         .emit("ballPosition", { roomID: this.roomID })
         .on(
@@ -160,6 +169,7 @@ export default class Game extends Scene {
     }
     // On game Over
     this.socket.on("gameOver", (message: string, name: string) => {
+      this.gameOver.play()
       this.line.setVisible(false);
       this.circle.setVisible(false);
       this.ball.setVisible(false);
@@ -171,9 +181,10 @@ export default class Game extends Scene {
       this.messages[1].setVisible(false);
       this.controls[0].setVisible(false);
       this.controls[1].setVisible(false);
-      if(this.gameStarted)
+      if (this.gameStarted)
         this.results[2].setText(name + " WINS!").setVisible(true);
       const router = this.registry.get("router");
+      this.socket.disconnect();
       setTimeout(() => {
         this.game.destroy(true);
         router.push("/");

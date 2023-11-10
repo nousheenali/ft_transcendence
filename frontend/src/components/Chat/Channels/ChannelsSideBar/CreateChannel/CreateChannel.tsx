@@ -13,7 +13,7 @@ import { CreateChannelItems } from "@/components/Chat/ChannelsSideBar/CreateChan
 
 
 
-export default function CreateChannel({ userName }: { userName: string }) {
+export default function CreateChannel({ userLogin }: { userLogin: string }) {
   const { socket } = useChatSocket();
   const { setNewChannel } = useNewChanelState();
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -33,7 +33,7 @@ export default function CreateChannel({ userName }: { userName: string }) {
   useEffect(() => {
     const getUserData = async () => {
       const userData: userInformation = await getData(
-        userName,
+        userLogin,
         API_ENDPOINTS.getUserbyLogin
       );
       setData(userData.id);

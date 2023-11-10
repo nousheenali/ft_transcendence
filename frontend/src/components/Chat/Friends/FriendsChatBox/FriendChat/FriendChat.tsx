@@ -1,8 +1,8 @@
-import { useSession } from "next-auth/react";
+
 import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 // import { getUserData } from "../../../../../../services/user";
 // import { userInformation } from "@/components/Profile/types";
 import { getMessages } from "../../../../../../services/messages";
@@ -12,9 +12,12 @@ import {
   useSentMessageState,
   useReceivedMessageState,
 } from "../../../../../context/store";
+import { AuthContext } from "@/context/AuthProvider";
+
+
 
 export default function FriendChat() {
-  const session = useSession();
+  const { user } = useContext(AuthContext);
   const { sentMessage } = useSentMessageState();
   const { activeFriend } = activateClickedFriend();
   // const [user, setUser] = useState<userInformation>();
@@ -57,14 +60,14 @@ export default function FriendChat() {
     if (activeFriend) {
       const fetchData = async () => {
         const chat: MessagesProps[] = await getMessages(
-          session?.data?.user.login!,
+          user.login!,
           API_ENDPOINTS.userMessages + activeFriend + "/"
         );
         setFriendChat(chat);
       };
       fetchData();
     }
-  }, [session, activeFriend, sentMessage, receivedMessage]);
+  }, [user, activeFriend, sentMessage, receivedMessage]);
 
   /**
    **╭── 🌼
@@ -82,8 +85,8 @@ export default function FriendChat() {
     <div className="overflow-y-scroll px-3" ref={chatScrollRef}>
       {friendChat.map((message, index) => {
         if (
-          session?.data?.user.login &&
-          message.sender.login === session?.data?.user.login
+          user.login &&
+          message.sender.login === user.login
         ) {
           return <ReceiverChatBox key={index} message={message} />;
         } else {

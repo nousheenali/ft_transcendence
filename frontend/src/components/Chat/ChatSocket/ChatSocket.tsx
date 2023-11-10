@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { io } from "socket.io-client";
 import { SocketMessage } from "../types";
-import { useSession } from "next-auth/react";
+import { AuthContext } from "@/context/AuthProvider";
 import { useChatSocket, useReceivedMessageState, useChannelUsersState } from "@/context/store";
 /**
  * ================================================================================================
@@ -15,7 +15,7 @@ export default function ChatSocket({
 }: {
   children: React.ReactNode;
 }) {
-  const session = useSession();
+  const { user } = useContext(AuthContext);
   const { socket, setSocket } = useChatSocket();
   const { setReceivedMessage } = useReceivedMessageState();
   const { setUserJoined } = useChannelUsersState();
@@ -26,17 +26,17 @@ export default function ChatSocket({
   useEffect(() => {
     try {
       const chatSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
-        query: { userLogin: session.data?.user.name! },
+        query: { userLogin: user.login },
         autoConnect: false,
       });
-      if (chatSocket && session && session.data?.user.name) {
+      if (chatSocket && user && user.login) {
         setSocket(chatSocket);
         chatSocket.connect();
       }
     } catch (error) {
       console.log(error);
     }
-  }, [session]);
+  }, [user]);
 
   /**
    * ❂➤ This useEffect is used to listen to the events from the server,
@@ -84,7 +84,7 @@ export default function ChatSocket({
     } catch (error) {
       console.log(error);
     }
-  }, [socket, session]);
+  }, [socket, user]);
   return <>{children}</>;
 }
 

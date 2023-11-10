@@ -1,28 +1,32 @@
-import Image from "next/image";
-import { TableCellProps } from "./types";
-import { API_ENDPOINTS } from "../../../config/apiEndpoints";
-import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+import Image from 'next/image';
+import { TableCellProps } from './types';
+import { API_ENDPOINTS } from '../../../config/apiEndpoints';
+
+import { toast } from 'react-toastify';
 import {
   createFriendRelation,
   deleteFriendRelation,
   updateFriendRelation,
-} from "../../../services/friends";
-import { useSocket } from "@/context/store";
+} from '../../../services/friends';
+import { useSocket } from '@/context/store';
+import { useContext } from 'react';
+import { AuthContext } from '@/context/AuthProvider';
+
 const TableCell: React.FC<TableCellProps> = ({
   dataItem,
   login,
   activeButton,
   reloadPageData,
 }) => {
-  const { data: session } = useSession();
+
+  const { user } = useContext(AuthContext);
   const { currentSocket } = useSocket();
 
-  if (typeof dataItem === "string") {
+  if (typeof dataItem === 'string') {
     return <div className="py-2 flex-1 text-center">{dataItem}</div>;
   }
   // checks if there is playerName property in the data item then returns the relevent styles for the cell
-  if ("playerName" in dataItem) {
+  if ('playerName' in dataItem) {
     return (
       <div className="py-2 flex-1 text-center">
         <div className="flex-1 flex items-center justify-center flex-row">
@@ -51,31 +55,31 @@ const TableCell: React.FC<TableCellProps> = ({
     let endpoint;
 
     switch (buttonId) {
-      case "ACCEPT":
+      case 'ACCEPT':
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.acceptFriendRequest;
         break;
-      case "DECLINE":
+      case 'DECLINE':
         action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.declineFriendRequest;
         break;
-      case "ADDFRIEND":
+      case 'ADDFRIEND':
         action = createFriendRelation;
         endpoint = API_ENDPOINTS.sendFriendRequest;
         break;
-      case "CANCEL":
+      case 'CANCEL':
         action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.cancelFriendRequest;
         break;
-      case "BLOCK":
+      case 'BLOCK':
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.blockFriend;
         break;
-      case "UNBLOCK":
+      case 'UNBLOCK':
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.unBlockFriend;
         break;
-      case "UNFRIEND":
+      case 'UNFRIEND':
         action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.deleteFriend;
         break;
@@ -86,7 +90,7 @@ const TableCell: React.FC<TableCellProps> = ({
     if (action && endpoint) {
       try {
         const message = await action(
-          session?.user.login!,
+          user.login!,
           friendLogin,
           endpoint,
           currentSocket

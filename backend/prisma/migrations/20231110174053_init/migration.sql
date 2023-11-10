@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "GameStatus" AS ENUM ('LIVE', 'QUEUED', 'FINISHED');
+CREATE TYPE "GameStatus" AS ENUM ('LIVE', 'WAITING', 'FINISHED');
 
 -- CreateEnum
 CREATE TYPE "Content" AS ENUM ('DirectMessage_Recieved', 'ChannelInvite_Recieved', 'GameInvite_Recieved', 'FriendRequest_Recieved');
@@ -20,8 +20,11 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "isOnline" BOOLEAN NOT NULL DEFAULT true,
+    "refreshToken" TEXT,
+    "inAGame" BOOLEAN NOT NULL DEFAULT false,
     "TFAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "TFAKey" TEXT,
+    "TFAVerified" BOOLEAN NOT NULL DEFAULT false,
     "losses" INTEGER NOT NULL DEFAULT 0,
     "wins" INTEGER NOT NULL DEFAULT 0,
     "score" INTEGER NOT NULL DEFAULT 0,
@@ -32,7 +35,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Game" (
     "id" TEXT NOT NULL,
-    "gameStatus" "GameStatus" NOT NULL DEFAULT 'QUEUED',
+    "gameStatus" "GameStatus" NOT NULL DEFAULT 'LIVE',
     "startTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "winnerId" TEXT,
     "userId" TEXT NOT NULL,

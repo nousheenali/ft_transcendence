@@ -18,11 +18,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isOnline  Boolean  @default(true)
+  refreshToken String?
+  inAGame   Boolean  @default(false)
 
   // Two factor authentication-----------------------------------------
   TFAEnabled Boolean @default(false)
   TFAKey     String?
-
+  TFAVerified Boolean @default(false)
   // Relation to notifications-----------------------------------------
   receiverdNotification Notification[] @relation(name: "receiver")
   sentNotification      Notification[] @relation(name: "sender")
@@ -51,7 +53,7 @@ model User {
 
 model Game {
   id         String     @id @default(uuid())
-  gameStatus GameStatus @default(QUEUED)
+  gameStatus GameStatus @default(LIVE)
   startTime  DateTime   @default(now())
 
   winnerId String?
@@ -65,7 +67,7 @@ model Game {
 
 enum GameStatus {
   LIVE
-  QUEUED
+  WAITING
   FINISHED
 }
 

@@ -11,7 +11,6 @@ type TGameColor = {
   ballColor: string;
   racketColor: string;
   bgColor: string;
-
   setBallColor: (ballColor: string) => void;
   setRacketColor: (racketColor: string) => void;
   setBgColor: (bgColor: string) => void;

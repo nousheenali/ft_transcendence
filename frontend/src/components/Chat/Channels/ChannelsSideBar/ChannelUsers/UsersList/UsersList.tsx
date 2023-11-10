@@ -1,14 +1,15 @@
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+
+import React, { useContext, useEffect, useState } from "react";
 import { activateClickedChannel } from "@/context/store";
 import { ChannelUserProps } from "@/components/Chat/types";
 import { getChannelUsersData } from "../../../../../../../services/channels";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import User from "@/components/Chat/Channels/ChannelsSideBar/ChannelUsers/User/User";
+import { AuthContext } from "@/context/AuthProvider";
 
 //============================================================================================//
 export default function UsersList() {
-  const session = useSession();
+    const {user} = useContext(AuthContext)
   const [isLoading, setLoading] = useState(true);
   const { activeChannel } = activateClickedChannel();
   const [channelUsers, setChannelUsers] = useState<ChannelUserProps[]>([]);
@@ -23,7 +24,7 @@ export default function UsersList() {
     if (activeChannel.channelName) {
       const fetchData = async () => {
         const users: ChannelUserProps[] = await getChannelUsersData(
-          session?.data?.user.login!,
+         user.login!,
           API_ENDPOINTS.channelUsers + activeChannel.channelName + "/"
         );
         setChannelUsers(users);
@@ -31,7 +32,7 @@ export default function UsersList() {
       };
       fetchData();
     }
-  }, [session, activeChannel]);
+  }, [user, activeChannel]);
 
   /**
    **╭── 🌼

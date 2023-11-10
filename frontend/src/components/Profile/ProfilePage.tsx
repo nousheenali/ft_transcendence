@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 
 import ResponsiveTable from "@/components/Table/Table";
@@ -11,7 +11,6 @@ import {
   friendsRequestHeadings,
   pendingRequestHeadings,
 } from "@/data/Table/profileTableHeadings";
-import { ProfilePageProps } from "./types";
 import { generateProfileSearchData } from "@/data/Table/search";
 import { generateProfileBlockedData } from "@/data/Table/blocked";
 import { generateProfileFriendsData } from "@/data/Table/friends";
@@ -20,44 +19,51 @@ import { generatePendingRequestsData } from "@/data/Table/pendingFriendRequests"
 import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ProfilePageProps, userInformation } from "./types";
 
-const ProfilePage: React.FC<ProfilePageProps> = ({
-  userInfo
-}) => {
+import { getUserData } from "../../../services/user";
+import { API_ENDPOINTS } from "../../../config/apiEndpoints";
+import { AuthContext } from "@/context/AuthProvider";
+
+const ProfilePage: React.FC<ProfilePageProps> = () => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
-
-
+  const [userInfo, setUserInfo] = useState<userInformation>();
+  const { user } = useContext(AuthContext);
   let data: TableRowData[];
-  
+
   const fetchTableData = async (buttonId: string) => {
     try {
-      const dataGeneratorMap: any = {
-        friends: generateProfileFriendsData,
-        search: generateProfileSearchData,
-        blocked: generateProfileBlockedData,
-        friendRequests: generateFriendRequestsData,
-        pendingRequests: generatePendingRequestsData,
-      };
-      const dataGenerator = dataGeneratorMap[buttonId];
+      if (user.login) {
+        const userData = await getUserData(user.login, API_ENDPOINTS.getUserbyLogin);
+        if (userData) {
+          setUserInfo(userData);
+          const dataGeneratorMap: any = {
+            friends: generateProfileFriendsData,
+            search: generateProfileSearchData,
+            blocked: generateProfileBlockedData,
+            friendRequests: generateFriendRequestsData,
+            pendingRequests: generatePendingRequestsData,
+          };
+          const dataGenerator = dataGeneratorMap[buttonId];
 
-      if (dataGenerator) {
-        const data = await dataGenerator(userInfo.login);
-        setTableData(data);
-        setIsLoading(false)
+          if (dataGenerator) {
+            const data = await dataGenerator(user.login);
+            setTableData(data);
+            setIsLoading(false);
+          } else throw new Error("Invalid Button Click");
+        }
       }
-      else
-        throw new Error("Invalid Button Click");
     } catch (error: any) {
       toast.error(error.message);
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setIsLoading(true)
-    fetchTableData(activeButton); 
+    setIsLoading(true);
+    fetchTableData(activeButton);
   }, [activeButton]); // fetch data when button clicked
 
   const handleButtonClick = (buttonId: string) => {
@@ -66,9 +72,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
   const renderTable = () => {
     if (isLoading) {
-      return <span className="loading loading-ring loading-lg text-main-yellow"></span>;
-    } 
-    else {
+      return (
+        <span className="loading loading-ring loading-lg text-main-yellow"></span>
+      );
+    } else {
       switch (activeButton) {
         case "friends":
           return (
@@ -145,10 +152,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     <>
       <div className="w-full h-full text-center text-white flex flex-col p-6">
         <ProfileInfo
-          name={userInfo.name}
-          email={userInfo.email}
+          name={userInfo?.name || "name"}
+          email={userInfo?.email || "email"}
           rank="12"
-          avatar={userInfo.avatar}
+          avatar={userInfo?.avatar || "avatar"}
           activeButton={activeButton}
           handleButtonClick={handleButtonClick}
         />

@@ -144,11 +144,11 @@ export default function MenuSideBar() {
           </li>
         </Link>
 
-        <Link
-          href=""
-          onClick={() =>
-            signOut({ callbackUrl: "http://10.11.3.8:3000/login" })
-          }
+        <a
+          href={`${process.env.NEXT_PUBLIC_SOCKET_URL}/auth/logout`}
+          // onClick={() =>
+          //   // signOut({ callbackUrl: "http://localhost:3000/login" })
+          // }
           className={getButtonStyles("/logout") + " mb-10"}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -162,7 +162,7 @@ export default function MenuSideBar() {
               Logout
             </h1>
           </li>
-        </Link>
+        </a>
       </ul>
     </>
   );

@@ -45,7 +45,7 @@ import {
  * │ type UserLoginType = string | string[];
  * │ export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
  * │ ========================================================================================== **
- * │ ❂➤ cors: { origin: 'http://10.11.3.8:3000' }: This is to allow
+ * │ ❂➤ cors: { origin: 'http://localhost:3000' }: This is to allow
  * │ the frontend to connect to the websocket server
  * ╰──========================================================================================= **/
 
@@ -163,8 +163,7 @@ export class ChatGateway
    * 3. add the user to the channel's members by creating a channel relation in the database between
    *    the user and the channel.
    */
-  
-  
+
   @SubscribeMessage('JoinChannel')
   async joinChannel(
     @ConnectedSocket() client: Socket,

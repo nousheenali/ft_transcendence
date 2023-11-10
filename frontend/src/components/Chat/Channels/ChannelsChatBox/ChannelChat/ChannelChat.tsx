@@ -1,15 +1,15 @@
 import Sender from "./Senders/Senders";
 import Receiver from "./Receiver/Receiver";
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { ChannelsProps, MessagesProps } from "../../../types";
 import { activateClickedChannel } from "@/context/store";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelMessagesData } from "../../../../../../services/channels";
+import { AuthContext } from "@/context/AuthProvider";
 
 /**============================================================================================*/
 const extractMessagesFromChannel = (channel: ChannelsProps) => {
-  const session = useSession();
+  const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState<MessagesProps[]>([]);
 
   /**
@@ -22,14 +22,14 @@ const extractMessagesFromChannel = (channel: ChannelsProps) => {
     if (channel.channelName) {
       const fetchData = async () => {
         const channelMessages: MessagesProps[] = await getChannelMessagesData(
-          session?.data?.user.login!,
+          user.login,
           API_ENDPOINTS.channelMessages + channel.channelName + "/"
         );
         setMessages(channelMessages);
       };
       fetchData();
     }
-  }, [session, channel]);
+  }, [user, channel]);
 
   if (messages === undefined) return undefined;
   messages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
@@ -38,7 +38,7 @@ const extractMessagesFromChannel = (channel: ChannelsProps) => {
 
 /**============================================================================================*/
 export default function ChannelChat() {
-  const session = useSession();
+  const { user } = useContext(AuthContext);
   const chatScrollRef = useRef<HTMLDivElement>();
   const { activeChannel } = activateClickedChannel();
   const channelMessages = extractMessagesFromChannel(activeChannel);
@@ -63,7 +63,7 @@ export default function ChannelChat() {
   return (
     <div className="overflow-y-scroll px-3">
       {channelMessages.map((message, index) => {
-        if (channelMessages[index].sender.login === session.data?.user.login!)
+        if (channelMessages[index].sender.login === user.login!)
           return <Receiver key={index} message={message} />;
         else return <Sender key={index} message={message} />;
       })}

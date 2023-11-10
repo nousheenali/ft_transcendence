@@ -1,22 +1,22 @@
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MessagesProps } from "@/components/Chat/types";
 import { getMessages } from "../../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import { useReceivedMessageState } from "../../../../../../context/store";
 import Message from "@/components/Chat/Friends/FriendsSideBar/LatesMessages/Message/Message";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function MessagesList() {
-  const session = useSession();
+  const { user } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const { receivedMessage } = useReceivedMessageState();
   const [latestMessages, setLatestMessages] = useState<MessagesProps[]>([]);
 
   useEffect(() => {
-    if (session && session?.data?.user.login) {
+    if (user && user.login) {
       const fetchData = async () => {
         const messages: MessagesProps[] = await getMessages(
-          session?.data?.user.login!,
+          user.login!,
           API_ENDPOINTS.userLatestMessages
         );
         setLatestMessages(messages);
@@ -24,7 +24,7 @@ export default function MessagesList() {
       };
       fetchData();
     }
-  }, [session, receivedMessage]);
+  }, [user, receivedMessage]);
 
   if (isLoading)
     return (

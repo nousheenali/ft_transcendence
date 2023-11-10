@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import Table from 'cli-table3';
+var Table = require('cli-table3');
 import { Socket } from 'socket.io';
 import { Room, RoomType } from './types';
 import { Injectable } from '@nestjs/common';

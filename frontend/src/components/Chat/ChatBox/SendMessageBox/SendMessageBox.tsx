@@ -2,12 +2,12 @@ import Image from "next/image";
 import DOMPurify from "dompurify";
 import Picker from "@emoji-mart/react";
 import { toast } from "react-toastify";
-import { useSession } from "next-auth/react";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { userInformation } from "@/components/Profile/types";
 import { useChatSocket, useSentMessageState } from "@/context/store";
 import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
+import { AuthContext } from '@/context/AuthProvider';
 
 //========================================================================
 export default function SendMessageBox({
@@ -15,7 +15,7 @@ export default function SendMessageBox({
 }: {
   receiver: userInformation | ChannelsProps;
 }) {
-  const session = useSession();
+  const { user } = useContext(AuthContext);
   const { socket } = useChatSocket();
   const { setSentMessage } = useSentMessageState();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -92,11 +92,11 @@ export default function SendMessageBox({
     }
 
     // Send the message to the a user or a channel
-    if ("login" in receiver && socket && session?.data?.user?.name) {
+    if ("login" in receiver && socket && user.login) {
       // It's a user
       let data: SocketMessage = {
         socketId: socket.id,
-        sender: session?.data?.user?.name,
+        sender: user.login,
         receiver: receiver.login,
         message: trimmedMessage,
       };
@@ -106,12 +106,12 @@ export default function SendMessageBox({
     else if (
       "channelName" in receiver &&
       socket &&
-      session?.data?.user?.name
+      user.login
     ) {
       // It's a channel
       let data: SocketMessage = {
         socketId: socket.id,
-        sender: session?.data?.user?.name,
+        sender: user.login,
         channel: receiver.channelName,
         channelType: receiver.channelType,
         message: trimmedMessage,
@@ -130,14 +130,14 @@ export default function SendMessageBox({
 
   useEffect(() => {
     const listener = (event: any) => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         event.preventDefault();
         sendMessage();
       }
     };
-    document.addEventListener("keydown", listener);
+    document.addEventListener('keydown', listener);
     return () => {
-      document.removeEventListener("keydown", listener);
+      document.removeEventListener('keydown', listener);
     };
   }, [currentMessage]);
 
