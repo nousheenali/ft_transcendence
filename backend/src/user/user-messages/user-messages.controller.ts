@@ -16,24 +16,6 @@ export class UserMessagesController {
   constructor(private readonly userMessagesService: UserMessagesService) {}
 
   //================================================================================================
-  // @Post('createMessage')
-  // async createUserMessage(@Body() message: CreateUserMessageDto ) {
-  //   try {
-  //     const { senderId, receiverId, content } = message;
-  //     return this.userMessagesService.createUserMessage(
-  //       senderId,
-  //       receiverId,
-  //       content,
-  //     );
-  //   } catch (error) {
-  //     throw new HttpException(
-  //       'Unexpected Error while Creating user message',
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //   }
-  // }
-
-  //================================================================================================
   // 👇 get the user latest messages from other users.
   @Get('/latest-messages/:login/')
   async getUserLatestMessages(@Param('login') login: string) {

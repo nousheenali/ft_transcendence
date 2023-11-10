@@ -120,7 +120,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const player2: Player = this.playerService.getPlayerByName(data.inviter);
       const roomID = player2.gameRoom;
       if (!data.accept) {
-        console.log("INVITATION DECLINED")
+        console.log('INVITATION DECLINED');
         player.socketInfo.disconnect();
         this.server.to(player2.socketInfo.id).emit('invitationDeclined');
         return;
