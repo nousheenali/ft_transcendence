@@ -1,7 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import React from "react";
+import Image from "next/image";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { ChannelsProps } from "../../../types";
 import { activateClickedChannel, useChatSocket } from "@/context/store";
 
@@ -44,12 +46,13 @@ const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
   return (
     <div
       className="flex flex-row  gap-5 pr-2"
-      onClick={() =>
+      onClick={() => {
         socket.emit("JoinChannel", {
           channelName: channel.channelName,
           channelType: channel.channelType,
-        })
-      }
+        });
+        toast.success(`You have joined ${channel.channelName} channel`);
+      }}
     >
       <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
         <Image

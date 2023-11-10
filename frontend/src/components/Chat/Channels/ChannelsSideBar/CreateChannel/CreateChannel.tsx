@@ -3,7 +3,7 @@ import ChannelCreateBtn from "./ChannelCreateBtn/ChannelCreateBtn";
 import { Button, Modal } from "react-daisyui";
 import ChannelNameTextBox from "./ChannelNameTextBox/ChannelNameTextBox";
 import ChannelTypeDD from "./ChannelTypeDD/ChannelTypeDD";
-import { useChannelCreateValidate, useChannelInfo, useNewChanelState } from "@/context/store";
+import { useChannelCreateValidate, useChannelInfo, useNewChanelState, useChatSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { userInformation } from "@/components/Profile/types";
@@ -14,6 +14,7 @@ import { CreateChannelItems } from "@/components/Chat/ChannelsSideBar/CreateChan
 
 
 export default function CreateChannel({ userName }: { userName: string }) {
+  const { socket } = useChatSocket();
   const { setNewChannel } = useNewChanelState();
   const modalRef = useRef<HTMLDialogElement>(null);
   const [data, setData] = useState<string>("");
@@ -71,8 +72,16 @@ export default function CreateChannel({ userName }: { userName: string }) {
       setValidChannelName(false);
       setValidPassword(false);
       modalRef.current?.close();
-      setNewChannel(true);
       
+      
+      // Create the channel room
+      socket.emit("JoinChannel", {
+        channelName: newChannel.channelName,
+        channelType: newChannel.channelType,
+      });
+      
+      // glopal value to re-render the channel list
+      setNewChannel(true);
       toast.success("Channel created successfully");
     } catch (error: any) {
       setChannelName("");

@@ -103,22 +103,22 @@ export default function SendMessageBox({
       socket.emit("ClientToServer", data);
       setSentMessage(data);
     }
-    // else if (
-    //   "channelName" in receiver &&
-    //   socket &&
-    //   session?.data?.user?.name
-    // ) {
-    //   // It's a channel
-    //   let data: SocketMessage = {
-    //     socketId: socket.id,
-    //     sender: session?.data?.user?.name,
-    //     channel: receiver.channelName,
-    //     channelType: receiver.channelType,
-    //     message: trimmedMessage,
-    //   };
-    //   socket.emit("ChannelToServer", data);
-    //   setSentMessage(data);
-    // }
+    else if (
+      "channelName" in receiver &&
+      socket &&
+      session?.data?.user?.name
+    ) {
+      // It's a channel
+      let data: SocketMessage = {
+        socketId: socket.id,
+        sender: session?.data?.user?.name,
+        channel: receiver.channelName,
+        channelType: receiver.channelType,
+        message: trimmedMessage,
+      };
+      socket.emit("ChannelToServer", data);
+      setSentMessage(data);
+    }
     setCurrentMessage("");
   };
 

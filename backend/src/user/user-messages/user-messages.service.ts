@@ -6,11 +6,15 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ChannelService } from 'src/channel/channel.service';
 import { CreateUserMessageDto } from './dto/create-user-message.dto';
 
 @Injectable()
 export class UserMessagesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private channelService: ChannelService
+    ) {}
 
   //===============================================================================
   @UsePipes(
@@ -36,6 +40,31 @@ export class UserMessagesService {
       throw new BadRequestException('Unable to create message');
     }
   }
+
+    //===============================================================================
+    @UsePipes(
+      new ValidationPipe({
+        transform: true,
+        enableDebugMessages: true,
+        skipUndefinedProperties: false,
+      }),
+    )
+    async createChannelMessage(data: CreateUserMessageDto) {
+      try {
+        const senderId = await this.getUserIdByLogin(data.sender);
+        const channel = await this.channelService.getChannelByName(data.channel);
+        const message = await this.prisma.messages.create({
+          data: {
+            senderId: senderId,
+            channelId: channel.id,
+            content: data.message,
+          },
+        });
+        return message;
+      } catch (error) {
+        throw new BadRequestException('Unable to create message');
+      }
+    }
   //===============================================================================
   /* Helper function to get the user using login */
   async getUserIdByLogin(login: string) {

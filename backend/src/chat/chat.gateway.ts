@@ -79,7 +79,6 @@ export class ChatGateway
    * ================================================================================================*/
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
-    
     // ❂➤ Extracting the user login from the handshake's query
     const userLogin = client.handshake.query.userLogin as string;
 
@@ -102,13 +101,15 @@ export class ChatGateway
 
     // ❂➤ Get all the channels that the user has relation with
     const user = await this.userService.getUserByLogin(userLogin);
-    const joinedChannels = await this.channelRelationService.findUserChannels(user.id);
+    const joinedChannels = await this.channelRelationService.findUserChannels(
+      user.id,
+    );
     const channelsRooms = joinedChannels.map((channel) => {
       return channel.channel.channelName + channel.channel.channelType;
     });
-    
+
     // ❂➤ Joining the user to all the channels rooms again
-    channelsRooms.forEach(room => {
+    channelsRooms.forEach((room) => {
       this.roomsService.joinRoom(room, userLogin, client, 'CHANNELS');
     });
   }
@@ -162,6 +163,8 @@ export class ChatGateway
    * 3. add the user to the channel's members by creating a channel relation in the database between
    *    the user and the channel.
    */
+  
+  
   @SubscribeMessage('JoinChannel')
   async joinChannel(
     @ConnectedSocket() client: Socket,
@@ -210,7 +213,6 @@ export class ChatGateway
       channelId: channel.id,
     });
 
-
     this.roomsService.printAllRooms();
   }
 
@@ -251,17 +253,17 @@ export class ChatGateway
     if (userLogin === undefined) return;
     const roomName = data.channel + data.channelType;
 
-    // ❂➤ Creating the channel room if it doesn't exist and joining the user to it
-    const channelRoom = this.roomsService.createRoom(
-      roomName,
-      userLogin,
-      'CHANNELS',
-    );
-    this.server.in(client.id).socketsJoin(roomName);
-    // this.roomsService.joinRoom(roomName, userLogin, client, 'CHANNELS');
+    // ❂➤ Get the channel room, then join the user to the channel room
+    const channelRoom = this.roomsService.getRoom(roomName, 'CHANNELS');
+    this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
 
     // ❂➤ Emitting the message to the channel room
     this.server.to(channelRoom.name).emit('ServerToChannel', data);
+
+    // ❂➤ Creating the message in the database
+    await this.userMessagesService.createChannelMessage(data);
+
+    // ❂➤ Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
     console.log('Message To: [' + data.channel + '] => ' + data.message);
   }
