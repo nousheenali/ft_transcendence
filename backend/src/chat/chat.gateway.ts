@@ -79,12 +79,17 @@ export class ChatGateway
    * ================================================================================================*/
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
+    
     // ❂➤ Extracting the user login from the handshake's query
     const userLogin = client.handshake.query.userLogin as string;
+
     // ❂➤ changing the user status in the database
     this.chatService.updateUserStatus(userLogin, true);
 
+    // ❂➤ If the user login is undefined or null, return
     if (userLogin === undefined || userLogin === null) return;
+
+    // ❂➤ Logging the new connection
     this.logger.log(
       chalk.blue('New Client connected: id => ') +
         chalk.magenta(client.id) +
@@ -94,6 +99,18 @@ export class ChatGateway
 
     // ❂➤ Joining the user's room at connection
     this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
+
+    // ❂➤ Get all the channels that the user has relation with
+    const user = await this.userService.getUserByLogin(userLogin);
+    const joinedChannels = await this.channelRelationService.findUserChannels(user.id);
+    const channelsRooms = joinedChannels.map((channel) => {
+      return channel.channel.channelName + channel.channel.channelType;
+    });
+    
+    // ❂➤ Joining the user to all the channels rooms again
+    channelsRooms.forEach(room => {
+      this.roomsService.joinRoom(room, userLogin, client, 'CHANNELS');
+    });
   }
 
   /** ================================================================================================
