@@ -199,7 +199,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
               gm.players[0].position.y + gm.paddleHeight / 2 + buffer &&
             gm.ballVelocity.x > 0 // This is included so that the ball doesn't get stuck inside the paddle
           ) {
-            this.gameLogicService.emitHitPaddle(gm, this.server);
+            this.gameLogicService.emitHitPaddle(gm, this.server, true);
             gm.ballVelocity.x *= -1;
             gm.ballPosition.y += gm.ballVelocity.y;
           }
@@ -213,7 +213,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
               gm.players[1].position.y + gm.paddleHeight / 2 + buffer &&
             gm.ballVelocity.x < 0
           ) {
-            this.gameLogicService.emitHitPaddle(gm, this.server);
+            this.gameLogicService.emitHitPaddle(gm, this.server, true);
             gm.ballVelocity.x *= -1;
             gm.ballPosition.y += gm.ballVelocity.y;
           }
@@ -221,7 +221,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         // Handle wall collisions
         if (gm.ballPosition.x < buffer) {
-          this.gameLogicService.emitHitPaddle(gm, this.server);
+          this.gameLogicService.emitHitPaddle(gm, this.server, false);
           gm.ballVelocity.x *= -1; // Reverse the x velocity for left and right wall
           gm.players[0].score += 1;
           if (gm.players[0].score === 7)
@@ -233,7 +233,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             );
         }
         if (gm.ballPosition.x > gm.worldWidth - buffer) {
-          this.gameLogicService.emitHitPaddle(gm, this.server);
+          this.gameLogicService.emitHitPaddle(gm, this.server, false);
           gm.ballVelocity.x *= -1;
           gm.players[1].score += 1;
           if (gm.players[1].score === 7)
@@ -248,7 +248,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           gm.ballPosition.y < buffer ||
           gm.ballPosition.y > gm.worldHeight - buffer
         ) {
-          this.gameLogicService.emitHitPaddle(gm, this.server);
+          this.gameLogicService.emitHitPaddle(gm, this.server, false);
           gm.ballVelocity.y *= -1; // Reverse the y velocity for top and bottom walls
         }
 

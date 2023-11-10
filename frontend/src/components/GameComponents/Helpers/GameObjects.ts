@@ -119,7 +119,4 @@ export default class GameObjects {
       .setColor(fontColor);
   }
 
-  // addKey(key: number) {
-  //   return this.scene.input.keyboard.addKey(key);
-  // }
 }

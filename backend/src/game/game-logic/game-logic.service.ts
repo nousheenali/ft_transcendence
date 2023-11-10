@@ -5,7 +5,7 @@ import { PlayerService } from '../player/player.service';
 import { GameService } from '../game.service';
 import { GameStatus } from '@prisma/client';
 import { Server } from 'socket.io';
-import { GameRoom, Player, UpdateSpritePositions } from '../types';
+import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions } from '../types';
 
 @Injectable()
 export class GameLogicService {
@@ -49,16 +49,23 @@ export class GameLogicService {
     gm.ballPosition.y += gm.ballVelocity.y;
   }
 
-  emitHitPaddle(gm: GameRoom, server: Server) {
-    server.to(gm.players[0].id).emit('hitPaddle');
-    server.to(gm.players[1].id).emit('hitPaddle');
+  emitHitPaddle(gm: GameRoom, server: Server, surface: boolean) {
+    //surface: shows which surface was hit (false-wall, true-paddle)
+    server.to(gm.players[0].id).emit('hitPaddle', surface);
+    server.to(gm.players[1].id).emit('hitPaddle', surface);
   }
 
   emitGameOver(gm: GameRoom, server: Server, winner: Player, loser: Player) {
     if (gm.players[0].score === 7 || gm.players[1].score === 7) {
       gm.gameOver = true;
-      server.to(gm.players[0].id).emit('gameOver', 'Game Over!', winner.name);
-      server.to(gm.players[1].id).emit('gameOver', 'Game Over!', winner.name);
+      const data: GameOver = {
+        message: 'Game Over!',
+        name: winner.name,
+        p0_score: gm.players[0].score,
+        p1_score: gm.players[1].score,
+      };
+      server.to(gm.players[0].id).emit('gameOver', data);
+      server.to(gm.players[1].id).emit('gameOver', data);
       this.gamePrismaService.updateGameEntry(
         gm.roomID,
         GameStatus.FINISHED,
@@ -72,22 +79,13 @@ export class GameLogicService {
   }
 
   emitBallPosition(gm: GameRoom, server: Server) {
-    server
-      .to(gm.players[0].id)
-      .emit(
-        'updateBallPosition',
-        gm.ballPosition,
-        gm.players[0].score,
-        gm.players[1].score,
-      );
-    server
-      .to(gm.players[1].id)
-      .emit(
-        'updateBallPosition',
-        gm.ballPosition,
-        gm.players[0].score,
-        gm.players[1].score,
-      );
+    const data: BallPosition = {
+      position: gm.ballPosition,
+      p0_score: gm.players[0].score,
+      p1_score: gm.players[1].score,
+    };
+    server.to(gm.players[0].id).emit('updateBallPosition', data);
+    server.to(gm.players[1].id).emit('updateBallPosition', data);
   }
 
   increaseBallSpeed(gm: GameRoom) {
