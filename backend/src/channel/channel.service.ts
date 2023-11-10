@@ -52,6 +52,23 @@ export class ChannelService {
     });
     return `This action removes all channelMember and channels`;
   }
+
+
+  /**==============================================================================================*/
+  async getChannelByName(channelName: string) {
+    try {
+      const channel = await this.prisma.channel.findUnique({
+        where: {
+          channelName: channelName,
+        },
+      });
+      return channel;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET CHANNEL');
+    }
+  }
+  
+  
   /**==============================================================================================
    * ╭── 🌼
    * ├ 👇 get all channels in the server according to the type of the channel.

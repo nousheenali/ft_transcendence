@@ -154,4 +154,19 @@ export const useSentMessageState = create<SentMessageState>((set) => ({
   setSentMessage: (message: SocketMessage) => set({ sentMessage: message }),
 }));
 
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle if some user joined the channel globaly
+ * └── 🌼
+ **/
+type ChannelUsersState = {
+  userJoined: boolean;
+  setUserJoined: (userJoined: boolean) => void;
+};
+
+export const useChannelUsersState = create<ChannelUsersState>((set) => ({
+  userJoined: false,
+  setUserJoined: (userJoined: boolean) => set({ userJoined }),
+}));
+
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/

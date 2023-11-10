@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { SocketMessage } from "../types";
 import { useSession } from "next-auth/react";
-import { useChatSocket, useReceivedMessageState } from "@/context/store";
+import { useChatSocket, useReceivedMessageState, useChannelUsersState } from "@/context/store";
 /**
  * ================================================================================================
  * ❂➤ ChatSocket: initialize the socket connection with the server.
@@ -18,6 +18,7 @@ export default function ChatSocket({
   const session = useSession();
   const { socket, setSocket } = useChatSocket();
   const { setReceivedMessage } = useReceivedMessageState();
+  const { setUserJoined } = useChannelUsersState();
   /**
    * ❂➤ This useEffect is used to initialize the socket connection with the server,
    * without any dependency, so it will be called only once.
@@ -57,6 +58,11 @@ export default function ChatSocket({
       socket.on("ServerToClient", (data: SocketMessage) => {
         setReceivedMessage(data);
         // console.log("Message received from a ", data.sender, " : => ", data);
+      });
+      socket.on("JoinChannel", (joinMessage: string) => {
+        // TODO // Display message on the channel that new user joined.
+        setUserJoined(true);
+        console.log(joinMessage);
       });
       socket.on("ServerToChannel", (data: SocketMessage) => {
         console.log("Message received from a channel: => ", data);

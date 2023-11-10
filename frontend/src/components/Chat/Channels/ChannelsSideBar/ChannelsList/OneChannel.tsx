@@ -3,7 +3,67 @@
 import Image from "next/image";
 import React from "react";
 import { ChannelsProps } from "../../../types";
-import { activateClickedChannel } from "@/context/store";
+import { activateClickedChannel, useChatSocket } from "@/context/store";
+
+/** ======================================================================================================= */
+/**
+ **╭── 🌼
+ **├ 👇 pressing the button will leave the channel, by deleting the relation between the user and the channel.
+ **└── 🌼
+ **/
+
+const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
+  const { socket } = useChatSocket();
+
+  return (
+    <div
+      className="flex flex-row  gap-5 pr-2"
+      // onClick={() => socket.emit("LeaveChannel", socket, channel.channelName, channel.channelType)}
+    >
+      <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+        <Image
+          alt={"leave channel"}
+          src={"./chat/Sign_out_circle_duotone_line.svg"}
+          width={30}
+          height={30}
+        />
+      </button>
+    </div>
+  );
+};
+
+/** ======================================================================================================= */
+/**
+ **╭── 🌼
+ **├ 👇 pressing the button will join the channel, by creating a relation between the user and the channel.
+ **└── 🌼
+ **/
+const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
+  const { socket } = useChatSocket();
+
+  return (
+    <div
+      className="flex flex-row  gap-5 pr-2"
+      onClick={() =>
+        socket.emit("JoinChannel", {
+          channelName: channel.channelName,
+          channelType: channel.channelType,
+        })
+      }
+    >
+      <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+        <Image
+          alt={"join channel"}
+          src={"./chat/user-cirlce-add.svg"}
+          width={30}
+          height={30}
+        />
+      </button>
+    </div>
+  );
+};
+
+/** ======================================================================================================= */
 export default function Channel({
   channel,
   isJoined,
@@ -42,19 +102,7 @@ export default function Channel({
             </span>
           </div>
         </div>
-
-        {/* [3] If the user already joined dont show the join button */}
-
-        <div className="flex flex-row  gap-5 pr-2">
-          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
-            <Image
-              alt={"join channel"}
-              src={"./chat/user-cirlce-add.svg"}
-              width={30}
-              height={30}
-            />
-          </button>
-        </div>
+        <JoinChannelBtn channel={channel} />
       </div>
     );
   } else {
@@ -84,19 +132,10 @@ export default function Channel({
           </div>
         </div>
 
-        {/* [3] If the user already joined dont show the join button */}
-
-        <div className="flex flex-row  gap-5 pr-2">
-          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
-            <Image
-              alt={"leave channel"}
-              src={"./chat/Sign_out_circle_duotone_line.svg"}
-              width={30}
-              height={30}
-            />
-          </button>
-        </div>
+        <LeaveChannelBtn channel={channel} />
       </div>
     );
   }
 }
+
+/** ======================================================================================================= */
