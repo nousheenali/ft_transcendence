@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { Player } from '../types';
 
 @Injectable()
 export class PlayerService {
@@ -81,14 +82,4 @@ export class PlayerService {
   }
 }
 
-export type Player = {
-  id: string;
-  name: string;
-  position: { x: number; y: number };
-  readyToStart: boolean;
-  worldWidth: number;
-  worldHeight: number;
-  score: number;
-  gameRoom: string;
-  socketInfo: Socket;
-};
+

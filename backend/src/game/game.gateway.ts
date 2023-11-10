@@ -7,13 +7,14 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameRoom, GameRoomService } from './game-room/game-room.service';
-import { PlayerService, Player } from './player/player.service';
+import { GameRoomService } from './game-room/game-room.service';
+import { PlayerService } from './player/player.service';
 import { GameLogicService } from './game-logic/game-logic.service';
 import { GameService } from './game.service';
 import { UserService } from 'src/user/user.service';
 import { GameDto } from './dto/game.dto';
 import { GameStatus } from '@prisma/client';
+import { GameRoom, JoinWaitingRoom, Player, UpdateSpritePositions, WaitingRoom, WorldDimensions } from './types';
 
 @WebSocketGateway(8005, { cors: { origin: 'http://localhost:3000' } })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -74,20 +75,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //when user joins a queue
   @SubscribeMessage('addToQueue')
-  async handleFindMatch(client: Socket, data: any) {
+  async handleFindMatch(client: Socket, data: WorldDimensions) {
     this.playerService.addToQueue(client.id, data.width, data.height);
     console.log(`Player added to queue: ${client.id}`);
     const players: Player[] | null = this.playerService.matchQueuedPlayers();
-
     if (players !== null) {
       const p0 = players[0];
       const p1 = players[1];
-      const data = {
+      const input = {
         userLogin: p0.name,
         opponentLogin: p1.name,
         gameStatus: GameStatus.LIVE,
       };
-      const roomID = await this.gamePrismaService.createGameEntry(data);
+      const roomID = await this.gamePrismaService.createGameEntry(input);
       const room = this.gameRoomService.createGameRoom(roomID, p0, p1);
       this.gameLogicService.sendJoiningInformation(this.server, room, p0, p1);
     }
@@ -95,14 +95,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //when a user is waiting for a friend to join
   @SubscribeMessage('createWaitingRoom')
-  async handleCreateWaitingRoom(client: Socket, data: any) {
+  async handleCreateWaitingRoom(client: Socket, data: WaitingRoom) {
     const player: Player = this.playerService.getPlayerByID(client.id);
     if (player) {
-      player.worldWidth = data.width;
-      player.worldHeight = data.height;
+      player.worldWidth = data.worldDimensions.width;
+      player.worldHeight = data.worldDimensions.height;
       const input: GameDto = {
         userLogin: player.name,
-        opponentLogin: data.friendName,
+        opponentLogin: data.invitee,
         gameStatus: GameStatus.WAITING,
       };
       const roomID = await this.gamePrismaService.createGameEntry(input);
@@ -112,15 +112,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('joinWaitingRoom')
-  async handleJoinWaitingRoom(client: Socket, data: any) {
+  async handleJoinWaitingRoom(client: Socket, data: JoinWaitingRoom) {
     const player: Player = this.playerService.getPlayerByID(client.id);
     if (player) {
-      player.worldWidth = data.width;
-      player.worldHeight = data.height;
+      player.worldWidth = data.worldDimensions.width;
+      player.worldHeight = data.worldDimensions.height;
       const player2: Player = this.playerService.getPlayerByName(data.inviter);
       const roomID = player2.gameRoom;
       if (!data.accept) {
-        console.log("INVITATION DECLINED")
+        console.log('INVITATION DECLINED');
         player.socketInfo.disconnect();
         this.server.to(player2.socketInfo.id).emit('invitationDeclined');
         return;
@@ -151,7 +151,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //initial positions of all sprites
   @SubscribeMessage('updateSpritePositions')
-  handleSpritePositions(client: Socket, data: any) {
+  handleSpritePositions(client: Socket, data: UpdateSpritePositions) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
     this.gameLogicService.spritePositions(gameRoom, data);
   }
@@ -182,7 +182,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('ballPosition')
-  handleBallPosition(client: any, data) {
+  handleBallPosition(client: Socket, data) {
     const gm: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
 
     if (gm && !gm.gameOver) {

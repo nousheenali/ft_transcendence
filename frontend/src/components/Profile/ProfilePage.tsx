@@ -19,7 +19,7 @@ import { generatePendingRequestsData } from "@/data/Table/pendingFriendRequests"
 import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ProfilePageProps, userInformation } from "./types";
+import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
 import { useSession } from "next-auth/react";
 import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
@@ -38,7 +38,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ login }) => {
         const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
         if (userData) {
           setUserInfo(userData);
-          const dataGeneratorMap: any = {
+          const dataGeneratorMap: DataGeneratorMap = {
             friends: generateProfileFriendsData,
             search: generateProfileSearchData,
             blocked: generateProfileBlockedData,

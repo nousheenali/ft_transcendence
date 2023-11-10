@@ -1,9 +1,11 @@
 import { Scene } from "phaser";
 import Sprite from "../Helpers/GameObjects";
 import GameObjects from "../Helpers/GameObjects";
+import { Socket } from "socket.io-client";
+import { InitialData } from "../types";
 
 export default class Game extends Scene {
-  private socket: any;
+  private socket!: Socket;
   private roomID!: string;
   private ball!: Phaser.Physics.Arcade.Sprite;
   private player: Phaser.Physics.Arcade.Sprite[] = [];
@@ -29,6 +31,7 @@ export default class Game extends Scene {
   preload() {}
 
   create() {
+    var ballWidth = 0;
     const wH = this.physics.world.bounds.height; //world height
     const wW = this.physics.world.bounds.width; //world width
 
@@ -45,33 +48,41 @@ export default class Game extends Scene {
 
     //render sprites
     this.ball = gameObj.renderBall(wW / 2, wH / 2);
-    const ballWidth = this.ball.body.width;
-    this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
-    this.player[1] = gameObj.renderPaddle(ballWidth / 2, wH / 2);
-
-    //update game room sprite positions
-    this.socket.emit("updateSpritePositions", {
-      roomID: this.roomID,
-      ballPosition: { x: this.ball.x, y: this.ball.y },
-      p0Position: { x: this.player[0].x, y: this.player[0].y },
-      p1Position: { x: this.player[1].x, y: this.player[1].y },
-      paddleWidth: this.player[0].body.width,
-      paddleHeight: this.player[0].body.height,
-      ballWidth: ballWidth,
-    });
-
     this.paddlespeed = 380;
+    if (this.ball.body) {
+      ballWidth = this.ball.body.width;
+      this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
+      this.player[1] = gameObj.renderPaddle(ballWidth / 2, wH / 2);
 
-    this.physics.add.collider(this.ball, this.player[0]);
-    this.physics.add.collider(this.ball, this.player[1]);
+      if (this.player[0].body && this.input.keyboard) {
+        //update game room sprite positions
+        this.socket.emit("updateSpritePositions", {
+          roomID: this.roomID,
+          ballPosition: { x: this.ball.x, y: this.ball.y },
+          p0Position: { x: this.player[0].x, y: this.player[0].y },
+          p1Position: { x: this.player[1].x, y: this.player[1].y },
+          paddle: {width: this.player[0].body.width, height: this.player[0].body.height},
+          ballWidth: ballWidth,
+        });
 
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.keys.w = gameObj.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-    this.keys.s = gameObj.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-    this.keys.space = gameObj.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.physics.add.collider(this.ball, this.player[0]);
+        this.physics.add.collider(this.ball, this.player[1]);
 
-    this.hitAudio = this.sound.add("ballHit");
-    this.gameOver = this.sound.add("gameOver");
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.keys.w = this.input.keyboard.addKey(
+          Phaser.Input.Keyboard.KeyCodes.W
+        );
+        this.keys.s = this.input.keyboard.addKey(
+          Phaser.Input.Keyboard.KeyCodes.S
+        );
+        this.keys.space = this.input.keyboard.addKey(
+          Phaser.Input.Keyboard.KeyCodes.SPACE
+        );
+
+        this.hitAudio = this.sound.add("ballHit");
+        this.gameOver = this.sound.add("gameOver");
+      }
+    }
   }
 
   update() {
@@ -85,7 +96,7 @@ export default class Game extends Scene {
       this.socket
         .on("ready", () => this.messages[1].setVisible(true))
         .emit("initSettings", this.roomID)
-        .on("initialise", (initialData: any) => {
+        .on("initialise", (initialData: InitialData) => {
           this.messages[1].setVisible(false);
           this.keysAssigned = initialData.controls;
           this.ball.setPosition(initialData.x, initialData.y);
@@ -169,7 +180,7 @@ export default class Game extends Scene {
     }
     // On game Over
     this.socket.on("gameOver", (message: string, name: string) => {
-      this.gameOver.play()
+      this.gameOver.play();
       this.line.setVisible(false);
       this.circle.setVisible(false);
       this.ball.setVisible(false);

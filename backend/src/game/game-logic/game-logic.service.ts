@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { GameGateway } from '../game.gateway';
-import { GameRoom, GameRoomService } from '../game-room/game-room.service';
-import { Player, PlayerService } from '../player/player.service';
+import { GameRoomService } from '../game-room/game-room.service';
+import { PlayerService } from '../player/player.service';
 import { GameService } from '../game.service';
 import { GameStatus } from '@prisma/client';
+import { Server } from 'socket.io';
+import { GameRoom, Player, UpdateSpritePositions } from '../types';
 
 @Injectable()
 export class GameLogicService {
@@ -13,7 +15,12 @@ export class GameLogicService {
     private gamePrismaService: GameService,
   ) {}
 
-  sendJoiningInformation(server: any, room: GameRoom, p0: Player, p1: Player) {
+  sendJoiningInformation(
+    server: Server,
+    room: GameRoom,
+    p0: Player,
+    p1: Player,
+  ) {
     const data = {
       roomID: room.roomID,
       p0Name: p0.name,
@@ -25,10 +32,10 @@ export class GameLogicService {
     server.to(p1.id).emit('matched', data);
   }
 
-  spritePositions(gameRoom: GameRoom, data: any) {
+  spritePositions(gameRoom: GameRoom, data: UpdateSpritePositions) {
     gameRoom.ballWidth = data.ballWidth;
-    gameRoom.paddleWidth = data.paddleWidth;
-    gameRoom.paddleHeight = data.paddleHeight;
+    gameRoom.paddleWidth = data.paddle.width;
+    gameRoom.paddleHeight = data.paddle.height;
     gameRoom.ballPosition.x = data.ballPosition.x;
     gameRoom.ballPosition.y = data.ballPosition.y;
     gameRoom.players[0].position.x = data.p0Position.x;
@@ -42,12 +49,12 @@ export class GameLogicService {
     gm.ballPosition.y += gm.ballVelocity.y;
   }
 
-  emitHitPaddle(gm: GameRoom, server: any) {
+  emitHitPaddle(gm: GameRoom, server: Server) {
     server.to(gm.players[0].id).emit('hitPaddle');
     server.to(gm.players[1].id).emit('hitPaddle');
   }
 
-  emitGameOver(gm: GameRoom, server: any, winner: Player, loser: Player) {
+  emitGameOver(gm: GameRoom, server: Server, winner: Player, loser: Player) {
     if (gm.players[0].score === 7 || gm.players[1].score === 7) {
       gm.gameOver = true;
       server.to(gm.players[0].id).emit('gameOver', 'Game Over!', winner.name);
@@ -64,7 +71,7 @@ export class GameLogicService {
     }
   }
 
-  emitBallPosition(gm: GameRoom, server: any) {
+  emitBallPosition(gm: GameRoom, server: Server) {
     server
       .to(gm.players[0].id)
       .emit(
@@ -95,7 +102,12 @@ export class GameLogicService {
     }
   }
 
-  updateResults(server: any, gm: GameRoom, otherPlyr: Player, player: Player) {
+  updateResults(
+    server: Server,
+    gm: GameRoom,
+    otherPlyr: Player,
+    player: Player,
+  ) {
     let winner = null;
     let loser = null;
     //there will be winner /loser only if the game started

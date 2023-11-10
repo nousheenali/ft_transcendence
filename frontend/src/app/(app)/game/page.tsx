@@ -13,7 +13,7 @@ export default function GamePage() {
 
   const { data: session } = useSession();
   const login: string = session?.user.login!;
-  const joinQueue = false;
+  const joinQueue = true;
   const inviter = "nali";
   const invitee = "sfathima";
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
@@ -56,23 +56,23 @@ export default function GamePage() {
             width: (window.innerWidth * 2) / 3,
             height: (window.innerHeight * 2) / 3,
           });
-        }
-        else {
-          if (login === inviter)
-          {
+        } else {
+          if (login === inviter) {
             socket.emit("createWaitingRoom", {
-              friendName: invitee,
-              width: (window.innerWidth * 2) / 3,
-              height: (window.innerHeight * 2) / 3,
+              invitee: invitee,
+              worldDimensions: {
+                width: (window.innerWidth * 2) / 3,
+                height: (window.innerHeight * 2) / 3,
+              },
             });
-          }
-          else if (login === invitee)
-          {
+          } else if (login === invitee) {
             const accept = true;
             socket.emit("joinWaitingRoom", {
               inviter: inviter,
-              width: (window.innerWidth * 2) / 3,
-              height: (window.innerHeight * 2) / 3,
+              worldDimensions: {
+                width: (window.innerWidth * 2) / 3,
+                height: (window.innerHeight * 2) / 3
+              },
               accept: accept,
             });
           }
@@ -83,13 +83,12 @@ export default function GamePage() {
             socket.disconnect();
             router.push("/");
           }, 3000);
-
-        })
+        });
         socket.on("matched", (data) => {
           const loadingText = document.getElementById("loading-text");
           loadingText?.remove();
 
-          var config: any = {
+          var config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             parent: "game-container",
             width: data.worldWidth,
@@ -98,14 +97,14 @@ export default function GamePage() {
             scene: [Preloader, Game],
             physics: {
               default: "arcade",
-              arcade: {
-                gravity: false,
-              },
-              // fps: 30,
-              scale: {
-                mode: Phaser.Scale.FIT,
-                autoCenter: Phaser.Scale.CENTER_BOTH,
-              },
+              // arcade: {
+              //   gravity: false,
+              // },
+              // // fps: 30,
+              // scale: {
+              //   mode: Phaser.Scale.FIT,
+              //   autoCenter: Phaser.Scale.CENTER_BOTH,
+              // },
             },
           };
           var phaserGame = new Phaser.Game(config);

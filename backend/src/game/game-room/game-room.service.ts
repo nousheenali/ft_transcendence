@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Player, PlayerService } from '../player/player.service';
+import { PlayerService } from '../player/player.service';
+import { GameRoom, Player } from '../types';
 
 @Injectable()
 export class GameRoomService {
@@ -97,17 +98,3 @@ export class GameRoomService {
   }
 }
 
-export type GameRoom = {
-  roomID: string;
-  players: Player[];
-  worldWidth: number;
-  worldHeight: number;
-  ballVelocity: { x: number; y: number };
-  ballPosition: { x: number; y: number };
-  paddleWidth: number;
-  paddleHeight: number;
-  ballWidth: number;
-  gameOver: boolean;
-  gameStarted: boolean; // we need separate gameStarted to track users disconnected before starting game
-  increaseSpeed: number; //used as flag for increasing ball speed
-};
