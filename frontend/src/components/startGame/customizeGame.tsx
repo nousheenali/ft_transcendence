@@ -71,7 +71,6 @@ export default function CustomizeGame() {
           />
         </div>
       </div>
-
       <div className="flex flex-row items-center justify-around gap-2">
         <h1 className="text-main-text font-saira-condensed">Racket Color</h1>
         <div className="relative">

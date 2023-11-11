@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { NotificationDropdownProps } from "../types";
-import { useSession } from "next-auth/react";
+
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 import { getUserData } from "../../../../services/user";
 import { io } from "socket.io-client";

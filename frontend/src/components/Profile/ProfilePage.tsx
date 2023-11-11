@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 
 import ResponsiveTable from "@/components/Table/Table";
@@ -23,19 +23,20 @@ import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
 import { useSession } from "next-auth/react";
 import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
+import { AuthContext } from "@/context/AuthProvider";
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ login }) => {
+const ProfilePage: React.FC<ProfilePageProps> = () => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
   const [userInfo, setUserInfo] = useState<userInformation>();
-
+  const { user } = useContext(AuthContext);
   let data: TableRowData[];
 
   const fetchTableData = async (buttonId: string) => {
     try {
-      if (login) {
-        const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
+      if (user.login) {
+        const userData = await getUserData(user.login, API_ENDPOINTS.getUserbyLogin);
         if (userData) {
           setUserInfo(userData);
           const dataGeneratorMap: DataGeneratorMap = {
@@ -48,7 +49,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ login }) => {
           const dataGenerator = dataGeneratorMap[buttonId];
 
           if (dataGenerator) {
-            const data = await dataGenerator(login);
+            const data = await dataGenerator(user.login);
             setTableData(data);
             setIsLoading(false);
           } else throw new Error("Invalid Button Click");

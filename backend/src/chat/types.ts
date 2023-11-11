@@ -15,9 +15,9 @@ export interface Room {
   }
 
 //===============================================================================
-export interface Message {
+export interface SocketMessage {
 	socketId: string;
-	username: string;
+	sender: string;
 	receiver?: string;
 	channel?: string;
 	channelType?: string;
@@ -27,4 +27,4 @@ export interface Message {
 //===============================================================================
 export type RoomType = "CHANNELS" | "USERS";
 
-//===============================================================================
+//==============================================================================

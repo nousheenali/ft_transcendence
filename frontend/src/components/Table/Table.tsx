@@ -84,7 +84,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
         </div>
         <div
           className="overflow-y-scroll text-table-row-text-color"
-          style={{ maxHeight }}
+          style={{ height:'100%' }}
         >
           {/* table rows */}
           {filteredData.map((rowData: TableRowData, rowIndex) => (

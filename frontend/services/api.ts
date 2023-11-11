@@ -5,7 +5,9 @@ const backendUrl = "http://localhost:3001";
 // Helper function to make GET requests
 export async function getData<T>(login: string, endpoint: string): Promise<T> {
   try {
-    const response = await fetch(`${backendUrl}${endpoint}${login}`);
+    const response = await fetch(`${backendUrl}${endpoint}${login}`, {
+      credentials: "include", // Include credentials in the request
+    });
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(

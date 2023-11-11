@@ -1,4 +1,15 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { FriendsDto } from './dto/friends.dto';
 import { NotFoundError } from 'rxjs';

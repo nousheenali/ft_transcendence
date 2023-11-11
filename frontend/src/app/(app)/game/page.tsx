@@ -1,19 +1,22 @@
 "use client";
-import { useSession } from "next-auth/react";
+
 import { useGameColor } from "@/context/store";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getUserData } from "../../../../services/user";
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function GamePage() {
   const { ballColor, racketColor, bgColor } = useGameColor(); //for the time being im saving the colors in the context store
 
-  const { data: session } = useSession();
-  const login: string = session?.user.login!;
-  const joinQueue = true;
+
+  const {user} = useContext(AuthContext)
+
+  const login: string = user.login!;
+  const joinQueue = false;
   const inviter = "nali";
   const invitee = "sfathima";
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
@@ -52,7 +55,7 @@ export default function GamePage() {
       });
       socket.on("connect", () => {
         if (joinQueue) {
-          socket.emit("addToQueue", {
+          socket.emit('addToQueue', {
             width: (window.innerWidth * 2) / 3,
             height: (window.innerHeight * 2) / 3,
           });

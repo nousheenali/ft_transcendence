@@ -1,13 +1,13 @@
-import "../globals.css";
-import type { Metadata } from "next";
-import React from "react";
-import { Header } from "@/components/Login/Header/Header";
-import Background from "@/components/Background/Background";
-
+import '../globals.css';
+import type { Metadata } from 'next';
+import React from 'react';
+import { Header } from '@/components/Login/Header/Header';
+import Background from '@/components/Background/Background';
+import Providers from './providers';
 
 export const metadata: Metadata = {
-  title: "Spin Masters",
-  description: "Transcendence project",
+  title: 'Spin Masters',
+  description: 'Transcendence project',
 };
 
 export default function RootLayout({
@@ -18,8 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="overflow-y-scroll flex justify-center">
-				<Background />
-        <Header />
+        {/* <Providers> */}
+          <Background />
+          <Header />
+        {/* </Providers> */}
         {children}
       </body>
     </html>
