@@ -39,19 +39,19 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JwtPayload) {
     try {
-      console.log('JwtAuthStrategy - Validate - Payload:', payload);
+      // console.log('JwtAuthStrategy - Validate - Payload:', payload);
 
       const user = await this.userService.getUserByLogin(payload.login);
 
       if (!user) {
-        console.log('JwtAuthStrategy - Validate - User not found');
+        // console.log('JwtAuthStrategy - Validate - User not found');
         throw new UnauthorizedException('User not found');
       }
 
-      console.log('JwtAuthStrategy - Validate - User:', user);
+      // console.log('JwtAuthStrategy - Validate - User:', user);
       return user;
     } catch (error) {
-      console.error('JwtAuthStrategy - Validate - Error:', error);
+      // console.error('JwtAuthStrategy - Validate - Error:', error);
       throw new UnauthorizedException('Unauthorized', 'Invalid credentials');
     }
   }

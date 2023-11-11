@@ -175,26 +175,19 @@ export class ChatGateway
       console.log(chalk.red('PRIVATE CHANNEL NOT IMPLEMENTED YET'));
       return;
     }
+
+    /**-------------------------------------------------------------------------**/
     const userLogin = client.handshake.query.userLogin as string;
     if (userLogin === undefined || userLogin === null) return;
-
+    
     // ❂➤ get the user and the channel from the database
     const user = await this.userService.getUserByLogin(userLogin);
     const channel = await this.channelService.getChannelByName(channelName);
-
-    // =====================  testing  =====================
-    this.roomsService.createRoom(
-      channelName + channelType,
-      userLogin,
-      'CHANNELS',
-    );
-    // =====================  testing  =====================
+    /**-------------------------------------------------------------------------**/
 
     // ❂➤ get the channel room
-    const channelRoom = this.roomsService.getRoom(
-      channelName + channelType,
-      'CHANNELS',
-    );
+    const channelRoom = this.roomsService.getRoom(channelName + channelType,'CHANNELS');
+    /**-------------------------------------------------------------------------**/
 
     // ❂➤join the user socket to the channel room
     this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
@@ -206,15 +199,45 @@ export class ChatGateway
       channelType: channelType,
     });
 
+    /**-------------------------------------------------------------------------**/
+
     // ❂➤ create channel relation in the database between the user and the channel
     await this.channelRelationService.createChannelRelation({
       userId: user.id,
       channelId: channel.id,
     });
 
+    /**-------------------------------------------------------------------------**/
+    // ❂➤ Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
   }
 
+  /** ================================================================================================
+   * ❂➤ Handling creating room for the channel when creating new channel by subscribing to the event
+   * "CreateChannel" then:
+   * 1. create the channel room
+   * 2. join the client's socket to the channel room
+   */
+  @SubscribeMessage('CreateChannel')
+  async createChannel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: { channelName: string; channelType: string, creator: string },
+  ) {
+    const creatorData = await this.userService.getUserById(data.creator);
+    console.log(creatorData);
+    const { channelName, channelType, creator } = data;
+    // ❂➤ create the channel room
+    this.roomsService.createRoom(channelName + channelType ,creatorData.login,'CHANNELS');
+    // ❂➤ get the created channel's room
+    const channelRoom = this.roomsService.getRoom(channelName + channelType,'CHANNELS');
+    // ❂➤ join the client's socket to the channel room
+    this.roomsService.joinRoom(channelRoom.name, creatorData.login, client, 'CHANNELS');
+
+    /**-------------------------------------------------------------------------**/
+    // ❂➤ Printing the rooms array to the console for debugging
+    this.roomsService.printAllRooms();
+  }
   /** ================================================================================================
    * ❂➤ Handling LeaveChannel event by subscribing to the event "LeaveChannel" then:
    * 1. leave the client's socket from the channel room

@@ -3,15 +3,18 @@ import ChannelCreateBtn from "./ChannelCreateBtn/ChannelCreateBtn";
 import { Button, Modal } from "react-daisyui";
 import ChannelNameTextBox from "./ChannelNameTextBox/ChannelNameTextBox";
 import ChannelTypeDD from "./ChannelTypeDD/ChannelTypeDD";
-import { useChannelCreateValidate, useChannelInfo, useNewChanelState, useChatSocket } from "@/context/store";
+import {
+  useChannelCreateValidate,
+  useChannelInfo,
+  useNewChanelState,
+  useChatSocket,
+} from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { userInformation } from "@/components/Profile/types";
 import { getData, postData } from "../../../../../../services/api";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { CreateChannelItems } from "@/components/Chat/ChannelsSideBar/CreateChannel/ChannelTypes/ChannelType";
-
-
 
 export default function CreateChannel({ userLogin }: { userLogin: string }) {
   const { socket } = useChatSocket();
@@ -43,11 +46,6 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
 
   // update the status of the button
   useEffect(() => {
-    // console.log("validChannelName: ", validChannelName);
-    // console.log("validPassword: ", validPassword);
-    // console.log("channelType: ", channelType);
-    // console.log("channelName: ", channelName);
-    // console.log("channelPassword: ", channelPassword);
     if (channelType === "PUBLIC" && validChannelName) {
       setIsValid(true);
     } else if (channelType === "PRIVATE" && validChannelName && validPassword) {
@@ -72,14 +70,14 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
       setValidChannelName(false);
       setValidPassword(false);
       modalRef.current?.close();
-      
-      
+
       // Create the channel room
-      socket.emit("JoinChannel", {
+      socket.emit("CreateChannel", {
         channelName: newChannel.channelName,
         channelType: newChannel.channelType,
+        creator: newChannel.createdBy,
       });
-      
+      console.log("The creater is: ", newChannel.createdBy);
       // glopal value to re-render the channel list
       setNewChannel(true);
       toast.success("Channel created successfully");

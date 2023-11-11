@@ -40,7 +40,9 @@ export class JwtAuthService {
     //   isOnline: booleanString,
     //   score: numberString,
     // } as JwtPayload;
-    console.log('payload to send--------------------======', user);
+    
+    
+    // console.log('payload to send--------------------======', user);
     return user;
   }
 

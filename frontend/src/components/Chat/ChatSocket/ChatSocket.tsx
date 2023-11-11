@@ -4,7 +4,12 @@ import { useContext, useEffect } from "react";
 import { io } from "socket.io-client";
 import { SocketMessage } from "../types";
 import { AuthContext } from "@/context/AuthProvider";
-import { useChatSocket, useReceivedMessageState, useChannelUsersState } from "@/context/store";
+import {
+  useChatSocket,
+  useReceivedMessageState,
+  useChannelUsersState,
+} from "@/context/store";
+import { toast } from "react-toastify";
 /**
  * ================================================================================================
  * ❂➤ ChatSocket: initialize the socket connection with the server.
