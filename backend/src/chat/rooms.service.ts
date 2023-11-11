@@ -30,6 +30,7 @@ export class RoomsService {
       return this.userRooms[roomIndex];
     else if (roomIndex !== -1 && roomType === 'CHANNELS')
       return this.channelRooms[roomIndex];
+    // return undefined;
   }
 
   // =================================================================================================
@@ -64,8 +65,7 @@ export class RoomsService {
     if (this.isRoomExist(roomName, roomType)) {
       const room = this.getRoom(roomName, roomType);
       socket.join(roomName);
-      if (room.users.indexOf(userName) === -1)
-        room.users.push(userName);
+      if (room.users.indexOf(userName) === -1) room.users.push(userName);
     } else {
       this.createRoom(roomName, userName, roomType);
       socket.join(roomName);
@@ -126,16 +126,24 @@ export class RoomsService {
 
   // =================================================================================================
 
-  leaveRoom(roomName: string, userName: string, client: Socket, roomType: RoomType) {
+  leaveRoom(
+    roomName: string,
+    userName: string,
+    client: Socket,
+    roomType: RoomType,
+  ) {
     if (this.isRoomExist(roomName, roomType)) {
+      const room = this.getRoom(roomName, roomType);
       // ❂➤ Remove the user from the room's users array
       if (this.isUserInRoom(roomName, userName, roomType) === true) {
-        const room = this.getRoom(roomName, roomType);
         room.users.splice(room.users.indexOf(userName), 1);
+      }
+      if (this.isRoomAdmin(roomName, userName, roomType) === true) {
+        if (room.users.length > 0) room.admin = room.users[0];
+        else this.removeRooms(roomName, roomType);
       }
       // ❂➤ Remove the user's socket from the room
       client.leave(roomName);
-
     }
   }
 
@@ -176,8 +184,8 @@ export class RoomsService {
     console.log(chalk.green('👇 Channels Rooms 👇'));
     console.log(channelTable.toString());
 
-    console.log(chalk.green('👇 Users Rooms 👇'));
-    console.log(userTable.toString());
+    // console.log(chalk.green('👇 Users Rooms 👇'));
+    // console.log(userTable.toString());
   }
   // =================================================================================================
 }

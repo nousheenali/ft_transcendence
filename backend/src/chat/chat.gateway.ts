@@ -1,16 +1,3 @@
-/**
- * TODO:
- * ===========
- * # when the socket connect to the server:
- * 1. check if the user any relation with any channel, if so, join the user to the all the channels
- *   that he has relation with.
- *
- * # When the socket disconnect from the server:
- * 1. check if the user has any relation with any channel, if so, leave the user from all the channels rooms
- *  that he has relation with.
- * ===============================================================================================================
- */
-
 import {
   MessageBody,
   SubscribeMessage,
@@ -265,36 +252,63 @@ export class ChatGateway
   async leaveChannel(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    data: { channelName: string; channelType: string; creator: string },
+    data: { channelName: string; channelType: string },
   ) {
-    const {channelName, channelType, creator} = data
-    const creatorLogin = client.handshake.query.userLogin as string;
-    console.log(creatorLogin);
-    if (creatorLogin === undefined || creatorLogin === null) return;
+    const { channelName, channelType } = data;
+    // ❂➤ Getting the user and the channel from the database
+    const userLogin = client.handshake.query.userLogin as string;
+    const userData = await this.userService.getUserByLogin(userLogin);
+    const channelData = await this.channelService.getChannelByName(channelName);
+
+    /**-------------------------------------------------------------------------**/
+    // ❂➤ Get the channel room, then leave the user from the channel room then emit
+    //    the message to the channel room, if the user who left is the admin, assign
+    //    the new admin by selecting the oldest member in the channel's room.
     const channelRoom = this.roomsService.getRoom(
       channelName + channelType,
       'CHANNELS',
     );
-    this.roomsService.leaveRoom(channelRoom.name, creatorLogin, client, 'CHANNELS');
+    this.roomsService.leaveRoom(
+      channelRoom.name,
+      userData.login,
+      client,
+      'CHANNELS',
+    );
+    this.server.to(channelRoom.name).emit('LeaveChannel', {
+      leaver: userData.login,
+      channelName: channelName,
+      channelType: channelType,
+    });
 
+    /**-------------------------------------------------------------------------**/
+
+    if (channelData.createdBy === userData.id) {
+      // ❂➤ Delete the channel relation in the database between the user and the channel
+      // ❂➤ If this is the last relation, the channel will be deleted automatically after
+      //    deleting the relation, in the same method.
+      await this.channelRelationService.deleteChannelRelation(
+        userData.id,
+        channelData.id,
+      );
+
+      // ❂➤ If the user is the admin, assign the new admin by selecting the oldest member
+      //    in the channel
+      await this.channelService.updateChannelAdmin(channelData.id);
+    } else {
+      // ❂➤ Delete the channel relation in the database between the user and the channel
+      await this.channelRelationService.deleteChannelRelation(
+        userData.id,
+        channelData.id,
+      );
+    }
+    /**-------------------------------------------------------------------------**/
+    // ❂➤ Printing the rooms array to the console for debugging
+    this.roomsService.printAllRooms();
   }
 
   /** ================================================================================================
    * ❂➤ Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
-   */
-
-  /**
-   * ================================================================================================
-   * TODO:
-   * ===========
-   * [IMPORTANT]
-   * ===========
-   *     ❂➤ Try to join the channel at the moment when youL
-   *          - accept the invitation to the private channel
-   *          - Joined the public channel
-   *          - Joined the private channel by entering the password correctly
-   * ================================================================================================
    */
   @SubscribeMessage('ChannelToServer')
   async sendToChannel(

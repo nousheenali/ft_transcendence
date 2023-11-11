@@ -8,6 +8,7 @@ import {
   useChatSocket,
   useReceivedMessageState,
   useChannelUsersState,
+  useLeaveChannelState,
 } from "@/context/store";
 import { toast } from "react-toastify";
 /**
@@ -24,6 +25,7 @@ export default function ChatSocket({
   const { socket, setSocket } = useChatSocket();
   const { setReceivedMessage } = useReceivedMessageState();
   const { setUserJoined } = useChannelUsersState();
+  const { setUserLeft } = useLeaveChannelState();
   /**
    * ❂➤ This useEffect is used to initialize the socket connection with the server,
    * without any dependency, so it will be called only once.
@@ -54,21 +56,37 @@ export default function ChatSocket({
       socket.on("connect", () => {
         console.log(`Connected to the server with socket id: ${socket.id}`);
       });
+      /**-------------------------------------------------------------------------**/
+
       socket.on("disconnect", (reason) => {
         console.log("Disconnected from the server for reason: ", reason);
       });
+      /**-------------------------------------------------------------------------**/
+
       socket.on("reconnect", (attempt) => {
         console.log("Reconnected to the server on attempt number: ", attempt);
       });
+      /**-------------------------------------------------------------------------**/
+
       socket.on("ServerToClient", (data: SocketMessage) => {
         setReceivedMessage(data);
-        // console.log("Message received from a ", data.sender, " : => ", data);
       });
+      /**-------------------------------------------------------------------------**/
+
       socket.on("JoinChannel", (data) => {
         // TODO // Display message on the channel that new user joined.
         setUserJoined(true);
         console.log(data);
       });
+      /**-------------------------------------------------------------------------**/
+
+      socket.on("LeaveChannel", (data) => {
+        // TODO // Display message on the channel that user has left.
+        setUserLeft(true); // here just to trigger the useEffect in the channel component.
+        console.log("LeaveChannel: ", data);
+      });
+      /**-------------------------------------------------------------------------**/
+
       socket.on("ServerToChannel", (data: SocketMessage) => {
         console.log("Message received from a channel: => ", data);
         alert(
@@ -78,6 +96,8 @@ export default function ChatSocket({
             data.message
         );
       });
+      /**-------------------------------------------------------------------------**/
+
       return () => {
         socket.off("connect");
         socket.off("reconnect");
@@ -86,9 +106,11 @@ export default function ChatSocket({
         socket.off("ServerToClient");
         socket.off("ServerToChannel");
       };
+      /**-------------------------------------------------------------------------**/
     } catch (error) {
       console.log(error);
     }
+    /**-------------------------------------------------------------------------**/
   }, [socket, user]);
   return <>{children}</>;
 }

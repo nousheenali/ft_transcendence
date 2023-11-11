@@ -20,14 +20,15 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
   return (
     <div
       className="flex flex-row  gap-5 pr-2"
-      onClick={() =>
-        socket.emit(
-          "LeaveChannel",
-          socket,
-          channel.channelName,
-          channel.channelType
-        )
-      }
+      onClick={() => {
+        socket.emit("LeaveChannel", {
+          channelName: channel.channelName,
+          channelType: channel.channelType,
+        });
+        toast.warning(`You left ${channel.channelName} channel`, {
+          autoClose: 1000,
+        });
+      }}
     >
       <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
         <Image
@@ -58,7 +59,9 @@ const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
           channelName: channel.channelName,
           channelType: channel.channelType,
         });
-        toast.success(`You have joined ${channel.channelName} channel`);
+        toast.success(`You have joined ${channel.channelName} channel`, {
+          autoClose: 1000,
+        });
       }}
     >
       <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">

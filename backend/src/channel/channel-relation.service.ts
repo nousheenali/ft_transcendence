@@ -91,7 +91,9 @@ export class ChannelRelationService {
       });
       return channels;
     } catch (error) {
-      throw new BadRequestException('UNABLE TO GET USER RELATIONS WITH CHANNELS');
+      throw new BadRequestException(
+        'UNABLE TO GET USER RELATIONS WITH CHANNELS',
+      );
     }
   }
 
@@ -102,18 +104,33 @@ export class ChannelRelationService {
    * @param channelID the id of the channel that the user is a member of.
    */
 
-  async remove(userID: string, channelID: string) {
-    const isRelationExist = await this.isRelationExist(channelID, userID);
+  async deleteChannelRelation(userID: string, channelID: string) {
+    try {
+      const isRelationExist = await this.isRelationExist(channelID, userID);
+      if (!isRelationExist) {
+        throw new BadRequestException('User is not a member of the channel.');
+      } else {
+        await this.prisma.channelRelation.deleteMany({
+          where: {
+            userId: userID,
+            channelId: channelID,
+          },
+        });
 
-    if (!isRelationExist) {
-      throw new BadRequestException('User is not a member of the channel.');
-    } else {
-      return this.prisma.channelRelation.deleteMany({
-        where: {
-          userId: userID,
-          channelId: channelID,
-        },
-      });
+        const channelRelations = await this.findChannelMembers(channelID);
+
+        if (channelRelations.length === 0) {
+          return await this.prisma.channel.delete({
+            where: {
+              id: channelID,
+            },
+          });
+        }
+
+        return;
+      }
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO DELETE THE CHANNEL RELATION');
     }
   }
   /** ---------------------------------------------------------------------------------------- **/

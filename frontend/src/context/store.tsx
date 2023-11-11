@@ -197,7 +197,7 @@ export const useChannelUsersState = create<ChannelUsersState>((set) => ({
 
 /**==============================================================================================
  * ╭── 🌼
- * ├ 👇 State to handle if some user joined the channel globaly
+ * ├ 👇 State to handle if the user joined the channel globaly
  * └── 🌼
  **/
 type NewChannelType = {
@@ -209,10 +209,21 @@ export const useNewChanelState = create<NewChannelType>((set) => ({
   newChannel: false,
   setNewChannel: (newChannel: boolean) => set({ newChannel }),
 }));
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle if the user left the channel globaly
+ * └── 🌼
+ **/
+type LeaveChannelType = {
+  leftChannel: boolean;
+  setUserLeft: (leftChannel: boolean) => void;
+};
 
+export const useLeaveChannelState = create<LeaveChannelType>((set) => ({
+  leftChannel: false,
+  setUserLeft: (leftChannel: boolean) => set({ leftChannel }),
+}));
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
-// ---------------------------------------------------------------------------------------------
-
 /**
  * a global store for the create channel state 
  * (channel name and password)
@@ -236,3 +247,5 @@ export const useChannelCreateValidate = create<TCreateChannelValidate>(
       set({ validChannelName }),
   })
 );
+
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/

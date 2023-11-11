@@ -32,6 +32,6 @@ export class ChannelRelationController {
     @Param('userID') userID: string,
     @Param('channelID') channelID: string,
   ) {
-    return this.channelRelationService.remove(userID, channelID);
+    return this.channelRelationService.deleteChannelRelation(userID, channelID);
   }
 }

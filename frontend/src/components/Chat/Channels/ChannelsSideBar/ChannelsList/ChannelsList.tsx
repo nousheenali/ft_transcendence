@@ -1,21 +1,27 @@
 import Channel from "./OneChannel";
 
 import { ChannelsProps } from "../../../types";
-import React, { useEffect,useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelsData } from "../../../../../../services/channels";
-import { useChannelType, activateClickedChannel, useChannelUsersState, useNewChanelState } from "@/context/store";
+import {
+  useChannelType,
+  activateClickedChannel,
+  useChannelUsersState,
+  useNewChanelState,
+  useLeaveChannelState,
+} from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
 /**============================================================================================*/
 
 export default function Channels() {
-
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const { activeChannelType } = useChannelType();
   const { setActiveChannel } = activateClickedChannel();
   const { userJoined, setUserJoined } = useChannelUsersState();
   const { newChannel, setNewChannel } = useNewChanelState();
+  const { leftChannel, setUserLeft } = useLeaveChannelState();
 
   const [allPrivateChannels, setAllPrivateChannels] = useState<ChannelsProps[]>(
     []
@@ -41,25 +47,25 @@ export default function Channels() {
     if (user && user.login) {
       const fetchData = async () => {
         const allPrivate: ChannelsProps[] = await getChannelsData(
-      user.login!,
+          user.login!,
           API_ENDPOINTS.allChannels + "PRIVATE/"
         );
         setAllPrivateChannels(allPrivate);
 
         const allPublic: ChannelsProps[] = await getChannelsData(
-         user.login!,
+          user.login!,
           API_ENDPOINTS.allChannels + "PUBLIC/"
         );
         setAllPublicChannels(allPublic);
 
         const publicChannels: ChannelsProps[] = await getChannelsData(
-         user.login!,
+          user.login!,
           API_ENDPOINTS.publicChannels
         );
         setJoinedPublicChannels(publicChannels);
 
         const privateChannels: ChannelsProps[] = await getChannelsData(
-         user.login!,
+          user.login!,
           API_ENDPOINTS.privateChannels
         );
         setJoinedPrivateChannels(privateChannels);
@@ -67,10 +73,11 @@ export default function Channels() {
         setLoading(false);
         if (userJoined) setUserJoined(false);
         if (newChannel) setNewChannel(false);
+        if (leftChannel) setUserLeft(false);
       };
       fetchData();
     }
-  }, [user, userJoined, newChannel]);
+  }, [user, userJoined, newChannel, leftChannel]);
 
   /**
    **╭── 🌼
@@ -128,7 +135,7 @@ export default function Channels() {
                     !joinedPrivateChannels.includes(OneChannel)
                 )
                 .map((OneChannel: ChannelsProps, index: integer) => (
-                  <div key={key++} >
+                  <div key={key++}>
                     <Channel channel={OneChannel} isJoined={false} />
                   </div>
                 ))

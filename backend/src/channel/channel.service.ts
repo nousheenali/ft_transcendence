@@ -56,7 +56,6 @@ export class ChannelService {
     return `This action removes all channelMember and channels`;
   }
 
-
   /**==============================================================================================*/
   async getChannelByName(channelName: string) {
     try {
@@ -70,8 +69,7 @@ export class ChannelService {
       throw new BadRequestException('UNABLE TO GET CHANNEL');
     }
   }
-  
-  
+
   /**==============================================================================================
    * ╭── 🌼
    * ├ 👇 get all channels in the server according to the type of the channel.
@@ -273,4 +271,61 @@ export class ChannelService {
       throw new BadRequestException('UNABLE TO GET CHANNEL MESSAGES');
     }
   }
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 These two methods is to update the admin of the channel according to the oldest
+   * ├    member of the channel
+   * └── 🌼
+   * @param channelName: string, the name of the channel
+   * @returns the new admin of the channel
+   * @throws BadRequestException if there is an error while updating the channel admin
+   *
+   * ==============================================================================================*/
+  async getNewChannelAdminId(channelId: string) {
+    try {
+      const channel = await this.prisma.channel.findUnique({
+        where: {
+          id: channelId,
+        },
+        select: {
+          channelMembers: {
+            orderBy: {
+              createdAt: 'asc',
+            },
+            take: 1,
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!channel) throw new Error('Channel not found');
+      if (channel.channelMembers.length > 0)
+        return channel.channelMembers[0].user.id;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET NEW CHANNEL ADMIN');
+    }
+  }
+
+  async updateChannelAdmin(channelId: string) {
+    try {
+      const newAdminId = await this.getNewChannelAdminId(channelId);
+      await this.prisma.channel.update({
+        where: {
+          id: channelId,
+        },
+        data: {
+          createdBy: newAdminId,
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO UPDATE CHANNEL ADMIN');
+    }
+  }
+  /**==============================================================================================**/
 }
