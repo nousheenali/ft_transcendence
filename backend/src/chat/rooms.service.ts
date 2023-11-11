@@ -126,12 +126,16 @@ export class RoomsService {
 
   // =================================================================================================
 
-  removeUserFromRoom(roomName: string, userName: string, roomType: RoomType) {
+  leaveRoom(roomName: string, userName: string, client: Socket, roomType: RoomType) {
     if (this.isRoomExist(roomName, roomType)) {
+      // ❂➤ Remove the user from the room's users array
       if (this.isUserInRoom(roomName, userName, roomType) === true) {
         const room = this.getRoom(roomName, roomType);
         room.users.splice(room.users.indexOf(userName), 1);
       }
+      // ❂➤ Remove the user's socket from the room
+      client.leave(roomName);
+
     }
   }
 

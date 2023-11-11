@@ -179,14 +179,17 @@ export class ChatGateway
     /**-------------------------------------------------------------------------**/
     const userLogin = client.handshake.query.userLogin as string;
     if (userLogin === undefined || userLogin === null) return;
-    
+
     // ❂➤ get the user and the channel from the database
     const user = await this.userService.getUserByLogin(userLogin);
     const channel = await this.channelService.getChannelByName(channelName);
     /**-------------------------------------------------------------------------**/
 
     // ❂➤ get the channel room
-    const channelRoom = this.roomsService.getRoom(channelName + channelType,'CHANNELS');
+    const channelRoom = this.roomsService.getRoom(
+      channelName + channelType,
+      'CHANNELS',
+    );
     /**-------------------------------------------------------------------------**/
 
     // ❂➤join the user socket to the channel room
@@ -222,17 +225,29 @@ export class ChatGateway
   async createChannel(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    data: { channelName: string; channelType: string, creator: string },
+    data: { channelName: string; channelType: string; creator: string },
   ) {
     const creatorData = await this.userService.getUserById(data.creator);
     console.log(creatorData);
     const { channelName, channelType, creator } = data;
     // ❂➤ create the channel room
-    this.roomsService.createRoom(channelName + channelType ,creatorData.login,'CHANNELS');
+    this.roomsService.createRoom(
+      channelName + channelType,
+      creatorData.login,
+      'CHANNELS',
+    );
     // ❂➤ get the created channel's room
-    const channelRoom = this.roomsService.getRoom(channelName + channelType,'CHANNELS');
+    const channelRoom = this.roomsService.getRoom(
+      channelName + channelType,
+      'CHANNELS',
+    );
     // ❂➤ join the client's socket to the channel room
-    this.roomsService.joinRoom(channelRoom.name, creatorData.login, client, 'CHANNELS');
+    this.roomsService.joinRoom(
+      channelRoom.name,
+      creatorData.login,
+      client,
+      'CHANNELS',
+    );
 
     /**-------------------------------------------------------------------------**/
     // ❂➤ Printing the rooms array to the console for debugging
@@ -247,7 +262,22 @@ export class ChatGateway
    *   between the user and the channel.
    */
   @SubscribeMessage('LeaveChannel')
-  async leaveChannel() {}
+  async leaveChannel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: { channelName: string; channelType: string; creator: string },
+  ) {
+    const {channelName, channelType, creator} = data
+    const creatorLogin = client.handshake.query.userLogin as string;
+    console.log(creatorLogin);
+    if (creatorLogin === undefined || creatorLogin === null) return;
+    const channelRoom = this.roomsService.getRoom(
+      channelName + channelType,
+      'CHANNELS',
+    );
+    this.roomsService.leaveRoom(channelRoom.name, creatorLogin, client, 'CHANNELS');
+
+  }
 
   /** ================================================================================================
    * ❂➤ Handling event by subscribing to the event "ChannelToServer" and emitting the message
