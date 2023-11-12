@@ -7,20 +7,32 @@ type TGameColor = {
   ballColor: string;
   racketColor: string;
   bgColor: string;
+  isQueue: boolean;
+  inviter: string;
+  invitee: string;
 
   setBallColor: (ballColor: string) => void;
   setRacketColor: (racketColor: string) => void;
   setBgColor: (bgColor: string) => void;
+  setIsQueue: (isQueue: boolean) => void;
+  setInviter: (inviter: string) => void;
+  setInvitee: (invitee: string) => void;
 };
 
 export const useGameColor = create<TGameColor>((set) => ({
   ballColor: "0xd0f223",
   racketColor: "0xd0f223",
   bgColor: "0xd0f223",
+  isQueue: false,
+  invitee: "Default",
+  inviter: "Default",
 
   setBallColor: (ballColor: string) => set({ ballColor }),
   setRacketColor: (racketColor: string) => set({ racketColor }),
   setBgColor: (bgColor: string) => set({ bgColor }),
+  setIsQueue: (isQueue: boolean) => set({ isQueue }),
+  setInviter: (inviter: string) => set({ inviter }),
+  setInvitee: (invitee: string) => set({ invitee }),
 }));
 
 type SocketState = {
