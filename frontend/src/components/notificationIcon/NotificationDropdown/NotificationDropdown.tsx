@@ -14,8 +14,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   NotificationList,
   GameInviteNotificationList,
 }) => {
-  console.log("game_invites, ", GameInviteNotificationList.length);
-  console.log("notifications, ", NotificationList.length);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -47,7 +45,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   }, [isOpen]);
 
   const acceptGameInvite = (notifId: string) => {
-    console.log("GameNotif, ", GameInviteNotificationList);
     toast.success("Game Invite Accepted");
     setIsOpen(false);
     setClicked(true);
