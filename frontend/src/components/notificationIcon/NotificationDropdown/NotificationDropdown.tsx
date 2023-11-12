@@ -1,39 +1,34 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { NotificationDropdownProps } from "../types";
-import { useSession } from "next-auth/react";
-import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
-import { getUserData } from "../../../../services/user";
-import { io } from "socket.io-client";
-
+import { useGameColor, useSocket } from "@/context/store";
+import { TiTick } from "react-icons/ti";
+import { TiCancel } from "react-icons/ti";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
+import { updateData } from "../../../../services/api";
 //animate-ping -> for new notification gives animation
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   NotificationList,
+  GameInviteNotificationList,
 }) => {
-  // console.log("data: ", new Date() - new Date(NotificationList[0].recivedAt));
-
+  console.log("game_invites, ", GameInviteNotificationList.length);
+  console.log("notifications, ", NotificationList.length);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
-  const [IsNewNotification, setIsNewNotification] = useState("");
+  const { isNewNotification, setIsNewNotification } = useSocket();
+  const { clicked, setClicked } = useGameColor();
+  const router = useRouter();
 
   const openDropdown = () => {
     if (!isOpen) setIsOpen(true);
-  };
-  const checkNewNotification = () => {
-    if (NotificationList.length > 0) setIsNewNotification("hidden");
-    NotificationList.map((item, index) => {
-      if (item.read === false) {
-        setIsNewNotification("");
-      }
-    });
+    setIsNewNotification("hidden");
   };
   useEffect(() => {
-    checkNewNotification();
     function handleClickOutside(event: MouseEvent) {
-      // contains is a method that checks whether the DOM element referenced by dropdownRef contains the event.target.
-      // If dropdownRef contains event.target, it means the click occurred inside the dropdown.
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
@@ -41,21 +36,30 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
         setIsOpen(false);
       }
     }
-
-    // To attach or detach an event listener to the document object.
-    // Here, the event being listened for is the "mousedown" event.
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
-
-    // cleanup function for useEffect. This removes the event listener
-    // when the component unmounts or when isOpen changes.
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+
+  const acceptGameInvite = (notifId: string) => {
+    console.log("GameNotif, ", GameInviteNotificationList);
+    toast.success("Game Invite Accepted");
+    setIsOpen(false);
+    setClicked(true);
+    updateData({}, "/notification/updateClicked/" + notifId);
+    router.push("/game");
+  };
+  const declineGameInvite = (notifId: string) => {
+    toast.error("Game Invite Declined");
+    setIsOpen(false);
+    setClicked(true);
+    updateData({}, "/notification/updateClicked/" + notifId);
+  };
   return (
     <div>
       <div>
@@ -100,7 +104,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                 r="3"
                 fill="#CD5555"
                 fillOpacity="0.93"
-                className={IsNewNotification}
+                className={isNewNotification}
               />
             </svg>
           </div>
@@ -112,40 +116,98 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
           ref={dropdownRef}
           className="absolute z-[1000] rounded-3xl w-1/3 bg-notification-bg h-52 overflow-y-scroll  border-[0.2px] border-notification-stroke backdrop-blur-xl"
         >
-          {NotificationList.length === 0 ? (
+          {GameInviteNotificationList.length || NotificationList.length ? (
+            <>
+              {NotificationList.length ? (
+                <div className="py-2 space-y-2">
+                  {NotificationList.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
+                    >
+                      <a href="#" className="flex space-x-6 w-full">
+                        <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
+                          <Image
+                            src="/avatar1.png"
+                            alt="tmp"
+                            width={40}
+                            height={40}
+                          />
+                          <h1 className="truncate max-w-[70px] pt-4">
+                            {item.sender.login}
+                          </h1>
+                          <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
+                        </div>
+                        <div className="truncate w-3/5 py-1 pt-4 max-w-[200px]">
+                          {item.content}
+                        </div>
+                        <div className="w-1/5 grow py-1 pt-4 text-end pr-2 text-dimmed-text">
+                          {item.recivedAt}
+                        </div>
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+              {GameInviteNotificationList.length ? (
+                <>
+                  {GameInviteNotificationList.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
+                    >
+                      <div className="flex space-x-6 w-full">
+                        <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
+                          <Image
+                            src="/avatar1.png"
+                            alt="tmp"
+                            width={40}
+                            height={40}
+                          />
+                          <h1 className="truncate max-w-[70px] pt-4">
+                            {item.sender.login}
+                          </h1>
+                          <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
+                        </div>
+                        <div className="truncate w-3/5 py-1 pt-4 max-w-[200px]">
+                          {item.content}
+                        </div>
+                        <>
+                          {item.isAccepted ? (
+                            <p className="grid  place-content-center w-full h-full text-main-text">
+                              Accepted/Declined
+                            </p>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => {
+                                  acceptGameInvite(item.id);
+                                }}
+                                className="hover:bg-heading-fill p-2 rounded-full"
+                              >
+                                <TiTick className="" color="green" size={30} />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  declineGameInvite(item.id);
+                                }}
+                                className="hover:bg-heading-fill p-2 rounded-full"
+                              >
+                                <TiCancel color="red" size={30} />
+                              </button>
+                            </>
+                          )}
+                        </>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : null}
+            </>
+          ) : (
             <p className="grid  place-content-center w-full h-full text-main-text">
               No New Notifications.
             </p>
-          ) : (
-            <div className="py-2 space-y-2">
-              {NotificationList.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
-                >
-                  <a href="#" className="flex space-x-6 w-full">
-                    <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
-                      <Image
-                        src="/avatar1.png"
-                        alt="tmp"
-                        width={40}
-                        height={40}
-                      />
-                      <h1 className="truncate max-w-[70px] pt-4">
-                        {item.sender.login}
-                      </h1>
-                      <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
-                    </div>
-                    <div className="truncate w-3/5 py-1 pt-4 max-w-[200px]">
-                      {item.content}
-                    </div>
-                    <div className="w-1/5 grow py-1 pt-4 text-end pr-2 text-dimmed-text">
-                      {item.recivedAt}
-                    </div>
-                  </a>
-                </div>
-              ))}
-            </div>
           )}
         </div>
       )}

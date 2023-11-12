@@ -10,6 +10,8 @@ type TGameColor = {
   isQueue: boolean;
   inviter: string;
   invitee: string;
+  isAccepted: boolean;
+  clicked: boolean;
 
   setBallColor: (ballColor: string) => void;
   setRacketColor: (racketColor: string) => void;
@@ -17,7 +19,10 @@ type TGameColor = {
   setIsQueue: (isQueue: boolean) => void;
   setInviter: (inviter: string) => void;
   setInvitee: (invitee: string) => void;
+  setIsAccepted: (isAccepted: boolean) => void;
+  setClicked: (clicked: boolean) => void;
 };
+1;
 
 export const useGameColor = create<TGameColor>((set) => ({
   ballColor: "0xd0f223",
@@ -26,6 +31,8 @@ export const useGameColor = create<TGameColor>((set) => ({
   isQueue: false,
   invitee: "Default",
   inviter: "Default",
+  isAccepted: false,
+  clicked: false,
 
   setBallColor: (ballColor: string) => set({ ballColor }),
   setRacketColor: (racketColor: string) => set({ racketColor }),
@@ -33,16 +40,23 @@ export const useGameColor = create<TGameColor>((set) => ({
   setIsQueue: (isQueue: boolean) => set({ isQueue }),
   setInviter: (inviter: string) => set({ inviter }),
   setInvitee: (invitee: string) => set({ invitee }),
+  setIsAccepted: (isAccepted: boolean) => set({ isAccepted }),
+  setClicked: (clicked: boolean) => set({ clicked }),
 }));
 
 type SocketState = {
   currentSocket: Socket;
+  isNewNotification: string;
   setCurrentSocket: (socket: any) => void;
+  setIsNewNotification: (isNewNotification: string) => void;
 };
 
 export const useSocket = create<SocketState>((set) => ({
   currentSocket: {} as Socket,
+  isNewNotification: "hidden",
   setCurrentSocket: (currentSocket: Socket) => set({ currentSocket }),
+  setIsNewNotification: (isNewNotification: string) =>
+    set({ isNewNotification }),
 }));
 
 // ---------------------------------------------------------------------------------------------

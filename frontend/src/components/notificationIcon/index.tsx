@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { Socket, io } from "socket.io-client";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { getUserData } from "../../../services/user";
-import { useSocket } from "@/context/store";
+import { useGameColor, useSocket } from "@/context/store";
 
 const fetchData = async (activeUser: string | null) => {
   try {
@@ -49,16 +49,26 @@ export default function NotificationIcon() {
   };
 
   const [notifications, setNotifications] = useState<NotificationItems[]>([]);
+  const [gameInviteNotifications, setGameInviteNotifications] = useState<
+    NotificationItems[]
+  >([]);
 
   const { data: sessions } = useSession();
   const [userData, setUserData] = useState<string>("");
   const [newNotification, setNewNotification] = useState<boolean>(false);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const { currentSocket, setCurrentSocket } = useSocket();
+  const {
+    currentSocket,
+    setCurrentSocket,
+    isNewNotification,
+    setIsNewNotification,
+  } = useSocket();
 
-  function playSound(url: string) {
+  const { clicked, setClicked } = useGameColor();
+
+  async function playSound(url: string) {
     const audio = new Audio(url);
-    audio.play();
+    await audio.play();
   }
 
   useEffect(() => {
@@ -74,6 +84,7 @@ export default function NotificationIcon() {
       socket.on("newNotif", (data) => {
         setNewNotification(true);
         playSound("notif.m4a");
+        setIsNewNotification("");
       });
 
       return () => {
@@ -99,14 +110,31 @@ export default function NotificationIcon() {
   useEffect(() => {
     if (session) {
       fetchData(activeUser).then((data) => {
-        setNotifications(data);
+        setNotifications(
+          data.filter(
+            (items: NotificationItems) =>
+              items.content !== "GameInvite_Recieved"
+          )
+        );
+        setGameInviteNotifications(
+          data.filter(
+            (items: NotificationItems) =>
+              items.content === "GameInvite_Recieved"
+          )
+        );
+        // console.log("gameInvites: ", gameInviteNotifications);
+        // console.log("notifications: ", notifications);
         setNewNotification(false);
+        setClicked(false);
       });
     }
-  }, [activeUser, session, newNotification]);
+  }, [activeUser, session, newNotification, clicked]);
   return (
     <div className=" flex  justify-between w-17 h-17 bg-heading-fill rounded-t-2xl border-b-[1px] border-heading-stroke p-2">
-      <NotificationDropdown NotificationList={notifications} />
+      <NotificationDropdown
+        NotificationList={notifications}
+        GameInviteNotificationList={gameInviteNotifications}
+      />
       <h1>
         <span className="text-yellow-300 text-stroke-3 ">Spin</span>
         <span className="text-main-text">Masters</span>
