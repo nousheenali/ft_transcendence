@@ -14,7 +14,7 @@ import { GameService } from './game.service';
 import { UserService } from 'src/user/user.service';
 import { GameDto } from './dto/game.dto';
 import { GameStatus } from '@prisma/client';
-import { GameRoom, JoinWaitingRoom, Player, UpdateSpritePositions, WaitingRoom, WorldDimensions } from './types';
+import { GameOver, GameRoom, JoinWaitingRoom, Player, UpdateSpritePositions, WaitingRoom, WorldDimensions } from './types';
 
 @WebSocketGateway(8005, { cors: { origin: 'http://localhost:3000' } })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -49,7 +49,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (gm.players.length === 2) {
           const otherPlyr =
             gm.players[0].id === client.id ? gm.players[1] : gm.players[0];
-          if (!gm.gameOver)
+          if (!gm.gameOver) //in case of a disconnection
             this.gameLogicService.updateResults(
               this.server,
               gm,
@@ -142,10 +142,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         );
         console.log(`Player joined waiting room: ${client.id}`);
       } //if inviter disconnects before invitee joins
-      else
+      else{
+        const data: GameOver = {
+          message: 'Other Player Disconnected',
+          name: null,
+          p0_score: 0,
+          p1_score: 0,
+        };
         this.server
           .to(client.id)
-          .emit('gameOver', 'Other Player Disconnected', null);
+          .emit('gameOver', data);
+
+      }
     }
   }
 
@@ -220,7 +228,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
 
         // Handle wall collisions
-        if (gm.ballPosition.x < buffer) {
+        if (gm.ballPosition.x < buffer && gm.ballVelocity.x < 0) {
           this.gameLogicService.emitHitPaddle(gm, this.server, false);
           gm.ballVelocity.x *= -1; // Reverse the x velocity for left and right wall
           gm.players[0].score += 1;
@@ -232,7 +240,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
               gm.players[1],
             );
         }
-        if (gm.ballPosition.x > gm.worldWidth - buffer) {
+        if (
+          gm.ballPosition.x > gm.worldWidth - buffer &&
+          gm.ballVelocity.x > 0
+        ) {
           this.gameLogicService.emitHitPaddle(gm, this.server, false);
           gm.ballVelocity.x *= -1;
           gm.players[1].score += 1;

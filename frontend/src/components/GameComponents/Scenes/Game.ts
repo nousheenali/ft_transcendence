@@ -58,10 +58,6 @@ export default class Game extends Scene {
       /* update game room sprite positions on server*/
       this.initilaiseSprites(ballWidth);
 
-      /* For ball to collide with the paddles */
-      this.physics.add.collider(this.ball, this.player[0]);
-      this.physics.add.collider(this.ball, this.player[1]);
-
       /* Setup keyboard keys to use */
       this.addKeys();
 
@@ -74,7 +70,8 @@ export default class Game extends Scene {
 
   update() {
     /*check if space is pressed and game not started yet*/
-    if (this.keys.space.isDown && !this.gameStarted) this.initilaiseGame();
+    if (this.keys.space.isDown && !this.gameStarted) 
+      this.initilaiseGame();
 
     /*space pressed and game started */
     if (this.gameStarted) {

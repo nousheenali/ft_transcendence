@@ -43,6 +43,14 @@ export interface JoinWaitingRoom {
   accept: boolean;
 }
 
+
+export interface joiningData {
+  roomID: string;
+  p0Name: string;
+  p1Name: string;
+  worldDimensions: WorldDimensions;
+};
+
 export interface SpritePosition {
   x: number;
   y: number;

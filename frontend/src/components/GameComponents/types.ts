@@ -20,3 +20,15 @@ export interface BallPosition {
   p0_score: number; //player0 score
   p1_score: number; //player1 score
 }
+
+export interface WorldDimensions {
+  width: number;
+  height: number;
+}
+
+export interface joiningData {
+  roomID: string;
+  p0Name: string;
+  p1Name: string;
+  worldDimensions: WorldDimensions;
+};

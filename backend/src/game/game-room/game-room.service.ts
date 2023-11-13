@@ -31,7 +31,7 @@ export class GameRoomService {
       },
       worldWidth: refPlayer.worldWidth,
       worldHeight: refPlayer.worldHeight,
-      ballVelocity: { x: 4, y: 2 },
+      ballVelocity: { x: 5, y: 2.5 },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,

@@ -5,7 +5,7 @@ import { PlayerService } from '../player/player.service';
 import { GameService } from '../game.service';
 import { GameStatus } from '@prisma/client';
 import { Server } from 'socket.io';
-import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions } from '../types';
+import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions, joiningData } from '../types';
 
 @Injectable()
 export class GameLogicService {
@@ -21,12 +21,14 @@ export class GameLogicService {
     p0: Player,
     p1: Player,
   ) {
-    const data = {
+    const data: joiningData = {
       roomID: room.roomID,
       p0Name: p0.name,
       p1Name: p1.name,
-      worldWidth: room.worldWidth,
-      worldHeight: room.worldHeight,
+      worldDimensions :{
+        width: room.worldWidth,
+        height: room.worldHeight,
+      }
     };
     server.to(p0.id).emit('matched', data);
     server.to(p1.id).emit('matched', data);
@@ -108,7 +110,7 @@ export class GameLogicService {
   ) {
     let winner = null;
     let loser = null;
-    //there will be winner /loser only if the game started
+    //there will be winner/loser only if the game started
     if (gm.gameStarted) {
       winner = otherPlyr.name;
       loser = player.name;
@@ -119,9 +121,15 @@ export class GameLogicService {
       winner,
       loser,
     );
+    const data: GameOver = {
+      message: 'Other Player Disconnected',
+      name: (winner === null)? null : winner,
+      p0_score: gm.players[0].score,
+      p1_score: gm.players[1].score,
+    };
     server
       .to(otherPlyr.id)
-      .emit('gameOver', 'Other Player Disconnected', winner);
+      .emit('gameOver', data);
     this.gameRoomService.removeGameRoom(gm.roomID);
   }
 }

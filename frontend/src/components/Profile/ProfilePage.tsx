@@ -25,7 +25,7 @@ import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
 
-const ProfilePage: React.FC<ProfilePageProps> = () => {
+const ProfilePage = () => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
