@@ -43,6 +43,11 @@ export class ChannelService {
    * delete channel
    */
   async DeleteChannel(id: string) {
+    await this.prisma.messages.deleteMany({
+      where: {
+        channelId: id,
+      },
+    })
     await this.prisma.channelRelation.deleteMany({
       where: {
         channelId: id,
@@ -135,6 +140,7 @@ export class ChannelService {
                 select: {
                   channelName: true,
                   channelType: true,
+                  createdBy: true,
                 },
               },
             },
@@ -177,6 +183,7 @@ export class ChannelService {
                 select: {
                   channelName: true,
                   channelType: true,
+                  createdBy: true,
                 },
               },
             },

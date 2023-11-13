@@ -15,16 +15,22 @@ export class ChannelRelationService {
    * @returns
    */
   async isRelationExist(channelId: string, userId: string) {
-    return await this.prisma.channelRelation
-      .findMany({
-        where: {
-          channelId: channelId,
-          userId: userId,
-        },
-      })
-      .then((channelRelations) => {
-        return channelRelations.length > 0;
-      });
+    try {
+      return await this.prisma.channelRelation
+        .findMany({
+          where: {
+            channelId: channelId,
+            userId: userId,
+          },
+        })
+        .then((channelRelations) => {
+          return channelRelations.length > 0;
+        });
+    } catch (error) {
+      throw new BadRequestException(
+        'UNABLE TO CHECK IF THE USER IS A MEMBER OF THE CHANNEL',
+      );
+    }
   }
   /** -------------------------------------------------------------------------------------------
    * 👉 Creates a new channel relation between a user table and a channel.

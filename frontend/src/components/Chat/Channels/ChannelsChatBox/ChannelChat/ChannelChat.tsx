@@ -29,6 +29,8 @@ const extractMessagesFromChannel = (channel: ChannelsProps) => {
         setMessages(channelMessages);
       };
       fetchData();
+    } else {
+      setMessages([]);
     }
   }, [user, channel, sentMessage, receivedMessage]);
 

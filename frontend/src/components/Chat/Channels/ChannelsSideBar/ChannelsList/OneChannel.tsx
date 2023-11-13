@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import React, { useState } from "react";
+import { Socket } from "socket.io-client";
 import "react-toastify/dist/ReactToastify.css";
 import { ChannelsProps } from "../../../types";
 import { activateClickedChannel, useChatSocket } from "@/context/store";
@@ -48,21 +49,35 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
  **├ 👇 pressing the button will join the channel, by creating a relation between the user and the channel.
  **└── 🌼
  **/
+
+const handleJoinClick = ({
+  channel,
+  socket,
+}: {
+  channel: ChannelsProps;
+  socket: Socket;
+}) => {
+  console.log("inside handleClick");
+  if (channel.channelType === "PRIVATE") {
+    console.log("Join private channel not implemented yet!!!");
+  } else if (channel.channelType === "PUBLIC") {
+    socket.emit("JoinChannel", {
+      channelName: channel.channelName,
+      channelType: channel.channelType,
+    });
+    toast.success(`You have joined ${channel.channelName} channel`, {
+      autoClose: 1000,
+    });
+  }
+};
+/** ----------------------------------------------------------------------------------- **/
 const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
   const { socket } = useChatSocket();
 
   return (
     <div
       className="flex flex-row  gap-5 pr-2"
-      onClick={() => {
-        socket.emit("JoinChannel", {
-          channelName: channel.channelName,
-          channelType: channel.channelType,
-        });
-        toast.success(`You have joined ${channel.channelName} channel`, {
-          autoClose: 1000,
-        });
-      }}
+      onClick={() => handleJoinClick({ channel, socket })}
     >
       <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
         <Image

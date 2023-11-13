@@ -1,18 +1,57 @@
 import Image from "next/image";
-import { MdGroupOff } from "react-icons/md";
-import { ChannelsProps } from "../../../types";
-import { activateClickedChannel } from "@/context/store";
+import { AuthContext } from "@/context/AuthProvider";
+import { activateClickedChannel, useChatSocket } from "@/context/store";
+import { getUserData } from "../../../../../../services/user";
+import { userInformation } from "@/components/Profile/types";
+import React, { useState, useEffect, useContext } from "react";
+import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
+import { ChannelsProps } from "@/components/Chat/types";
+import { Socket } from "socket.io-client";
+
+const handleInviteUser = ({
+  socket,
+  user,
+  channel,
+}: {
+  socket: Socket;
+  user: string;
+  channel: ChannelsProps;
+}) => {
+  socket.emit("InviteUserToChannel", {
+    channelName: channel.channelName,
+    channelType: channel.channelType,
+    invitedUserName: user,
+  });
+};
 
 export default function ChannelChatBoxHeader() {
+  const { user } = useContext(AuthContext);
   const { activeChannel } = activateClickedChannel();
+  const [invitedUser, setInvitedUser] = useState<string>("");
+  const [currectUser, setCurrectUser] = useState<userInformation>();
+  const { socket } = useChatSocket();
 
-  if (activeChannel.channelName === undefined)
+  useEffect(() => {
+    if (user && user.login) {
+      const fetchData = async () => {
+        const userData: userInformation = await getUserData(
+          user.login,
+          API_ENDPOINTS.getUserbyLogin
+        );
+        setCurrectUser(userData);
+      };
+      fetchData();
+    }
+  }, [user, user.login]);
+
+  if (!activeChannel || !activeChannel.channelName || !currectUser)
     return (
       <div
         className="indicator w-full h-32 flex items-center rounded-xl bg-main-theme text-main-texts 
                  border-b border-main-yellow px-3"
       ></div>
     );
+
   return (
     <div
       className="indicator w-full h-32 flex items-center rounded-xl bg-main-theme text-main-texts 
@@ -39,19 +78,38 @@ export default function ChannelChatBoxHeader() {
         </div>
       </div>
 
-      {activeChannel.channelType === "PRIVATE" && (
-        <div className="flex flex-row  gap-5 px-3">
-          <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
-            <Image
-              alt={"invite"}
-              src={"./chat/user-cirlce-add.svg"}
-              width={45}
-              height={45}
+      {activeChannel.channelType === "PRIVATE" &&
+        currectUser.id === activeChannel.createdBy && (
+          <div className="flex flex-row  gap-5 px-3">
+            <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+              <Image
+                alt={"invite"}
+                src={"./chat/user-cirlce-add.svg"}
+                width={45}
+                height={45}
+              />
+              <span
+                className=" text-main-text text-sm font-light"
+                onClick={() => {
+                  handleInviteUser({
+                    socket: socket,
+                    user: invitedUser,
+                    channel: activeChannel,
+                  });
+                }}
+              >
+                INVITE
+              </span>
+            </button>
+            <input
+              type="text"
+              placeholder="User's Name"
+              value={invitedUser}
+              onChange={(e) => setInvitedUser(e.target.value)}
+              className="border border-main-yellow  p-2 bg-box-fill rounded-xl text-main-text font-thin"
             />
-            <span className=" text-main-text text-sm font-light">INVITE</span>
-          </button>
-        </div>
-      )}
+          </div>
+        )}
     </div>
   );
 }

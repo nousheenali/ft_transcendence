@@ -181,16 +181,6 @@ export class ChatGateway
       'CHANNELS',
     );
 
-    // if (channelRoom === undefined) {
-    //   this.server.to(userLogin).emit('ChannelNotExist', {
-    //     channelName: channelName,
-    //     channelType: channelType,
-    //   });
-    //   throw new HttpException(
-    //     'Channel does not exist, please create the channel first',
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
     /**-------------------------------------------------------------------------**/
     
     // ❂➤join the user socket to the channel room
@@ -216,6 +206,78 @@ export class ChatGateway
     this.roomsService.printAllRooms();
   }
 
+  /** ================================================================================================
+   * ❂➤ Handling InviteUserToChannel event by subscribing to the event "InviteUserToChannel" then:
+   * 1. Search for the user in the database, if the user does not exist, emit message to the client
+   *   to notify the user that 
+   *      # the user does not exist, or 
+   *      # the user exists but the user is already
+   *        in the channel
+   * 
+   * If the user exists and the user is not in the channel:
+   * ## . join the user socket to the channel room
+   * ## . Create a relation between the user and the channel in the database
+   * ## . Emit the message to the channel room to notify the other users that the user has joined the
+   *  channel
+   * ## . Emit the message to the client to notify the user that the user has joined the channel
+   **/
+
+  @SubscribeMessage('InviteUserToChannel')
+  async inviteUserToChannel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: { channelName: string; channelType: string, invitedUserName: string }
+  ) {
+    const {
+      channelName,
+      channelType,
+      invitedUserName,
+    } = data;
+    if (channelType === 'PRIVATE') {
+      const user = await this.userService.getUserByLogin(invitedUserName);
+
+      // ❂➤ if the user does not exist, emit message to the client to notify the user 
+      //    that the user does not exist
+      if (user === undefined) {
+        client.emit('UserNotExists');
+        return;
+      }
+      // ❂➤ if the user exists, check if the user is already in the channel
+      else if (await this.channelRelationService.isRelationExist(user.id, channelName) === false) {
+        client.emit('UserAlreadyInChannel');
+        return;
+      }
+      // ❂➤ if the user exists and the user is not in the channel:
+      else {
+        // ❂➤ get the channel room
+        const channelRoom = this.roomsService.getRoom(
+          channelName + channelType,
+          'CHANNELS',
+        );
+        // ❂➤ join the user socket to the channel room
+        this.roomsService.joinRoom(channelRoom.name, user.login, client, 'CHANNELS');
+
+        // ❂➤ create channel relation in the database between the user and the channel
+        // await this.channelRelationService.createChannelRelation({
+        //   userId: user.id,
+        //   channelId: channelRoom.id,
+        // });
+
+        // ❂➤ Emitting the message to the channel room to notify the other users that the user has joined the channel
+        this.server.to(channelRoom.name).emit('JoinChannel', {
+          newJoiner: user.name,
+          channelName: channelName,
+          channelType: channelType,
+        });
+
+        // ❂➤ Emitting the message to the client to notify the user that the user has joined the channel
+        client.emit('UserJoinedChannel', {
+          channelName: channelName,
+          channelType: channelType,
+        });
+      }
+    }
+  }
   /** ================================================================================================
    * ❂➤ Handling creating room for the channel when creating new channel by subscribing to the event
    * "CreateChannel" then:
