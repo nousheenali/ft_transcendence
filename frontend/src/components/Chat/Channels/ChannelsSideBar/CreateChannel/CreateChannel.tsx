@@ -6,7 +6,6 @@ import ChannelTypeDD from "./ChannelTypeDD/ChannelTypeDD";
 import {
   useChannelCreateValidate,
   useChannelInfo,
-  useNewChanelState,
   useChatSocket,
 } from "@/context/store";
 import { toast } from "react-toastify";
@@ -18,7 +17,6 @@ import { CreateChannelItems } from "@/components/Chat/ChannelsSideBar/CreateChan
 
 export default function CreateChannel({ userLogin }: { userLogin: string }) {
   const { socket } = useChatSocket();
-  const { setNewChannel } = useNewChanelState();
   const modalRef = useRef<HTMLDialogElement>(null);
   const [data, setData] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -79,7 +77,6 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
       });
       console.log("The creater is: ", newChannel.createdBy);
       // glopal value to re-render the channel list
-      setNewChannel(true);
       toast.success("Channel created successfully");
     } catch (error: any) {
       setChannelName("");

@@ -7,8 +7,8 @@ import { AuthContext } from "@/context/AuthProvider";
 import {
   useChatSocket,
   useReceivedMessageState,
-  useChannelUsersState,
-  useLeaveChannelState,
+  useReRenderAllState,
+  useReRenderUserState
 } from "@/context/store";
 import { toast } from "react-toastify";
 /**
@@ -24,8 +24,8 @@ export default function ChatSocket({
   const { user } = useContext(AuthContext);
   const { socket, setSocket } = useChatSocket();
   const { setReceivedMessage } = useReceivedMessageState();
-  const { setUserJoined } = useChannelUsersState();
-  const { setUserLeft } = useLeaveChannelState();
+  const { setReRenderAll } = useReRenderAllState();
+  const { setReRenderUser } = useReRenderUserState();
   /**
    * ❂➤ This useEffect is used to initialize the socket connection with the server,
    * without any dependency, so it will be called only once.
@@ -75,15 +75,24 @@ export default function ChatSocket({
 
       socket.on("JoinChannel", (data) => {
         // TODO // Display message on the channel that new user joined.
-        setUserJoined(true);
-        console.log(data);
+        console.log("User joined the channel: ", data);
+        setReRenderAll(true);
       });
+      /**-------------------------------------------------------------------------**/
+      socket.on("ChannelCreated", (data) => {
+        setReRenderAll(true);
+      });
+      /**-------------------------------------------------------------------------**/
+      socket.on("ChannelDeleted", (data) => {
+        setReRenderAll(true);
+      });
+
       /**-------------------------------------------------------------------------**/
 
       socket.on("LeaveChannel", (data) => {
         // TODO // Display message on the channel that user has left.
-        setUserLeft(true); // here just to trigger the useEffect in the channel component.
-        console.log("LeaveChannel: ", data);
+        console.log("User left the channel: ", data);
+        setReRenderAll(true); // here just to trigger the useEffect in the channel component.
       });
       /**-------------------------------------------------------------------------**/
 
@@ -103,6 +112,9 @@ export default function ChatSocket({
         socket.off("reconnect");
         socket.off("disconnect");
         socket.off("JoinChannel");
+        socket.off("LeaveChannel");
+        socket.off("ChannelCreated");
+        socket.off("ChannelDeleted");
         socket.off("ServerToClient");
         socket.off("ServerToChannel");
       };

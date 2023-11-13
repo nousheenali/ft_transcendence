@@ -7,11 +7,12 @@ import { getChannelsData } from "../../../../../../services/channels";
 import {
   useChannelType,
   activateClickedChannel,
-  useChannelUsersState,
-  useNewChanelState,
-  useLeaveChannelState,
+  useReRenderAllState,
+  useReRenderUserState
 } from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
+
+
 /**============================================================================================*/
 
 export default function Channels() {
@@ -19,9 +20,8 @@ export default function Channels() {
   const [isLoading, setLoading] = useState(true);
   const { activeChannelType } = useChannelType();
   const { setActiveChannel } = activateClickedChannel();
-  const { userJoined, setUserJoined } = useChannelUsersState();
-  const { newChannel, setNewChannel } = useNewChanelState();
-  const { leftChannel, setUserLeft } = useLeaveChannelState();
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
+  const { reRenderUser, setReRenderUser } = useReRenderUserState();
 
   const [allPrivateChannels, setAllPrivateChannels] = useState<ChannelsProps[]>(
     []
@@ -71,13 +71,12 @@ export default function Channels() {
         setJoinedPrivateChannels(privateChannels);
 
         setLoading(false);
-        if (userJoined) setUserJoined(false);
-        if (newChannel) setNewChannel(false);
-        if (leftChannel) setUserLeft(false);
+        if (reRenderUser) setReRenderUser(false);
+        if (reRenderAll) setReRenderAll(false);
       };
       fetchData();
     }
-  }, [user, userJoined, newChannel, leftChannel]);
+  }, [user, reRenderUser, reRenderAll]);
 
   /**
    **╭── 🌼

@@ -315,6 +315,7 @@ export class ChannelService {
   async updateChannelAdmin(channelId: string) {
     try {
       const newAdminId = await this.getNewChannelAdminId(channelId);
+      if (!newAdminId) throw new Error('New admin not found');
       await this.prisma.channel.update({
         where: {
           id: channelId,

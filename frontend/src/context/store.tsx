@@ -182,51 +182,39 @@ export const useSentMessageState = create<SentMessageState>((set) => ({
 
 /**==============================================================================================
  * ╭── 🌼
- * ├ 👇 State to handle if some user joined the channel globaly
+ * ├ 👇 State to handle re rendering to all the users globally
  * └── 🌼
  **/
-type ChannelUsersState = {
-  userJoined: boolean;
-  setUserJoined: (userJoined: boolean) => void;
+type ReRenderAllState = {
+  reRenderAll: boolean;
+  setReRenderAll: (reRenderAll: boolean) => void;
 };
 
-export const useChannelUsersState = create<ChannelUsersState>((set) => ({
-  userJoined: false,
-  setUserJoined: (userJoined: boolean) => set({ userJoined }),
+export const useReRenderAllState = create<ReRenderAllState>((set) => ({
+  reRenderAll: false,
+  setReRenderAll: (reRenderAll: boolean) => set({ reRenderAll }),
 }));
 
 /**==============================================================================================
  * ╭── 🌼
- * ├ 👇 State to handle if the user joined the channel globaly
+ * ├ 👇 State to handle re rendering to the user globally
  * └── 🌼
  **/
-type NewChannelType = {
-  newChannel: boolean;
-  setNewChannel: (newChannel: boolean) => void;
+type ReRenderUserState = {
+  reRenderUser: boolean;
+  setReRenderUser: (reRenderUser: boolean) => void;
 };
 
-export const useNewChanelState = create<NewChannelType>((set) => ({
-  newChannel: false,
-  setNewChannel: (newChannel: boolean) => set({ newChannel }),
+export const useReRenderUserState = create<ReRenderUserState>((set) => ({
+  reRenderUser: false,
+  setReRenderUser: (reRenderUser: boolean) => set({ reRenderUser }),
 }));
+
 /**==============================================================================================
  * ╭── 🌼
- * ├ 👇 State to handle if the user left the channel globaly
+ * ├ 👇 a global store for the create channel state
+ * ├    (channel name and password)
  * └── 🌼
- **/
-type LeaveChannelType = {
-  leftChannel: boolean;
-  setUserLeft: (leftChannel: boolean) => void;
-};
-
-export const useLeaveChannelState = create<LeaveChannelType>((set) => ({
-  leftChannel: false,
-  setUserLeft: (leftChannel: boolean) => set({ leftChannel }),
-}));
-/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
-/**
- * a global store for the create channel state 
- * (channel name and password)
  */
 
 type TCreateChannelValidate = {

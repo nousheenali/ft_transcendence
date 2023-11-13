@@ -2,7 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { MessagesProps } from "@/components/Chat/types";
 import { getMessages } from "../../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
-import { useReceivedMessageState } from "../../../../../../context/store";
+import {
+  activateClickedTab,
+  useReceivedMessageState,
+  activateClickedFriend,
+} from "../../../../../../context/store";
 import Message from "@/components/Chat/Friends/FriendsSideBar/LatesMessages/Message/Message";
 import { AuthContext } from "@/context/AuthProvider";
 
@@ -11,6 +15,7 @@ export default function MessagesList() {
   const [isLoading, setLoading] = useState(true);
   const { receivedMessage } = useReceivedMessageState();
   const [latestMessages, setLatestMessages] = useState<MessagesProps[]>([]);
+  const { setActiveFriend } = activateClickedFriend();
 
   useEffect(() => {
     if (user && user.login) {
@@ -25,6 +30,17 @@ export default function MessagesList() {
       fetchData();
     }
   }, [user, receivedMessage]);
+
+  /**
+   **╭── 🌼
+   **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
+   **└── 🌼
+   **/
+  useEffect(() => {
+    if (latestMessages.length > 0) {
+      setActiveFriend(latestMessages[0].sender.login);
+    }
+  }, [latestMessages]);
 
   if (isLoading)
     return (

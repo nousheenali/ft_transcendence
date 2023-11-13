@@ -30,7 +30,7 @@ export class RoomsService {
       return this.userRooms[roomIndex];
     else if (roomIndex !== -1 && roomType === 'CHANNELS')
       return this.channelRooms[roomIndex];
-    // return undefined;
+    return undefined;
   }
 
   // =================================================================================================
@@ -184,8 +184,8 @@ export class RoomsService {
     console.log(chalk.green('👇 Channels Rooms 👇'));
     console.log(channelTable.toString());
 
-    // console.log(chalk.green('👇 Users Rooms 👇'));
-    // console.log(userTable.toString());
+    console.log(chalk.green('👇 Users Rooms 👇'));
+    console.log(userTable.toString());
   }
   // =================================================================================================
 }

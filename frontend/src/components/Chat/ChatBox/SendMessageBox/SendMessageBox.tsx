@@ -5,10 +5,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { userInformation } from "@/components/Profile/types";
-import { useChatSocket, useSentMessageState } from "@/context/store";
+import { useChatSocket, useSentMessageState, useSocket } from "@/context/store";
 import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
-import { AuthContext } from '@/context/AuthProvider';
-
+import { AuthContext } from "@/context/AuthProvider";
+import { sendNotification } from "../../../../../services/friends";
+import { Content } from "@/components/notificationIcon/types";
 //========================================================================
 export default function SendMessageBox({
   receiver,
@@ -17,6 +18,7 @@ export default function SendMessageBox({
 }) {
   const { user } = useContext(AuthContext);
   const { socket } = useChatSocket();
+  const { currentSocket } = useSocket();
   const { setSentMessage } = useSentMessageState();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
@@ -65,7 +67,6 @@ export default function SendMessageBox({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
   /**
    **╭── 🌼
    **├ 👇 send message to the server and then to the receiver.
@@ -102,12 +103,7 @@ export default function SendMessageBox({
       };
       socket.emit("ClientToServer", data);
       setSentMessage(data);
-    }
-    else if (
-      "channelName" in receiver &&
-      socket &&
-      user.login
-    ) {
+    } else if ("channelName" in receiver && socket && user.login) {
       // It's a channel
       let data: SocketMessage = {
         socketId: socket.id,
@@ -119,6 +115,8 @@ export default function SendMessageBox({
       socket.emit("ChannelToServer", data);
       setSentMessage(data);
     }
+    if ("login" in receiver && currentSocket)
+      sendNotification(user.login, receiver.login, Content.DirectMessage_Recieved ,currentSocket);
     setCurrentMessage("");
   };
 
@@ -130,14 +128,14 @@ export default function SendMessageBox({
 
   useEffect(() => {
     const listener = (event: any) => {
-      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
         sendMessage();
       }
     };
-    document.addEventListener('keydown', listener);
+    document.addEventListener("keydown", listener);
     return () => {
-      document.removeEventListener('keydown', listener);
+      document.removeEventListener("keydown", listener);
     };
   }, [currentMessage]);
 

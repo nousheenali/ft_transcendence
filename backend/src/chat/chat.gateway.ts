@@ -177,8 +177,19 @@ export class ChatGateway
       channelName + channelType,
       'CHANNELS',
     );
-    /**-------------------------------------------------------------------------**/
 
+    // if (channelRoom === undefined) {
+    //   this.server.to(userLogin).emit('ChannelNotExist', {
+    //     channelName: channelName,
+    //     channelType: channelType,
+    //   });
+    //   throw new HttpException(
+    //     'Channel does not exist, please create the channel first',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    /**-------------------------------------------------------------------------**/
+    
     // ❂➤join the user socket to the channel room
     this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
 
@@ -237,6 +248,13 @@ export class ChatGateway
     );
 
     /**-------------------------------------------------------------------------**/
+    // ❂➤ Emitting message to all the user to re-render the channels list
+    this.server.emit('ChannelCreated', {
+      channelName: channelName,
+      channelType: channelType,
+    });
+
+    /**-------------------------------------------------------------------------**/
     // ❂➤ Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
   }
@@ -268,17 +286,18 @@ export class ChatGateway
       channelName + channelType,
       'CHANNELS',
     );
+    this.server.to(channelRoom.name).emit('LeaveChannel', {
+      leaver: userData.login,
+      channelName: channelName,
+      channelType: channelType,
+    });
+
     this.roomsService.leaveRoom(
       channelRoom.name,
       userData.login,
       client,
       'CHANNELS',
     );
-    this.server.to(channelRoom.name).emit('LeaveChannel', {
-      leaver: userData.login,
-      channelName: channelName,
-      channelType: channelType,
-    });
 
     /**-------------------------------------------------------------------------**/
 
@@ -291,6 +310,18 @@ export class ChatGateway
         channelData.id,
       );
 
+      // ❂➤ Delete the channel if the channel has no members, then emit message to all the users
+      //    to re-render the channels list
+      const channelRelations = await this.channelRelationService.findChannelMembers(channelData.id);
+      if (channelRelations.length === 0) {
+        await this.channelService.DeleteChannel(channelData.id);
+        this.server.emit('ChannelDeleted', {
+          channelName: channelName,
+          channelType: channelType,
+        });
+        this.roomsService.printAllRooms();
+        return;
+      }
       // ❂➤ If the user is the admin, assign the new admin by selecting the oldest member
       //    in the channel
       await this.channelService.updateChannelAdmin(channelData.id);
@@ -300,6 +331,16 @@ export class ChatGateway
         userData.id,
         channelData.id,
       );
+      // ❂➤ If this is the last relation, the channel will be deleted. then emit message to every user
+      //    to re-render the channels list
+      const channelRelations = await this.channelRelationService.findChannelMembers(channelData.id);
+      if (channelRelations.length === 0) {
+        await this.channelService.DeleteChannel(channelData.id);
+        this.server.emit('ChannelDeleted', {
+          channelName: channelName,
+          channelType: channelType,
+        });
+      }
     }
     /**-------------------------------------------------------------------------**/
     // ❂➤ Printing the rooms array to the console for debugging

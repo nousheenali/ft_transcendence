@@ -5,7 +5,7 @@ import { Socket } from "socket.io-client";
 import { sendNotificationSound } from "@/components/notificationIcon";
 
 // a function to send a notification to a user, now used for a friend request, can be used for all differnt types of notifications
-const sendNotification = async (
+export const sendNotification = async (
   senderId: string,
   userId: string,
   content: Content,

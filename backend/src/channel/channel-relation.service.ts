@@ -116,17 +116,6 @@ export class ChannelRelationService {
             channelId: channelID,
           },
         });
-
-        const channelRelations = await this.findChannelMembers(channelID);
-
-        if (channelRelations.length === 0) {
-          return await this.prisma.channel.delete({
-            where: {
-              id: channelID,
-            },
-          });
-        }
-
         return;
       }
     } catch (error) {
