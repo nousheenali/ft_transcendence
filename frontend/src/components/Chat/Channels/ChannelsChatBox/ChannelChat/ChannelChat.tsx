@@ -2,7 +2,7 @@ import Sender from "./Senders/Senders";
 import Receiver from "./Receiver/Receiver";
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { ChannelsProps, MessagesProps } from "../../../types";
-import { activateClickedChannel } from "@/context/store";
+import { activateClickedChannel, useSentMessageState, useReceivedMessageState } from "@/context/store";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelMessagesData } from "../../../../../../services/channels";
 import { AuthContext } from "@/context/AuthProvider";
@@ -11,7 +11,8 @@ import { AuthContext } from "@/context/AuthProvider";
 const extractMessagesFromChannel = (channel: ChannelsProps) => {
   const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState<MessagesProps[]>([]);
-
+  const { sentMessage } = useSentMessageState();
+  const { receivedMessage } = useReceivedMessageState();
   /**
    **╭── 🌼
    **├ 👇 Fetch the private and public channels data from the database
@@ -29,7 +30,7 @@ const extractMessagesFromChannel = (channel: ChannelsProps) => {
       };
       fetchData();
     }
-  }, [user, channel]);
+  }, [user, channel, sentMessage, receivedMessage]);
 
   if (messages === undefined) return undefined;
   messages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));

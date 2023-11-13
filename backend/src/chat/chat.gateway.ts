@@ -72,6 +72,9 @@ export class ChatGateway
     // ❂➤ changing the user status in the database
     this.chatService.updateUserStatus(userLogin, true);
 
+    // ❂➤ Emmit the event "UserStatusUpdate" to all the users to re-render the friends list
+    this.server.emit('UserStatusUpdate');
+
     // ❂➤ If the user login is undefined or null, return
     if (userLogin === undefined || userLogin === null) return;
 
@@ -387,6 +390,7 @@ export class ChatGateway
         chalk.red(' has been disconnected!!'),
     );
     this.chatService.updateUserStatus(userLogin, false);
+    this.server.emit('UserStatusUpdate');
   }
   //================================================================================================
 }

@@ -3,9 +3,9 @@ import { MessagesProps } from "@/components/Chat/types";
 import { getMessages } from "../../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import {
-  activateClickedTab,
   useReceivedMessageState,
   activateClickedFriend,
+  useReRenderAllState,
 } from "../../../../../../context/store";
 import Message from "@/components/Chat/Friends/FriendsSideBar/LatesMessages/Message/Message";
 import { AuthContext } from "@/context/AuthProvider";
@@ -16,6 +16,7 @@ export default function MessagesList() {
   const { receivedMessage } = useReceivedMessageState();
   const [latestMessages, setLatestMessages] = useState<MessagesProps[]>([]);
   const { setActiveFriend } = activateClickedFriend();
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
 
   useEffect(() => {
     if (user && user.login) {
@@ -29,7 +30,7 @@ export default function MessagesList() {
       };
       fetchData();
     }
-  }, [user, receivedMessage]);
+  }, [user, receivedMessage, reRenderAll]);
 
   /**
    **╭── 🌼

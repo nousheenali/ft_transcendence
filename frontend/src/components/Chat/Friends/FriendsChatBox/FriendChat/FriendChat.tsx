@@ -2,11 +2,9 @@
 import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
-import React, { useEffect, useState, useRef, useContext } from "react";
-// import { getUserData } from "../../../../../../services/user";
-// import { userInformation } from "@/components/Profile/types";
 import { getMessages } from "../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
   activateClickedFriend,
   useSentMessageState,
@@ -20,35 +18,9 @@ export default function FriendChat() {
   const { user } = useContext(AuthContext);
   const { sentMessage } = useSentMessageState();
   const { activeFriend } = activateClickedFriend();
-  // const [user, setUser] = useState<userInformation>();
-  // const [friend, setFriend] = useState<userInformation>();
   const { receivedMessage } = useReceivedMessageState();
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
-
-  /**
-   **╭── 🌼
-   **├ 👇 Fetch the user and the friend data from the database
-   **└── 🌼
-   **/
-
-  // useEffect(() => {
-  //   if (sentMessage || receivedMessage) {
-  //     const fetchData = async () => {
-  //       const userData: userInformation = await getUserData(
-  //         session?.data?.user.login!,
-  //         API_ENDPOINTS.getUserbyLogin
-  //       );
-  //       setUser(userData);
-  //       const friendData: userInformation = await getUserData(
-  //         activeFriend!,
-  //         API_ENDPOINTS.getUserbyLogin
-  //       );
-  //       setFriend(friendData);
-  //     };
-  //     fetchData();
-  //   }
-  // }, [session]);
 
   /**
    **╭── 🌼
@@ -89,7 +61,10 @@ export default function FriendChat() {
           message.sender.login === user.login
         ) {
           return <ReceiverChatBox key={index} message={message} />;
-        } else {
+        } else if (
+          activeFriend &&
+          message.sender.login === activeFriend
+        ) {
           return <SenderChatBox key={index} message={message} />;
         }
       })}

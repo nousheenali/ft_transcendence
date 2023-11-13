@@ -87,7 +87,7 @@ export default function SendMessageBox({
     }
 
     // limit the message to 200 characters
-    if (trimmedMessage.length > 100) {
+    if (trimmedMessage.length > 200) {
       toast.error("Message cannot be longer than 200 characters");
       return;
     }

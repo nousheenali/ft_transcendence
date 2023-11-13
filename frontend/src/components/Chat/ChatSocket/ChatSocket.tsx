@@ -86,6 +86,10 @@ export default function ChatSocket({
       socket.on("ChannelDeleted", (data) => {
         setReRenderAll(true);
       });
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserStatusUpdate", () => {
+        setReRenderAll(true);
+      });
 
       /**-------------------------------------------------------------------------**/
 
@@ -98,12 +102,13 @@ export default function ChatSocket({
 
       socket.on("ServerToChannel", (data: SocketMessage) => {
         console.log("Message received from a channel: => ", data);
-        alert(
-          "Message received from : => [" +
-            data.sender +
-            "] : => " +
-            data.message
-        );
+        setReceivedMessage(data);
+        // alert(
+        //   "Message received from : => [" +
+        //     data.sender +
+        //     "] : => " +
+        //     data.message
+        // );
       });
       /**-------------------------------------------------------------------------**/
 
@@ -117,6 +122,7 @@ export default function ChatSocket({
         socket.off("ChannelDeleted");
         socket.off("ServerToClient");
         socket.off("ServerToChannel");
+        socket.off("UserStatusUpdate");
       };
       /**-------------------------------------------------------------------------**/
     } catch (error) {

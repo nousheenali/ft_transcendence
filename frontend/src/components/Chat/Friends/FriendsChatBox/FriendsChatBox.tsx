@@ -3,14 +3,14 @@ import FriendChat from "./FriendChat/FriendChat";
 import { getUserData } from "../../../../../services/user";
 import { userInformation } from "@/components/Profile/types";
 import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
-import { activateClickedFriend } from "../../../../context/store";
+import { activateClickedFriend, useReRenderAllState } from "../../../../context/store";
 import SendMessageBox from "../../ChatBox/SendMessageBox/SendMessageBox";
 import FriendsChatBoxHeader from "./FriendsChatBoxHeader/FriendsChatBoxHeader";
 
 export default function FriendsChatBox() {
   const {activeFriend} = activateClickedFriend();
   const [user, setUser] = React.useState<userInformation>();
-
+  const {reRenderAll, setReRenderAll} = useReRenderAllState();
   useEffect(() => {
     if (activeFriend) {
       const fetchData = async () => {
@@ -21,8 +21,11 @@ export default function FriendsChatBox() {
         setUser(userData);
       };
       fetchData();
+      if (reRenderAll) {
+        setReRenderAll(false);
+      }
     }
-  }, [activeFriend]);
+  }, [activeFriend, reRenderAll]);
 
   return (
     <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
