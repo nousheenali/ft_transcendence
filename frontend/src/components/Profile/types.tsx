@@ -2,8 +2,8 @@
 /*------------ All the Types required in Profile page ---------------*/
 /*-------------------------------------------------------------------*/
 
-import { TableRowData } from "../Table/types";
-import { playerData } from "../commonTypes/types";
+import { TableRowData } from '../Table/types';
+import { playerData } from '../commonTypes/types';
 
 export interface ProfileInfoProps {
   name: string;
@@ -30,14 +30,22 @@ export interface userInformation {
   isOnline: boolean;
   inAGame: boolean;
   score: number;
+  TFAEnabled: boolean;
+  TFAVerified: boolean;
 }
 
-export interface ProfilePageProps{
+export interface ProfilePageProps {
   login: string | undefined;
-};
-
+}
 
 export interface friendRelationDto {
   userLogin: string;
   friendLogin: string;
+}
+
+type DataGeneratorFunction = (login: string) => Promise<TableRowData[]>; 
+
+
+export interface DataGeneratorMap {
+  [key: string]: DataGeneratorFunction;
 }

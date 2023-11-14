@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto';
 import { UserService } from './user.service';
 import { NotFoundError } from 'rxjs';
@@ -48,5 +57,4 @@ export class UserController {
       );
     }
   }
-
 }

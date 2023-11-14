@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import ResponsiveTable from "@/components/Table/Table";
 import GameStatus from "@/components/GameStatus/Gamestatus";
-import InitChatSocket from "@/components/ChatSocket/Socket";
+import InitChatSocket from "@/components/Chat/ChatSocket/ChatSocket";
 import { generateLiveGamesData } from "@/data/Table/liveGames";
 import { generateGameHistoryData } from "@/data/Table/gameHistory";
 
@@ -14,9 +14,6 @@ export default function DashBoardPage() {
 
   const gameHistoryData = generateGameHistoryData();
   const liveGamesData = generateLiveGamesData();
-  
-  // Initialize the socket connection and set the socket
-  InitChatSocket();
 
   return (
     <div className="p-2 h-full flex flex-col mr-[35px]">

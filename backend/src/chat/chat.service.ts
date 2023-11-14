@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  constructor(private prisma: PrismaService) {}
+
+  /** ================================================================================================
+   * ❂➤ Updating the user status in the database
+   * ================================================================================================*/
+  async updateUserStatus(login: string, isOnline: boolean) {
+    await this.prisma.user.update({
+      where: { login: login },
+      data: { isOnline: isOnline },
+    });
   }
 
-  findAll() {
-    return `This action returns all chat`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
-
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
-  }
+  /** ================================================================================================
+   * ❂➤ Getting all the users from the database
+   * ================================================================================================*/
 }

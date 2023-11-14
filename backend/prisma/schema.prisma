@@ -20,12 +20,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isOnline  Boolean  @default(true)
+  refreshToken String?
   inAGame   Boolean  @default(false)
 
   // Two factor authentication-----------------------------------------
   TFAEnabled Boolean @default(false)
   TFAKey     String?
-
+  TFAVerified Boolean @default(false)
   // Relation to notifications-----------------------------------------
   receiverdNotification Notification[] @relation(name: "receiver")
   sentNotification      Notification[] @relation(name: "sender")
@@ -129,6 +130,8 @@ model Channel {
   updatedAt DateTime @updatedAt
 
   channelMembers ChannelRelation[]
+
+  channelPassword String?
 
   Messages Messages[]
 }

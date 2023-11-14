@@ -6,14 +6,14 @@ import { userInformation } from "../Profile/types";
 
 export interface MessagesProps {
   id: integer;
-  senderId: String;
+  senderId: string;
   sender: userInformation;
-  receiverId?: String;
+  receiverId?: string;
   reciever: userInformation;
-  channelId?: String;
+  channelId?: string;
   channel: ChannelsProps;
-  content: String;
-  createdAt: String;
+  content: string;
+  createdAt: string;
 }
 
 /*-------------------------------------------------------------------*/
@@ -49,12 +49,6 @@ export interface ChannelsProps {
 }
 
 /*-------------------------------------------------------------------*/
-export interface ChannelsBtn {
-  activeChannelType: string;
-  setActiveChannelType: React.Dispatch<React.SetStateAction<string>>;
-}
-
-/*-------------------------------------------------------------------*/
 export interface ChatFriendsProps {
   friend: {
     name: string;
@@ -67,9 +61,9 @@ export interface ChatFriendsProps {
 }
 
 /*-------------------------------------------------------------------*/
-export interface Message {
+export interface SocketMessage {
 	socketId: string;
-	username: string;
+	sender: string;
 	receiver?: string;
 	channel?: string;
 	channelType?: string;

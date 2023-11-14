@@ -70,6 +70,32 @@ export class ChannelRelationService {
   }
 
   /** -------------------------------------------------------------------------------------------
+   * return all the channels that the user have relation with
+   * this function is used to get all the channels that the user is a member of
+   * so he can join their rooms agin when he reconnect to the server
+   */
+  async findUserChannels(userId: string) {
+    try {
+      const channels = await this.prisma.channelRelation.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          channel: {
+            select: {
+              channelName: true,
+              channelType: true,
+            },
+          },
+        },
+      });
+      return channels;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET USER RELATIONS WITH CHANNELS');
+    }
+  }
+
+  /** -------------------------------------------------------------------------------------------
    * 👉 Delete a channel relation between a user and a channel according to the id of
    * the channel and the id of the user.
    * @param userID the id of the user that is a member of the channel.

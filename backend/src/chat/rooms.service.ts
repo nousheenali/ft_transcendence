@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { Room, RoomType } from './types';
+import chalk from 'chalk';
+var Table = require('cli-table3');
 import { Socket } from 'socket.io';
+import { Room, RoomType } from './types';
+import { Injectable } from '@nestjs/common';
 
-//===============================================================================
+// =================================================================================================
 
 @Injectable()
 export class RoomsService {
-  //===============================================================================
+  // =================================================================================================
   private userRooms: Room[] = [];
   private channelRooms: Room[] = [];
 
-  //===============================================================================
+  // =================================================================================================
 
   getRoomIndex(roomName: string, roomType: RoomType) {
     let roomIndex: number = -1;
@@ -21,8 +23,7 @@ export class RoomsService {
     return roomIndex;
   }
 
-  //===============================================================================
-
+  // =================================================================================================
   getRoom(roomName: string, roomType: RoomType) {
     const roomIndex = this.getRoomIndex(roomName, roomType);
     if (roomIndex !== -1 && roomType === 'USERS')
@@ -31,14 +32,14 @@ export class RoomsService {
       return this.channelRooms[roomIndex];
   }
 
-  //===============================================================================
+  // =================================================================================================
   isRoomExist(roomName: string, roomType: RoomType) {
     const roomIndex = this.getRoomIndex(roomName, roomType);
     if (roomIndex !== -1) return true;
     else return false;
   }
 
-  //===============================================================================
+  // =================================================================================================
   createRoom(roomName: string, admin: string, roomType: RoomType) {
     if (this.isRoomExist(roomName, roomType) === false) {
       const newRoom = {
@@ -48,36 +49,42 @@ export class RoomsService {
       };
       newRoom.users.push(admin);
       if (roomType === 'USERS') this.userRooms.push(newRoom);
-      else if (roomType === 'CHANNELS')
-        this.channelRooms.push(newRoom);
+      else if (roomType === 'CHANNELS') this.channelRooms.push(newRoom);
     }
+    return this.getRoom(roomName, roomType);
   }
 
-  //===============================================================================
-  joinRoom(roomName: string, userName: string, socket: Socket, roomType: RoomType) {
+  // =================================================================================================
+  joinRoom(
+    roomName: string,
+    userName: string,
+    socket: Socket,
+    roomType: RoomType,
+  ) {
     if (this.isRoomExist(roomName, roomType)) {
       const room = this.getRoom(roomName, roomType);
-      if (room.users.indexOf(userName) === -1) {
-        socket.join(roomName);
+      socket.join(roomName);
+      if (room.users.indexOf(userName) === -1)
         room.users.push(userName);
-      }
     } else {
       this.createRoom(roomName, userName, roomType);
       socket.join(roomName);
     }
+    return this.getRoom(roomName, roomType);
   }
 
-  //===============================================================================
+  // =================================================================================================
   removeRooms(roomName: string, roomType: RoomType) {
     if (this.isRoomExist(roomName, roomType)) {
       const room = this.getRoom(roomName, roomType);
-      if (roomType === 'USERS') this.userRooms.splice(this.userRooms.indexOf(room), 1);
+      if (roomType === 'USERS')
+        this.userRooms.splice(this.userRooms.indexOf(room), 1);
       else if (roomType === 'CHANNELS')
         this.channelRooms.splice(this.channelRooms.indexOf(room), 1);
     }
   }
 
-  //===============================================================================
+  // =================================================================================================
   getRoomAdmin(roomName: string, roomType: RoomType) {
     if (this.isRoomExist(roomName, roomType)) {
       const room = this.getRoom(roomName, roomType);
@@ -86,7 +93,7 @@ export class RoomsService {
     }
   }
 
-  //===============================================================================
+  // =================================================================================================
 
   isRoomAdmin(roomName: string, userName: string, roomType: RoomType) {
     if (this.isRoomExist(roomName, roomType)) {
@@ -95,7 +102,7 @@ export class RoomsService {
     }
   }
 
-  //===============================================================================
+  // =================================================================================================
 
   isUserInRoom(roomName: string, userName: string, roomType: RoomType) {
     if (this.isRoomExist(roomName, roomType)) {
@@ -117,7 +124,7 @@ export class RoomsService {
     }
   }
 
-  //===============================================================================
+  // =================================================================================================
 
   removeUserFromRoom(roomName: string, userName: string, roomType: RoomType) {
     if (this.isRoomExist(roomName, roomType)) {
@@ -128,18 +135,45 @@ export class RoomsService {
     }
   }
 
-  //===============================================================================
+  // =================================================================================================
   printAllRooms() {
-    console.log('---------------------------------------- [Channels Rooms] ------------------------------------------');
+    const channelTable = new Table({
+      head: [
+        chalk.yellow('Room Name'),
+        chalk.yellow('Room Admin'),
+        chalk.yellow('Room Users'),
+      ],
+    });
+
     this.channelRooms.forEach((room) => {
-      console.log('Room Name: ' + room.name, 'Room Admin: ' + room.admin, 'Room Users: ' + room.users);
-      console.log('----------------------------------------------------------------------------------------------------');
+      channelTable.push([
+        chalk.blue(room.name),
+        chalk.magenta(room.admin),
+        chalk.green(room.users.join(', ')),
+      ]);
     });
-    console.log('---------------------------------------- [Users Rooms] ---------------------------------------------');
+
+    const userTable = new Table({
+      head: [
+        chalk.cyan('Room Name'),
+        chalk.cyan('Room Admin'),
+        chalk.cyan('Room Users'),
+      ],
+    });
+
     this.userRooms.forEach((room) => {
-      console.log('Room Name: ' + room.name, 'Room Admin: ' + room.admin, 'Room Users: ' + room.users);
-      console.log('----------------------------------------------------------------------------------------------------');
+      userTable.push([
+        chalk.blue(room.name),
+        chalk.magenta(room.admin),
+        chalk.green(room.users.join(', ')),
+      ]);
     });
+
+    console.log(chalk.green('👇 Channels Rooms 👇'));
+    console.log(channelTable.toString());
+
+    console.log(chalk.green('👇 Users Rooms 👇'));
+    console.log(userTable.toString());
   }
-  //===============================================================================
+  // =================================================================================================
 }

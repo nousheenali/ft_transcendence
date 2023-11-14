@@ -1,10 +1,9 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { ResponsiveTableProps } from './types';
-import TableCell from './TableCell';
-import { PlayerData } from './types';
-
+"use client";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { ActionIconData, ResponsiveTableProps, TableRowData } from "./types";
+import TableCell from "./TableCell";
+import { PlayerData } from "./types";
 
 // This table is used everywhere in our project with diffrent columns and diffrent data .
 const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
@@ -15,7 +14,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
   data,
   maxHeight,
   activeButton,
-  reloadPageData
+  reloadPageData,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [filteredData, setFilteredData] = useState(data);
@@ -31,13 +30,12 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
     const query = event.target.value;
     setInputValue(query);
 
-    const filtered = data.filter((rowData :any) =>
-      rowData[0].playerName.toLowerCase().includes(query.toLowerCase())
-    );
+    const filtered = data.filter((rowData: TableRowData) => {
+      if (typeof rowData[0] === "object" && "name" in rowData[0])
+        return rowData[0].name.toLowerCase().includes(query.toLowerCase());
+    });
     setFilteredData(filtered);
   };
-
-  
 
   return (
     <div className="max-w-full mx-auto font-saira-condensed font-bold ">
@@ -86,29 +84,39 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
         </div>
         <div
           className="overflow-y-scroll text-table-row-text-color"
-          style={{ maxHeight }}
+          style={{ height:'100%' }}
         >
           {/* table rows */}
-          {filteredData.map((rowData: any, rowIndex) => (
+          {filteredData.map((rowData: TableRowData, rowIndex) => (
             <div
               key={rowIndex}
               className="bg-table-row-bg rounded-[10px] flex mt-3 justify-center items-center"
             >
-              {rowData.map((dataItem: any, columnIndex: number) => (
-                <TableCell
-                  key={columnIndex}
-                  dataItem={dataItem}
-                  login={rowData[0].playerName}
-                  activeButton={activeButton}
-                  reloadPageData={reloadPageData}
-                />
-              ))}
+              {rowData.map(
+                (
+                  dataItem: string | PlayerData | ActionIconData,
+                  columnIndex: number
+                ) => (
+                  <TableCell
+                    key={columnIndex}
+                    dataItem={dataItem}
+                    login={
+                      typeof rowData[0] === "object" &&
+                      "playerName" in rowData[0]
+                        ? (rowData[0] as PlayerData).playerName
+                        : "playerName"
+                    }
+                    activeButton={activeButton}
+                    reloadPageData={reloadPageData}
+                  />
+                )
+              )}
             </div>
           ))}
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ResponsiveTable;

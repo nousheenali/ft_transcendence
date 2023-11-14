@@ -17,12 +17,24 @@ export const API_ENDPOINTS = {
   blockFriend: "/friends/block/",
   unBlockFriend: "/friends/unBlock/",
 
-  //CHANNEL module
-  // end point for getting all channels that the user have relation with.
-  privateChannels: "/channel/private-channels/",
-  publicChannels: "/channel/public-channels/",
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 All the Channels endpoints
+   * └── 🌼
+   **/
+  allChannels: "/channels/all-channels/",
+  privateChannels: "/channels/private-channels/",
+  publicChannels: "/channels/public-channels/",
+  channelUsers: "/channels/users/",
+  channelMessages: "/channels/messages/",
+  createChannel: "/channels/create/",
+  deleteChannel: "/channels/delete/",
 
-  // User Messsages
+  /**==============================================================================================
+   * ╭── 🌼
+   * ├ 👇 User Messages endpoints
+   * └── 🌼
+   **/
   userMessages: "/user-messages/friend-chat/",
   userLatestMessages: "/user-messages/latest-messages/",
 };
