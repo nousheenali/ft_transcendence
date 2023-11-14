@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { useGameColor } from "@/context/store";
+import { useGameState } from "@/context/store";
 import QueueAndInvite from "./queue_invite";
 
 const colors = {
@@ -16,8 +16,8 @@ const dropdownStyles = {
 };
 
 export default function CustomizeGame() {
-  const { setBallColor, setBgColor, setRacketColor } = useGameColor();
-  const { ballColor, racketColor, bgColor } = useGameColor();
+  const { setBallColor, setBgColor, setRacketColor } = useGameState();
+  const { ballColor, racketColor, bgColor } = useGameState();
 
   const changeColor = (colorType: string) => {
     switch (colorType) {

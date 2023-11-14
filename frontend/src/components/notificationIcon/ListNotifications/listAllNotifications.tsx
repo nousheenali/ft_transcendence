@@ -16,8 +16,8 @@ export const ListAllNotifications = ({
 }: {
   GameInviteNotificationList: NotificationItems[];
   normalNotifications: NotificationItems[];
-  acceptGameInvite: (notifId: string) => void;
-  declineGameInvite: (notifId: string) => void;
+  acceptGameInvite: (notifId: NotificationItems) => void;
+  declineGameInvite: (notifId: NotificationItems) => void;
 }) => {
   return (
     <>

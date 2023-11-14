@@ -1,13 +1,13 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import Image from "next/image";
-import { useGameColor } from "@/context/store";
+import { useGameState } from "@/context/store";
 import { useSession } from "next-auth/react";
 import { getUserData } from "../../../services/user";
 import { userInformation } from "../Profile/types";
 
 export default function QueueAndInvite() {
   const { data: session } = useSession();
-  const { invitee, setInvitee } = useGameColor();
+  const { invitee, setInvitee } = useGameState();
 
   interface Tfriends {
     id: string;

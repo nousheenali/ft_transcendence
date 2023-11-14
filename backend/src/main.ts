@@ -10,8 +10,12 @@ async function bootstrap() {
 
   // app.useWebSocketAdapter(new IoAdapter(app));
   //(CORS) is a mechanism that allows resources to be requested from another domain(NEXTJS frontend in our case)
-  app.enableCors()
-
+  // app.enableCors()
+  app.enableCors({
+    origin: '*', // Add your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  });
 
   // 👇 This block will initiate Swagger using SwaggerModule and DocumentBuilder. 👇
   // ----------------------------------------------------------------------------------------

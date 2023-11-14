@@ -5,7 +5,7 @@ import QueueAndInvite from "./queue_invite";
 import CustomizeGame from "./customizeGame";
 import Header from "./Header";
 import { useRouter } from "next/navigation";
-import { useGameColor, useSocket } from "@/context/store";
+import { useGameState, useSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUserData } from "../../../services/user";
@@ -19,7 +19,7 @@ export default function StartGameCustomize() {
   const userName = session?.user.login!;
   const ref = useRef<HTMLDialogElement>(null);
   const { invitee, isQueue, inviter, setIsQueue, setInviter, setInvitee } =
-    useGameColor();
+    useGameState();
   const [isFriend, setIsFriend] = useState(false);
   const handleShow = useCallback(() => {
     ref.current?.showModal();

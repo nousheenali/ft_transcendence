@@ -6,7 +6,9 @@ import { useSession } from "next-auth/react";
 import { Socket, io } from "socket.io-client";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { getUserData } from "../../../services/user";
-import { useGameColor, useSocket } from "@/context/store";
+import { useGameState, useSocket } from "@/context/store";
+
+// alert on nofiticaitons
 
 const fetchData = async (activeUser: string | null) => {
   try {
@@ -56,7 +58,6 @@ export default function NotificationIcon() {
   const { data: sessions } = useSession();
   const [userData, setUserData] = useState<string>("");
   const [newNotification, setNewNotification] = useState<boolean>(false);
-  const [socket, setSocket] = useState<Socket | null>(null);
   const {
     currentSocket,
     setCurrentSocket,
@@ -64,7 +65,7 @@ export default function NotificationIcon() {
     setIsNewNotification,
   } = useSocket();
 
-  const { clicked, setClicked } = useGameColor();
+  const { clicked, setClicked } = useGameState();
 
   async function playSound(url: string) {
     const audio = new Audio(url);
@@ -73,12 +74,13 @@ export default function NotificationIcon() {
 
   useEffect(() => {
     if (sessions && userData) {
-      const socket = io("http://localhost:8001", {
+      const backendUrl =
+        process.env.NEXT_NOTIFICATION_URL || "http://localhost:8001";
+      const socket = io(backendUrl, {
         query: { userId: userData },
       });
       socket.on("connect", () => {
         console.log("connected", socket.id);
-        setSocket(socket);
         setCurrentSocket(socket);
       });
       socket.on("newNotif", (data) => {

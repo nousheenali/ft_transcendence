@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useGameColor } from "@/context/store";
+import { useGameState } from "@/context/store";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import Image from "next/image";
@@ -9,13 +9,25 @@ import { getUserData } from "../../../../services/user";
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 
 export default function GamePage() {
-  const { ballColor, racketColor, bgColor } = useGameColor(); //for the time being im saving the colors in the context store
-
+  const {
+    ballColor,
+    racketColor,
+    bgColor,
+    invitee,
+    inviter,
+    isAccepted,
+    isQueue,
+    setInviter,
+    setInvitee,
+  } = useGameState(); //for the time being im saving the colors in the context store
   const { data: session } = useSession();
   const login: string = session?.user.login!;
+
   const joinQueue = false;
-  const inviter = "nali";
-  const invitee = "sfathima";
+  // const inviter = "nali";
+  // setInviter("nali");
+  // setInvitee("sfathima");
+  // const invitee = "sfathima";
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   var socket: Socket;
@@ -56,18 +68,14 @@ export default function GamePage() {
             width: (window.innerWidth * 2) / 3,
             height: (window.innerHeight * 2) / 3,
           });
-        }
-        else {
-          if (login === inviter)
-          {
+        } else {
+          if (login === inviter) {
             socket.emit("createWaitingRoom", {
               friendName: invitee,
               width: (window.innerWidth * 2) / 3,
               height: (window.innerHeight * 2) / 3,
             });
-          }
-          else if (login === invitee)
-          {
+          } else if (login === invitee) {
             const accept = true;
             socket.emit("joinWaitingRoom", {
               inviter: inviter,
@@ -83,8 +91,7 @@ export default function GamePage() {
             socket.disconnect();
             router.push("/");
           }, 3000);
-
-        })
+        });
         socket.on("matched", (data) => {
           const loadingText = document.getElementById("loading-text");
           loadingText?.remove();

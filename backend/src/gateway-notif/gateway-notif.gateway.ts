@@ -7,8 +7,8 @@ import {
 } from '@nestjs/websockets';
 import { CreateGatewayNotifDto } from './dto/create-gateway-notif.dto';
 import { Server, Socket } from 'socket.io';
-
-@WebSocketGateway(8001, { cors: '*' })
+// , { cors: '*' }
+@WebSocketGateway(8001, { cors: { origin: '*' } })
 export class GatewayNotifGateway {
   private userSocketMap = new Map<string, Socket>();
 

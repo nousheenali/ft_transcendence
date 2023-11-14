@@ -8,8 +8,8 @@ export const GameNotificationsList = ({
   declineGameInvite,
 }: {
   GameInviteNotificationList: NotificationItems[];
-  acceptGameInvite: (notifId: string) => void;
-  declineGameInvite: (notifId: string) => void;
+  acceptGameInvite: (notifId: NotificationItems) => void;
+  declineGameInvite: (notifId: NotificationItems) => void;
 }) => {
   return (
     <>
@@ -41,7 +41,7 @@ export const GameNotificationsList = ({
                     <>
                       <button
                         onClick={() => {
-                          acceptGameInvite(item.id);
+                          acceptGameInvite(item);
                         }}
                         className="hover:bg-heading-fill p-2 rounded-full"
                       >
@@ -49,7 +49,7 @@ export const GameNotificationsList = ({
                       </button>
                       <button
                         onClick={() => {
-                          declineGameInvite(item.id);
+                          declineGameInvite(item);
                         }}
                         className="hover:bg-heading-fill p-2 rounded-full"
                       >

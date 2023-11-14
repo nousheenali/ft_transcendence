@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { NotificationDropdownProps } from "../types";
-import { useGameColor, useSocket } from "@/context/store";
+import { NotificationDropdownProps, NotificationItems } from "../types";
+import { useGameState, useSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { updateData } from "../../../../services/api";
 import { NotificationIcon } from "../notificationIcon";
-import { GameNotificationsList } from "../ListNotifications/listGameNotifications";
-import { NormalNotificationsList } from "../ListNotifications/listNormalNotifications";
 import { ListAllNotifications } from "../ListNotifications/listAllNotifications";
 //animate-ping -> for new notification gives animation
 
@@ -18,9 +16,8 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
   const { isNewNotification, setIsNewNotification } = useSocket();
-  const { clicked, setClicked } = useGameColor();
+  const { setClicked, setInvitee, setInviter, setIsAccepted } = useGameState();
   const router = useRouter();
 
   const openDropdown = () => {
@@ -46,18 +43,25 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     };
   }, [isOpen]);
 
-  const acceptGameInvite = (notifId: string) => {
+  const acceptGameInvite = (notifId: NotificationItems) => {
     toast.success("Game Invite Accepted");
     setIsOpen(false);
+    setInviter(notifId.sender.login);
+    setInvitee(notifId.User.login);
     setClicked(true);
-    updateData({}, "/notification/updateClicked/" + notifId);
+    setIsAccepted(true);
+    updateData({}, "/notification/updateClicked/" + notifId.id);
     router.push("/game");
   };
-  const declineGameInvite = (notifId: string) => {
+  const declineGameInvite = (notifId: NotificationItems) => {
     toast.error("Game Invite Declined");
     setIsOpen(false);
     setClicked(true);
-    updateData({}, "/notification/updateClicked/" + notifId);
+    setInviter(notifId.sender.login);
+    setInvitee(notifId.User.login);
+    setIsAccepted(false);
+    updateData({}, "/notification/updateClicked/" + notifId.id);
+    router.push("/game");
   };
   return (
     <div>

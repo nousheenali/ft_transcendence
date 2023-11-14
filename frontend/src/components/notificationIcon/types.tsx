@@ -25,6 +25,7 @@ export interface NotificationItems {
   recivedAt: string; // You can use a Date type if you prefer
   sender: userInformation;
   isAccepted: boolean;
+  User: userInformation;
 }
 
 export enum Content {

@@ -14,8 +14,8 @@ import { GameService } from './game.service';
 import { UserService } from 'src/user/user.service';
 import { GameDto } from './dto/game.dto';
 import { GameStatus } from '@prisma/client';
-
-@WebSocketGateway(8005, { cors: { origin: 'http://localhost:3000' } })
+// , { cors: { origin: 'http://frontend:3000' } }
+@WebSocketGateway(8005, { cors: '*' })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -120,7 +120,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const player2: Player = this.playerService.getPlayerByName(data.inviter);
       const roomID = player2.gameRoom;
       if (!data.accept) {
-        console.log("INVITATION DECLINED")
+        console.log('INVITATION DECLINED');
         player.socketInfo.disconnect();
         this.server.to(player2.socketInfo.id).emit('invitationDeclined');
         return;
