@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Player, PlayerService } from '../player/player.service';
+import { PlayerService } from '../player/player.service';
+import { GameRoom, Player } from '../types';
 
 @Injectable()
 export class GameRoomService {
@@ -7,17 +8,16 @@ export class GameRoomService {
 
   constructor(private playerService: PlayerService) {}
 
-  generateUniqueRoomId(): string {
-    const timestamp = new Date().getTime();
-    const randomPart = Math.random().toString(36);
-    // Combine the timestamp and random part to create a unique ID
-    const uniqueId = `${timestamp}-${randomPart}`;
-    return uniqueId;
-  }
+  // generateUniqueRoomId(): string {
+  //   const timestamp = new Date().getTime();
+  //   const randomPart = Math.random().toString(36);
+  //   // Combine the timestamp and random part to create a unique ID
+  //   const uniqueId = `${timestamp}-${randomPart}`;
+  //   return uniqueId;
+  // }
 
   // Create a new game room
   createGameRoom(roomID: string, player1: Player, player2: Player): GameRoom {
-    // const roomID = this.generateUniqueRoomId();
     var refPlayer: Player;
     if (player1.worldWidth > player2.worldWidth) refPlayer = player2;
     else refPlayer = player1;
@@ -29,8 +29,8 @@ export class GameRoomService {
         y: 0,
       },
       worldWidth: refPlayer.worldWidth,
-      worldHeight: refPlayer.worldHeight,
-      ballVelocity: { x: 4, y: 2 },
+      worldHeight: refPlayer.worldWidth * 3/4,
+      ballVelocity: { x: 8, y: 4 },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,
@@ -56,8 +56,8 @@ export class GameRoomService {
         y: 0,
       },
       worldWidth: player1.worldWidth,
-      worldHeight: player1.worldHeight,
-      ballVelocity: { x: 4, y: 2 },
+      worldHeight: player1.worldWidth * 3/4,
+      ballVelocity: { x: 8, y: 4 },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,
@@ -97,17 +97,3 @@ export class GameRoomService {
   }
 }
 
-export type GameRoom = {
-  roomID: string;
-  players: Player[];
-  worldWidth: number;
-  worldHeight: number;
-  ballVelocity: { x: number; y: number };
-  ballPosition: { x: number; y: number };
-  paddleWidth: number;
-  paddleHeight: number;
-  ballWidth: number;
-  gameOver: boolean;
-  gameStarted: boolean; // we need separate gameStarted to track users disconnected before starting game
-  increaseSpeed: number; //used as flag for increasing ball speed
-};

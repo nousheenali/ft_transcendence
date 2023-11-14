@@ -1,33 +1,85 @@
-import React from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import Image from "next/image";
-import { Input } from "react-daisyui";
+import { useGameState } from "@/context/store";
+import { getUserData } from "../../../services/user";
+import { userInformation } from "../Profile/types";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function QueueAndInvite() {
+  const { user } = useContext(AuthContext);
+  const userName = user.login!;
+
+  const { invitee, setInvitee } = useGameState();
+
+  interface Tfriends {
+    id: string;
+    name: string;
+  }
+  const [FriendsList, setFriendsList] = useState<Tfriends[]>([
+    { id: "0", name: "Default" },
+  ]);
+
+  const FetchUserData = async () => {
+    setInvitee("Default");
+    let result: any = await getUserData(userName, "/friends/allFriends/");
+    const filter = result?.filter(
+      (item: userInformation) => !item.inAGame && item.isOnline
+    );
+    const combolist = filter?.map((item: userInformation) => ({
+      name: item.login,
+      id: item.id,
+    }));
+    setFriendsList([]);
+    setFriendsList([{ id: "0", name: "Default" }]);
+    setFriendsList((prevFriendsList) => [...prevFriendsList, ...combolist]);
+  };
+
+  // useEffect(() => {
+  //   if (!userName) return;
+  //   FetchUserData();
+  //   // console.log("friendsList: ", FriendsList);
+  // }, [session, userName]);
+
+  const handleNameChoice = (friendName: string) => {
+    // console.log(friendName);
+    setInvitee(friendName);
+  };
+  const dropdownStyles = {
+    select:
+      "hover-bg-heading text-placeholder-text font-saira-condensed normal-case bg-main bg-heading-fill border-1 border-aside-border rounded-2xl w-40 h-8 p-1 flex flex-row justify-between",
+    option: "text-main-text",
+  };
+  if (FriendsList.length === 0) {
+    return <div></div>;
+  }
   return (
-    <div className="text-placeholder-text font-saira-condensed normal-case text-xl bg-main bg-aside-fill border-2 border-aside-border rounded-2xl flex flex-row gap-4  mx-8 pl-4 w-72 text-[20px] font-bold pb-2">
-      <div className="text-main-yellow py-10">OR</div>
-      <div className="flex flex-col gap-4 pt-4 overflow-hidden">
-        <button className="text-main-text font-saira-condensed flex flex-row gap-4">
-          <Image
-            src="/Queue_icon.svg"
-            width={18}
-            height={18}
-            className="inline-block ml-2 mt-2"
-            alt="DropDown_icon"
-          />
-          <h1>Join A queue</h1>
-        </button>
-        <div className=" text-main-text text-2xl font-saira-condensed flex items-center space-x-4">
-          <Image
-            src="/InviteFriends_icon.svg"
-            width={18}
-            height={18}
-            className="inline-block ml-2 "
-            alt="DropDown_icon"
-          />
-          <h1 className="">Invite :</h1>
-          <Input className="w-20  h-8" placeholder="Name" />
-        </div>
+    <div className="flex flex-row items-center justify-around gap-2">
+      <h1 className="text-main-text font-saira-condensed">Invite</h1>
+      <div className="relative" onClick={FetchUserData}>
+        <select
+          value={invitee}
+          onChange={(e) => handleNameChoice(e.target.value)}
+          className={dropdownStyles.select}
+        >
+          {FriendsList &&
+            FriendsList.length > 0 &&
+            FriendsList.map((items) => (
+              <option
+                key={items.id}
+                value={items.name}
+                className={dropdownStyles.option}
+              >
+                {items.name}
+              </option>
+            ))}
+        </select>
+        <Image
+          src="/DropDown_icon.svg"
+          width={10}
+          height={10}
+          className="absolute right-1 top-1/2 transform -translate-y-1/2"
+          alt="DropDown_icon"
+        />
       </div>
     </div>
   );

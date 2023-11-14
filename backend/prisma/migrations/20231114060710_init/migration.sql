@@ -20,11 +20,9 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "isOnline" BOOLEAN NOT NULL DEFAULT true,
-    "refreshToken" TEXT,
     "inAGame" BOOLEAN NOT NULL DEFAULT false,
     "TFAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "TFAKey" TEXT,
-    "TFAVerified" BOOLEAN NOT NULL DEFAULT false,
     "losses" INTEGER NOT NULL DEFAULT 0,
     "wins" INTEGER NOT NULL DEFAULT 0,
     "score" INTEGER NOT NULL DEFAULT 0,
@@ -52,6 +50,7 @@ CREATE TABLE "Notification" (
     "read" BOOLEAN NOT NULL DEFAULT false,
     "senderId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "isAccepted" BOOLEAN DEFAULT false,
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
 );
@@ -76,7 +75,6 @@ CREATE TABLE "Channel" (
     "createdBy" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "channelPassword" TEXT,
 
     CONSTRAINT "Channel_pkey" PRIMARY KEY ("id")
 );

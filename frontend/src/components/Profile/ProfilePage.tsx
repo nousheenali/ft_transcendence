@@ -19,13 +19,12 @@ import { generatePendingRequestsData } from "@/data/Table/pendingFriendRequests"
 import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ProfilePageProps, userInformation } from "./types";
-
+import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
 import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
 
-const ProfilePage: React.FC<ProfilePageProps> = () => {
+const ProfilePage = () => {
   const [activeButton, setActiveButton] = useState("friends");
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
@@ -39,7 +38,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
         const userData = await getUserData(user.login, API_ENDPOINTS.getUserbyLogin);
         if (userData) {
           setUserInfo(userData);
-          const dataGeneratorMap: any = {
+          const dataGeneratorMap: DataGeneratorMap = {
             friends: generateProfileFriendsData,
             search: generateProfileSearchData,
             blocked: generateProfileBlockedData,

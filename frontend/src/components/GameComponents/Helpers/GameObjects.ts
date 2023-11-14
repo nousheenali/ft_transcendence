@@ -53,7 +53,7 @@ export default class GameObjects {
       wW / 2 + 70,
       50,
       this.scene.registry.get("player0") + ": 0",
-      30,
+      25,
       "#D0F223"
     ).setOrigin(-0.2, 0);
 
@@ -61,15 +61,15 @@ export default class GameObjects {
       wW / 2 - 100,
       50,
       this.scene.registry.get("player1") + ": 0",
-      30,
+      25,
       "#D0F223"
     ).setOrigin(1, 0);
 
-    results[2] = this.showText(wW / 2, (wH * 2) / 3, "", 70, "#D0F223")
+    results[2] = this.showText(wW / 2, (wH * 2) / 3, "", 40, "#D0F223")
       .setOrigin(0.5)
       .setVisible(false);
 
-    results[3] = this.showText(wW / 2, wH / 3, "", 50, "#FFFFFF")
+    results[3] = this.showText(wW / 2, wH / 3, "", 30, "#FFFFFF")
       .setOrigin(0.5)
       .setVisible(false);
 
@@ -119,7 +119,4 @@ export default class GameObjects {
       .setColor(fontColor);
   }
 
-  addKey(key: number) {
-    return this.scene.input.keyboard.addKey(key);
-  }
 }

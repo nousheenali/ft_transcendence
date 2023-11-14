@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { GameGateway } from '../game.gateway';
-import { GameRoom, GameRoomService } from '../game-room/game-room.service';
-import { Player, PlayerService } from '../player/player.service';
+import { GameRoomService } from '../game-room/game-room.service';
+import { PlayerService } from '../player/player.service';
 import { GameService } from '../game.service';
 import { GameStatus } from '@prisma/client';
+import { Server } from 'socket.io';
+import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions, joiningData } from '../types';
 
 @Injectable()
 export class GameLogicService {
@@ -13,22 +15,29 @@ export class GameLogicService {
     private gamePrismaService: GameService,
   ) {}
 
-  sendJoiningInformation(server: any, room: GameRoom, p0: Player, p1: Player) {
-    const data = {
+  sendJoiningInformation(
+    server: Server,
+    room: GameRoom,
+    p0: Player,
+    p1: Player,
+  ) {
+    const data: joiningData = {
       roomID: room.roomID,
       p0Name: p0.name,
       p1Name: p1.name,
-      worldWidth: room.worldWidth,
-      worldHeight: room.worldHeight,
+      worldDimensions :{
+        width: room.worldWidth,
+        height: room.worldHeight,
+      }
     };
     server.to(p0.id).emit('matched', data);
     server.to(p1.id).emit('matched', data);
   }
 
-  spritePositions(gameRoom: GameRoom, data: any) {
+  spritePositions(gameRoom: GameRoom, data: UpdateSpritePositions) {
     gameRoom.ballWidth = data.ballWidth;
-    gameRoom.paddleWidth = data.paddleWidth;
-    gameRoom.paddleHeight = data.paddleHeight;
+    gameRoom.paddleWidth = data.paddle.width;
+    gameRoom.paddleHeight = data.paddle.height;
     gameRoom.ballPosition.x = data.ballPosition.x;
     gameRoom.ballPosition.y = data.ballPosition.y;
     gameRoom.players[0].position.x = data.p0Position.x;
@@ -42,76 +51,78 @@ export class GameLogicService {
     gm.ballPosition.y += gm.ballVelocity.y;
   }
 
-  emitHitPaddle(gm: GameRoom, server: any) {
-    server.to(gm.players[0].id).emit('hitPaddle');
-    server.to(gm.players[1].id).emit('hitPaddle');
+  emitHitPaddle(gm: GameRoom, server: Server, surface: boolean) {
+    /* surface: shows which surface was hit (false-wall, true-paddle) */
+    server.to(gm.players[0].id).emit('hitPaddle', surface);
+    server.to(gm.players[1].id).emit('hitPaddle', surface);
   }
 
-  emitGameOver(gm: GameRoom, server: any, winner: Player, loser: Player) {
+  emitGameOver(gm: GameRoom, server: Server, winner: Player, loser: Player) {
     if (gm.players[0].score === 7 || gm.players[1].score === 7) {
       gm.gameOver = true;
-      server.to(gm.players[0].id).emit('gameOver', 'Game Over!', winner.name);
-      server.to(gm.players[1].id).emit('gameOver', 'Game Over!', winner.name);
+      const data: GameOver = {
+        message: 'Game Over!',
+        name: winner.name,
+        p0_score: gm.players[0].score,
+        p1_score: gm.players[1].score,
+      };
+      server.to(gm.players[0].id).emit('gameOver', data);
+      server.to(gm.players[1].id).emit('gameOver', data);
       this.gamePrismaService.updateGameEntry(
         gm.roomID,
         GameStatus.FINISHED,
-        winner.name,
-        loser.name,
+        winner.login,
+        loser.login,
       );
       gm.players[0].socketInfo.disconnect(true);
       gm.players[1].socketInfo.disconnect(true);
-      //disconnect will call the handleDisconnect in game gateway
+      /* disconnect will call the handleDisconnect in game gateway */
     }
   }
 
-  emitBallPosition(gm: GameRoom, server: any) {
-    server
-      .to(gm.players[0].id)
-      .emit(
-        'updateBallPosition',
-        gm.ballPosition,
-        gm.players[0].score,
-        gm.players[1].score,
-      );
-    server
-      .to(gm.players[1].id)
-      .emit(
-        'updateBallPosition',
-        gm.ballPosition,
-        gm.players[0].score,
-        gm.players[1].score,
-      );
+  emitBallPosition(gm: GameRoom, server: Server) {
+    const data: BallPosition = {
+      position: gm.ballPosition,
+      p0_score: gm.players[0].score,
+      p1_score: gm.players[1].score,
+    };
+    server.to(gm.players[0].id).emit('updateBallPosition', data);
+    server.to(gm.players[1].id).emit('updateBallPosition', data);
   }
 
   increaseBallSpeed(gm: GameRoom) {
     if (gm.increaseSpeed === 0) {
-      gm.ballVelocity.x *= 1.25;
-      gm.ballVelocity.y *= 1.25;
+      gm.ballVelocity.x *= 2;
+      gm.ballVelocity.y *= 2;
       gm.increaseSpeed = 1;
-    } else if (gm.increaseSpeed === 1) {
-      gm.ballVelocity.x *= 1.25;
-      gm.ballVelocity.y *= 1.25;
-      gm.increaseSpeed = 2;
-    }
+    } 
+    // else if (gm.increaseSpeed === 1) {
+    //   gm.ballVelocity.x *= 1.25;
+    //   gm.ballVelocity.y *= 1.25;
+    //   gm.increaseSpeed = 2;
+    // }
   }
 
-  updateResults(server: any, gm: GameRoom, otherPlyr: Player, player: Player) {
-    let winner = null;
-    let loser = null;
-    //there will be winner /loser only if the game started
-    if (gm.gameStarted) {
-      winner = otherPlyr.name;
-      loser = player.name;
-    }
+  updateResults(
+    server: Server,
+    gm: GameRoom,
+    otherPlyr: Player,
+    player: Player,
+  ) {
+    /* There will be winner/loser only if the game started */
     this.gamePrismaService.updateGameEntry(
       gm.roomID,
       GameStatus.FINISHED,
-      winner,
-      loser,
+      gm.gameStarted ? otherPlyr.login : null,
+      gm.gameStarted ? player.login : null,
     );
-    server
-      .to(otherPlyr.id)
-      .emit('gameOver', 'Other Player Disconnected', winner);
+    const data: GameOver = {
+      message: 'Other Player Disconnected',
+      name: gm.gameStarted ? otherPlyr.name : null,
+      p0_score: gm.players[0].score,
+      p1_score: gm.players[1].score,
+    };
+    server.to(otherPlyr.id).emit('gameOver', data);
     this.gameRoomService.removeGameRoom(gm.roomID);
   }
 }

@@ -1,7 +1,5 @@
 import type { NextAuthOptions } from "next-auth";
 import FortyTwoProvider from "next-auth/providers/42-school";
-import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
-import GitHubProfile from "next-auth/providers/github";
 import { FortyTwoProfile } from "next-auth/providers/42-school";
 import axios from "axios";
 

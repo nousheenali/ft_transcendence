@@ -42,3 +42,10 @@ export interface friendRelationDto {
   userLogin: string;
   friendLogin: string;
 }
+
+type DataGeneratorFunction = (login: string) => Promise<TableRowData[]>; 
+
+
+export interface DataGeneratorMap {
+  [key: string]: DataGeneratorFunction;
+}

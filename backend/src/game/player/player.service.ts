@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { Player } from '../types';
 
 @Injectable()
 export class PlayerService {
@@ -8,10 +9,11 @@ export class PlayerService {
 
   constructor() {}
 
-  addPlayer(client: Socket, userName: string) {
+  addPlayer(client: Socket, login: string, userName: string) {
     if (!this.players.has(client.id)) {
       const player: Player = {
         id: client.id,
+        login: login,
         name: userName,
         position: { x: 0, y: 0 },
         readyToStart: false,
@@ -31,7 +33,7 @@ export class PlayerService {
     }
   }
 
-  getPlayerByID(clientID: string): Player | null {
+  getPlayerBySocketID(clientID: string): Player | null {
     if (this.players.has(clientID)) {
       const player: Player = this.players.get(clientID);
       return player;
@@ -39,9 +41,9 @@ export class PlayerService {
     return null;
   }
 
-  getPlayerByName(name: string): Player | undefined {
+  getPlayerByLogin(login: string): Player | undefined {
     for (const player of this.players.values()) {
-      if (player.name === name) {
+      if (player.login === login) {
         return player;
       }
     }
@@ -55,7 +57,7 @@ export class PlayerService {
 
   // add player to queue
   addToQueue(clientID: string, width: number, height: number) {
-    const player: Player = this.getPlayerByID(clientID);
+    const player: Player = this.getPlayerBySocketID(clientID);
     player.worldWidth = width;
     player.worldHeight = height;
     if (player) {
@@ -81,14 +83,4 @@ export class PlayerService {
   }
 }
 
-export type Player = {
-  id: string;
-  name: string;
-  position: { x: number; y: number };
-  readyToStart: boolean;
-  worldWidth: number;
-  worldHeight: number;
-  score: number;
-  gameRoom: string;
-  socketInfo: Socket;
-};
+

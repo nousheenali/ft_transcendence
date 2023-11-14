@@ -6,7 +6,7 @@ import { NotificationItems, SendNotification } from "./types";
 import { Socket, io } from "socket.io-client";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { getUserData } from "../../../services/user";
-import { useSocket } from "@/context/store";
+import { useGameState, useSocket } from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
 
 const fetchData = async (activeUser: string | null) => {
@@ -51,29 +51,41 @@ export default function NotificationIcon() {
   };
 
   const [notifications, setNotifications] = useState<NotificationItems[]>([]);
+  const [gameInviteNotifications, setGameInviteNotifications] = useState<
+    NotificationItems[]
+  >([]);
+
   const [userData, setUserData] = useState<string>("");
   const [newNotification, setNewNotification] = useState<boolean>(false);
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const { currentSocket, setCurrentSocket } = useSocket();
+  const {
+    currentSocket,
+    setCurrentSocket,
+    isNewNotification,
+    setIsNewNotification,
+  } = useSocket();
 
-  function playSound(url: string) {
+  const { clicked, setClicked } = useGameState();
+
+  async function playSound(url: string) {
     const audio = new Audio(url);
-    audio.play();
+    await audio.play();
   }
 
   useEffect(() => {
     if (user && userData) {
-      const socket = io("http://localhost:8001", {
+      const backendUrl =
+        process.env.NEXT_NOTIFICATION_URL || "http://localhost:8001";
+      const socket = io(backendUrl, {
         query: { userId: userData },
       });
       socket.on("connect", () => {
-        // console.log("connected", socket.id);
-        setSocket(socket);
+        console.log("connected", socket.id);
         setCurrentSocket(socket);
       });
       socket.on("newNotif", (data) => {
         setNewNotification(true);
         playSound("notif.m4a");
+        setIsNewNotification("");
       });
 
       return () => {
@@ -99,14 +111,31 @@ export default function NotificationIcon() {
   useEffect(() => {
     if (user) {
       fetchData(activeUser).then((data) => {
-        setNotifications(data);
+        setNotifications(
+          data.filter(
+            (items: NotificationItems) =>
+              items.content !== "GameInvite_Recieved"
+          )
+        );
+        setGameInviteNotifications(
+          data.filter(
+            (items: NotificationItems) =>
+              items.content === "GameInvite_Recieved"
+          )
+        );
+        // console.log("gameInvites: ", gameInviteNotifications);
+        // console.log("notifications: ", notifications);
         setNewNotification(false);
+        setClicked(false);
       });
     }
-  }, [activeUser, user, newNotification]);
+  }, [activeUser, user, newNotification, clicked]);
   return (
     <div className=" flex  justify-between w-17 h-17 bg-heading-fill rounded-t-2xl border-b-[1px] border-heading-stroke p-2">
-      <NotificationDropdown NotificationList={notifications} />
+      <NotificationDropdown
+        NotificationList={notifications}
+        GameInviteNotificationList={gameInviteNotifications}
+      />
       <h1>
         <span className="text-yellow-300 text-stroke-3 ">Spin</span>
         <span className="text-main-text">Masters</span>
