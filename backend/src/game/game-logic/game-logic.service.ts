@@ -5,7 +5,7 @@ import { PlayerService } from '../player/player.service';
 import { GameService } from '../game.service';
 import { GameStatus } from '@prisma/client';
 import { Server } from 'socket.io';
-import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions } from '../types';
+import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions, joiningData } from '../types';
 
 @Injectable()
 export class GameLogicService {
@@ -21,12 +21,14 @@ export class GameLogicService {
     p0: Player,
     p1: Player,
   ) {
-    const data = {
+    const data: joiningData = {
       roomID: room.roomID,
       p0Name: p0.name,
       p1Name: p1.name,
-      worldWidth: room.worldWidth,
-      worldHeight: room.worldHeight,
+      worldDimensions :{
+        width: room.worldWidth,
+        height: room.worldHeight,
+      }
     };
     server.to(p0.id).emit('matched', data);
     server.to(p1.id).emit('matched', data);
@@ -50,7 +52,7 @@ export class GameLogicService {
   }
 
   emitHitPaddle(gm: GameRoom, server: Server, surface: boolean) {
-    //surface: shows which surface was hit (false-wall, true-paddle)
+    /* surface: shows which surface was hit (false-wall, true-paddle) */
     server.to(gm.players[0].id).emit('hitPaddle', surface);
     server.to(gm.players[1].id).emit('hitPaddle', surface);
   }
@@ -69,12 +71,12 @@ export class GameLogicService {
       this.gamePrismaService.updateGameEntry(
         gm.roomID,
         GameStatus.FINISHED,
-        winner.name,
-        loser.name,
+        winner.login,
+        loser.login,
       );
       gm.players[0].socketInfo.disconnect(true);
       gm.players[1].socketInfo.disconnect(true);
-      //disconnect will call the handleDisconnect in game gateway
+      /* disconnect will call the handleDisconnect in game gateway */
     }
   }
 
@@ -90,14 +92,15 @@ export class GameLogicService {
 
   increaseBallSpeed(gm: GameRoom) {
     if (gm.increaseSpeed === 0) {
-      gm.ballVelocity.x *= 1.25;
-      gm.ballVelocity.y *= 1.25;
+      gm.ballVelocity.x *= 2;
+      gm.ballVelocity.y *= 2;
       gm.increaseSpeed = 1;
-    } else if (gm.increaseSpeed === 1) {
-      gm.ballVelocity.x *= 1.25;
-      gm.ballVelocity.y *= 1.25;
-      gm.increaseSpeed = 2;
-    }
+    } 
+    // else if (gm.increaseSpeed === 1) {
+    //   gm.ballVelocity.x *= 1.25;
+    //   gm.ballVelocity.y *= 1.25;
+    //   gm.increaseSpeed = 2;
+    // }
   }
 
   updateResults(
@@ -106,22 +109,20 @@ export class GameLogicService {
     otherPlyr: Player,
     player: Player,
   ) {
-    let winner = null;
-    let loser = null;
-    //there will be winner /loser only if the game started
-    if (gm.gameStarted) {
-      winner = otherPlyr.name;
-      loser = player.name;
-    }
+    /* There will be winner/loser only if the game started */
     this.gamePrismaService.updateGameEntry(
       gm.roomID,
       GameStatus.FINISHED,
-      winner,
-      loser,
+      gm.gameStarted ? otherPlyr.login : null,
+      gm.gameStarted ? player.login : null,
     );
-    server
-      .to(otherPlyr.id)
-      .emit('gameOver', 'Other Player Disconnected', winner);
+    const data: GameOver = {
+      message: 'Other Player Disconnected',
+      name: gm.gameStarted ? otherPlyr.name : null,
+      p0_score: gm.players[0].score,
+      p1_score: gm.players[1].score,
+    };
+    server.to(otherPlyr.id).emit('gameOver', data);
     this.gameRoomService.removeGameRoom(gm.roomID);
   }
 }

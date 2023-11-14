@@ -91,4 +91,18 @@ export class GameService {
       throw new BadRequestException('Unable to update game');
     }
   }
+
+  async deleteGameEntry(
+    gameID: string,
+  ) {
+    try {
+      await this.prisma.game.delete({
+        where: {
+          id: gameID,
+        }
+      });
+    } catch (error) {
+      throw new BadRequestException('Unable to delete game entry');
+    }
+  }
 }

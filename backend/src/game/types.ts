@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 
 export type Player = {
   id: string;
+  login: string;
   name: string;
   position: { x: number; y: number };
   readyToStart: boolean;
@@ -42,6 +43,14 @@ export interface JoinWaitingRoom {
   worldDimensions: WorldDimensions;
   accept: boolean;
 }
+
+
+export interface joiningData {
+  roomID: string;
+  p0Name: string;
+  p1Name: string;
+  worldDimensions: WorldDimensions;
+};
 
 export interface SpritePosition {
   x: number;

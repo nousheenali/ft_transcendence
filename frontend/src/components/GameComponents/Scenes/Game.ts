@@ -2,7 +2,7 @@ import { Scene } from "phaser";
 import Sprite from "../Helpers/GameObjects";
 import GameObjects from "../Helpers/GameObjects";
 import { Socket } from "socket.io-client";
-import { GameOver, InitialData, BallPosition } from "../types";
+import { GameOver, InitialData, BallPosition, UpdateSpritePositions } from "../types";
 
 export default class Game extends Scene {
   private socket!: Socket;
@@ -49,7 +49,7 @@ export default class Game extends Scene {
 
     /* render sprites */
     this.ball = gameObj.renderBall(wW / 2, wH / 2);
-    this.paddlespeed = 380;
+    this.paddlespeed = 430;
     if (this.ball.body) {
       ballWidth = this.ball.body.width;
       this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
@@ -57,10 +57,6 @@ export default class Game extends Scene {
 
       /* update game room sprite positions on server*/
       this.initilaiseSprites(ballWidth);
-
-      /* For ball to collide with the paddles */
-      this.physics.add.collider(this.ball, this.player[0]);
-      this.physics.add.collider(this.ball, this.player[1]);
 
       /* Setup keyboard keys to use */
       this.addKeys();
@@ -74,7 +70,8 @@ export default class Game extends Scene {
 
   update() {
     /*check if space is pressed and game not started yet*/
-    if (this.keys.space.isDown && !this.gameStarted) this.initilaiseGame();
+    if (this.keys.space.isDown && !this.gameStarted) 
+      this.initilaiseGame();
 
     /*space pressed and game started */
     if (this.gameStarted) {
@@ -111,7 +108,7 @@ export default class Game extends Scene {
   /* Initialise Sprites */
   initilaiseSprites(ballWidth: number) {
     if (this.player[0].body) {
-      this.socket.emit("updateSpritePositions", {
+      const data: UpdateSpritePositions = {
         roomID: this.roomID,
         ballPosition: { x: this.ball.x, y: this.ball.y },
         p0Position: { x: this.player[0].x, y: this.player[0].y },
@@ -121,7 +118,8 @@ export default class Game extends Scene {
           height: this.player[0].body.height,
         },
         ballWidth: ballWidth,
-      });
+      };
+      this.socket.emit("updateSpritePositions", data);
     }
   }
 
