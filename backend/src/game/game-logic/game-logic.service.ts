@@ -6,7 +6,6 @@ import { GameService } from '../game.service';
 import { GameStatus } from '@prisma/client';
 import { Server } from 'socket.io';
 import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions, joiningData } from '../types';
-import { BallPosition, GameOver, GameRoom, Player, UpdateSpritePositions, joiningData } from '../types';
 
 @Injectable()
 export class GameLogicService {
@@ -23,14 +22,9 @@ export class GameLogicService {
     p1: Player,
   ) {
     const data: joiningData = {
-    const data: joiningData = {
       roomID: room.roomID,
       p0Name: p0.name,
       p1Name: p1.name,
-      worldDimensions :{
-        width: room.worldWidth,
-        height: room.worldHeight,
-      }
       worldDimensions :{
         width: room.worldWidth,
         height: room.worldHeight,
