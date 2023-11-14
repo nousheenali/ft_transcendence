@@ -8,6 +8,13 @@ import React, {
   useRef,
   useState,
 } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import io, { Socket } from "socket.io-client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,6 +33,10 @@ export default function GamePage() {
 
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
+  const accept = true;
+
+  const { user } = useContext(AuthContext);
+  const login: string = user.login!;
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const backendUrl = process.env.NEXT_PUBLIC_GAME_GATEWAY_URL;
@@ -38,6 +49,9 @@ export default function GamePage() {
 
   useEffect(() => {
     async function initPhaser() {
+      if (!login) {
+        return;
+      }
       if (!login) {
         return;
       }
@@ -71,6 +85,7 @@ export default function GamePage() {
             socket.emit("joinWaitingRoom", {
               inviter: inviter,
               worldDimensions: world,
+              worldDimensions: world,
               accept: accept,
             })
           }
@@ -97,11 +112,16 @@ export default function GamePage() {
             width: data.worldDimensions.width,
             height: data.worldDimensions.height,
             // backgroundColor: bgColor,//"#6495ED",//"#87CEEB",//, "#60b922", "#44b18b",
+            width: data.worldDimensions.width,
+            height: data.worldDimensions.height,
+            // backgroundColor: bgColor,//"#6495ED",//"#87CEEB",//, "#60b922", "#44b18b",
             scene: [Preloader, Game],
             physics: {
               default: "arcade",
             },
           };
+          phaserGame = new Phaser.Game(config);
+          /* Global Variables for Phaser Game */
           phaserGame = new Phaser.Game(config);
           /* Global Variables for Phaser Game */
           phaserGame.registry.merge({
@@ -113,6 +133,8 @@ export default function GamePage() {
             ballColor: ballColor,
             worldWidth: data.worldDimensions.width,
             worldHeight: data.worldDimensions.width,
+            worldWidth: data.worldDimensions.width,
+            worldHeight: data.worldDimensions.width,
             router,
           });
         });
@@ -122,6 +144,7 @@ export default function GamePage() {
       const handlePopstate = () => {
         socket.disconnect();
         if (phaserGame) phaserGame.destroy(true);
+        if (phaserGame) phaserGame.destroy(true);
       };
       window.addEventListener("popstate", handlePopstate);
       return () => {
@@ -129,6 +152,7 @@ export default function GamePage() {
       };
     }
     initPhaser();
+  }, [login]);
   }, [login]);
 
   return (
