@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import { Button, Dropdown, Input, Modal } from "react-daisyui";
 import Image from "next/image";
 import QueueAndInvite from "./queue_invite";
@@ -9,14 +9,14 @@ import { useGameState, useSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUserData } from "../../../services/user";
-import { useSession } from "next-auth/react";
 import { sendNotification } from "../../../services/friends";
 import { Content } from "../notificationIcon/types";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function StartGameCustomize() {
   const { currentSocket } = useSocket();
-  const { data: session } = useSession();
-  const userName = session?.user.login!;
+  const { user } = useContext(AuthContext);
+  const userName = user.login!;
   const ref = useRef<HTMLDialogElement>(null);
   const { invitee, isQueue, inviter, setIsQueue, setInviter, setInvitee } =
     useGameState();

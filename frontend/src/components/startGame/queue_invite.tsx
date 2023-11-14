@@ -1,12 +1,14 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import Image from "next/image";
 import { useGameState } from "@/context/store";
-import { useSession } from "next-auth/react";
 import { getUserData } from "../../../services/user";
 import { userInformation } from "../Profile/types";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function QueueAndInvite() {
-  const { data: session } = useSession();
+  const { user } = useContext(AuthContext);
+  const userName = user.login!;
+
   const { invitee, setInvitee } = useGameState();
 
   interface Tfriends {
@@ -16,7 +18,6 @@ export default function QueueAndInvite() {
   const [FriendsList, setFriendsList] = useState<Tfriends[]>([
     { id: "0", name: "Default" },
   ]);
-  const userName = session?.user.login!;
 
   const FetchUserData = async () => {
     setInvitee("Default");

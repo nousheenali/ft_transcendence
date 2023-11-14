@@ -14,7 +14,11 @@ import { useRouter } from "next/navigation";
 import { getUserData } from "../../../../services/user";
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
-import { WaitingRoom, WorldDimensions, joiningData } from "@/components/GameComponents/types";
+import {
+  WaitingRoom,
+  WorldDimensions,
+  joiningData,
+} from "@/components/GameComponents/types";
 
 export default function GamePage() {
   const {
@@ -28,17 +32,9 @@ export default function GamePage() {
     setInviter,
     setInvitee,
   } = useGameState(); //for the time being im saving the colors in the context store
-  // const { data: session } = useSession();
-  // const login: string = session?.user.login!;
 
-  const joinQueue = false;
-  // const inviter = "nali";
-  // setInviter("nali");
-  // setInvitee("sfathima");
-  // const invitee = "sfathima";
-  // const inviter = "nali";
-  // const invitee = "sfathima";
-  const accept = true;
+  const joinQueue = isQueue;
+  const accept = isAccepted; //check this
 
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
@@ -71,7 +67,9 @@ export default function GamePage() {
         "../../../components/GameComponents/Scenes/Game"
       );
 
-      socket = io(backendUrl!, { query: { login: userData.login, username: userData.name } });
+      socket = io(backendUrl!, {
+        query: { login: userData.login, username: userData.name },
+      });
       // currentSocket.emit("newNotif", )
       socket.on("connect", () => {
         if (joinQueue) {
@@ -88,21 +86,20 @@ export default function GamePage() {
               inviter: inviter,
               worldDimensions: world,
               accept: accept,
-            })
+            });
           }
         }
         socket.on("inviterDisconnected", () => {
-            alert("Inviter disconnected the game");
-            socket.disconnect();
-            router.push("/");
-        })
-        socket.on("invitationDeclined", () => {
-          if (login === inviter) 
-            alert("Other player Declined your invitation");
+          alert("Inviter disconnected the game");
           socket.disconnect();
           router.push("/");
         });
-        socket.on("matched", (data : joiningData) => {
+        socket.on("invitationDeclined", () => {
+          if (login === inviter) alert("Other player Declined your invitation");
+          socket.disconnect();
+          router.push("/");
+        });
+        socket.on("matched", (data: joiningData) => {
           // setupGame();
           const loadingText = document.getElementById("loading-text");
           loadingText?.remove();

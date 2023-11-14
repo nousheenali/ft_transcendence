@@ -6,7 +6,7 @@ import { NotificationItems, SendNotification } from "./types";
 import { Socket, io } from "socket.io-client";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { getUserData } from "../../../services/user";
-import { useSocket } from "@/context/store";
+import { useGameState, useSocket } from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
 
 const fetchData = async (activeUser: string | null) => {
