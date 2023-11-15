@@ -28,8 +28,9 @@ export default function FriendChat() {
    **└── 🌼
    **/
 
+
   useEffect(() => {
-    if (activeFriend) {
+    if (user && user.login && activeFriend) {
       const fetchData = async () => {
         const chat: MessagesProps[] = await getMessages(
           user.login!,

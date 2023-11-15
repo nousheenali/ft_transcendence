@@ -126,11 +126,12 @@ export class ChatGateway
     try {
       const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
 
+      // ❂➤ Creating the message in the database
+      await this.userMessagesService.createUserMessage(data);
+
       // ❂➤ Emitting the message to the receiver room
       this.server.to(receiverRoom.name).emit('ServerToClient', data);
 
-      // ❂➤ Creating the message in the database
-      await this.userMessagesService.createUserMessage(data);
 
       // ❂➤ Printing the rooms array to the console for debugging
       this.roomsService.printAllRooms();
@@ -449,11 +450,12 @@ export class ChatGateway
     const channelRoom = this.roomsService.getRoom(roomName, 'CHANNELS');
     this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
 
+    // ❂➤ Creating the message in the database
+    await this.userMessagesService.createChannelMessage(data);
+
     // ❂➤ Emitting the message to the channel room
     this.server.to(channelRoom.name).emit('ServerToChannel', data);
 
-    // ❂➤ Creating the message in the database
-    await this.userMessagesService.createChannelMessage(data);
 
     // ❂➤ Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();

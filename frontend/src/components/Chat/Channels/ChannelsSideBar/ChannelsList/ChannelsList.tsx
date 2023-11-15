@@ -71,10 +71,8 @@ export default function Channels() {
         setJoinedPrivateChannels(privateChannels);
 
         setLoading(false);
-        console.log("reRenderAll before", reRenderAll)
         if (reRenderUser) setReRenderUser(false);
         if (reRenderAll) setReRenderAll(false);
-        console.log("reRenderAll after", reRenderAll)
       };
       fetchData();
     }

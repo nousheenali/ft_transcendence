@@ -5,7 +5,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { userInformation } from "@/components/Profile/types";
-import { useChatSocket, useSentMessageState, useSocket } from "@/context/store";
+import {
+  useChatSocket,
+  useSentMessageState,
+  useSocket,
+  useReRenderAllState,
+} from "@/context/store";
 import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
 import { AuthContext } from "@/context/AuthProvider";
 import { sendNotification } from "../../../../../services/friends";
@@ -24,6 +29,7 @@ export default function SendMessageBox({
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [currentMessage, setCurrentMessage] = useState<string>("");
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
 
   /**
    **╭── 🌼
@@ -113,10 +119,16 @@ export default function SendMessageBox({
         message: trimmedMessage,
       };
       socket.emit("ChannelToServer", data);
+      setReRenderAll(true);
       setSentMessage(data);
     }
     if ("login" in receiver && currentSocket)
-      sendNotification(user.login, receiver.login, Content.DirectMessage_Recieved ,currentSocket);
+      sendNotification(
+        user.login,
+        receiver.login,
+        Content.DirectMessage_Recieved,
+        currentSocket
+      );
     setCurrentMessage("");
   };
 

@@ -11,6 +11,7 @@ import {
   useReRenderUserState,
 } from "@/context/store";
 import { toast } from "react-toastify";
+
 /**
  * ================================================================================================
  * ❂➤ ChatSocket: initialize the socket connection with the server.
@@ -88,6 +89,7 @@ export default function ChatSocket({
       });
       /**-------------------------------------------------------------------------**/
       socket.on("UserJoinedChannel", (data) => {
+
         toast.success(
           `User ${data.newJoiner} joined the channel ${data.channelName} successfully`
         );
@@ -123,6 +125,7 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
 
       socket.on("ServerToChannel", (data: SocketMessage) => {
+        setReRenderAll(true);
         setReceivedMessage(data);
       });
       /**-------------------------------------------------------------------------**/
