@@ -8,7 +8,7 @@ import {
   useChatSocket,
   useReceivedMessageState,
   useReRenderAllState,
-  useReRenderUserState
+  useReRenderUserState,
 } from "@/context/store";
 import { toast } from "react-toastify";
 /**
@@ -24,7 +24,7 @@ export default function ChatSocket({
   const { user } = useContext(AuthContext);
   const { socket, setSocket } = useChatSocket();
   const { setReceivedMessage } = useReceivedMessageState();
-  const { setReRenderAll } = useReRenderAllState();
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
   const { setReRenderUser } = useReRenderUserState();
   /**
    * ❂➤ This useEffect is used to initialize the socket connection with the server,
@@ -79,6 +79,28 @@ export default function ChatSocket({
         setReRenderAll(true);
       });
       /**-------------------------------------------------------------------------**/
+      socket.on("UserInvitedToChannel", (data) => {
+        // TODO // Send notification to the user that he has been invited to the channel.
+        const { invitedBy, channelName } = data;
+        toast.success(
+          `You have been invited to the channel: ${channelName} by ${invitedBy}`
+        );
+      });
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserJoinedChannel", (data) => {
+        toast.success(
+          `User ${data.newJoiner} joined the channel ${data.channelName} successfully`
+        );
+      });
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserNotExists", () => {
+        toast.info("User does not exists in the server");
+      });
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserAlreadyInChannel", () => {
+        toast.info("User already in the channel");
+      });
+      /**-------------------------------------------------------------------------**/
       socket.on("ChannelCreated", (data) => {
         setReRenderAll(true);
       });
@@ -96,19 +118,17 @@ export default function ChatSocket({
       socket.on("LeaveChannel", (data) => {
         // TODO // Display message on the channel that user has left.
         console.log("User left the channel: ", data);
-        setReRenderAll(true); // here just to trigger the useEffect in the channel component.
+        setReRenderAll(true);
       });
       /**-------------------------------------------------------------------------**/
 
       socket.on("ServerToChannel", (data: SocketMessage) => {
-        console.log("Message received from a channel: => ", data);
         setReceivedMessage(data);
-        // alert(
-        //   "Message received from : => [" +
-        //     data.sender +
-        //     "] : => " +
-        //     data.message
-        // );
+      });
+      /**-------------------------------------------------------------------------**/
+
+      socket.on("ReRenderAllUsers", (data) => {
+        setReRenderAll(true);
       });
       /**-------------------------------------------------------------------------**/
 
@@ -118,11 +138,16 @@ export default function ChatSocket({
         socket.off("disconnect");
         socket.off("JoinChannel");
         socket.off("LeaveChannel");
+        socket.off("UserNotExists");
         socket.off("ChannelCreated");
         socket.off("ChannelDeleted");
         socket.off("ServerToClient");
         socket.off("ServerToChannel");
         socket.off("UserStatusUpdate");
+        socket.off("ReRenderAllUsers");
+        socket.off("UserJoinedChannel");
+        socket.off("UserInvitedToChannel");
+        socket.off("UserAlreadyInChannel");
       };
       /**-------------------------------------------------------------------------**/
     } catch (error) {

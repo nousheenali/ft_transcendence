@@ -182,7 +182,7 @@ export class ChatGateway
     );
 
     /**-------------------------------------------------------------------------**/
-    
+
     // ❂➤join the user socket to the channel room
     this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
 
@@ -209,11 +209,11 @@ export class ChatGateway
   /** ================================================================================================
    * ❂➤ Handling InviteUserToChannel event by subscribing to the event "InviteUserToChannel" then:
    * 1. Search for the user in the database, if the user does not exist, emit message to the client
-   *   to notify the user that 
-   *      # the user does not exist, or 
+   *   to notify the user that
+   *      # the user does not exist, or
    *      # the user exists but the user is already
    *        in the channel
-   * 
+   *
    * If the user exists and the user is not in the channel:
    * ## . join the user socket to the channel room
    * ## . Create a relation between the user and the channel in the database
@@ -226,25 +226,23 @@ export class ChatGateway
   async inviteUserToChannel(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    data: { channelName: string; channelType: string, invitedUserName: string }
+    data: { channelName: string; channelType: string; invitedUserName: string },
   ) {
-    const {
-      channelName,
-      channelType,
-      invitedUserName,
-    } = data;
+    const { channelName, channelType, invitedUserName } = data;
     if (channelType === 'PRIVATE') {
-      const user = await this.userService.getUserByLogin(invitedUserName);
-
-      // ❂➤ if the user does not exist, emit message to the client to notify the user 
+      const user = await this.userService.getUserByName(invitedUserName);
+      const channel = await this.channelService.getChannelByName(channelName);
+      // ❂➤ if the user does not exist, emit message to the client to notify the user
       //    that the user does not exist
-      if (user === undefined) {
-        client.emit('UserNotExists');
+      if (user === undefined || user === null) {
+        this.server.to(client.id).emit('UserNotExists');
         return;
       }
       // ❂➤ if the user exists, check if the user is already in the channel
-      else if (await this.channelRelationService.isRelationExist(user.id, channelName) === false) {
-        client.emit('UserAlreadyInChannel');
+      else if (
+        await this.channelRelationService.isRelationExist(user.id, channelName)
+      ) {
+        this.server.to(client.id).emit('UserAlreadyInChannel');
         return;
       }
       // ❂➤ if the user exists and the user is not in the channel:
@@ -255,15 +253,21 @@ export class ChatGateway
           'CHANNELS',
         );
         // ❂➤ join the user socket to the channel room
-        this.roomsService.joinRoom(channelRoom.name, user.login, client, 'CHANNELS');
+        this.roomsService.joinRoom(
+          channelRoom.name,
+          user.login,
+          client,
+          'CHANNELS',
+        );
 
         // ❂➤ create channel relation in the database between the user and the channel
-        // await this.channelRelationService.createChannelRelation({
-        //   userId: user.id,
-        //   channelId: channelRoom.id,
-        // });
+        await this.channelRelationService.createChannelRelation({
+          userId: user.id,
+          channelId: channel.id,
+        });
 
-        // ❂➤ Emitting the message to the channel room to notify the other users that the user has joined the channel
+        // ❂➤ Emitting the message to the channel room to notify the other users that the user has joined 
+        //    the channel, so we can print the message in the channel that new user has joined the channel
         this.server.to(channelRoom.name).emit('JoinChannel', {
           newJoiner: user.name,
           channelName: channelName,
@@ -271,10 +275,24 @@ export class ChatGateway
         });
 
         // ❂➤ Emitting the message to the client to notify the user that the user has joined the channel
-        client.emit('UserJoinedChannel', {
+        const userRoom = this.roomsService.getRoom(user.login, 'USERS');
+        this.server.to(userRoom.name).emit('UserJoinedChannel', {
+          newJoiner: user.name,
           channelName: channelName,
-          channelType: channelType,
         });
+
+        // ❂➤ Emitting message to the invited user that he has been invited to the channel
+        //    by the user, so we can send the notification to the user
+        const invitedUserRoom = this.roomsService.getRoom(user.login, 'USERS');
+        this.server.to(invitedUserRoom.name).emit('UserInvitedToChannel', {
+          channelName: channelName,
+          invitedBy: user.name,
+        });
+
+        // ❂➤ Emitting message to all the users to re-render the channels data,
+        //    because the channel has new member, so the new member will see the channel in the
+        //    channels list.
+        this.server.emit('ReRenderAllUsers');
       }
     }
   }
@@ -377,7 +395,8 @@ export class ChatGateway
 
       // ❂➤ Delete the channel if the channel has no members, then emit message to all the users
       //    to re-render the channels list
-      const channelRelations = await this.channelRelationService.findChannelMembers(channelData.id);
+      const channelRelations =
+        await this.channelRelationService.findChannelMembers(channelData.id);
       if (channelRelations.length === 0) {
         await this.channelService.DeleteChannel(channelData.id);
         this.server.emit('ChannelDeleted', {
@@ -398,7 +417,8 @@ export class ChatGateway
       );
       // ❂➤ If this is the last relation, the channel will be deleted. then emit message to every user
       //    to re-render the channels list
-      const channelRelations = await this.channelRelationService.findChannelMembers(channelData.id);
+      const channelRelations =
+        await this.channelRelationService.findChannelMembers(channelData.id);
       if (channelRelations.length === 0) {
         await this.channelService.DeleteChannel(channelData.id);
         this.server.emit('ChannelDeleted', {

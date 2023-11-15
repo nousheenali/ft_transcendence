@@ -56,6 +56,20 @@ export class UserService {
     }
   }
 
+  /* Get user information using full name */
+  async getUserByName(fullName: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          name: fullName,
+        },
+      });
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Unable to get user by Full Name');
+    }
+  }
+
   async updateUserScore(login: string, score: number, win: boolean) {
     const user = await this.getUserByLogin(login);
     if (!user) throw new NotFoundException('User Id does not exist');
@@ -112,11 +126,10 @@ export class UserService {
     }
   }
 
-
   async update(login: string, updateUserDto: UpdateUserDto) {
     try {
       console.log('updatedt', updateUserDto);
-      
+
       const updatedUser = await this.prisma.user.update({
         where: { login: login },
         data: {
@@ -128,7 +141,7 @@ export class UserService {
           TFAEnabled: updateUserDto.TFAEnabled,
         },
       });
-  
+
       return updatedUser;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -136,11 +149,10 @@ export class UserService {
         console.error('Prisma error:', error.message);
         throw error;
       }
-  
+
       // Handle any other errors
       console.error('Unexpected error occurred:', error);
       throw new Error('An unexpected error occurred while updating the user');
     }
   }
-  
 }
