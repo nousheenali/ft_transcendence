@@ -17,6 +17,8 @@ const handleInviteUser = ({
   user: string;
   channel: ChannelsProps;
 }) => {
+  console.log("invited user", user);
+  console.log("channel", channel);
   socket.emit("InviteUserToChannel", {
     channelName: channel.channelName,
     channelType: channel.channelType,
@@ -81,26 +83,23 @@ export default function ChannelChatBoxHeader() {
       {activeChannel.channelType === "PRIVATE" &&
         currectUser.id === activeChannel.createdBy && (
           <div className="flex flex-row  gap-5 px-3">
-            <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+            <div
+              className="flex flex-row items-center gap-1 text-dimmed-text font-thin hover:cursor-pointer"
+              onClick={() => {
+                handleInviteUser({
+                  socket: socket,
+                  user: invitedUser,
+                  channel: activeChannel,
+                });
+              }}
+            >
               <Image
                 alt={"invite"}
                 src={"./chat/user-cirlce-add.svg"}
-                width={45}
-                height={45}
+                width={100}
+                height={100}
               />
-              <span
-                className=" text-main-text text-sm font-light"
-                onClick={() => {
-                  handleInviteUser({
-                    socket: socket,
-                    user: invitedUser,
-                    channel: activeChannel,
-                  });
-                }}
-              >
-                INVITE
-              </span>
-            </button>
+            </div>
             <input
               type="text"
               placeholder="User's Name"
