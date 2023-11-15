@@ -24,6 +24,7 @@ export default class Game extends Scene {
   private paddleHitAudio!: Phaser.Sound.BaseSound;
   private wallHitAudio!: Phaser.Sound.BaseSound;
   private gameOver!: Phaser.Sound.BaseSound;
+  private setupComplete = false; //to make sure everything is setup correctly before starting update()
 
   constructor() {
     super({ key: "game" });
@@ -65,44 +66,50 @@ export default class Game extends Scene {
       this.paddleHitAudio = this.sound.add("ballHit");
       this.wallHitAudio = this.sound.add("wallHit");
       this.gameOver = this.sound.add("gameOver");
+
+      /* to activate update() */
+      this.setupComplete = true;
     }
   }
 
   update() {
-    /*check if space is pressed and game not started yet*/
-    if (this.keys.space.isDown && !this.gameStarted) 
-      this.initilaiseGame();
 
-    /*space pressed and game started */
-    if (this.gameStarted) {
-      /*plays audio based on the surface hit*/
-      this.socket.on("hitPaddle", (surface: boolean) => {
-        if (surface) this.paddleHitAudio.play();
-        else this.wallHitAudio.play();
-      });
+    if (this.setupComplete){
+      /*check if space is pressed and game not started yet*/
+      if (this.keys.space.isDown && !this.gameStarted) 
+        this.initilaiseGame();
 
-      this.socket
-        .emit("ballPosition", { roomID: this.roomID })
-        .on("updateBallPosition", (data: BallPosition) => {
-          this.ball.setPosition(data.position.x, data.position.y);
-          this.displayScore(data.p0_score, data.p1_score);
+      /*space pressed and game started */
+      if (this.gameStarted) {
+        /*plays audio based on the surface hit*/
+        this.socket.on("hitPaddle", (surface: boolean) => {
+          if (surface) this.paddleHitAudio.play();
+          else this.wallHitAudio.play();
         });
 
-      /* prevents paddle from moving continuously on one key press */
-      this.player[0].setVelocityY(0);
-      this.player[1].setVelocityY(0);
+        this.socket
+          .emit("ballPosition", { roomID: this.roomID })
+          .on("updateBallPosition", (data: BallPosition) => {
+            this.ball.setPosition(data.position.x, data.position.y);
+            this.displayScore(data.p0_score, data.p1_score);
+          });
 
-      /* when arrows are used paddle moves for player on right side */
-      if (this.keysAssigned === "arrows") this.movePlayerZero();
+        /* prevents paddle from moving continuously on one key press */
+        this.player[0].setVelocityY(0);
+        this.player[1].setVelocityY(0);
 
-      /* when 'W' and 'S' keys are used paddle moves for player on left side */
-      if (this.keysAssigned === "ws") this.movePlayerOne();
+        /* when arrows are used paddle moves for player on right side */
+        if (this.keysAssigned === "arrows") this.movePlayerZero();
+
+        /* when 'W' and 'S' keys are used paddle moves for player on left side */
+        if (this.keysAssigned === "ws") this.movePlayerOne();
+      }
+
+      /* game Over */
+      this.socket.on("gameOver", (data: GameOver) => {
+        this.gameOverContent(data);
+      });
     }
-
-    /* game Over */
-    this.socket.on("gameOver", (data: GameOver) => {
-      this.gameOverContent(data);
-    });
   }
 
   /* Initialise Sprites */
@@ -229,8 +236,8 @@ export default class Game extends Scene {
     this.controls[0].setVisible(false);
     this.controls[1].setVisible(false);
     this.displayScore(data.p0_score, data.p1_score);
-    if (this.gameStarted)
-      this.results[2].setText(data.name + " WINS!").setVisible(true);
+    if (data.name !== null)
+     this.results[2].setText(data.name + " WINS!").setVisible(true);
     const router = this.registry.get("router");
     this.socket.disconnect();
     setTimeout(() => {

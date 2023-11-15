@@ -9,6 +9,7 @@ export class PlayerService {
 
   constructor() {}
 
+  /* Creates a player and adds it to players Map */
   addPlayer(client: Socket, login: string, userName: string) {
     if (!this.players.has(client.id)) {
       const player: Player = {
@@ -27,12 +28,14 @@ export class PlayerService {
     }
   }
 
+  /* Removes player from players Map */
   removePlayer(clientID: string) {
     if (this.players.has(clientID)) {
       this.players.delete(clientID);
     }
   }
 
+  /* Player by socket id */
   getPlayerBySocketID(clientID: string): Player | null {
     if (this.players.has(clientID)) {
       const player: Player = this.players.get(clientID);
@@ -41,6 +44,7 @@ export class PlayerService {
     return null;
   }
 
+  /* Player by login */
   getPlayerByLogin(login: string): Player | undefined {
     for (const player of this.players.values()) {
       if (player.login === login) {
@@ -55,7 +59,7 @@ export class PlayerService {
     if (player) player.readyToStart = true;
   }
 
-  // add player to queue
+  /* Add player to queue */
   addToQueue(clientID: string, width: number, height: number) {
     const player: Player = this.getPlayerBySocketID(clientID);
     player.worldWidth = width;
@@ -65,17 +69,26 @@ export class PlayerService {
     }
   }
 
+  printQueue() {
+    console.log('----------QUEUE ENTRIES---------------');
+    console.log(
+      'Queue values:',
+      this.queue.map((player) => player.login),
+    );
+    console.log('-------------------------------------');
+  }
+
+  /* Removes player from queue */
   removeFromQueue(playerIdToRemove: string) {
     const indexToRemove = this.queue.findIndex(
       (player) => player.id === playerIdToRemove,
     );
-    if (indexToRemove !== -1)
-      this.queue.splice(indexToRemove, 1);
+    if (indexToRemove !== -1) this.queue.splice(indexToRemove, 1);
   }
 
+  /* Matches and removes the first two players from the queue */
   matchQueuedPlayers(): Player[] | null {
     if (this.queue.length >= 2) {
-      // Get and remove the first two players from the queue
       const players = this.queue.splice(0, 2);
       return players;
     }

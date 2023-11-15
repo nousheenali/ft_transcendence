@@ -17,7 +17,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { isNewNotification, setIsNewNotification } = useSocket();
-  const { setClicked, setInvitee, setInviter, setIsAccepted } = useGameState();
+  const { setClicked, setInvitee, setInviter, setIsAccepted, setIsQueue} = useGameState();
   const router = useRouter();
 
   const openDropdown = () => {
@@ -50,6 +50,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     setInvitee(notifId.User.login);
     setClicked(true);
     setIsAccepted(true);
+    setIsQueue(false);
     updateData({}, "/notification/updateClicked/" + notifId.id);
     router.push("/game");
   };
@@ -60,6 +61,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     setInviter(notifId.sender.login);
     setInvitee(notifId.User.login);
     setIsAccepted(false);
+    setIsQueue(false);
     updateData({}, "/notification/updateClicked/" + notifId.id);
     router.push("/game");
   };

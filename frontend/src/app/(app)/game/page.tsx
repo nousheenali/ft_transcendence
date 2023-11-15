@@ -19,6 +19,7 @@ import {
   WorldDimensions,
   joiningData,
 } from "@/components/GameComponents/types";
+import Preloader from "../../../components/GameComponents/Scenes/Preloader";
 
 export default function GamePage() {
   const {
@@ -31,11 +32,9 @@ export default function GamePage() {
     isQueue,
     setInviter,
     setInvitee,
-  } = useGameState(); //for the time being im saving the colors in the context store
+  } = useGameState();
 
-  const joinQueue = isQueue;
-  const accept = isAccepted; //check this
-
+  // console.log("INCOMING VALUES....", isQueue, isAccepted, invitee, inviter);
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
@@ -70,40 +69,48 @@ export default function GamePage() {
       socket = io(backendUrl!, {
         query: { login: userData.login, username: userData.name },
       });
-      // currentSocket.emit("newNotif", )
       socket.on("connect", () => {
-        if (joinQueue) {
+        /* When user selects queue option */
+        if (isQueue) {
           socket.emit("addToQueue", world);
         } else {
           if (login === inviter) {
+            /* Inviter creates a game room and waits for the invitee */
             const input: WaitingRoom = {
               invitee: invitee,
               worldDimensions: world,
             };
             socket.emit("createWaitingRoom", input);
           } else if (login === invitee) {
+            /* Invitee creates socket and either accepts/declines the invite */
             socket.emit("joinWaitingRoom", {
               inviter: inviter,
               worldDimensions: world,
-              accept: accept,
+              accept: isAccepted,
             });
           }
         }
+
+        /* When inviter disconnects before the invitee joins */
         socket.on("inviterDisconnected", () => {
-          alert("Inviter disconnected the game");
+          if (isAccepted) alert("Inviter disconnected the game");
           socket.disconnect();
-          router.push("/");
+          router.back();
         });
+
+        /* When invitee declines invitation */
         socket.on("invitationDeclined", () => {
           if (login === inviter) alert("Other player Declined your invitation");
           socket.disconnect();
-          router.push("/");
+          router.back();
         });
+
+        /* game room created and both players joined */
         socket.on("matched", (data: joiningData) => {
-          // setupGame();
           const loadingText = document.getElementById("loading-text");
           loadingText?.remove();
 
+          /* Phaser game config */
           var config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             parent: "game-container",
@@ -131,7 +138,7 @@ export default function GamePage() {
         });
       });
 
-      // user clicks back navigation in browswer
+      /* user clicks back navigation in browswer */
       const handlePopstate = () => {
         socket.disconnect();
         if (phaserGame) phaserGame.destroy(true);
