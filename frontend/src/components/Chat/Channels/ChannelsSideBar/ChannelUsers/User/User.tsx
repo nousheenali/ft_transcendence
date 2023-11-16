@@ -1,11 +1,13 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { BiVolumeMute } from "react-icons/bi";
 import { RiUserUnfollowLine } from "react-icons/ri";
 import { ChannelUserProps, ChannelsProps } from "../../../../types";
 import { userInformation } from "@/components/Profile/types";
 import { useChatSocket } from "@/context/store";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Modal, Button } from "react-daisyui";
 
 export default function ChannelUser({
   currentUser,
@@ -19,6 +21,11 @@ export default function ChannelUser({
   const [muteColor, setMuteColor] = useState("gray");
   const { socket } = useChatSocket();
 
+
+  const modalRef = React.useRef<HTMLDialogElement>(null);
+  const handleClick = useCallback(() => {
+    modalRef.current?.showModal();
+  }, []);
   /**========================================================================
    *  ❂➤ Handle the mute button click
    *
@@ -58,6 +65,8 @@ export default function ChannelUser({
    *
    */
   const handleKickClick = () => {
+    // ❂➤ Check if the current user is the admin of the channel
+    //    Cause only the admin can kick users
     if (currentUser.id !== channel.createdBy) {
       toast.warn("you are not admin", {
         position: "top-right",
@@ -65,6 +74,7 @@ export default function ChannelUser({
         hideProgressBar: true,
         closeOnClick: true,
       });
+      // ❂➤ Check if the current user is the user to be kicked
     } else if (currentUser.login === user.login)
       toast.warn("you can't kick yourself", {
         position: "top-right",
@@ -74,11 +84,12 @@ export default function ChannelUser({
       });
     else if (currentUser.id === channel.createdBy) {
       // ❂➤ Emit the KickUser event to the server to kick the user
-      socket.emit("KickUser", {
-        admin: currentUser.login,
-        login: user.login,
-        channelName: channel.channelName,
-      });
+      handleClick();
+    //   socket.emit("KickUser", {
+    //     kickedUserlogin: user.login,
+    //     channelName: channel.channelName,
+    //     channelType: channel.channelType,
+    //   });
     }
   };
 
@@ -126,6 +137,19 @@ export default function ChannelUser({
               color={"grey"}
             />
           )}
+          <div className="font-sans">
+            <Modal ref={modalRef}>
+              <Modal.Header className="font-bold">Hello!</Modal.Header>
+              <Modal.Body>
+                Press ESC key or click the button below to close
+              </Modal.Body>
+              <Modal.Actions>
+                <form method="dialog">
+                  <Button>Close</Button>
+                </form>
+              </Modal.Actions>
+            </Modal>
+          </div>
         </div>
       </div>
     </div>

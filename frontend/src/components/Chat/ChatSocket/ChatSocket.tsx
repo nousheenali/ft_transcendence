@@ -130,6 +130,14 @@ export default function ChatSocket({
       });
       /**-------------------------------------------------------------------------**/
 
+      socket.on("KickUser", (data: any) => {
+        setReRenderAll(true);
+        setReRenderUser(true);
+        toast.warn(
+          `user ${data.kickedUser} has been kicked from the channel ${data.channelName}`);
+      });
+      /**-------------------------------------------------------------------------**/
+
       socket.on("ReRenderAllUsers", (data) => {
         setReRenderAll(true);
       });
@@ -137,6 +145,7 @@ export default function ChatSocket({
 
       return () => {
         socket.off("connect");
+        socket.off("KickUser");
         socket.off("reconnect");
         socket.off("disconnect");
         socket.off("JoinChannel");
@@ -149,8 +158,8 @@ export default function ChatSocket({
         socket.off("UserStatusUpdate");
         socket.off("ReRenderAllUsers");
         socket.off("UserJoinedChannel");
-        socket.off("UserInvitedToChannel");
         socket.off("UserAlreadyInChannel");
+        socket.off("UserInvitedToChannel");
       };
       /**-------------------------------------------------------------------------**/
     } catch (error) {

@@ -461,6 +461,39 @@ export class ChatGateway
     this.roomsService.printAllRooms();
     console.log('Message To: [' + data.channel + '] => ' + data.message);
   }
+  /** ================================================================================================
+   * ❂➤ Handling event by subscribing to the event "ChannelToServer" and emitting the message
+   * to the channel room.
+   */
+  @SubscribeMessage('KickUser')
+  async kickUserFromChannel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    const {kickedUserlogin, channelName, channelType} = data;
+
+    // ❂➤ Getting the data of the kicked user and the channel
+    const kickedUser = await this.userService.getUserByLogin(kickedUserlogin);
+    const channel = await this.channelService.getChannelByName(channelName);
+
+    // ❂➤ Delete the channel relation in the database between the user and the channel
+    await this.channelRelationService.deleteChannelRelation(kickedUser.id, channel.id);
+
+    // ❂➤ Remove the user from the channel's room
+    const channelRoom = this.roomsService.getRoom(channelName + channelType, 'CHANNELS');
+    this.roomsService.leaveRoom(
+      channelRoom.name,
+      kickedUser.login,
+      client,
+      'CHANNELS',
+    );
+    this.server.emit('ReRenderAllUsers');
+    this.server.to(channelRoom.name).emit('UserKicked', {
+      kickedUser: kickedUser.name,
+      channelName: channelName,
+    });
+
+  }
 
   /** ================================================================================================
    * ❂➤ Handling disconnection
