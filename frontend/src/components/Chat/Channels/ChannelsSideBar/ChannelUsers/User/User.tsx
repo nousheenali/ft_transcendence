@@ -4,6 +4,8 @@ import { BiVolumeMute } from "react-icons/bi";
 import { RiUserUnfollowLine } from "react-icons/ri";
 import { ChannelUserProps, ChannelsProps } from "../../../../types";
 import { userInformation } from "@/components/Profile/types";
+import { useChatSocket } from "@/context/store";
+import { toast } from "react-toastify";
 
 export default function ChannelUser({
   currentUser,
@@ -15,26 +17,72 @@ export default function ChannelUser({
   channel: ChannelsProps;
 }) {
   const [muteColor, setMuteColor] = useState("gray");
+  const { socket } = useChatSocket();
 
+  /**========================================================================
+   *  ❂➤ Handle the mute button click
+   *
+   */
   const handleMuteClick = () => {
-    if (currentUser.login === user.login)
-      console.log("you can't mute yourself");
+    if (currentUser.id !== channel.createdBy) {
+      toast.warn("you are not admin", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+      });
+    } else if (currentUser.login === user.login)
+      toast.warn("you can't mute yourself", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+      });
     else if (currentUser.id === channel.createdBy) {
-      console.log("mute the user", user.name);
+      // ❂➤ Emit the MuteUser event to the server to mute the user
+      socket.emit("MuteUser", {
+        admin: currentUser.login,
+        login: user.login,
+        channelName: channel.channelName,
+      });
+
+      // ❂➤ Change the mute icon color to green
       setMuteColor((prevColor) =>
         prevColor === "gray" ? "rgba(213, 242, 35, 0.8)" : "gray"
       );
     }
   };
 
+  /**========================================================================
+   *  ❂➤ Handle the kick button click
+   *
+   */
   const handleKickClick = () => {
-    if (currentUser.login === user.login)
-      console.log("you can't kick yourself");
+    if (currentUser.id !== channel.createdBy) {
+      toast.warn("you are not admin", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+      });
+    } else if (currentUser.login === user.login)
+      toast.warn("you can't kick yourself", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+      });
     else if (currentUser.id === channel.createdBy) {
-      console.log("kick the user", user.name);
+      // ❂➤ Emit the KickUser event to the server to kick the user
+      socket.emit("KickUser", {
+        admin: currentUser.login,
+        login: user.login,
+        channelName: channel.channelName,
+      });
     }
   };
 
+  /**========================================================================**/
   return (
     <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 ml-6 overflow-hidden hover:cursor-pointer">
       <div className="indicator profile w-36 h-12 basis-1/6 rounded-3xl overflow-hidden relative">

@@ -91,8 +91,8 @@ export default function Channels() {
       joinedPrivateChannels.length > 0
     ) {
       setActiveChannel(joinedPrivateChannels[0]);
-    } else setActiveChannel({} as ChannelsProps);
-  }, [joinedPrivateChannels, joinedPublicChannels, activeChannelType]);
+    }
+  }, [joinedPublicChannels.length, joinedPrivateChannels.length, activeChannelType]);
 
   /**
    **╭── 🌼
