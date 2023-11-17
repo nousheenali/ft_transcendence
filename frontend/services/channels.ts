@@ -6,9 +6,9 @@ import {
 import { getData } from "./api";
 
 /**==============================================================================================
- * ╭── 🌼
+ * ╭── 🟣
  * ├ 👇 Helper function to fetch the channels of a user.
- * └── 🌼
+ * └── 🟣
  * @param login The login of the user
  * @param endpoint The endpoint in the channel service to fetch the data from
  * @returns The channels of the user
@@ -27,9 +27,9 @@ export const getChannelsData = async (login: string, endpoint: string) => {
 };
 
 /**==============================================================================================
- * ╭── 🌼
+ * ╭── 🟣
  * ├ 👇 Helper function to fetch the channel's user.
- * └── 🌼
+ * └── 🟣
  * @param login The login of the user
  * @param endpoint The endpoint in the channel service to fetch the data from
  * @returns The users of the channel
@@ -49,9 +49,9 @@ export const getChannelUsersData = async (login: string, endpoint: string) => {
 };
 
 /**==============================================================================================
- * ╭── 🌼
+ * ╭── 🟣
  * ├ 👇 Helper function to fetch the channel's messages.
- * └── 🌼
+ * └── 🟣
  * @param login The login of the user
  * @param endpoint The endpoint in the channel service to fetch the data from
  * @returns The messages of the channel

@@ -21,6 +21,7 @@ module.exports = {
         'saira-condensed': ['Saira Condensed', 'sans-serif'],
       },
       colors: {
+        'warning': '#CD5C5C',
         'box-fill': 'rgba(14, 18, 17, 0.7)',
         'main-text': '#9e9fa4',
         'main-yellow': 'rgba(213, 242, 35, 0.8)',

@@ -14,9 +14,9 @@ import { Input, Modal } from "react-daisyui";
 
 /** ======================================================================================================= */
 /**
- **╭── 🌼
+ **╭── 🟣
  **├ 👇 pressing the button will leave the channel, by deleting the relation between the user and the channel.
- **└── 🌼
+ **└── 🟣
  **/
 
 const Header = () => {
@@ -112,9 +112,9 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
 
 /** ======================================================================================================= */
 /**
- **╭── 🌼
+ **╭── 🟣
  **├ 👇 pressing the button will join the channel, by creating a relation between the user and the channel.
- **└── 🌼
+ **└── 🟣
  **/
 const handleJoinClick = ({
   channel,

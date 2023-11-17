@@ -32,18 +32,18 @@ export default function SendMessageBox({
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 toggle emoji picker, it will show or hide the emoji picker.
-   **└── 🌼
+   **└── 🟣
    **/
   const toggleEmojiPicker = () => {
     setShowEmojiPicker((prevState) => !prevState);
   };
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 handle emoji select, when the user clicks on an emoji, it will be added to the message.
-   **└── 🌼
+   **└── 🟣
    **/
   const handleEmojiSelect = (emoji: { native: string }) => {
     const updatedMessage = currentMessage + emoji.native;
@@ -51,9 +51,9 @@ export default function SendMessageBox({
   };
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 use effect for emoji picker, it will close the emoji picker when the user clicks outside of it.
-   **└── 🌼
+   **└── 🟣
    **/
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -74,9 +74,9 @@ export default function SendMessageBox({
     };
   }, []);
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 send message to the server and then to the receiver.
-   **└── 🌼
+   **└── 🟣
    **/
   const sendMessage = () => {
     const trimmedMessage = currentMessage.trim();
@@ -119,7 +119,6 @@ export default function SendMessageBox({
         message: trimmedMessage,
       };
       socket.emit("ChannelToServer", data);
-      setReRenderAll(true);
       setSentMessage(data);
     }
     if ("login" in receiver && currentSocket)
@@ -133,9 +132,9 @@ export default function SendMessageBox({
   };
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 use effect for enter key
-   **└── 🌼
+   **└── 🟣
    **/
 
   useEffect(() => {
@@ -152,9 +151,9 @@ export default function SendMessageBox({
   }, [currentMessage]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 If there is no receiver, then return an empty div
-   **└── 🌼
+   **└── 🟣
    **/
   if (receiver === undefined)
     return (

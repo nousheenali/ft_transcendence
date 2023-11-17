@@ -47,7 +47,7 @@ export class ChannelService {
       where: {
         channelId: id,
       },
-    })
+    });
     await this.prisma.channelRelation.deleteMany({
       where: {
         channelId: id,
@@ -76,12 +76,12 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all channels in the server according to the type of the channel.
    * ├    this method will pull all the channels from the database, then compare them with the channels
    * ├    that the user have relation with, and filter the channels that the user dont have any relation
    * ├    with.
-   * └── 🌼
+   * └── 🟣
    * @returns all the private channels in the server according to the type of the channel.
    * @throws BadRequestException if there is an error while getting the private channels
    * ==============================================================================================*/
@@ -114,9 +114,9 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all private channels according to the user login
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @returns all the private channels that the user have relation with.
    * @throws BadRequestException if there is an error while getting the private channels
@@ -157,9 +157,9 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all the public channels according to the user login
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @returns all the public channels that the user have relation with.
    * @throws BadRequestException if there is an error while getting the public channels
@@ -200,9 +200,9 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get channel users according to the channel name
-   * └── 🌼
+   * └── 🟣
    * @param channelName: string, the name of the channel
    * @returns all the users that are members of the channel
    * @throws BadRequestException if there is an error while getting the channel users
@@ -239,9 +239,9 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get channel messages according to the channel name
-   * └── 🌼
+   * └── 🟣
    * @param channelName: string, the name of the channel
    * @returns all the messages of the channel
    * @throws BadRequestException if there is an error while getting the channel messages
@@ -279,10 +279,10 @@ export class ChannelService {
     }
   }
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 These two methods is to update the admin of the channel according to the oldest
    * ├    member of the channel
-   * └── 🌼
+   * └── 🟣
    * @param channelName: string, the name of the channel
    * @returns the new admin of the channel
    * @throws BadRequestException if there is an error while updating the channel admin

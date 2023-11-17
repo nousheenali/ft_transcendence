@@ -42,9 +42,9 @@ export class ChannelController {
   }
 
   /**===============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all private channels according to the user login
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @returns all the private channels that the user have relation with.
    * @throws HttpException if there is an error while getting the private channels
@@ -52,7 +52,10 @@ export class ChannelController {
    * @example GET /channels/private-channels/:login
    * ==============================================================================================*/
   @Get('/all-channels/:channelType/:login')
-  GetALLChannels(@Param('channelType') channelType: Type ,@Param('login') login: string) {
+  GetALLChannels(
+    @Param('channelType') channelType: Type,
+    @Param('login') login: string,
+  ) {
     try {
       return this.channelService.getAllChannels(channelType, login);
     } catch (error) {
@@ -64,9 +67,9 @@ export class ChannelController {
   }
 
   /**===============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all private channels according to the user login
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @returns all the private channels that the user have relation with.
    * @throws HttpException if there is an error while getting the private channels
@@ -86,9 +89,9 @@ export class ChannelController {
   }
 
   /**===============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all the public channels according to the user login
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @returns all the public channels that the user have relation with.
    * @throws HttpException if there is an error while getting the public channels
@@ -109,9 +112,9 @@ export class ChannelController {
     }
   }
   /**===============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get channel users according to the user login and the channel name
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @param channelName: string, the name of the channel
    * @returns all the users that are members of the channel
@@ -135,9 +138,9 @@ export class ChannelController {
   }
 
   /**===============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get private channel messages according to the user login and the channel name
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @param channelName: string, the name of the channel
    * @returns all the messages of the channel
@@ -161,5 +164,4 @@ export class ChannelController {
   }
 
   /**===============================================================================================*/
-
 }

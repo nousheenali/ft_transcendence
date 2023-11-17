@@ -8,6 +8,8 @@ import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { ChannelsProps } from "@/components/Chat/types";
 import { Socket } from "socket.io-client";
 
+/**======================================================================================================**/
+
 const handleInviteUser = ({
   socket,
   user,
@@ -17,8 +19,6 @@ const handleInviteUser = ({
   user: string;
   channel: ChannelsProps;
 }) => {
-  console.log("invited user", user);
-  console.log("channel", channel);
   socket.emit("InviteUserToChannel", {
     channelName: channel.channelName,
     channelType: channel.channelType,
@@ -26,6 +26,7 @@ const handleInviteUser = ({
   });
 };
 
+/**======================================================================================================**/
 export default function ChannelChatBoxHeader() {
   const { user } = useContext(AuthContext);
   const { activeChannel } = activateClickedChannel();
@@ -33,6 +34,7 @@ export default function ChannelChatBoxHeader() {
   const [currectUser, setCurrectUser] = useState<userInformation>();
   const { socket } = useChatSocket();
 
+  //------------------------------------------------------------------------------------------------------
   useEffect(() => {
     if (user && user.login) {
       const fetchData = async () => {
@@ -53,6 +55,8 @@ export default function ChannelChatBoxHeader() {
                  border-b border-main-yellow px-3"
       ></div>
     );
+
+  //------------------------------------------------------------------------------------------------------
 
   return (
     <div
@@ -80,6 +84,7 @@ export default function ChannelChatBoxHeader() {
         </div>
       </div>
 
+      {/* ================================================================================================= */}
       {activeChannel.channelType === "PRIVATE" &&
         currectUser.id === activeChannel.createdBy && (
           <div className="flex flex-row  gap-5 px-3">
@@ -112,3 +117,5 @@ export default function ChannelChatBoxHeader() {
     </div>
   );
 }
+
+/**======================================================================================================**/

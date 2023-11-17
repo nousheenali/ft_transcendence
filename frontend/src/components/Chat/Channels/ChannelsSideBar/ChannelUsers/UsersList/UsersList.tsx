@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { activateClickedChannel } from "@/context/store";
+import { activateClickedChannel, useReRenderAllState } from "@/context/store";
 import { ChannelUserProps } from "@/components/Chat/types";
 import { getChannelUsersData } from "../../../../../../../services/channels";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
@@ -15,13 +15,20 @@ export default function UsersList() {
   const { activeChannel } = activateClickedChannel();
   const [channelUsers, setChannelUsers] = useState<ChannelUserProps[]>([]);
   const [currentUser, setCurrentUser] = useState<userInformation>();
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Fetch the active channel users data from the database
-   **└── 🌼
+   **└── 🟣
    **/
 
+  console.log(
+    "reRenderAll before useEffect from the user: [",
+    user.login,
+    "]",
+    reRenderAll
+  );
   useEffect(() => {
     if (user && user.login && activeChannel.channelName) {
       const fetchData = async () => {
@@ -38,13 +45,20 @@ export default function UsersList() {
         setLoading(false);
       };
       fetchData();
+      if (reRenderAll) setReRenderAll(false);
     }
-  }, [user, activeChannel]);
+    console.log(
+      "reRenderAll after useEffect from the user: [",
+      user.login,
+      "]",
+      reRenderAll
+    );
+  }, [user, activeChannel, reRenderAll]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Show the loading spinner while fetching the channel's users data
-   **└── 🌼
+   **└── 🟣
    **/
   if (activeChannel.channelName === undefined)
     return <p>No channel selected</p>;
