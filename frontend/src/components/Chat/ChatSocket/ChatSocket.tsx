@@ -24,7 +24,7 @@ export default function ChatSocket({
   const { user } = useContext(AuthContext);
   const { socket, setSocket } = useChatSocket();
   const { setReceivedMessage } = useReceivedMessageState();
-  const { reRenderAll, setReRenderAll } = useReRenderAllState();
+  const { setReRenderAll } = useReRenderAllState();
   /**
    * 🟣🟣 This useEffect is used to initialize the socket connection with the server,
    * without any dependency, so it will be called only once.

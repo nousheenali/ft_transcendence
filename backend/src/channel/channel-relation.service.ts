@@ -43,6 +43,10 @@ export class ChannelRelationService {
   async isUserMuted(channelId: string, userId: string) {
     // Getting the current value of the isMuted field from the relation table
     try {
+      const isRelationExist = await this.isRelationExist(channelId, userId);
+      if (!isRelationExist) {
+        return false;
+      }
       const isUserMuted = await this.prisma.channelRelation.findFirst({
         where: {
           userId: userId,

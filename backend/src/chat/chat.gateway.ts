@@ -546,6 +546,13 @@ export class ChatGateway
       channelData.id,
     );
 
+    // Emitting message to the channel room to notify the other users that the user has been muted
+    const channelRoom = this.roomsService.getRoom(
+      channelName + channelData.channelType,
+      'CHANNELS',
+    );
+    this.server.to(channelRoom.name).emit('UserMuted');
+    
     //  Emitting message to the muted user to notify him that he has been muted by the admin
     const mutedUserRoom = this.roomsService.getRoom(mutedUser, 'USERS');
     this.server.to(mutedUserRoom.name).emit('UserMuted');

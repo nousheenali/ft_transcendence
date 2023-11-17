@@ -1,13 +1,15 @@
 import Image from "next/image";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { BiVolumeMute } from "react-icons/bi";
 import { RiUserUnfollowLine } from "react-icons/ri";
 import { ChannelUserProps, ChannelsProps } from "../../../../types";
 import { userInformation } from "@/components/Profile/types";
-import { useChatSocket } from "@/context/store";
+import { useChatSocket, useReRenderAllState } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal, Button } from "react-daisyui";
+import { getUserMuteStatus } from "../../../../../../../services/user";
+import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 
 export default function ChannelUser({
   currentUser,
@@ -18,11 +20,14 @@ export default function ChannelUser({
   user: ChannelUserProps;
   channel: ChannelsProps;
 }) {
-  const [muteColor, setMuteColor] = useState("gray");
   const { socket } = useChatSocket();
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
+
   const modalRef = React.useRef<HTMLDialogElement>(null);
   const handleModalClick = useCallback(() => {
-    modalRef.current?.showModal();
+    if (!modalRef.current?.open)
+      modalRef.current?.showModal();
   }, [modalRef]);
   /**========================================================================
    *  🟣🟣 Handle the mute button click
@@ -49,11 +54,6 @@ export default function ChannelUser({
         mutedUser: user.login,
         channelName: channel.channelName,
       });
-
-      // 🟣🟣 Change the mute icon color to green
-      setMuteColor((prevColor) =>
-        prevColor === "gray" ? "rgba(213, 242, 35, 0.8)" : "gray"
-      );
     }
   };
 
@@ -86,6 +86,27 @@ export default function ChannelUser({
   };
 
   /**========================================================================**/
+
+  /**
+   **╭── 🟣
+   **├ 👇 use effect to get the user state in the channel, if he is muted or not
+   **└── 🟣
+   **/
+  useEffect(() => {
+    if (user && channel && currentUser) {
+      const fetchData = async () => {
+        const isUserMuted: boolean = await getUserMuteStatus(
+          user.login,
+          API_ENDPOINTS.isUserMuted + channel.channelName + "/"
+        );
+        setIsMuted(isUserMuted);
+      };
+      fetchData();
+      if (reRenderAll) setReRenderAll(false);
+    }
+  }, [user, channel, currentUser, reRenderAll]);
+  
+  /**========================================================================**/
   return (
     <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 ml-6 overflow-hidden hover:cursor-pointer">
       <div className="indicator profile w-36 h-12 basis-1/6 rounded-3xl overflow-hidden relative">
@@ -111,9 +132,11 @@ export default function ChannelUser({
           <BiVolumeMute
             className="text-main-text"
             size={20}
-            color={muteColor}
+            color={isMuted ? "rgba(213, 242, 35, 0.8)" : "grey"}
           />
         </div>
+
+        {/* ====================================================== */}
         <div onClick={handleKickClick}>
           {currentUser.id === channel.createdBy &&
           user.login !== currentUser.login ? (
