@@ -26,10 +26,11 @@ export default function UsersList() {
     if (user && user.login && activeChannel && activeChannel.channelName !== undefined && activeChannel.channelName !== "") {
       const fetchData = async () => {
         const users: ChannelUserProps[] = await getChannelUsersData(
-          user.login!,
+          user.login,
           API_ENDPOINTS.channelUsers + activeChannel.channelName + "/"
         );
         setChannelUsers(users);
+
         const currentUser: userInformation = await getUserData(
           user.login!,
           API_ENDPOINTS.getUserbyLogin
@@ -39,15 +40,23 @@ export default function UsersList() {
       };
       fetchData();
       if (reRenderAll) setReRenderAll(false);
+
+      // console.log("=======================================================");
+      // console.log(activeChannel);
+      // console.log("user.id ->       ", user.id);
+      // console.log("channel admin -> ", activeChannel.createdBy);
+      // console.log("=======================================================");
     }
+    
   }, [user, activeChannel, reRenderAll]);
+  
 
   /**
    **╭── 🟣
    **├ 👇 Show the loading spinner while fetching the channel's users data
    **└── 🟣
    **/
-  if (activeChannel.channelName === undefined)
+  if (activeChannel.channelName === undefined || activeChannel.channelName === "")
     return <p>No channel selected</p>;
 
   if (isLoading)

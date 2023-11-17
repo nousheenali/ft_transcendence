@@ -26,8 +26,7 @@ export default function ChannelUser({
 
   const modalRef = React.useRef<HTMLDialogElement>(null);
   const handleModalClick = useCallback(() => {
-    if (!modalRef.current?.open)
-      modalRef.current?.showModal();
+    if (!modalRef.current?.open) modalRef.current?.showModal();
   }, [modalRef]);
   /**========================================================================
    *  🟣🟣 Handle the mute button click
@@ -93,7 +92,13 @@ export default function ChannelUser({
    **└── 🟣
    **/
   useEffect(() => {
-    if (user && channel && currentUser && channel.channelName !== undefined && channel.channelName !== "") {
+    if (
+      user &&
+      channel &&
+      currentUser &&
+      channel.channelName !== undefined &&
+      channel.channelName !== ""
+    ) {
       const fetchData = async () => {
         const isUserMuted: boolean = await getUserMuteStatus(
           user.login,
@@ -105,7 +110,7 @@ export default function ChannelUser({
       if (reRenderAll) setReRenderAll(false);
     }
   }, [user, channel, currentUser, reRenderAll]);
-  
+
   /**========================================================================**/
   return (
     <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 ml-6 overflow-hidden hover:cursor-pointer">
@@ -138,20 +143,16 @@ export default function ChannelUser({
 
         {/* ====================================================== */}
         <div onClick={handleKickClick}>
-          {currentUser.id === channel.createdBy &&
-          user.login !== currentUser.login ? (
-            <RiUserUnfollowLine
-              className="text-main-text"
-              size={20}
-              color={"#CD5C5C"}
-            />
-          ) : (
-            <RiUserUnfollowLine
-              className="text-main-text"
-              size={20}
-              color={"grey"}
-            />
-          )}
+          <RiUserUnfollowLine
+            className="text-main-text"
+            size={20}
+            color={
+              currentUser.id === channel.createdBy &&
+              user.login !== currentUser.login
+                ? "#CD5C5C"
+                : "grey"
+            }
+          />
           {/* ======================================================
            * Pop up modal to confirm the kick action
            * =======================================================*/}

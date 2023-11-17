@@ -200,7 +200,7 @@ export class ChatGateway
     this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
 
     //  Emitting the message to the channel room to notify the other users that the user has joined the channel
-    this.server.to(channelRoom.name).emit('JoinChannel', {
+    this.server.to(channelRoom.name).emit('newChannelJoiner', {
       newJoiner: user.name,
       channelName: channelName,
       channelType: channelType,
@@ -213,7 +213,6 @@ export class ChatGateway
       userId: user.id,
       channelId: channel.id,
     });
-
     /**-------------------------------------------------------------------------**/
     //  Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
@@ -281,17 +280,10 @@ export class ChatGateway
 
         // ❂➤ Emitting the message to the channel room to notify the other users that the user has joined
         //    the channel, so we can print the message in the channel that new user has joined the channel
-        this.server.to(channelRoom.name).emit('JoinChannel', {
+        this.server.to(channelRoom.name).emit('newChannelJoiner', {
           newJoiner: user.name,
           channelName: channelName,
           channelType: channelType,
-        });
-
-        //  Emitting the message to the client to notify the user that the user has joined the channel
-        const userRoom = this.roomsService.getRoom(user.login, 'USERS');
-        this.server.to(userRoom.name).emit('UserJoinedChannel', {
-          newJoiner: user.name,
-          channelName: channelName,
         });
 
         //  Emitting message to the invited user that he has been invited to the channel
@@ -382,7 +374,7 @@ export class ChatGateway
       channelName + channelType,
       'CHANNELS',
     );
-    this.server.to(channelRoom.name).emit('LeaveChannel', {
+    this.server.to(channelRoom.name).emit('UserLeftChannel', {
       leaver: userData.login,
       channelName: channelName,
       channelType: channelType,
@@ -422,6 +414,7 @@ export class ChatGateway
       //  If the user is the admin, assign the new admin by selecting the oldest member
       //    in the channel
       await this.channelService.updateChannelAdmin(channelData.id);
+      this.server.emit('ReRenderAllUsers')
     } else {
       //  Delete the channel relation in the database between the user and the channel
       await this.channelRelationService.deleteChannelRelation(
@@ -506,7 +499,6 @@ export class ChatGateway
       'CHANNELS',
     );
     // this.server.emit('ReRenderAllUsers');
-    this.server.emit('ReRenderAllUsers');
     this.server.to(channelRoom.name).emit('UserKicked', {
       kickedUser: kickedUser.name,
       channelName: channelName,
@@ -518,6 +510,7 @@ export class ChatGateway
       kickedBy: admin,
       channelName: channelName,
     });
+    this.server.emit('ReRenderAllUsers');
   }
 
   /** ================================================================================================
@@ -557,6 +550,7 @@ export class ChatGateway
     //  Emitting message to the muted user to notify him that he has been muted by the admin
     const mutedUserRoom = this.roomsService.getRoom(mutedUser, 'USERS');
     this.server.to(mutedUserRoom.name).emit('UserMuted');
+    this.server.emit('ReRenderAllUsers');
   }
 
   /** ================================================================================================

@@ -75,13 +75,6 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
-
-      socket.on("JoinChannel", (data) => {
-        // TODO // Display message on the channel that new user joined.
-        setReRenderAll(true);
-      });
-
-      /**-------------------------------------------------------------------------**/
       socket.on("UserInvitedToChannel", (data) => {
         // TODO // Send notification to the user that he has been invited to the channel.
         const { invitedBy, channelName } = data;
@@ -91,15 +84,15 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
-      socket.on("UserJoinedChannel", (data) => {
-        toast.success(
-          `User ${data.newJoiner} joined the channel ${data.channelName} successfully`
-        );
+      socket.on("newChannelJoiner", (data) => {
+        // TODO // Display message on the channel that new user joined.
+        console.log("newChannelJoiner", data);
+        setReRenderAll(true);
       });
 
       /**-------------------------------------------------------------------------**/
       socket.on("UserNotExists", () => {
-        toast.info("User does not exists in the server");
+        toast.warning("User does not exists in the server");
       });
 
       /**-------------------------------------------------------------------------**/
@@ -124,8 +117,9 @@ export default function ChatSocket({
 
       /**-------------------------------------------------------------------------**/
 
-      socket.on("LeaveChannel", (data) => {
+      socket.on("UserLeftChannel", (data) => {
         // TODO // Display message on the channel that user has left.
+        console.log("UserLeftChannel", data);
         setReRenderAll(true);
       });
 
@@ -183,16 +177,15 @@ export default function ChatSocket({
         socket.off("UserMuted");
         socket.off("UserKicked");
         socket.off("disconnect");
-        socket.off("JoinChannel");
-        socket.off("LeaveChannel");
         socket.off("UserNotExists");
         socket.off("ChannelCreated");
         socket.off("ChannelDeleted");
         socket.off("ServerToClient");
         socket.off("ServerToChannel");
+        socket.off("UserLeftChannel");
+        socket.off("newChannelJoiner");
         socket.off("UserStatusUpdate");
         socket.off("ReRenderAllUsers");
-        socket.off("UserJoinedChannel");
         socket.off("WrongChannelPassword");
         socket.off("UserAlreadyInChannel");
         socket.off("UserInvitedToChannel");

@@ -8,7 +8,6 @@ import {
   useChannelType,
   activateClickedChannel,
   useReRenderAllState,
-  useReRenderUserState,
 } from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
 
@@ -20,7 +19,6 @@ export default function Channels() {
   const { activeChannelType } = useChannelType();
   const { setActiveChannel } = activateClickedChannel();
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
-  const { reRenderUser, setReRenderUser } = useReRenderUserState();
 
   const [allPrivateChannels, setAllPrivateChannels] = useState<ChannelsProps[]>(
     []
@@ -70,19 +68,16 @@ export default function Channels() {
         setJoinedPrivateChannels(privateChannels);
 
         setLoading(false);
-        if (reRenderUser) setReRenderUser(false);
         if (reRenderAll) setReRenderAll(false);
       };
       fetchData();
     }
   }, [
     user,
-    reRenderUser,
     reRenderAll,
     joinedPublicChannels.length,
     joinedPrivateChannels.length,
   ]);
-
   /**
    **╭── 🟣
    **├ 👇 Activate the chat with the first channel in the list according to the joined channel type

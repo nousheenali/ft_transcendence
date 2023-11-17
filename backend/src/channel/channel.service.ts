@@ -100,8 +100,10 @@ export class ChannelService {
           channelType: channelType,
         },
         select: {
+          channelMembers: true,
           channelName: true,
           channelType: true,
+          createdBy: true,
         },
       });
       const channels = allChannels.filter((channel) => {
@@ -140,6 +142,7 @@ export class ChannelService {
             select: {
               channel: {
                 select: {
+                  channelMembers: true,
                   channelName: true,
                   channelType: true,
                   createdBy: true,
@@ -183,6 +186,7 @@ export class ChannelService {
             select: {
               channel: {
                 select: {
+                  channelMembers: true,
                   channelName: true,
                   channelType: true,
                   createdBy: true,
