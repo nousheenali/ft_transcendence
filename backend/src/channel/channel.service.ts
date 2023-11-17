@@ -8,6 +8,7 @@ import { hashPassword } from 'src/utils/bcrypt';
 export class ChannelService {
   constructor(private prisma: PrismaService) {} // 👈 Inject PrismaService class into the constructor.
 
+  /**==============================================================================================
   /*
    * create channel and add the creator as a member
    */
@@ -39,6 +40,7 @@ export class ChannelService {
     return create_channel;
   }
 
+  /**==============================================================================================
   /*
    * delete channel
    */
@@ -210,7 +212,7 @@ export class ChannelService {
   async getChannelUsers(channelName: string) {
     try {
       const channelUsers = [];
-      const data = await this.prisma.channel.findMany({
+      const data = await this.prisma.channel.findFirst({
         where: {
           channelName: channelName,
         },
@@ -219,6 +221,7 @@ export class ChannelService {
             select: {
               user: {
                 select: {
+                  id: true,
                   login: true,
                   avatar: true,
                   name: true,
@@ -229,7 +232,7 @@ export class ChannelService {
           },
         },
       });
-      data[0].channelMembers.forEach((element) => {
+      data.channelMembers.forEach((element) => {
         channelUsers.push(element.user);
       });
       return channelUsers;

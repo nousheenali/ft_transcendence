@@ -92,6 +92,7 @@ export class ChatGateway
 
     //  Get all the channels that the user has relation with
     const user = await this.userService.getUserByLogin(userLogin);
+    if (user === undefined || user === null) return;
     const joinedChannels = await this.channelRelationService.findUserChannels(
       user.id,
     );
@@ -135,7 +136,7 @@ export class ChatGateway
 
       // ❂➤ Printing the rooms array to the console for debugging
       this.roomsService.printAllRooms();
-      
+
       console.log(
         chalk.greenBright('Message To: ') +
           chalk.blue(`[${data.receiver}]`) +
@@ -185,7 +186,7 @@ export class ChatGateway
         return;
       }
     }
-      
+
     /**-------------------------------------------------------------------------**/
     // ❂➤ get the channel room
     const channelRoom = this.roomsService.getRoom(
@@ -516,6 +517,38 @@ export class ChatGateway
       kickedBy: admin,
       channelName: channelName,
     });
+  }
+
+  /** ================================================================================================
+   *  Handling event by subscribing to the event "MuteUser" and emitting the message
+   * to the channel room, then:
+   * 1. Get the user and the channel from the database
+   * 2. Update the channel relation in the database between the user and the channel
+   * 3. Emit the message to the admin to notify him that the user has been muted successfully
+   */
+  @SubscribeMessage('MuteUser')
+  async muteUserFromChannel(
+    @MessageBody()
+    data: {
+      mutedUser: string;
+      channelName: string;
+    },
+  ) {
+    const { mutedUser, channelName } = data;
+
+    // Getting the data of the muted user and the channel
+    const mutedUserData = await this.userService.getUserByLogin(mutedUser);
+    const channelData = await this.channelService.getChannelByName(channelName);
+
+    // Update the channel relation in the database between the user and the channel
+    await this.channelRelationService.udateIsMutedInChannelRelation(
+      mutedUserData.id,
+      channelData.id,
+    );
+
+    //  Emitting message to the muted user to notify him that he has been muted by the admin
+    const mutedUserRoom = this.roomsService.getRoom(mutedUser, 'USERS');
+    this.server.to(mutedUserRoom.name).emit('UserMuted');
   }
 
   /** ================================================================================================

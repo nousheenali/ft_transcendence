@@ -10,21 +10,21 @@ datasource db {
 
 // =====================================================================
 model User {
-  id        String   @id @default(uuid())
-  login     String   @unique
-  email     String   @unique
-  name      String   @unique
-  avatar    String?  @default("https://i.imgur.com/6VBx3io.png")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isOnline  Boolean  @default(true)
+  id           String   @id @default(uuid())
+  login        String   @unique
+  email        String   @unique
+  name         String   @unique
+  avatar       String?  @default("https://i.imgur.com/6VBx3io.png")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  isOnline     Boolean  @default(true)
   refreshToken String?
-  inAGame   Boolean  @default(false)
+  inAGame      Boolean  @default(false)
 
   // Two factor authentication-----------------------------------------
-  TFAEnabled Boolean @default(false)
-  TFAKey     String?
-  TFAVerified Boolean @default(false)
+  TFAEnabled            Boolean        @default(false)
+  TFAKey                String?
+  TFAVerified           Boolean        @default(false)
   // Relation to notifications-----------------------------------------
   receiverdNotification Notification[] @relation(name: "receiver")
   sentNotification      Notification[] @relation(name: "sender")
@@ -141,9 +141,11 @@ enum Type {
 // =====================================================================
 
 model ChannelRelation {
-  id     String @id @default(uuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id      String  @id @default(uuid())
+  userId  String
+  user    User    @relation(fields: [userId], references: [id])
+  
+  isMuted Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

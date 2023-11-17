@@ -22,13 +22,6 @@ export default function UsersList() {
    **├ 👇 Fetch the active channel users data from the database
    **└── 🟣
    **/
-
-  console.log(
-    "reRenderAll before useEffect from the user: [",
-    user.login,
-    "]",
-    reRenderAll
-  );
   useEffect(() => {
     if (user && user.login && activeChannel.channelName) {
       const fetchData = async () => {
@@ -47,12 +40,6 @@ export default function UsersList() {
       fetchData();
       if (reRenderAll) setReRenderAll(false);
     }
-    console.log(
-      "reRenderAll after useEffect from the user: [",
-      user.login,
-      "]",
-      reRenderAll
-    );
   }, [user, activeChannel, reRenderAll]);
 
   /**

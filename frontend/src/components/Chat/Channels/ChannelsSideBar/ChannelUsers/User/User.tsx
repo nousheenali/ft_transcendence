@@ -46,8 +46,7 @@ export default function ChannelUser({
     else if (currentUser.id === channel.createdBy) {
       // 🟣🟣 Emit the MuteUser event to the server to mute the user
       socket.emit("MuteUser", {
-        admin: currentUser.login,
-        login: user.login,
+        mutedUser: user.login,
         channelName: channel.channelName,
       });
 

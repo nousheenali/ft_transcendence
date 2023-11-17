@@ -85,6 +85,7 @@ CREATE TABLE "Channel" (
 CREATE TABLE "ChannelRelation" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "isMuted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "channelId" TEXT NOT NULL,

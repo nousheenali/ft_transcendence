@@ -12,12 +12,16 @@ import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; //
 
 @Controller('channel_relation')
 export class ChannelRelationController {
-  constructor(private readonly channelRelationService: ChannelRelationService) {}
-  
+  constructor(
+    private readonly channelRelationService: ChannelRelationService,
+  ) {}
+
   // 👇 create a new channel relation between a user table and a certain channel.
   @Post('/createChannelRelation/')
   create(@Body() createChannelRelationDto: CreateChannelRelationDto) {
-    return this.channelRelationService.createChannelRelation(createChannelRelationDto);
+    return this.channelRelationService.createChannelRelation(
+      createChannelRelationDto,
+    );
   }
 
   // 👇 get all members of a channel.

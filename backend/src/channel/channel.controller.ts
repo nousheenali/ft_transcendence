@@ -13,11 +13,17 @@ import {
 } from '@nestjs/common';
 import { Type } from '@prisma/client';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
+import { ChannelRelationService } from './channel-relation.service';
+import { UserService } from '../user/user.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 
 @Controller('channels')
 export class ChannelController {
-  constructor(private readonly channelService: ChannelService) {}
+  constructor(
+    private readonly channelService: ChannelService,
+    private readonly channelRelationService: ChannelRelationService,
+    private readonly userService: UserService,
+  ) {}
 
   //================================================================================================
   // 👇 create a new channel
@@ -123,7 +129,7 @@ export class ChannelController {
    * @example GET /channels/users/:channelName/:login
    * ==============================================================================================*/
   @Get('/users/:channelName/:login')
-  GetPrivateChannelUsers(
+  GetChannelUsers(
     @Param('login') login: string,
     @Param('channelName') channelName: string,
   ) {
@@ -163,5 +169,17 @@ export class ChannelController {
     }
   }
 
+  /**===============================================================================================*/
+  // 👇 get if the user is muted in a channel.
+  @Get('/channel-property/is-muted/:channelName/:login')
+  async isUserMuted(
+    @Param('channelName') channelName: string,
+    @Param('login') login: string,
+  ) {
+    const user = await this.userService.getUserByLogin(login);
+    const channel = await this.channelService.getChannelByName(channelName);
+
+    return this.channelRelationService.isUserMuted(channel.id, user.id);
+  }
   /**===============================================================================================*/
 }

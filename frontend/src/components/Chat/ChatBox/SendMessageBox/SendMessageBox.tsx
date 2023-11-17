@@ -10,11 +10,15 @@ import {
   useSentMessageState,
   useSocket,
   useReRenderAllState,
+  activateClickedChannel,
 } from "@/context/store";
 import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
 import { AuthContext } from "@/context/AuthProvider";
 import { sendNotification } from "../../../../../services/friends";
+import { getUserMuteStatus } from "../../../../../services/user";
 import { Content } from "@/components/notificationIcon/types";
+import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
+
 //========================================================================
 export default function SendMessageBox({
   receiver,
@@ -30,6 +34,7 @@ export default function SendMessageBox({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
+  const [isMuted, setIsMuted] = useState<boolean>(false);
 
   /**
    **╭── 🟣
@@ -152,6 +157,30 @@ export default function SendMessageBox({
 
   /**
    **╭── 🟣
+   **├ 👇 use effect to get the user state in the channel, if he is muted or not
+   **└── 🟣
+   **/
+  useEffect(() => {
+    if (
+      receiver &&
+      "channelName" in receiver &&
+      receiver.channelName !== "" &&
+      user &&
+      user.login
+    ) {
+      const fetchData = async () => {
+        const isUserMuted: boolean = await getUserMuteStatus(
+          user.login,
+          API_ENDPOINTS.isUserMuted + receiver.channelName + "/"
+        );
+        setIsMuted(isUserMuted);
+      };
+      fetchData();
+    }
+  }, [receiver, reRenderAll, user]);
+
+  /**
+   **╭── 🟣
    **├ 👇 If there is no receiver, then return an empty div
    **└── 🟣
    **/
@@ -160,6 +189,19 @@ export default function SendMessageBox({
       <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
     );
 
+  // If the user is muted, then re render the component with the muted message
+  if (isMuted)
+    return (
+      <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
+        <input
+          className="flex-grow h-full px-4 py-2 rounded-xl focus:outline-none hover:cursor-not-allowed"
+          placeholder="You are muted in this channel"
+          disabled
+        />
+      </div>
+    );
+
+  // else, return the normal component
   return (
     <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
       <input

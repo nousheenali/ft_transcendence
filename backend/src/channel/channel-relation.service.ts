@@ -1,11 +1,17 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; // 👈 Import CreateChannelRelationDto
 import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
+import { ChannelService } from './channel.service';
+import { UserService } from 'src/user/user.service';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
 export class ChannelRelationService {
-  constructor(private prisma: PrismaService) {} // 👈 Inject PrismaService class into the constructor.
+  constructor(
+    private prisma: PrismaService,
+    private channelService: ChannelService,
+    private userService: UserService,
+  ) {} // 👈 Inject PrismaService class into the constructor.
 
   /** -------------------------------------------------------------------------------------------
    * 👉 Helper function.
@@ -32,6 +38,70 @@ export class ChannelRelationService {
       );
     }
   }
+
+  /** -------------------------------------------------------------------------------------------**/
+  async isUserMuted(channelId: string, userId: string) {
+    // Getting the current value of the isMuted field from the relation table
+    try {
+      const isUserMuted = await this.prisma.channelRelation.findFirst({
+        where: {
+          userId: userId,
+          channelId: channelId,
+        },
+        select: {
+          isMuted: true,
+        },
+      });
+      return isUserMuted.isMuted;
+    } catch (error) {
+      throw new BadRequestException(
+        'UNABLE TO CHECK IF THE USER IS MUTED OR NOT',
+      );
+    }
+  }
+
+  /** -------------------------------------------------------------------------------------------
+   * 👉 update the isMuted field in the channel relation table
+   * @param channelId the id of the channel to find member from.
+   * @param userId the id of the user to check if he is a member of the channel.
+   * @param isMuted the value of the isMuted field
+   * @returns
+   * @throws BadRequestException if the user is not a member of the channel.
+   * @example
+   * updateChannelRelation(13, 14224, true)
+   */
+  async udateIsMutedInChannelRelation(userId: string, channelId: string) {
+    try {
+      const isUserMuted = await this.isUserMuted(channelId, userId);
+
+      // if the user is already muted, then unmute him, and vice versa
+      if (isUserMuted) {
+        await this.prisma.channelRelation.updateMany({
+          where: {
+            userId: userId,
+            channelId: channelId,
+          },
+          data: {
+            isMuted: false,
+          },
+        });
+      } else {
+        await this.prisma.channelRelation.updateMany({
+          where: {
+            userId: userId,
+            channelId: channelId,
+          },
+          data: {
+            isMuted: true,
+          },
+        });
+      }
+      return;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO UPDATE THE CHANNEL RELATION');
+    }
+  }
+
   /** -------------------------------------------------------------------------------------------
    * 👉 Creates a new channel relation between a user table and a channel.
    * @param createChannelRelationDto the data to create a new channel relation,
@@ -61,12 +131,13 @@ export class ChannelRelationService {
       return newChannelRelation;
     }
   }
+
   /** -------------------------------------------------------------------------------------------
    * 👉 Returns all members tables of a specific channel.
    * @param channelId the id of the    channel to find members of.
    * @returns
    */
-  findChannelMembers(channelId: string) {
+  async findChannelMembers(channelId: string) {
     return this.prisma.channelRelation.findMany({
       where: { channelId: channelId },
       include: {
@@ -128,5 +199,6 @@ export class ChannelRelationService {
       throw new BadRequestException('UNABLE TO DELETE THE CHANNEL RELATION');
     }
   }
+
   /** ---------------------------------------------------------------------------------------- **/
 }

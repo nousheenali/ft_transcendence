@@ -55,21 +55,25 @@ export default function ChatSocket({
       socket.on("connect", () => {
         console.log(`Connected to the server with socket id: ${socket.id}`);
       });
+
       /**-------------------------------------------------------------------------**/
 
       socket.on("disconnect", (reason) => {
         console.log("Disconnected from the server for reason: ", reason);
       });
+
       /**-------------------------------------------------------------------------**/
 
       socket.on("reconnect", (attempt) => {
         console.log("Reconnected to the server on attempt number: ", attempt);
       });
+
       /**-------------------------------------------------------------------------**/
 
       socket.on("ServerToClient", (data: SocketMessage) => {
         setReceivedMessage(data);
       });
+
       /**-------------------------------------------------------------------------**/
 
       socket.on("JoinChannel", (data) => {
@@ -77,6 +81,7 @@ export default function ChatSocket({
         console.log("User joined the channel: ", data);
         setReRenderAll(true);
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("UserInvitedToChannel", (data) => {
         // TODO // Send notification to the user that he has been invited to the channel.
@@ -85,28 +90,34 @@ export default function ChatSocket({
           `You have been invited to the channel: ${channelName} by ${invitedBy}`
         );
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("UserJoinedChannel", (data) => {
         toast.success(
           `User ${data.newJoiner} joined the channel ${data.channelName} successfully`
         );
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("UserNotExists", () => {
         toast.info("User does not exists in the server");
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("UserAlreadyInChannel", () => {
         toast.info("User already in the channel");
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("ChannelCreated", (data) => {
         setReRenderAll(true);
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("ChannelDeleted", (data) => {
         setReRenderAll(true);
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("UserStatusUpdate", () => {
         setReRenderAll(true);
@@ -118,11 +129,13 @@ export default function ChatSocket({
         // TODO // Display message on the channel that user has left.
         setReRenderAll(true);
       });
+
       /**-------------------------------------------------------------------------**/
 
       socket.on("ServerToChannel", (data: SocketMessage) => {
         setReceivedMessage(data);
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("UserKicked", (data: any) => {
         const { kickedUser, channelName } = data;
@@ -131,6 +144,7 @@ export default function ChatSocket({
           `user ${kickedUser} has been kicked from the channel ${channelName}`
         );
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("UserKickedFromChannel", (data: any) => {
         setReRenderAll(true);
@@ -144,17 +158,24 @@ export default function ChatSocket({
           }
         );
       });
-      /**-------------------------------------------------------------------------**/
 
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserMuted", () => {
+        setReRenderAll(true);
+      });
+
+      /**-------------------------------------------------------------------------**/
       socket.on("WrongChannelPassword", () => {
         toast.error("Wrong channel password", {
           autoClose: 1000,
         });
       });
+
       /**-------------------------------------------------------------------------**/
       socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);
       });
+
       /**-------------------------------------------------------------------------**/
 
       return () => {

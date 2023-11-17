@@ -11,12 +11,12 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     const request = context.switchToHttp().getRequest();
 
     // Log information about the incoming request
-    console.log(
-      'Request to AccessTokenGuard:',
-      request.method,
-      request.url,
-      request.headers,
-    );
+    // console.log(
+    //   'Request to AccessTokenGuard:',
+    //   request.method,
+    //   request.url,
+    //   request.headers,
+    // );
 
     // You can add additional logic here if needed
 

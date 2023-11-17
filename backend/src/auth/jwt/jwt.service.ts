@@ -16,7 +16,7 @@ export class JwtAuthService {
     private userService: UserService,
   ) {}
 
-  private accessTokenExpiration: string = '15m';
+  private accessTokenExpiration: string = '50m';
 
   private refreshTokenExpiration: string = '7d';
 
