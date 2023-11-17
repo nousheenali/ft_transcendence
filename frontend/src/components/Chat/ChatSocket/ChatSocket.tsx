@@ -8,13 +8,12 @@ import {
   useChatSocket,
   useReceivedMessageState,
   useReRenderAllState,
-  useReRenderUserState,
 } from "@/context/store";
 import { toast } from "react-toastify";
 
 /**
  * ================================================================================================
- * ❂➤ ChatSocket: initialize the socket connection with the server.
+ * 🟣🟣 ChatSocket: initialize the socket connection with the server.
  * and listen to the events.
  * ================================================================================================*/
 export default function ChatSocket({
@@ -26,9 +25,8 @@ export default function ChatSocket({
   const { socket, setSocket } = useChatSocket();
   const { setReceivedMessage } = useReceivedMessageState();
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
-  const { setReRenderUser } = useReRenderUserState();
   /**
-   * ❂➤ This useEffect is used to initialize the socket connection with the server,
+   * 🟣🟣 This useEffect is used to initialize the socket connection with the server,
    * without any dependency, so it will be called only once.
    * ======================================================================== **/
   useEffect(() => {
@@ -47,7 +45,7 @@ export default function ChatSocket({
   }, [user]);
 
   /**
-   * ❂➤ This useEffect is used to listen to the events from the server,
+   * 🟣🟣 This useEffect is used to listen to the events from the server,
    * with the socket as a dependency, so it will be called every time the socket changes,
    * but it will be called only once, because the socket is initialized only once.
    * that
@@ -89,7 +87,6 @@ export default function ChatSocket({
       });
       /**-------------------------------------------------------------------------**/
       socket.on("UserJoinedChannel", (data) => {
-
         toast.success(
           `User ${data.newJoiner} joined the channel ${data.channelName} successfully`
         );
@@ -119,34 +116,45 @@ export default function ChatSocket({
 
       socket.on("LeaveChannel", (data) => {
         // TODO // Display message on the channel that user has left.
-        console.log("User left the channel: ", data);
         setReRenderAll(true);
       });
       /**-------------------------------------------------------------------------**/
 
       socket.on("ServerToChannel", (data: SocketMessage) => {
-        setReRenderAll(true);
         setReceivedMessage(data);
       });
       /**-------------------------------------------------------------------------**/
-
-      socket.on("KickUser", (data: any) => {
+      socket.on("UserKicked", (data: any) => {
+        const { kickedUser, channelName } = data;
         setReRenderAll(true);
-        setReRenderUser(true);
         toast.warn(
-          `user ${data.kickedUser} has been kicked from the channel ${data.channelName}`);
+          `user ${kickedUser} has been kicked from the channel ${channelName}`
+        );
+      });
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserKickedFromChannel", (data: any) => {
+        setReRenderAll(true);
+        toast.warn(
+          `You have been kicked from the channel ${data.channelName} by ${data.kickedBy}`,
+          {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+          }
+        );
       });
       /**-------------------------------------------------------------------------**/
 
-      socket.on("ReRenderAllUsers", (data) => {
+      socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);
       });
       /**-------------------------------------------------------------------------**/
 
       return () => {
         socket.off("connect");
-        socket.off("KickUser");
         socket.off("reconnect");
+        socket.off("UserKicked");
         socket.off("disconnect");
         socket.off("JoinChannel");
         socket.off("LeaveChannel");

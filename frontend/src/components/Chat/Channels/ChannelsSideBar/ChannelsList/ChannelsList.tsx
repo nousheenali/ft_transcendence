@@ -8,10 +8,9 @@ import {
   useChannelType,
   activateClickedChannel,
   useReRenderAllState,
-  useReRenderUserState
+  useReRenderUserState,
 } from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
-
 
 /**============================================================================================*/
 
@@ -37,10 +36,10 @@ export default function Channels() {
   >([]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Fetch the all the private and public channels data from the database
    **├ 👇 Fetch the private and public channels that the user joined to.
-   **└── 🌼
+   **└── 🟣
    **/
 
   useEffect(() => {
@@ -76,12 +75,18 @@ export default function Channels() {
       };
       fetchData();
     }
-  }, [user, reRenderUser, reRenderAll]);
+  }, [
+    user,
+    reRenderUser,
+    reRenderAll,
+    joinedPublicChannels.length,
+    joinedPrivateChannels.length,
+  ]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
-   **└── 🌼
+   **└── 🟣
    **/
   useEffect(() => {
     if (activeChannelType === "Public" && joinedPublicChannels.length > 0) {
@@ -91,13 +96,19 @@ export default function Channels() {
       joinedPrivateChannels.length > 0
     ) {
       setActiveChannel(joinedPrivateChannels[0]);
+    } else {
+      setActiveChannel({} as ChannelsProps);
     }
-  }, [joinedPublicChannels.length, joinedPrivateChannels.length, activeChannelType]);
+  }, [
+    joinedPublicChannels.length,
+    joinedPrivateChannels.length,
+    activeChannelType,
+  ]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Show the loading spinner while fetching the channels data
-   **└── 🌼
+   **└── 🟣
    **/
   if (isLoading)
     return (
@@ -105,11 +116,11 @@ export default function Channels() {
     );
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Render the channels list according to the channel type:
    **├   First : render the channels that the user joined to.
    **├   Second: render the channels that the user didn't join to
-   **└── 🌼
+   **└── 🟣
    **/
   let key = 0;
   return (

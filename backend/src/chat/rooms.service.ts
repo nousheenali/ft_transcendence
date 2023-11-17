@@ -134,7 +134,7 @@ export class RoomsService {
   ) {
     if (this.isRoomExist(roomName, roomType)) {
       const room = this.getRoom(roomName, roomType);
-      // ❂➤ Remove the user from the room's users array
+      // 🟣🟣 Remove the user from the room's users array
       if (this.isUserInRoom(roomName, userName, roomType) === true) {
         room.users.splice(room.users.indexOf(userName), 1);
       }
@@ -142,7 +142,7 @@ export class RoomsService {
         if (room.users.length > 0) room.admin = room.users[0];
         else this.removeRooms(roomName, roomType);
       }
-      // ❂➤ Remove the user's socket from the room
+      // 🟣🟣 Remove the user's socket from the room
       client.leave(roomName);
     }
   }

@@ -20,14 +20,12 @@ export default function ChannelUser({
 }) {
   const [muteColor, setMuteColor] = useState("gray");
   const { socket } = useChatSocket();
-
-
   const modalRef = React.useRef<HTMLDialogElement>(null);
-  const handleClick = useCallback(() => {
+  const handleModalClick = useCallback(() => {
     modalRef.current?.showModal();
-  }, []);
+  }, [modalRef]);
   /**========================================================================
-   *  ❂➤ Handle the mute button click
+   *  🟣🟣 Handle the mute button click
    *
    */
   const handleMuteClick = () => {
@@ -46,14 +44,14 @@ export default function ChannelUser({
         closeOnClick: true,
       });
     else if (currentUser.id === channel.createdBy) {
-      // ❂➤ Emit the MuteUser event to the server to mute the user
+      // 🟣🟣 Emit the MuteUser event to the server to mute the user
       socket.emit("MuteUser", {
         admin: currentUser.login,
         login: user.login,
         channelName: channel.channelName,
       });
 
-      // ❂➤ Change the mute icon color to green
+      // 🟣🟣 Change the mute icon color to green
       setMuteColor((prevColor) =>
         prevColor === "gray" ? "rgba(213, 242, 35, 0.8)" : "gray"
       );
@@ -61,11 +59,11 @@ export default function ChannelUser({
   };
 
   /**========================================================================
-   *  ❂➤ Handle the kick button click
+   *  🟣🟣 Handle the kick button click
    *
    */
   const handleKickClick = () => {
-    // ❂➤ Check if the current user is the admin of the channel
+    // 🟣🟣 Check if the current user is the admin of the channel
     //    Cause only the admin can kick users
     if (currentUser.id !== channel.createdBy) {
       toast.warn("you are not admin", {
@@ -74,7 +72,7 @@ export default function ChannelUser({
         hideProgressBar: true,
         closeOnClick: true,
       });
-      // ❂➤ Check if the current user is the user to be kicked
+      // 🟣🟣 Check if the current user is the user to be kicked
     } else if (currentUser.login === user.login)
       toast.warn("you can't kick yourself", {
         position: "top-right",
@@ -83,13 +81,8 @@ export default function ChannelUser({
         closeOnClick: true,
       });
     else if (currentUser.id === channel.createdBy) {
-      // ❂➤ Emit the KickUser event to the server to kick the user
-      handleClick();
-    //   socket.emit("KickUser", {
-    //     kickedUserlogin: user.login,
-    //     channelName: channel.channelName,
-    //     channelType: channel.channelType,
-    //   });
+      // 🟣🟣 Emit the KickUser event to the server to kick the user
+      handleModalClick();
     }
   };
 
@@ -137,19 +130,57 @@ export default function ChannelUser({
               color={"grey"}
             />
           )}
-          <div className="font-sans">
-            <Modal ref={modalRef}>
-              <Modal.Header className="font-bold">Hello!</Modal.Header>
-              <Modal.Body>
-                Press ESC key or click the button below to close
-              </Modal.Body>
-              <Modal.Actions>
-                <form method="dialog">
-                  <Button>Close</Button>
-                </form>
-              </Modal.Actions>
-            </Modal>
-          </div>
+          {/* ======================================================
+           * Pop up modal to confirm the kick action
+           * =======================================================*/}
+          <Modal
+            ref={modalRef}
+            className="bg-grid-bg border border-main-yellow rounded-xl p-4 text-main-text font-saira-condensed"
+          >
+            <Modal.Header className="flex items-center justify-center font-bold text-warning">
+              Sure!!
+            </Modal.Header>
+            <Modal.Body>
+              Are you sure you want to kick {""}
+              <span className="font-bold">( {user.name} )</span> from the
+              channel?
+            </Modal.Body>
+            <Modal.Actions className="flex justify-evenly">
+              <form method="dialog">
+                <Button
+                  className="bg-box-fill text-white border-main-yellow"
+                  onClick={() => {
+                    modalRef.current?.close();
+                  }}
+                >
+                  NO
+                </Button>
+              </form>
+
+              <form method="dialog">
+                <Button
+                  className="bg-box-fill text-warning border-main-yellow"
+                  onClick={() => {
+                    socket.emit("KickUser", {
+                      admin: currentUser.name,
+                      kickedUserlogin: user.login,
+                      channelName: channel.channelName,
+                      channelType: channel.channelType,
+                    });
+                    toast.success("user kicked successfully", {
+                      position: "top-right",
+                      autoClose: 1000,
+                      hideProgressBar: true,
+                    });
+                    modalRef.current?.close();
+                  }}
+                >
+                  YES
+                </Button>
+              </form>
+            </Modal.Actions>
+          </Modal>
+          {/* ====================================================== */}
         </div>
       </div>
     </div>

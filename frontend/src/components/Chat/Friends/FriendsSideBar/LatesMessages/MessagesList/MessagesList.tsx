@@ -33,9 +33,9 @@ export default function MessagesList() {
   }, [user, receivedMessage, reRenderAll]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
-   **└── 🌼
+   **└── 🟣
    **/
   useEffect(() => {
     if (latestMessages.length > 0) {

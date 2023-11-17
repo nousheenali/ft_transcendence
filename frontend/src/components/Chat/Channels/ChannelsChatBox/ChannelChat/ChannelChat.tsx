@@ -1,12 +1,11 @@
 import Sender from "./Senders/Senders";
 import Receiver from "./Receiver/Receiver";
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { ChannelsProps, MessagesProps } from "../../../types";
+import { MessagesProps } from "../../../types";
 import {
   activateClickedChannel,
   useSentMessageState,
   useReceivedMessageState,
-  useReRenderAllState,
 } from "@/context/store";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelMessagesData } from "../../../../../../services/channels";
@@ -20,8 +19,6 @@ export default function ChannelChat() {
   const [messages, setMessages] = useState<MessagesProps[]>([]);
   const { sentMessage } = useSentMessageState();
   const { receivedMessage } = useReceivedMessageState();
-  const { reRenderAll, setReRenderAll } = useReRenderAllState();
-
 
   useEffect(() => {
     if (user && user.login && activeChannel.channelName) {
@@ -36,13 +33,12 @@ export default function ChannelChat() {
     } else {
       setMessages([]);
     }
-    if (reRenderAll) setReRenderAll(false);
-  }, [user, activeChannel, sentMessage, receivedMessage, reRenderAll]);
-  
+  }, [user, activeChannel, sentMessage, receivedMessage]);
+
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
-   **└── 🌼
+   **└── 🟣
    **/
   useEffect(() => {
     if (chatScrollRef && messages && activeChannel.channelName) {
@@ -51,11 +47,11 @@ export default function ChannelChat() {
       }
     }
   }, [activeChannel, messages]);
-  
+
   if (messages === undefined || activeChannel.channelName === undefined)
-  return <div className="overflow-y-scroll px-3"></div>;
+    return <div className="overflow-y-scroll px-3"></div>;
   messages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
-  
+
   return (
     <div className="overflow-y-scroll px-3">
       {messages.map((message, index) => {

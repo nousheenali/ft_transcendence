@@ -18,9 +18,9 @@ export const API_ENDPOINTS = {
   unBlockFriend: "/friends/unBlock/",
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 All the Channels endpoints
-   * └── 🌼
+   * └── 🟣
    **/
   allChannels: "/channels/all-channels/",
   privateChannels: "/channels/private-channels/",
@@ -31,9 +31,9 @@ export const API_ENDPOINTS = {
   deleteChannel: "/channels/delete/",
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 User Messages endpoints
-   * └── 🌼
+   * └── 🟣
    **/
   userMessages: "/user-messages/friend-chat/",
   userLatestMessages: "/user-messages/latest-messages/",

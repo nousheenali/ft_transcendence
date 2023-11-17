@@ -6,7 +6,7 @@ export class ChatService {
   constructor(private prisma: PrismaService) {}
 
   /** ================================================================================================
-   * ❂➤ Updating the user status in the database
+   * 🟣🟣 Updating the user status in the database
    * ================================================================================================*/
   async updateUserStatus(login: string, isOnline: boolean) {
     await this.prisma.user.update({
@@ -16,6 +16,6 @@ export class ChatService {
   }
 
   /** ================================================================================================
-   * ❂➤ Getting all the users from the database
+   * 🟣🟣 Getting all the users from the database
    * ================================================================================================*/
 }

@@ -1,4 +1,3 @@
-
 import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
@@ -12,8 +11,6 @@ import {
 } from "../../../../../context/store";
 import { AuthContext } from "@/context/AuthProvider";
 
-
-
 export default function FriendChat() {
   const { user } = useContext(AuthContext);
   const { sentMessage } = useSentMessageState();
@@ -23,11 +20,10 @@ export default function FriendChat() {
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Fetch the private and public channels data from the database
-   **└── 🌼
+   **└── 🟣
    **/
-
 
   useEffect(() => {
     if (user && user.login && activeFriend) {
@@ -43,9 +39,9 @@ export default function FriendChat() {
   }, [user, activeFriend, sentMessage, receivedMessage]);
 
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
-   **└── 🌼
+   **└── 🟣
    **/
 
   useEffect(() => {
@@ -57,15 +53,9 @@ export default function FriendChat() {
   return (
     <div className="overflow-y-scroll px-3" ref={chatScrollRef}>
       {friendChat.map((message, index) => {
-        if (
-          user.login &&
-          message.sender.login === user.login
-        ) {
+        if (user.login && message.sender.login === user.login) {
           return <ReceiverChatBox key={index} message={message} />;
-        } else if (
-          activeFriend &&
-          message.sender.login === activeFriend
-        ) {
+        } else if (activeFriend && message.sender.login === activeFriend) {
           return <SenderChatBox key={index} message={message} />;
         }
       })}
