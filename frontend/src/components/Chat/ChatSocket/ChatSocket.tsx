@@ -146,6 +146,12 @@ export default function ChatSocket({
       });
       /**-------------------------------------------------------------------------**/
 
+      socket.on("WrongChannelPassword", () => {
+        toast.error("Wrong channel password", {
+          autoClose: 1000,
+        });
+      });
+      /**-------------------------------------------------------------------------**/
       socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);
       });

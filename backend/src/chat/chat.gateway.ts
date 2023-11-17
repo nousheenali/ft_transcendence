@@ -26,6 +26,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { comparePassword } from 'src/utils/bcrypt';
 
 /**╭──🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣
  * │  Array that will store the rooms that are created
@@ -132,8 +133,9 @@ export class ChatGateway
       //  Emitting the message to the receiver room
       this.server.to(receiverRoom.name).emit('ServerToClient', data);
 
-      //  Printing the rooms array to the console for debugging
+      // ❂➤ Printing the rooms array to the console for debugging
       this.roomsService.printAllRooms();
+      
       console.log(
         chalk.greenBright('Message To: ') +
           chalk.blue(`[${data.receiver}]`) +
@@ -158,13 +160,9 @@ export class ChatGateway
   async joinChannel(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    data: { channelName: string; channelType: string },
+    data: { channelName: string; channelType: string; channelPassword: string },
   ) {
     const { channelName, channelType } = data;
-    if (channelType === 'PRIVATE') {
-      console.log(chalk.red('PRIVATE CHANNEL NOT IMPLEMENTED YET'));
-      return;
-    }
 
     /**-------------------------------------------------------------------------**/
     const userLogin = client.handshake.query.userLogin as string;
@@ -175,7 +173,21 @@ export class ChatGateway
     const channel = await this.channelService.getChannelByName(channelName);
     /**-------------------------------------------------------------------------**/
 
-    //  get the channel room
+    // ❂➤ if the channel is private, check if the password is correct
+    if (channelType === 'PRIVATE') {
+      const isPasswordCorrect = await comparePassword(
+        data.channelPassword,
+        channel.channelPassword,
+      );
+      if (!isPasswordCorrect) {
+        const userRoom = this.roomsService.getRoom(userLogin, 'USERS');
+        this.server.to(userRoom.name).emit('WrongChannelPassword');
+        return;
+      }
+    }
+      
+    /**-------------------------------------------------------------------------**/
+    // ❂➤ get the channel room
     const channelRoom = this.roomsService.getRoom(
       channelName + channelType,
       'CHANNELS',
@@ -266,7 +278,7 @@ export class ChatGateway
           channelId: channel.id,
         });
 
-        //  Emitting the message to the channel room to notify the other users that the user has joined
+        // ❂➤ Emitting the message to the channel room to notify the other users that the user has joined
         //    the channel, so we can print the message in the channel that new user has joined the channel
         this.server.to(channelRoom.name).emit('JoinChannel', {
           newJoiner: user.name,
@@ -455,7 +467,7 @@ export class ChatGateway
     //  Emitting the message to the channel room
     this.server.to(channelRoom.name).emit('ServerToChannel', data);
 
-    //  Printing the rooms array to the console for debugging
+    // ❂➤ Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
     console.log('Message To: [' + data.channel + '] => ' + data.message);
   }
