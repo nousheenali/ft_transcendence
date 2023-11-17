@@ -23,7 +23,7 @@ export default function UsersList() {
    **└── 🟣
    **/
   useEffect(() => {
-    if (user && user.login && activeChannel.channelName) {
+    if (user && user.login && activeChannel && activeChannel.channelName !== undefined && activeChannel.channelName !== "") {
       const fetchData = async () => {
         const users: ChannelUserProps[] = await getChannelUsersData(
           user.login!,

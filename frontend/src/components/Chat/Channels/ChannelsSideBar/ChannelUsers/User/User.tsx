@@ -93,7 +93,7 @@ export default function ChannelUser({
    **└── 🟣
    **/
   useEffect(() => {
-    if (user && channel && currentUser) {
+    if (user && channel && currentUser && channel.channelName !== undefined && channel.channelName !== "") {
       const fetchData = async () => {
         const isUserMuted: boolean = await getUserMuteStatus(
           user.login,

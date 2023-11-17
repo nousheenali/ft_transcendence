@@ -78,7 +78,6 @@ export default function ChatSocket({
 
       socket.on("JoinChannel", (data) => {
         // TODO // Display message on the channel that new user joined.
-        console.log("User joined the channel: ", data);
         setReRenderAll(true);
       });
 
@@ -181,6 +180,7 @@ export default function ChatSocket({
       return () => {
         socket.off("connect");
         socket.off("reconnect");
+        socket.off("UserMuted");
         socket.off("UserKicked");
         socket.off("disconnect");
         socket.off("JoinChannel");
@@ -193,8 +193,10 @@ export default function ChatSocket({
         socket.off("UserStatusUpdate");
         socket.off("ReRenderAllUsers");
         socket.off("UserJoinedChannel");
+        socket.off("WrongChannelPassword");
         socket.off("UserAlreadyInChannel");
         socket.off("UserInvitedToChannel");
+        socket.off("UserKickedFromChannel");
       };
       /**-------------------------------------------------------------------------**/
     } catch (error) {

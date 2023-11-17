@@ -84,6 +84,7 @@ const ModalBody = ({
 
 const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
   const { socket } = useChatSocket();
+  const { setActiveChannel } = activateClickedChannel();
 
   return (
     <div
@@ -96,6 +97,7 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
         toast.warning(`You left ${channel.channelName} channel`, {
           autoClose: 1000,
         });
+        setActiveChannel({} as ChannelsProps);
       }}
     >
       <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">

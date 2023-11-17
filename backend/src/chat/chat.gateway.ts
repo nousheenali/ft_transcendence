@@ -506,6 +506,7 @@ export class ChatGateway
       'CHANNELS',
     );
     // this.server.emit('ReRenderAllUsers');
+    this.server.emit('ReRenderAllUsers');
     this.server.to(channelRoom.name).emit('UserKicked', {
       kickedUser: kickedUser.name,
       channelName: channelName,
@@ -552,7 +553,7 @@ export class ChatGateway
       'CHANNELS',
     );
     this.server.to(channelRoom.name).emit('UserMuted');
-    
+
     //  Emitting message to the muted user to notify him that he has been muted by the admin
     const mutedUserRoom = this.roomsService.getRoom(mutedUser, 'USERS');
     this.server.to(mutedUserRoom.name).emit('UserMuted');

@@ -160,11 +160,13 @@ export default function SendMessageBox({
    **├ 👇 use effect to get the user state in the channel, if he is muted or not
    **└── 🟣
    **/
+
   useEffect(() => {
     if (
       receiver &&
       "channelName" in receiver &&
       receiver.channelName !== "" &&
+      receiver.channelName !== undefined &&
       user &&
       user.login
     ) {
@@ -175,19 +177,10 @@ export default function SendMessageBox({
         );
         setIsMuted(isUserMuted);
       };
+      if (reRenderAll) setReRenderAll(false);
       fetchData();
     }
   }, [receiver, reRenderAll, user]);
-
-  /**
-   **╭── 🟣
-   **├ 👇 If there is no receiver, then return an empty div
-   **└── 🟣
-   **/
-  if (receiver === undefined)
-    return (
-      <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
-    );
 
   // If the user is muted, then re render the component with the muted message
   if (isMuted)
@@ -196,9 +189,22 @@ export default function SendMessageBox({
         <input
           className="flex-grow h-full px-4 py-2 rounded-xl focus:outline-none hover:cursor-not-allowed"
           placeholder="You are muted in this channel"
+          value={currentMessage}
+          onChange={(e) => setCurrentMessage(e.target.value)}
           disabled
         />
       </div>
+    );
+
+  
+  /**
+   **╭── 🟣
+   **├ 👇 If there is no receiver, then return an empty div
+   **└── 🟣
+   **/
+  if (receiver === undefined || receiver === null)
+    return (
+      <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
     );
 
   // else, return the normal component
