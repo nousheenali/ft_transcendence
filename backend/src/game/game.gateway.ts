@@ -43,45 +43,62 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   /*  Handle a new player connection */
   handleConnection(client: Socket) {
-    const login = client.handshake.query.login;
-    const username = client.handshake.query.username;
-    if (!Array.isArray(login) && !Array.isArray(username)) {
-      this.playerService.addPlayer(client, login, username);
-      this.userService.updateUserGameStatus(login, true);
+    try {
+      const login = client.handshake.query.login;
+      const username = client.handshake.query.username;
+      if (!Array.isArray(login) && !Array.isArray(username)) {
+        this.playerService.addPlayer(client, login, username);
+        this.userService.updateUserGameStatus(login, true);
+      }
+      this.logger.log(
+        chalk.cyan(
+          `Player connected to game: id => ${client.id} LOGIN => ${login}`,
+        ),
+      );
+    } catch (error) {
+      throw new BadRequestException('Unable to connect user');
     }
-    this.logger.log(chalk.cyanBright(`Player connected to game: ${client.id} -- ${login}`));
   }
 
   /* Handle player disconnection */
   handleDisconnect(client: Socket) {
     const plyr = this.playerService.getPlayerBySocketID(client.id);
-    this.playerService.removeFromQueue(plyr.id);
-    if (plyr.gameRoom != null) {
-      const gm = this.gameRoomService.getGameRoom(plyr.gameRoom);
-      if (gm) {
-        if (gm.players.length === 2) {
-          const otherPlyr =
-            gm.players[0].id === client.id ? gm.players[1] : gm.players[0];
-          if (!gm.gameOver)
-            //in case of a disconnection
-            this.gameLogicService.updateResults(
-              this.server,
-              gm,
-              otherPlyr,
-              plyr,
-            );
-        } else {
-          //if invited user hasn't joined the room yet
-          this.gamePrismaService.deleteGameEntry(gm.roomID);
-          this.gameRoomService.removeGameRoom(gm.roomID);
+    if (!plyr) throw new NotFoundException('Player does not exist');
+
+    try {
+      this.playerService.removeFromQueue(plyr.id);
+      if (plyr.gameRoom != null) {
+        const gm = this.gameRoomService.getGameRoom(plyr.gameRoom);
+        if (gm) {
+          if (gm.players.length === 2) {
+            const otherPlyr =
+              gm.players[0].id === client.id ? gm.players[1] : gm.players[0];
+            /* Only in case of a disconnection */
+            if (!gm.gameOver) {
+              this.gameLogicService.updateResults(
+                this.server,
+                gm,
+                otherPlyr,
+                plyr,
+              );
+            }
+          } else {
+            /* if invited user hasn't joined the room yet, then game entry is deleted */
+            this.gamePrismaService.deleteGameEntry(gm.roomID);
+            this.gameRoomService.removeGameRoom(gm.roomID);
+          }
         }
       }
+      this.userService.updateUserGameStatus(plyr.login, false);
+      this.playerService.removePlayer(client.id);
+      this.logger.log(
+        chalk.gray(
+          `Player disconnected from game: id => ${client.id} LOGIN => ${plyr.login}`,
+        ),
+      );
+    } catch (error) {
+      throw new BadRequestException('Unable to disconnect user');
     }
-    this.userService.updateUserGameStatus(plyr.login, false);
-    this.playerService.removePlayer(client.id);
-    this.logger.log(
-      chalk.red(`Player disconnected from game: ${client.id} -- ${plyr.login}`),
-    );
   }
 
   /* when user joins a queue */
@@ -89,8 +106,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleFindMatch(client: Socket, data: WorldDimensions) {
     try {
       this.playerService.addToQueue(client.id, data.width, data.height);
-      this.logger.log(`Player added to queue: ${client.id}`);
+      this.logger.log(`Player added to queue: id => ${client.id}`);
       const players: Player[] | null = this.playerService.matchQueuedPlayers();
+      /* players will be null if it doesn't find 2 users in the queue */
       if (players !== null) {
         const p0 = players[0];
         const p1 = players[1];
@@ -120,11 +138,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const input: GameDto = {
         userLogin: player.login,
         opponentLogin: data.invitee,
-        gameStatus: GameStatus.WAITING, //waiting room
+        gameStatus: GameStatus.WAITING, //indicates waiting room
       };
       const roomID = await this.gamePrismaService.createGameEntry(input);
       this.gameRoomService.createWaitingRoom(roomID, player);
-      this.logger.log(`Player in waiting room: ${client.id} ${roomID}`);
+      this.logger.log(
+        `Player in waiting: ROOM => ${roomID}  LOGIN => ${player.login}`,
+      );
     } catch (error) {
       throw new BadRequestException('Unable to create waiting room.');
     }
@@ -134,9 +154,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('joinWaitingRoom')
   async handleJoinWaitingRoom(client: Socket, data: JoinWaitingRoom) {
     const player: Player = this.playerService.getPlayerBySocketID(client.id);
-    if (!player) throw new NotFoundException('Player does not exist');
+    if (!player) throw new NotFoundException('Invitee Player does not exist');
+
     const player2: Player = this.playerService.getPlayerByLogin(data.inviter);
     if (!player2) {
+      /* if inviter disconnects before invitee joins */
       this.server.to(client.id).emit('inviterDisconnected');
     } else {
       player.worldWidth = data.worldDimensions.width;
@@ -147,6 +169,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           this.server.to(player2.socketInfo.id).emit('invitationDeclined');
           this.server.to(player.socketInfo.id).emit('invitationDeclined');
         } else {
+          /* When game invitation is accepted, the invitee joins the waiting room and game is LIVE */
           if (roomID) {
             const room = this.gameRoomService.joinWaitingRoom(roomID, player);
             this.gamePrismaService.updateGameEntry(
@@ -161,8 +184,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
               room.players[0],
               room.players[1],
             );
-            this.logger.log(`Player joined waiting room: ${client.id}`);
-          } //if inviter disconnects before invitee joins
+            this.logger.log(
+              `Player joined waiting ROOM => ${roomID}  LOGIN => ${player.login}`,
+            );
+          }
         }
       } catch (error) {
         throw new BadRequestException('Unable to join waiting room');
@@ -170,38 +195,50 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  //initial positions of all sprites
+  /* initial positions of all sprites */
   @SubscribeMessage('updateSpritePositions')
   handleSpritePositions(client: Socket, data: UpdateSpritePositions) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
     this.gameLogicService.spritePositions(gameRoom, data);
   }
 
+  /* Sets readytoSTartt flag to 'true' indicating 'space' button has benn pressed */
   @SubscribeMessage('playerReady')
   handleplayerReady(client: Socket) {
     this.playerService.playerReady(client.id);
     this.server.to(client.id).emit('ready');
   }
 
-  //setting ball position and assigning keyboard controls
+  /* setting ball position and assigning keyboard controls */
   @SubscribeMessage('initSettings')
   handleInitBallVelocity(client: Socket, roomID: string) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(roomID);
-    gameRoom.gameStarted = true;
-    if (gameRoom.players[0].readyToStart && gameRoom.players[1].readyToStart) {
-      this.server.to(gameRoom.players[0].id).emit('initialise', {
-        x: gameRoom.ballPosition.x,
-        y: gameRoom.ballPosition.y,
-        controls: 'arrows',
-      });
-      this.server.to(gameRoom.players[1].id).emit('initialise', {
-        x: gameRoom.ballPosition.x,
-        y: gameRoom.ballPosition.y,
-        controls: 'ws',
-      });
+    try {
+      /* Game starts only when both players press space bar */
+      if (
+        gameRoom.players[0].readyToStart &&
+        gameRoom.players[1].readyToStart
+      ) {
+        gameRoom.gameStarted = true;
+        /* Player 0 is assigned arrows as controls */
+        this.server.to(gameRoom.players[0].id).emit('initialise', {
+          x: gameRoom.ballPosition.x,
+          y: gameRoom.ballPosition.y,
+          controls: 'arrows',
+        });
+        /* Player 1 is assigned W,S keys as controls */
+        this.server.to(gameRoom.players[1].id).emit('initialise', {
+          x: gameRoom.ballPosition.x,
+          y: gameRoom.ballPosition.y,
+          controls: 'ws',
+        });
+      }
+    } catch (error) {
+      throw new BadRequestException('Unable to assign controls to users');
     }
   }
 
+  /* Changes Ball Position */
   @SubscribeMessage('ballPosition')
   handleBallPosition(client: Socket, data) {
     const gm: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
@@ -209,79 +246,28 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (gm && !gm.gameOver) {
       if (gm.players[0].readyToStart && gm.players[1].readyToStart) {
         this.gameLogicService.updateBallPosition(gm);
-        const buffer = gm.paddleWidth / 3; // this required otherwise ball skids through the wall
+        const buf = gm.paddleWidth / 3; // this required otherwise ball skids through the wall
 
-        // Handle collision on right paddle
-        if (gm.ballPosition.x > gm.worldWidth - buffer - gm.paddleWidth) {
-          if (
-            gm.ballPosition.y >=
-              gm.players[0].position.y - gm.paddleHeight / 2 - buffer &&
-            gm.ballPosition.y <=
-              gm.players[0].position.y + gm.paddleHeight / 2 + buffer &&
-            gm.ballVelocity.x > 0 // This is included so that the ball doesn't get stuck inside the paddle
-          ) {
-            this.gameLogicService.emitHitPaddle(gm, this.server, true);
-            gm.ballVelocity.x *= -1;
-            gm.ballPosition.y += gm.ballVelocity.y;
-          }
-        }
-        // Handle collison on left paddle
-        if (gm.ballPosition.x < buffer + gm.paddleWidth) {
-          if (
-            gm.ballPosition.y >
-              gm.players[1].position.y - gm.paddleHeight / 2 - buffer &&
-            gm.ballPosition.y <
-              gm.players[1].position.y + gm.paddleHeight / 2 + buffer &&
-            gm.ballVelocity.x < 0
-          ) {
-            this.gameLogicService.emitHitPaddle(gm, this.server, true);
-            gm.ballVelocity.x *= -1;
-            gm.ballPosition.y += gm.ballVelocity.y;
-          }
-        }
+        /* Handle paddle collisions */
+        if (gm.ballPosition.x > gm.worldWidth - buf - gm.paddleWidth)
+          this.gameLogicService.rightPaddleCollision(this.server, gm, buf);
+        if (gm.ballPosition.x < buf + gm.paddleWidth)
+          this.gameLogicService.leftPaddleCollision(this.server, gm, buf);
 
-        // Handle wall collisions
-        if (gm.ballPosition.x < buffer && gm.ballVelocity.x < 0) {
-          this.gameLogicService.emitHitPaddle(gm, this.server, false);
-          gm.ballVelocity.x *= -1; // Reverse the x velocity for left and right wall
-          gm.players[0].score += 1;
-          if (gm.players[0].score === 7)
-            this.gameLogicService.emitGameOver(
-              gm,
-              this.server,
-              gm.players[0],
-              gm.players[1],
-            );
-        }
-        if (
-          gm.ballPosition.x > gm.worldWidth - buffer &&
-          gm.ballVelocity.x > 0
-        ) {
-          this.gameLogicService.emitHitPaddle(gm, this.server, false);
-          gm.ballVelocity.x *= -1;
-          gm.players[1].score += 1;
-          if (gm.players[1].score === 7)
-            this.gameLogicService.emitGameOver(
-              gm,
-              this.server,
-              gm.players[1],
-              gm.players[0],
-            );
-        }
-        if (gm.ballPosition.y < buffer && gm.ballVelocity.y < 0) {
-          this.gameLogicService.emitHitPaddle(gm, this.server, false);
-          gm.ballVelocity.y *= -1; // Reverse the y velocity for top wall
-        }
+        /* Handle wall collisions */
+        if (gm.ballPosition.x < buf && gm.ballVelocity.x < 0)
+          this.gameLogicService.leftWallCollision(this.server, gm, buf);
+        if (gm.ballPosition.x > gm.worldWidth - buf && gm.ballVelocity.x > 0)
+          this.gameLogicService.rightWallCollision(this.server, gm, buf);
 
-        if (
-          gm.ballPosition.y > gm.worldHeight - buffer &&
-          gm.ballVelocity.y > 0
-        ) {
-          this.gameLogicService.emitHitPaddle(gm, this.server, false);
-          gm.ballVelocity.y *= -1; // Reverse the y velocity for bottom wall
-        }
+        /* top wall */
+        if (gm.ballPosition.y < buf && gm.ballVelocity.y < 0)
+          this.gameLogicService.topBottomWallCollision(this.server, gm, buf);
+        /* bottom wall */
+        if (gm.ballPosition.y > gm.worldHeight - buf && gm.ballVelocity.y > 0)
+          this.gameLogicService.topBottomWallCollision(this.server, gm, buf);
 
-        //change ball speed
+        /* change ball speed */
         // if (
         //   gm.players[0].score + gm.players[1].score === 4 ||
         //   gm.players[0].score + gm.players[1].score === 8
@@ -292,7 +278,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  //tracking paddle movement
+  /*  tracking paddle movement */
   @SubscribeMessage('movePaddle')
   handleMovePaddle(client: Socket, data) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);

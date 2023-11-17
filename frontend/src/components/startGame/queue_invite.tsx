@@ -20,7 +20,7 @@ export default function QueueAndInvite() {
   ]);
 
   const FetchUserData = async () => {
-    setInvitee("Default");
+    // setInvitee("Default");
     let result: any = await getUserData(userName, "/friends/allFriends/");
     const filter = result?.filter(
       (item: userInformation) => !item.inAGame && item.isOnline
