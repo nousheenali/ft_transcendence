@@ -66,13 +66,11 @@ export default function UsersList() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const query = event.target.value;
-    console.log("query => ", query);
     setInputValue(query);
 
     const filtered = channelUsers.filter((rowData: ChannelUserProps) =>
       rowData.name.toLowerCase().includes(query.toLowerCase())
     );
-    console.log("filtered data => ", filtered);
     setFilteredData(filtered);
   };
   /**=========================================================================================*/
