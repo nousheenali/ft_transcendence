@@ -1,14 +1,14 @@
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 export default function UsersSearch() {
-
   return (
-    <div className= "flex justify-stretch items-center rounded-md bg-search-box-fill w-80 h-8 border-[0.5px] border-chat-search-stroke">
+    <div className="flex justify-stretch items-center rounded-md bg-search-box-fill w-80 h-8 border-[0.5px] border-chat-search-stroke">
       <input
-            className="ml-2 bg-search-box-fill font-thin text-sm text-search-box-text w-full h-full focus:outline-none hover:cursor-text"
-            type="search"
-            name="search"
-            placeholder="Search"
+        className="ml-2 bg-search-box-fill font-thin text-sm text-search-box-text w-full h-full focus:outline-none hover:cursor-text"
+        type="search"
+        name="search"
+        placeholder="Search"
       />
       <Image
         className="mr-2"
