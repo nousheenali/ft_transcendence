@@ -65,15 +65,14 @@ export default function ChannelChatBoxHeader() {
     const listener = (event: any) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
-        console.log("Entere")
         handleInviteUser({
           socket: socket,
           user: invitedUser,
           channel: activeChannel,
           invitedBy: currectUser!.login,
         });
+        setInvitedUser("");
       }
-      setInvitedUser("");
     };
     const element = document.getElementById("invite-user-input");
     if (element) element.addEventListener("keydown", listener);
@@ -140,7 +139,8 @@ export default function ChannelChatBoxHeader() {
                 height={100}
               />
             </div>
-            <input id = "invite-user-input"
+            <input
+              id="invite-user-input"
               type="text"
               placeholder="User's Name"
               value={invitedUser}
