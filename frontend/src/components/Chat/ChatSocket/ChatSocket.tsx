@@ -78,6 +78,7 @@ export default function ChatSocket({
       socket.on("UserInvitedToChannel", (data) => {
         // TODO // Send notification to the user that he has been invited to the channel.
         const { invitedBy, channelName } = data;
+        setReRenderAll(true);
         toast.success(
           `You have been invited to the channel: ${channelName} by ${invitedBy}`
         );

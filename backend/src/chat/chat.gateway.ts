@@ -297,11 +297,6 @@ export class ChatGateway
           channelName: channelName,
           invitedBy: user.name,
         });
-
-        //  Emitting message to all the users to re-render the channels data,
-        //    because the channel has new member, so the new member will see the channel in the
-        //    channels list.
-        this.server.emit('ReRenderAllUsers');
       }
     }
   }
