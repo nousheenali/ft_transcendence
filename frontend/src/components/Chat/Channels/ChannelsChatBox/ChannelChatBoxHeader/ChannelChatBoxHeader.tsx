@@ -14,15 +14,18 @@ const handleInviteUser = ({
   socket,
   user,
   channel,
+  invitedBy,
 }: {
   socket: Socket;
   user: string;
   channel: ChannelsProps;
+  invitedBy: string;
 }) => {
   socket.emit("InviteUserToChannel", {
     channelName: channel.channelName,
     channelType: channel.channelType,
     invitedUserName: user,
+    invitedBy: invitedBy,
   });
 };
 
@@ -95,6 +98,7 @@ export default function ChannelChatBoxHeader() {
                   socket: socket,
                   user: invitedUser,
                   channel: activeChannel,
+                  invitedBy: currectUser.login,
                 });
               }}
             >

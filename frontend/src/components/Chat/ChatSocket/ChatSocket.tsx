@@ -97,8 +97,18 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
       socket.on("newChannelJoiner", (data) => {
         // TODO // Display message on the channel that new user joined.
-        console.log("newChannelJoiner", data);
+        const { newJoiner, channelName } = data;
         setReRenderAll(true);
+        toast.success(`user ${newJoiner} has joined the channel ${channelName}`, {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       });
 
       /**-------------------------------------------------------------------------**/
@@ -117,7 +127,7 @@ export default function ChatSocket({
 
       /**-------------------------------------------------------------------------**/
       socket.on("UserAlreadyInChannel", () => {
-        toast.info("User already in the channel", {
+        toast.warning("User already in the channel", {
           position: "top-center",
           autoClose: 800,
           hideProgressBar: true,
@@ -148,8 +158,18 @@ export default function ChatSocket({
 
       socket.on("UserLeftChannel", (data) => {
         // TODO // Display message on the channel that user has left.
-        // console.log("UserLeftChannel", data);
+        const { leaver, channelName } = data;
         setReRenderAll(true);
+        toast.info(`user ${leaver} has left the channel ${channelName}`, {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       });
 
       /**-------------------------------------------------------------------------**/
@@ -161,9 +181,8 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
       socket.on("UserKicked", (data: any) => {
         const { kickedUser, channelName } = data;
-        console.log("UserKicked", data);
         setReRenderAll(true);
-        toast.warn(
+        toast.warning(
           `user ${kickedUser} has been kicked from the channel ${channelName}`,
           {
             position: "top-center",
@@ -181,7 +200,7 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
       socket.on("UserKickedFromChannel", (data: any) => {
         setReRenderAll(true);
-        toast.warn(
+        toast.warning(
           `You have been kicked from the channel ${data.channelName} by ${data.kickedBy}`,
           {
             position: "top-center",
@@ -203,7 +222,7 @@ export default function ChatSocket({
 
       /**-------------------------------------------------------------------------**/
       socket.on("WrongChannelPassword", () => {
-        toast.error("Wrong channel password", {
+        toast.warning("Wrong channel password", {
           position: "top-center",
           autoClose: 800,
           hideProgressBar: true,
@@ -217,7 +236,6 @@ export default function ChatSocket({
 
       /**-------------------------------------------------------------------------**/
       socket.on("NewChannelAdmin", () => {
-        console.log("Channel Admin Updated");
         setReRenderAll(true);
       });
 

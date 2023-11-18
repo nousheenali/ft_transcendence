@@ -242,12 +242,17 @@ export class ChatGateway
   async inviteUserToChannel(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    data: { channelName: string; channelType: string; invitedUserName: string },
+    data: { channelName: string; channelType: string; invitedUserName: string, invitedBy: string },
   ) {
-    const { channelName, channelType, invitedUserName } = data;
+    const { channelName, channelType, invitedUserName, invitedBy } = data;
     if (channelType === 'PRIVATE') {
       const user = await this.userService.getUserByName(invitedUserName);
       const channel = await this.channelService.getChannelByName(channelName);
+      const isExist = await this.channelRelationService.isRelationExist(
+        channel.id,
+        user.id,
+      );
+
       //  if the user does not exist, emit message to the client to notify the user
       //    that the user does not exist
       if (user === undefined || user === null) {
@@ -255,10 +260,9 @@ export class ChatGateway
         return;
       }
       //  if the user exists, check if the user is already in the channel
-      else if (
-        await this.channelRelationService.isRelationExist(user.id, channelName)
-      ) {
-        this.server.to(client.id).emit('UserAlreadyInChannel');
+      else if (isExist) {
+        const userRoom = this.roomsService.getRoom(invitedBy, 'USERS');
+        this.server.to(userRoom.name).emit('UserAlreadyInChannel');
         return;
       }
       //  if the user exists and the user is not in the channel:

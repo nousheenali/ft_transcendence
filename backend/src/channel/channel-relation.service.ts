@@ -3,6 +3,7 @@ import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; //
 import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
 import { ChannelService } from './channel.service';
 import { UserService } from 'src/user/user.service';
+import chalk from 'chalk';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
@@ -22,16 +23,18 @@ export class ChannelRelationService {
    */
   async isRelationExist(channelId: string, userId: string) {
     try {
-      return await this.prisma.channelRelation
-        .findMany({
-          where: {
-            channelId: channelId,
-            userId: userId,
-          },
-        })
-        .then((channelRelations) => {
-          return channelRelations.length > 0;
-        });
+      const userChannelRelation = await this.prisma.channelRelation.findFirst({
+        where: {
+          channelId: channelId,
+          userId: userId,
+        },
+      });
+      if (userChannelRelation) {
+        return true;
+      } else {
+        return false;
+      }
+      
     } catch (error) {
       throw new BadRequestException(
         'UNABLE TO CHECK IF THE USER IS A MEMBER OF THE CHANNEL',
@@ -118,21 +121,25 @@ export class ChannelRelationService {
   async createChannelRelation(
     createChannelRelationDto: CreateChannelRelationDto,
   ) {
-    const { userId, channelId } = createChannelRelationDto;
-    const isRelationExist = await this.isRelationExist(channelId, userId);
+    try {
+      const { userId, channelId } = createChannelRelationDto;
+      const isRelationExist = await this.isRelationExist(channelId, userId);
 
-    if (isRelationExist) {
-      throw new BadRequestException(
-        'User is already a member of this channel.',
-      );
-    } else {
-      const newChannelRelation = await this.prisma.channelRelation.create({
-        data: {
-          userId,
-          channelId,
-        },
-      });
-      return newChannelRelation;
+      if (isRelationExist) {
+        throw new BadRequestException(
+          'User is already a member of this channel.',
+        );
+      } else {
+        const newChannelRelation = await this.prisma.channelRelation.create({
+          data: {
+            userId,
+            channelId,
+          },
+        });
+        return newChannelRelation;
+      }
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO CREATE THE CHANNEL RELATION');
     }
   }
 
