@@ -35,17 +35,25 @@ export default function ChannelUser({
   const handleMuteClick = () => {
     if (currentUser.id !== channel.createdBy) {
       toast.warn("you are not admin", {
-        position: "top-right",
-        autoClose: 1000,
+        position: "top-center",
+        autoClose: 800,
         hideProgressBar: true,
         closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
       });
     } else if (currentUser.login === user.login)
       toast.warn("you can't mute yourself", {
-        position: "top-right",
-        autoClose: 1000,
+        position: "top-center",
+        autoClose: 800,
         hideProgressBar: true,
         closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
       });
     else if (currentUser.id === channel.createdBy) {
       // 🟣🟣 Emit the MuteUser event to the server to mute the user
@@ -65,18 +73,26 @@ export default function ChannelUser({
     //    Cause only the admin can kick users
     if (currentUser.id !== channel.createdBy) {
       toast.warn("you are not admin", {
-        position: "top-right",
-        autoClose: 1000,
+        position: "top-center",
+        autoClose: 800,
         hideProgressBar: true,
         closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
       });
       // 🟣🟣 Check if the current user is the user to be kicked
     } else if (currentUser.login === user.login)
       toast.warn("you can't kick yourself", {
-        position: "top-right",
-        autoClose: 1000,
+        position: "top-center",
+        autoClose: 800,
         hideProgressBar: true,
         closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
       });
     else if (currentUser.id === channel.createdBy) {
       // 🟣🟣 Emit the KickUser event to the server to kick the user
@@ -191,9 +207,14 @@ export default function ChannelUser({
                       channelType: channel.channelType,
                     });
                     toast.success("user kicked successfully", {
-                      position: "top-right",
-                      autoClose: 1000,
+                      position: "top-center",
+                      autoClose: 800,
                       hideProgressBar: true,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "dark",
                     });
                     modalRef.current?.close();
                   }}

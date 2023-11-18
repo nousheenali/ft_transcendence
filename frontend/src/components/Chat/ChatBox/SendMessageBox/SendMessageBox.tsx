@@ -86,20 +86,47 @@ export default function SendMessageBox({
   const sendMessage = () => {
     const trimmedMessage = currentMessage.trim();
     if (trimmedMessage === "") {
-      toast.error("Message cannot be empty");
+      toast.error("Message cannot be empty", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       return;
     }
 
     // Sanitize the message using DOMPurify
     const sanitizedMessage = DOMPurify.sanitize(trimmedMessage);
     if (sanitizedMessage !== trimmedMessage) {
-      toast.error("Message contains invalid characters");
+      toast.error("Message contains invalid characters", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       return;
     }
 
     // limit the message to 200 characters
     if (trimmedMessage.length > 200) {
-      toast.error("Message cannot be longer than 200 characters");
+      toast.error("Message cannot be longer than 200 characters", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       return;
     }
 
@@ -196,7 +223,6 @@ export default function SendMessageBox({
       </div>
     );
 
-  
   /**
    **╭── 🟣
    **├ 👇 If there is no receiver, then return an empty div

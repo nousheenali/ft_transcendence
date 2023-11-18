@@ -78,7 +78,14 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
       console.log("The creater is: ", newChannel.createdBy);
       // glopal value to re-render the channel list
       toast.success("Channel created successfully", {
-        autoClose: 1000,
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
       });
     } catch (error: any) {
       setChannelName("");
@@ -86,7 +93,16 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
       setValidChannelName(false);
       setValidPassword(false);
       modalRef.current?.close();
-      toast.error("Channel creation failed: " + error.message);
+      toast.error("Channel creation failed: " + error.message, {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
   return (

@@ -79,8 +79,18 @@ export default function ChatSocket({
         // TODO // Send notification to the user that he has been invited to the channel.
         const { invitedBy, channelName } = data;
         setReRenderAll(true);
-        toast.success(
-          `You have been invited to the channel: ${channelName} by ${invitedBy}`
+        toast.info(
+          `You have been invited to the channel: ${channelName} by ${invitedBy}`,
+          {
+            position: "top-center",
+            autoClose: 800,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
         );
       });
 
@@ -93,12 +103,30 @@ export default function ChatSocket({
 
       /**-------------------------------------------------------------------------**/
       socket.on("UserNotExists", () => {
-        toast.warning("User does not exists in the server");
+        toast.warning("User does not exists in the server", {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       });
 
       /**-------------------------------------------------------------------------**/
       socket.on("UserAlreadyInChannel", () => {
-        toast.info("User already in the channel");
+        toast.info("User already in the channel", {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       });
 
       /**-------------------------------------------------------------------------**/
@@ -136,7 +164,17 @@ export default function ChatSocket({
         console.log("UserKicked", data);
         setReRenderAll(true);
         toast.warn(
-          `user ${kickedUser} has been kicked from the channel ${channelName}`
+          `user ${kickedUser} has been kicked from the channel ${channelName}`,
+          {
+            position: "top-center",
+            autoClose: 800,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
         );
       });
 
@@ -146,10 +184,14 @@ export default function ChatSocket({
         toast.warn(
           `You have been kicked from the channel ${data.channelName} by ${data.kickedBy}`,
           {
-            position: "top-right",
-            autoClose: 1000,
+            position: "top-center",
+            autoClose: 800,
             hideProgressBar: true,
             closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
           }
         );
       });
@@ -162,7 +204,14 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
       socket.on("WrongChannelPassword", () => {
         toast.error("Wrong channel password", {
-          autoClose: 1000,
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
         });
       });
 
@@ -171,7 +220,7 @@ export default function ChatSocket({
         console.log("Channel Admin Updated");
         setReRenderAll(true);
       });
-      
+
       /**-------------------------------------------------------------------------**/
       socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);

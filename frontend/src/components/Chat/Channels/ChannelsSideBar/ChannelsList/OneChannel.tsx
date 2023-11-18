@@ -95,7 +95,14 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
           channelType: channel.channelType,
         });
         toast.warning(`You left ${channel.channelName} channel`, {
-          autoClose: 1000,
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
         });
         setActiveChannel({} as ChannelsProps);
       }}
@@ -140,7 +147,14 @@ const handleJoinClick = ({
       channelPassword: channelPassword,
     });
     toast.success(`You have joined ${channel.channelName} channel`, {
-      autoClose: 1000,
+      position: "top-center",
+      autoClose: 800,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
     });
   }
 };
