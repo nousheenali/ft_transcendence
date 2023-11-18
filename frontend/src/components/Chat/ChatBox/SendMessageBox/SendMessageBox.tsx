@@ -176,9 +176,13 @@ export default function SendMessageBox({
         sendMessage();
       }
     };
-    document.addEventListener("keydown", listener);
+    // add the event lister only for the element with "message" id.
+    const element = document.getElementById("message");
+    if (element) element.addEventListener("keydown", listener);
+    // document.addEventListener("keydown", listener);
     return () => {
-      document.removeEventListener("keydown", listener);
+      if (element) element.removeEventListener("keydown", listener);
+      // document.removeEventListener("keydown", listener);
     };
   }, [currentMessage]);
 
@@ -235,7 +239,7 @@ export default function SendMessageBox({
 
   // else, return the normal component
   return (
-    <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
+    <div id="message" className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
       <input
         ref={(el) => (inputRef.current = el)}
         className="flex-grow h-full px-4 py-2 rounded-xl focus:outline-none"

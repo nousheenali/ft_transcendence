@@ -7,6 +7,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { ChannelsProps } from "@/components/Chat/types";
 import { Socket } from "socket.io-client";
+import { set } from "date-fns";
 
 /**======================================================================================================**/
 
@@ -50,6 +51,36 @@ export default function ChannelChatBoxHeader() {
       fetchData();
     }
   }, [user, user.login]);
+
+  //------------------------------------------------------------------------------------------------------
+
+  /**
+   **╭── 🟣
+   **├ 👇 use effect for enter key
+   **└── 🟣
+   **/
+
+  useEffect(() => {
+    if (!activeChannel || !activeChannel.channelName || !currectUser) return;
+    const listener = (event: any) => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        event.preventDefault();
+        console.log("Entere")
+        handleInviteUser({
+          socket: socket,
+          user: invitedUser,
+          channel: activeChannel,
+          invitedBy: currectUser!.login,
+        });
+      }
+      setInvitedUser("");
+    };
+    const element = document.getElementById("invite-user-input");
+    if (element) element.addEventListener("keydown", listener);
+    return () => {
+      if (element) element.removeEventListener("keydown", listener);
+    };
+  }, [currectUser, activeChannel, invitedUser]);
 
   if (!activeChannel || !activeChannel.channelName || !currectUser)
     return (
@@ -109,7 +140,7 @@ export default function ChannelChatBoxHeader() {
                 height={100}
               />
             </div>
-            <input
+            <input id = "invite-user-input"
               type="text"
               placeholder="User's Name"
               value={invitedUser}

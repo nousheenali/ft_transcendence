@@ -14,11 +14,11 @@ import { AuthContext } from "@/context/AuthProvider";
 /**============================================================================================*/
 export default function ChannelChat() {
   const { user } = useContext(AuthContext);
-  const chatScrollRef = useRef<HTMLDivElement>();
   const { activeChannel } = activateClickedChannel();
   const [messages, setMessages] = useState<MessagesProps[]>([]);
   const { sentMessage } = useSentMessageState();
   const { receivedMessage } = useReceivedMessageState();
+  const chatScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (user && user.login && activeChannel.channelName) {
@@ -53,7 +53,7 @@ export default function ChannelChat() {
   messages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
 
   return (
-    <div className="overflow-y-scroll px-3">
+    <div className="overflow-y-scroll px-3" ref={chatScrollRef}>
       {messages.map((message, index) => {
         if (messages[index].sender.login === user.login!)
           return <Receiver key={index} message={message} />;

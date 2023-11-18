@@ -54,7 +54,7 @@ export class FriendsService {
   /*------------------------------------------------------------------------------------*/
 
   /* gets a relationship record from friend relations table*/
-  getRelation(userId: string, friendId: string) {
+  async getRelation(userId: string, friendId: string) {
     return this.prisma.friendRelation.findFirst({
       where: {
         userId: userId,
@@ -403,6 +403,49 @@ export class FriendsService {
       return 'Unfriended the user';
     } else {
       throw new BadRequestException('You are not friends with the user');
+    }
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  /** To get a list of the user that blocked the user */
+  async getBlockedBy(login: string) {
+    try {
+      const userData = await this.userService.getUserByLogin(login);
+      if (!userData) throw new NotFoundException('User Id does not exist');
+  
+      const result1 = await this.prisma.friendRelation.findMany({
+        where: {
+          userId: userData.id,
+          friendStatus: 'BLOCKED',
+          blockedBy: userData.id,
+        },
+        select: {
+          friend: true,
+        },
+      });
+  
+      const result2 = await this.prisma.friendRelation.findMany({
+        where: {
+          friendId: userData.id,
+          friendStatus: 'BLOCKED',
+          blockedBy: userData.id,
+        },
+        select: {
+          user: true,
+        },
+      });
+      /*combine the result , but change the label in json result from user to friend */
+      const fullResult = [
+        ...result1,
+        ...result2.map((item) => ({ friend: item.user })),
+      ];
+  
+      /*remove nesting of the json output*/
+      const friends = fullResult.map((item) => item.friend);
+      return friends;
+    } catch (error) {
+      throw new BadRequestException('Unexpected Error in getting blocked by list');
     }
   }
 }

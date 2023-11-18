@@ -62,10 +62,16 @@ export default function FriendsBox() {
     return (
       <span className="loading loading-ring loading-lg text-main-yellow"></span>
     );
-  if (!friends)
+
+  if (friends.length === 0 && !isLoading)
     return (
-      <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container"></div>
+      <div className="flex flex-col items-center w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
+        <span className="text-search-box-text font-saira-condensed font-light text-lg">
+          You have no friends yet!!
+        </span>
+      </div>
     );
+
   return (
     <>
       {/* ======================================================================================== */}
@@ -88,6 +94,13 @@ export default function FriendsBox() {
 
       {/* ======================================================================================== */}
       <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
+        {filteredData.length === 0 && (
+          <div className="flex flex-col items-center w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
+            <span className="text-search-box-text font-saira-condensed font-light text-lg">
+              No friends found!!
+            </span>
+          </div>
+        )}
         {filteredData.map((OneFriend, index) => (
           <div key={index}>
             <Friend key={index} friend={OneFriend} />
