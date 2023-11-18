@@ -49,6 +49,36 @@ export class ChannelController {
 
   /**===============================================================================================
    * ╭── 🟣
+   * ├ 👇 get the current channel updated data according to the user login
+   * └── 🟣
+   * @param login: string, the login of the user
+   * @param channelName: string, the name of the channel
+   * @returns the current channel updated data
+   * @throws HttpException if there is an error while getting the channels
+   * @throws HttpStatus.INTERNAL_SERVER_ERROR if there is an error while getting the channels
+   * @example GET /channels/current-channel/:channelName/:login
+   **/
+  @Get('/current-channel/:channelName/:login')
+  async GetCurrentChannelData(@Param('channelName') channelName: string , @Param('login') login: string) {
+    try {
+      const currentChannel = await this.channelService.getChannelByName(channelName);
+      if (!currentChannel) {
+        throw new HttpException(
+          'Unexpected Error while Getting The Current Channel',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      return currentChannel;
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while Getting The Current Channel ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**===============================================================================================
+   * ╭── 🟣
    * ├ 👇 get all private channels according to the user login
    * └── 🟣
    * @param login: string, the login of the user
@@ -103,9 +133,7 @@ export class ChannelController {
    * @throws HttpException if there is an error while getting the public channels
    * @throws HttpStatus.INTERNAL_SERVER_ERROR if there is an error while getting the public channels
    * @example GET /channels/public-channels/:login
-   * ==============================================================================================*/
-  //================================================================================================
-  // 👇 get all channels according to the channel type
+   */
   @Get('/public-channels/:login')
   GetPublicChannels(@Param('login') login: string) {
     try {

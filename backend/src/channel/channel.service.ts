@@ -285,6 +285,7 @@ export class ChannelService {
       throw new BadRequestException('UNABLE TO GET CHANNEL MESSAGES');
     }
   }
+
   /**==============================================================================================
    * ╭── 🟣
    * ├ 👇 These two methods is to update the admin of the channel according to the oldest
@@ -326,6 +327,7 @@ export class ChannelService {
     }
   }
 
+  /**==============================================================================================**/
   async updateChannelAdmin(channelId: string) {
     try {
       const newAdminId = await this.getNewChannelAdminId(channelId);

@@ -61,7 +61,7 @@ export class ChatGateway
     this.logger.log('Chat GateWay has been initialized!!');
   }
 
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling connection by subscribing to the event "connection" and adding the user to the
    * (usersMap) and (roomsArray) and join the user's room.
    * ================================================================================================*/
@@ -134,7 +134,7 @@ export class ChatGateway
       //  Emitting the message to the receiver room
       this.server.to(receiverRoom.name).emit('ServerToClient', data);
 
-      // ❂➤ Printing the rooms array to the console for debugging
+      //   Printing the rooms array to the console for debugging
       this.roomsService.printAllRooms();
 
       console.log(
@@ -148,7 +148,7 @@ export class ChatGateway
     }
   }
 
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling JoinChannel event by subscribing to the event "JoinChannel" then:
    * 1. join the client's socket to the channel room
    * 2. emit the message to the channel room to notify the other users that the user has joined the
@@ -174,9 +174,9 @@ export class ChatGateway
     const channel = await this.channelService.getChannelByName(channelName);
     /**-------------------------------------------------------------------------**/
 
-    // ❂➤ if the channel is private, check if the password is correct
+    //   if the channel is private, check if the password is correct
     if (channelType === 'PRIVATE') {
-      const isPasswordCorrect = await comparePassword(
+      const isPasswordCorrect = comparePassword(
         data.channelPassword,
         channel.channelPassword,
       );
@@ -188,18 +188,29 @@ export class ChatGateway
     }
 
     /**-------------------------------------------------------------------------**/
-    // ❂➤ get the channel room
+    //   get the channel room
     const channelRoom = this.roomsService.getRoom(
       channelName + channelType,
       'CHANNELS',
     );
 
-    /**-------------------------------------------------------------------------**/
+    /**-------------------------------------------------------------------------
+     * create channel relation in the database between the user and the channel
+     **/
+    await this.channelRelationService.createChannelRelation({
+      userId: user.id,
+      channelId: channel.id,
+    });
 
-    // join the user socket to the channel room
+    /**-------------------------------------------------------------------------
+     * join the user socket to the channel room
+     **/
     this.roomsService.joinRoom(channelRoom.name, userLogin, client, 'CHANNELS');
 
-    //  Emitting the message to the channel room to notify the other users that the user has joined the channel
+    /**-------------------------------------------------------------------------
+     * Emitting the message to the channel room to notify the other users that
+     * the user has joined the channel
+     **/
     this.server.to(channelRoom.name).emit('newChannelJoiner', {
       newJoiner: user.name,
       channelName: channelName,
@@ -207,18 +218,11 @@ export class ChatGateway
     });
 
     /**-------------------------------------------------------------------------**/
-
-    //  create channel relation in the database between the user and the channel
-    await this.channelRelationService.createChannelRelation({
-      userId: user.id,
-      channelId: channel.id,
-    });
-    /**-------------------------------------------------------------------------**/
     //  Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
   }
 
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling InviteUserToChannel event by subscribing to the event "InviteUserToChannel" then:
    * 1. Search for the user in the database, if the user does not exist, emit message to the client
    *   to notify the user that
@@ -278,7 +282,7 @@ export class ChatGateway
           channelId: channel.id,
         });
 
-        // ❂➤ Emitting the message to the channel room to notify the other users that the user has joined
+        //   Emitting the message to the channel room to notify the other users that the user has joined
         //    the channel, so we can print the message in the channel that new user has joined the channel
         this.server.to(channelRoom.name).emit('newChannelJoiner', {
           newJoiner: user.name,
@@ -301,7 +305,7 @@ export class ChatGateway
       }
     }
   }
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling creating room for the channel when creating new channel by subscribing to the event
    * "CreateChannel" then:
    * 1. create the channel room
@@ -346,7 +350,7 @@ export class ChatGateway
     //  Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
   }
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling LeaveChannel event by subscribing to the event "LeaveChannel" then:
    * 1. leave the client's socket from the channel room
    * 2. emit the message to the channel room to notify the other users that the user has left the
@@ -374,6 +378,7 @@ export class ChatGateway
       channelName + channelType,
       'CHANNELS',
     );
+
     this.server.to(channelRoom.name).emit('UserLeftChannel', {
       leaver: userData.login,
       channelName: channelName,
@@ -389,6 +394,7 @@ export class ChatGateway
 
     /**-------------------------------------------------------------------------**/
 
+    //  If the user who left is the admin, assign the new admin by selecting the oldest member
     if (channelData.createdBy === userData.id) {
       //  Delete the channel relation in the database between the user and the channel
       //  If this is the last relation, the channel will be deleted automatically after
@@ -404,17 +410,14 @@ export class ChatGateway
         await this.channelRelationService.findChannelMembers(channelData.id);
       if (channelRelations.length === 0) {
         await this.channelService.DeleteChannel(channelData.id);
-        this.server.emit('ChannelDeleted', {
-          channelName: channelName,
-          channelType: channelType,
-        });
+        this.server.emit('ChannelDeleted');
         this.roomsService.printAllRooms();
         return;
       }
       //  If the user is the admin, assign the new admin by selecting the oldest member
       //    in the channel
       await this.channelService.updateChannelAdmin(channelData.id);
-      this.server.emit('ReRenderAllUsers')
+      this.server.to(channelRoom.name).emit('NewChannelAdmin');
     } else {
       //  Delete the channel relation in the database between the user and the channel
       await this.channelRelationService.deleteChannelRelation(
@@ -427,10 +430,7 @@ export class ChatGateway
         await this.channelRelationService.findChannelMembers(channelData.id);
       if (channelRelations.length === 0) {
         await this.channelService.DeleteChannel(channelData.id);
-        this.server.emit('ChannelDeleted', {
-          channelName: channelName,
-          channelType: channelType,
-        });
+        this.server.emit('ChannelDeleted');
       }
     }
     /**-------------------------------------------------------------------------**/
@@ -438,7 +438,7 @@ export class ChatGateway
     this.roomsService.printAllRooms();
   }
 
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
    */
@@ -459,13 +459,13 @@ export class ChatGateway
     await this.userMessagesService.createChannelMessage(data);
 
     //  Emitting the message to the channel room
+    client.join(channelRoom.name);
     this.server.to(channelRoom.name).emit('ServerToChannel', data);
 
-    // ❂➤ Printing the rooms array to the console for debugging
+    //   Printing the rooms array to the console for debugging
     this.roomsService.printAllRooms();
-    console.log('Message To: [' + data.channel + '] => ' + data.message);
   }
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
    */
@@ -480,12 +480,6 @@ export class ChatGateway
     const kickedUser = await this.userService.getUserByLogin(kickedUserlogin);
     const channel = await this.channelService.getChannelByName(channelName);
 
-    //  Delete the channel relation in the database between the user and the channel
-    await this.channelRelationService.deleteChannelRelation(
-      kickedUser.id,
-      channel.id,
-    );
-
     //  Remove the user from the channel's room
     const channelRoom = this.roomsService.getRoom(
       channelName + channelType,
@@ -498,7 +492,14 @@ export class ChatGateway
       client,
       'CHANNELS',
     );
-    // this.server.emit('ReRenderAllUsers');
+
+    //  Delete the channel relation in the database between the user and the channel
+    await this.channelRelationService.deleteChannelRelation(
+      kickedUser.id,
+      channel.id,
+    );
+
+    client.join(channelRoom.name);
     this.server.to(channelRoom.name).emit('UserKicked', {
       kickedUser: kickedUser.name,
       channelName: channelName,
@@ -510,10 +511,9 @@ export class ChatGateway
       kickedBy: admin,
       channelName: channelName,
     });
-    this.server.emit('ReRenderAllUsers');
   }
 
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling event by subscribing to the event "MuteUser" and emitting the message
    * to the channel room, then:
    * 1. Get the user and the channel from the database
@@ -522,6 +522,7 @@ export class ChatGateway
    */
   @SubscribeMessage('MuteUser')
   async muteUserFromChannel(
+    @ConnectedSocket() client: Socket,
     @MessageBody()
     data: {
       mutedUser: string;
@@ -545,15 +546,15 @@ export class ChatGateway
       channelName + channelData.channelType,
       'CHANNELS',
     );
+    client.join(channelRoom.name);
     this.server.to(channelRoom.name).emit('UserMuted');
 
     //  Emitting message to the muted user to notify him that he has been muted by the admin
     const mutedUserRoom = this.roomsService.getRoom(mutedUser, 'USERS');
     this.server.to(mutedUserRoom.name).emit('UserMuted');
-    this.server.emit('ReRenderAllUsers');
   }
 
-  /** ================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling disconnection
    */
   @SubscribeMessage('disconnect')
@@ -567,5 +568,5 @@ export class ChatGateway
     this.chatService.updateUserStatus(userLogin, false);
     this.server.emit('UserStatusUpdate');
   }
-  //================================================================================================
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●*/
 }

@@ -15,6 +15,7 @@ import { AuthContext } from "@/context/AuthProvider";
 
 export default function ChannelsSideBar() {
   const { user } = useContext(AuthContext);
+  
   return (
     <>
       <ChannelsSearch />

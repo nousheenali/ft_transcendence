@@ -28,6 +28,27 @@ export const getChannelsData = async (login: string, endpoint: string) => {
 
 /**==============================================================================================
  * ╭── 🟣
+ * ├ 👇 Helper function to fetch the current channel data.
+ * └── 🟣
+ * @param login The login of the user
+ * @param endpoint The endpoint in the channel service to fetch the data from
+ * @returns The channels of the user
+ **/
+export const getCurrentChannelData = async (login: string, endpoint: string) => {
+  try {
+    const channel: ChannelsProps = await getData<ChannelsProps>(
+      login,
+      endpoint
+    );
+    return channel;
+  } catch (error: any) {
+    console.log(error.message);
+    throw new Error(error.message);
+  }
+};
+
+/**==============================================================================================
+ * ╭── 🟣
  * ├ 👇 Helper function to fetch the channel's user.
  * └── 🟣
  * @param login The login of the user

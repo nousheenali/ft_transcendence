@@ -3,7 +3,10 @@ import Channel from "./OneChannel";
 import { ChannelsProps } from "../../../types";
 import React, { useEffect, useContext, useState } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
-import { getChannelsData } from "../../../../../../services/channels";
+import {
+  getChannelsData,
+  getCurrentChannelData,
+} from "../../../../../../services/channels";
 import {
   useChannelType,
   activateClickedChannel,
@@ -17,7 +20,7 @@ export default function Channels() {
   const { user } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const { activeChannelType } = useChannelType();
-  const { setActiveChannel } = activateClickedChannel();
+  const { activeChannel, setActiveChannel } = activateClickedChannel();
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
 
   const [allPrivateChannels, setAllPrivateChannels] = useState<ChannelsProps[]>(
@@ -78,6 +81,7 @@ export default function Channels() {
     joinedPublicChannels.length,
     joinedPrivateChannels.length,
   ]);
+
   /**
    **╭── 🟣
    **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
@@ -98,6 +102,34 @@ export default function Channels() {
     joinedPublicChannels.length,
     joinedPrivateChannels.length,
     activeChannelType,
+  ]);
+
+  /**
+   **╭── 🟣
+   **├ 👇 refetch the active channel data when any change happens in the active channel
+   **└── 🟣
+   **/
+  useEffect(() => {
+    if (
+      user &&
+      user.login &&
+      activeChannel &&
+      activeChannel.channelName !== "" &&
+      activeChannel.channelName !== undefined
+    ) {
+      const fetchData = async () => {
+        const currectChannel: ChannelsProps = await getCurrentChannelData(
+          user.login!,
+          API_ENDPOINTS.oneChannel + activeChannel.channelName + "/"
+        );
+        setActiveChannel(currectChannel);
+        if (reRenderAll) setReRenderAll(false);
+      };
+      fetchData();
+    }
+  }, [
+    user,
+    reRenderAll,
   ]);
 
   /**

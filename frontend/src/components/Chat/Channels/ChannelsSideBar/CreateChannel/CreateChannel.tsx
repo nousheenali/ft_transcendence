@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { userInformation } from "@/components/Profile/types";
 import { getData, postData } from "../../../../../../services/api";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
-import { CreateChannelItems } from "@/components/Chat/ChannelsSideBar/CreateChannel/ChannelTypes/ChannelType";
+import { CreateChannelItems } from "@/components/Chat/Channels/CreateChannel/ChannelTypes/ChannelType";
 
 export default function CreateChannel({ userLogin }: { userLogin: string }) {
   const { socket } = useChatSocket();

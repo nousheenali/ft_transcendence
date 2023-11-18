@@ -41,11 +41,11 @@ export default function UsersList() {
       fetchData();
       if (reRenderAll) setReRenderAll(false);
 
-      // console.log("=======================================================");
-      // console.log(activeChannel);
-      // console.log("user.id ->       ", user.id);
-      // console.log("channel admin -> ", activeChannel.createdBy);
-      // console.log("=======================================================");
+      console.log("=======================================================");
+      console.log(activeChannel);
+      console.log("user.id ->       ", user.id);
+      console.log("channel admin -> ", activeChannel.createdBy);
+      console.log("=======================================================");
     }
     
   }, [user, activeChannel, reRenderAll]);

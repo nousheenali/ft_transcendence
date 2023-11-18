@@ -101,12 +101,12 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
-      socket.on("ChannelCreated", (data) => {
+      socket.on("ChannelCreated", () => {
         setReRenderAll(true);
       });
 
       /**-------------------------------------------------------------------------**/
-      socket.on("ChannelDeleted", (data) => {
+      socket.on("ChannelDeleted", () => {
         setReRenderAll(true);
       });
 
@@ -119,7 +119,7 @@ export default function ChatSocket({
 
       socket.on("UserLeftChannel", (data) => {
         // TODO // Display message on the channel that user has left.
-        console.log("UserLeftChannel", data);
+        // console.log("UserLeftChannel", data);
         setReRenderAll(true);
       });
 
@@ -132,6 +132,7 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
       socket.on("UserKicked", (data: any) => {
         const { kickedUser, channelName } = data;
+        console.log("UserKicked", data);
         setReRenderAll(true);
         toast.warn(
           `user ${kickedUser} has been kicked from the channel ${channelName}`
@@ -165,6 +166,12 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
+      socket.on("NewChannelAdmin", () => {
+        console.log("Channel Admin Updated");
+        setReRenderAll(true);
+      });
+      
+      /**-------------------------------------------------------------------------**/
       socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);
       });
@@ -183,6 +190,7 @@ export default function ChatSocket({
         socket.off("ServerToClient");
         socket.off("ServerToChannel");
         socket.off("UserLeftChannel");
+        socket.off("NewChannelAdmin");
         socket.off("newChannelJoiner");
         socket.off("UserStatusUpdate");
         socket.off("ReRenderAllUsers");
