@@ -125,7 +125,6 @@ export default function Channels() {
           user.login!,
           API_ENDPOINTS.oneChannel + activeChannel.channelName + "/"
         );
-        console.log("currectChannel", currectChannel);
         setActiveChannel(currectChannel);
         if (reRenderAll) setReRenderAll(false);
       };

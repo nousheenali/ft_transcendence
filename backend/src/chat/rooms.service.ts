@@ -9,8 +9,41 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class RoomsService {
   // =================================================================================================
+  private clientSockets: Map<string, Socket> = new Map();
   private userRooms: Room[] = [];
   private channelRooms: Room[] = [];
+
+  // =================================================================================================
+  // add the user login name as a key and the socket as a value to the clientSockets map
+  addClientSocket(userLogin: string, client: Socket) {
+    this.clientSockets.set(userLogin, client);
+  }
+  // =================================================================================================
+  // get the socket of the user by his login name
+  getClientSocket(userLogin: string) {
+    return this.clientSockets.get(userLogin);
+  }
+
+  // =================================================================================================
+  // Remove a socket from the clientSockets map
+  removeClientSocket(userLogin: string) {
+    this.clientSockets.delete(userLogin);
+  }
+
+  // =================================================================================================
+  // print all the users and their sockets
+  printAllClientSockets() {
+    const table = new Table({
+      head: [chalk.yellow('User Login'), chalk.yellow('User Socket ID')],
+    });
+
+    this.clientSockets.forEach((socket, login) => {
+      table.push([chalk.blue(login), chalk.magenta(socket.id)]);
+    });
+
+    console.log(chalk.green('👇 All Client Sockets In clientSockets Map 👇'));
+    console.log(table.toString());
+  }
 
   // =================================================================================================
 

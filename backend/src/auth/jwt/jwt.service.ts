@@ -40,8 +40,7 @@ export class JwtAuthService {
     //   isOnline: booleanString,
     //   score: numberString,
     // } as JwtPayload;
-    
-    
+
     // console.log('payload to send--------------------======', user);
     return user;
   }
@@ -74,12 +73,12 @@ export class JwtAuthService {
   }
 
   private generateCookieOptions(): CookieOptions {
-    const domain = 'localhost';
+    const domain = '10.11.3.8';
     const cookieOptions = {
       domain: domain,
       httpOnly: false,
       sameSite: 'lax',
-      secure: domain !== 'localhost',
+      secure: domain !== '10.11.3.8',
     } as CookieOptions;
     return cookieOptions;
   }

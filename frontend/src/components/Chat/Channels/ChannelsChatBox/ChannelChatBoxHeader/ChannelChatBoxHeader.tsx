@@ -22,6 +22,7 @@ const handleInviteUser = ({
   channel: ChannelsProps;
   invitedBy: string;
 }) => {
+  // Handle the case when the invited user field is empty
   const trimmedUser = user.trim();
   if (trimmedUser === "") {
     toast.error("User cannot be empty", {
@@ -145,6 +146,7 @@ export default function ChannelChatBoxHeader() {
                   channel: activeChannel,
                   invitedBy: currectUser.login,
                 });
+                setInvitedUser("");
               }}
             >
               <Image
