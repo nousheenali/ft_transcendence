@@ -464,21 +464,118 @@ export class FriendsService {
       });
 
       // Extractin the other users who blocked the user and adding them to the list
-      if (userFriends.userToFriend.length > 0 || userFriends.friendToUser.length > 0) {
+      if (
+        userFriends.userToFriend.length > 0 ||
+        userFriends.friendToUser.length > 0
+      ) {
         userFriends.userToFriend.forEach((item) => {
-          if (item.friendStatus === 'BLOCKED' && item.blockedBy !== item.user.id) {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy !== item.user.id
+          ) {
             blockedByList.push(item.friend.login);
           }
         });
         // In friendToUser array, the user is the friend and friend is the user
         userFriends.friendToUser.forEach((item) => {
-          if (item.friendStatus === 'BLOCKED' && item.blockedBy === item.user.id) {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy === item.user.id
+          ) {
             blockedByList.push(item.user.login);
           }
         });
       }
 
       return blockedByList;
+    } catch (error) {
+      throw new BadRequestException(
+        'Unexpected Error in getting blocked by list',
+      );
+    }
+  }
+  /*------------------------------------------------------------------------------------*/
+
+  /** To get a list of all the friends logins that the user blocked */
+  async getBlockedLogins(userLogin: string) {
+    try {
+      const blockedLogins = [];
+      const userFriends = await this.prisma.user.findFirst({
+        where: {
+          login: userLogin,
+        },
+        select: {
+          /*------------------------------------------------*/
+          userToFriend: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
+          /*------------------------------------------------*/
+          friendToUser: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
+          /*------------------------------------------------*/
+        },
+      });
+
+      // Extractin the other users who blocked the user and adding them to the list
+      if (
+        userFriends.userToFriend.length > 0 ||
+        userFriends.friendToUser.length > 0
+      ) {
+        userFriends.userToFriend.forEach((item) => {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy === item.user.id
+          ) {
+            blockedLogins.push(item.friend.login);
+          }
+        });
+        // In friendToUser array, the user is the friend and friend is the user
+        userFriends.friendToUser.forEach((item) => {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy !== item.user.id
+          ) {
+            blockedLogins.push(item.user.login);
+          }
+        });
+      }
+
+      return blockedLogins;
     } catch (error) {
       throw new BadRequestException(
         'Unexpected Error in getting blocked by list',

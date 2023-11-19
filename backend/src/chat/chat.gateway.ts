@@ -86,7 +86,7 @@ export class ChatGateway
     );
 
     // save the socket id in the clientSockets map in rooms service
-     this.roomsService.addClientSocket(userLogin, client);
+    this.roomsService.addClientSocket(userLogin, client);
 
     //  Joining the user's room at connection
     this.roomsService.joinRoom(userLogin, userLogin, client, 'USERS');
@@ -127,17 +127,23 @@ export class ChatGateway
   )
   async sendToUser(@MessageBody() data: CreateChatDto) {
     try {
-      const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
+    const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
 
-      //  Creating the message in the database
-      await this.userMessagesService.createUserMessage(data);
+    //  Creating the message in the database
+    await this.userMessagesService.createUserMessage(data);
 
-      //  Emitting the message to the receiver room
-      this.server.to(receiverRoom.name).emit('ServerToClient', data);
+    //  Emitting the message to the receiver room
+    this.server.to(receiverRoom.name).emit('ServerToClient', data);
 
-      //   Printing the rooms array to the console for debugging
-      // this.roomsService.printAllRooms();
+    //   Printing the rooms array to the console for debugging
+    // this.roomsService.printAllRooms();
 
+    console.log(
+      chalk.greenBright('Message To: ') +
+        chalk.blue(`[${data.receiver}]`) +
+        chalk.white(' => ') +
+        chalk.yellow(data.message),
+    );
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
@@ -305,25 +311,33 @@ export class ChatGateway
           'CHANNELS',
         );
 
-    //================================================================================================
-    // Get the clients in the channel room for debugging ==> to see if the user has been removed
-    //================================================================================================
+        //================================================================================================
+        // Get the clients in the channel room for debugging ==> to see if the user has been removed
+        //================================================================================================
 
-    const clients = await this.server
-      .in(channelRoom.name)
-      .fetchSockets()
-      .then((sockets) => {
-        return sockets.map((socket) => socket.handshake.url.split('=')[1]);
-      });
-    console.log(chalk.redBright('==================================================='));
-    console.log(
-      chalk.blueBright('Clients in the channel room: '),
-      channelRoom.name,
-    );
-    console.log(clients);
-    console.log(chalk.redBright('==================================================='));
+        const clients = await this.server
+          .in(channelRoom.name)
+          .fetchSockets()
+          .then((sockets) => {
+            return sockets.map((socket) => socket.handshake.url.split('=')[1]);
+          });
+        console.log(
+          chalk.redBright(
+            '===================================================',
+          ),
+        );
+        console.log(
+          chalk.blueBright('Clients in the channel room: '),
+          channelRoom.name,
+        );
+        console.log(clients);
+        console.log(
+          chalk.redBright(
+            '===================================================',
+          ),
+        );
 
-    //================================================================================================
+        //================================================================================================
 
         //  create channel relation in the database between the user and the channel
         await this.channelRelationService.createChannelRelation({
@@ -341,7 +355,10 @@ export class ChatGateway
 
         //  Emitting message to the invited user that he has been invited to the channel
         //    by the user, so we can send the notification to the user
-        const invitedUserRoom = this.roomsService.getRoom(invitedUser.login, 'USERS');
+        const invitedUserRoom = this.roomsService.getRoom(
+          invitedUser.login,
+          'USERS',
+        );
         this.server.to(invitedUserRoom.name).emit('UserInvitedToChannel', {
           channelName: channelName,
           invitedBy: invitedUser.name,
@@ -393,13 +410,17 @@ export class ChatGateway
       .then((sockets) => {
         return sockets.map((socket) => socket.handshake.url.split('=')[1]);
       });
-    console.log(chalk.redBright('==================================================='));
+    console.log(
+      chalk.redBright('==================================================='),
+    );
     console.log(
       chalk.blueBright('Clients in the channel room: '),
       channelRoom.name,
     );
     console.log(clients);
-    console.log(chalk.redBright('==================================================='));
+    console.log(
+      chalk.redBright('==================================================='),
+    );
 
     //================================================================================================
     /**-------------------------------------------------------------------------**/
@@ -465,13 +486,17 @@ export class ChatGateway
       .then((sockets) => {
         return sockets.map((socket) => socket.handshake.url.split('=')[1]);
       });
-    console.log(chalk.redBright('==================================================='));
+    console.log(
+      chalk.redBright('==================================================='),
+    );
     console.log(
       chalk.blueBright('Clients in the channel room: '),
       channelRoom.name,
     );
     console.log(clients);
-    console.log(chalk.redBright('==================================================='));
+    console.log(
+      chalk.redBright('==================================================='),
+    );
 
     //================================================================================================
 
@@ -594,13 +619,17 @@ export class ChatGateway
       .then((sockets) => {
         return sockets.map((socket) => socket.handshake.url.split('=')[1]);
       });
-    console.log(chalk.redBright('==================================================='));
+    console.log(
+      chalk.redBright('==================================================='),
+    );
     console.log(
       chalk.blueBright('Clients in the channel room: '),
       channelRoom.name,
     );
     console.log(clients);
-    console.log(chalk.redBright('==================================================='));
+    console.log(
+      chalk.redBright('==================================================='),
+    );
 
     //================================================================================================
 

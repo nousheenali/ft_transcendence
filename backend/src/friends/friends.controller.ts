@@ -165,13 +165,26 @@ export class FriendsController {
   }
 
   /* List all blocked friends */
-  @Get('blockedByList/:login')
+  @Get('blocked-by-list/:login')
   getBlockeByList(@Param('login') login: string) {
     try {
       return this.friendsService.getBlockedBy(login);
     } catch (error) {
       throw new HttpException(
         'Unexpected Error while listing the friends who blocked the user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /* List a login list of all the friends that the user blocked  */
+  @Get('blocked-logins/:login')
+  getBlockeLogins(@Param('login') login: string) {
+    try {
+      return this.friendsService.getBlockedLogins(login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while listing the blocked friends logins',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

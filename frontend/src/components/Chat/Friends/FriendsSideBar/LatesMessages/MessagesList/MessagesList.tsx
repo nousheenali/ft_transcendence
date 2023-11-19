@@ -2,7 +2,7 @@ import Image from "next/image";
 import { AuthContext } from "@/context/AuthProvider";
 import { MessagesProps } from "@/components/Chat/types";
 import React, { useContext, useEffect, useState } from "react";
-import { getBlockedByList } from "../../../../../../../services/user";
+import { getBlockList } from "../../../../../../../services/user";
 import { getMessages } from "../../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import {
@@ -36,7 +36,7 @@ export default function MessagesList() {
         setLatestMessages(messages);
         setLoading(false);
 
-        const blockedBy: string[] = await getBlockedByList(
+        const blockedBy: string[] = await getBlockList(
           user.login,
           API_ENDPOINTS.blockedByList
         );
@@ -122,7 +122,7 @@ export default function MessagesList() {
         {filteredData.map((message, index) => (
           <div className="py-1" key={index}>
             {!blockedByList.includes(message.sender.login) && (
-              <Message message={message}/>
+              <Message message={message} />
             )}
           </div>
         ))}

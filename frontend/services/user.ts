@@ -11,7 +11,7 @@ export const getUserData = async (login: string, endpoint: string) => {
   }
 };
 
-export const getBlockedByList = async (login: string, endpoint: string) => {
+export const getBlockList = async (login: string, endpoint: string) => {
   try {
     const users: string[] = await getData<string[]>(login, endpoint);
     return users;
