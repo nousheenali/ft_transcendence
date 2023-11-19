@@ -16,7 +16,7 @@ export const API_ENDPOINTS = {
   declineFriendRequest: "/friends/declineRequest/",
   blockFriend: "/friends/block/",
   unBlockFriend: "/friends/unBlock/",
-
+  blockedByList: "/friends/blockedByList/", // + login
   /**==============================================================================================
    * ╭── 🟣
    * ├ 👇 All the Channels endpoints

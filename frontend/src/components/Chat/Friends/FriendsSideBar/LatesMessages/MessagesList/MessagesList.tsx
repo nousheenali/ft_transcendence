@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { AuthContext } from "@/context/AuthProvider";
 import { MessagesProps } from "@/components/Chat/types";
 import React, { useContext, useEffect, useState } from "react";
+import { getBlockedByList } from "../../../../../../../services/user";
 import { getMessages } from "../../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import {
@@ -8,7 +10,6 @@ import {
   activateClickedFriend,
   useReRenderAllState,
 } from "../../../../../../context/store";
-import { AuthContext } from "@/context/AuthProvider";
 import Message from "@/components/Chat/Friends/FriendsSideBar/LatesMessages/Message/Message";
 
 export default function MessagesList() {
@@ -18,6 +19,7 @@ export default function MessagesList() {
   const [latestMessages, setLatestMessages] = useState<MessagesProps[]>([]);
   const { setActiveFriend } = activateClickedFriend();
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
+  const [blockedByList, setBlockedByList] = useState<string[]>([]);
   /**=========================================================================================*/
   const [inputValue, setInputValue] = useState<string>("");
   const [filteredData, setFilteredData] =
@@ -33,6 +35,12 @@ export default function MessagesList() {
         );
         setLatestMessages(messages);
         setLoading(false);
+
+        const blockedBy: string[] = await getBlockedByList(
+          user.login,
+          API_ENDPOINTS.blockedByList
+        );
+        setBlockedByList(blockedBy);
       };
       fetchData();
     }
@@ -110,10 +118,12 @@ export default function MessagesList() {
           </div>
         )}
         {/* ======================================================================================== */}
-
+        {/* && !blockedByList.includes(message.sender.login) */}
         {filteredData.map((message, index) => (
           <div className="py-1" key={index}>
-            <Message message={message} />
+            {!blockedByList.includes(message.sender.login) && (
+              <Message message={message}/>
+            )}
           </div>
         ))}
       </div>

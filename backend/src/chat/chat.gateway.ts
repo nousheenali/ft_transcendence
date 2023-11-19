@@ -138,12 +138,6 @@ export class ChatGateway
       //   Printing the rooms array to the console for debugging
       // this.roomsService.printAllRooms();
 
-      console.log(
-        chalk.greenBright('Message To: ') +
-          chalk.blue(`[${data.receiver}]`) +
-          chalk.white(' => ') +
-          chalk.yellow(data.message),
-      );
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }

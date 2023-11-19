@@ -467,13 +467,13 @@ export class FriendsService {
       if (userFriends.userToFriend.length > 0 || userFriends.friendToUser.length > 0) {
         userFriends.userToFriend.forEach((item) => {
           if (item.friendStatus === 'BLOCKED' && item.blockedBy !== item.user.id) {
-            blockedByList.push(item.friend);
+            blockedByList.push(item.friend.login);
           }
         });
         // In friendToUser array, the user is the friend and friend is the user
         userFriends.friendToUser.forEach((item) => {
           if (item.friendStatus === 'BLOCKED' && item.blockedBy === item.user.id) {
-            blockedByList.push(item.user);
+            blockedByList.push(item.user.login);
           }
         });
       }
