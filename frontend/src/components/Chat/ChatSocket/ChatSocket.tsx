@@ -157,13 +157,6 @@ export default function ChatSocket({
       socket.on("UserLeftChannel", (data) => {
         const { leaver, channelName } = data;
         setReRenderAll(true);
-
-// ============================== TO BE EDITED ==============================//
-        socket.disconnect();
-        socket.connect();
-// ============================== TO BE EDITED ==============================//
-
-
         toast.info(`user ${leaver} has left the channel ${channelName}`, {
           position: "top-center",
           autoClose: 800,

@@ -411,21 +411,25 @@ export class FriendsService {
   /** To get a list of the user that blocked the user */
   async getBlockedBy(userLogin: string) {
     try {
+      const blockedByList = [];
       const userFriends = await this.prisma.user.findFirst({
         where: {
           login: userLogin,
         },
         select: {
+          /*------------------------------------------------*/
           userToFriend: {
             select: {
               user: {
                 select: {
+                  id: true,
                   login: true,
                   name: true,
                 },
               },
               friend: {
                 select: {
+                  id: true,
                   login: true,
                   name: true,
                 },
@@ -434,16 +438,19 @@ export class FriendsService {
               blockedBy: true,
             },
           },
+          /*------------------------------------------------*/
           friendToUser: {
             select: {
               user: {
                 select: {
+                  id: true,
                   login: true,
                   name: true,
                 },
               },
               friend: {
                 select: {
+                  id: true,
                   login: true,
                   name: true,
                 },
@@ -452,9 +459,26 @@ export class FriendsService {
               blockedBy: true,
             },
           },
+          /*------------------------------------------------*/
         },
       });
-      return userFriends;
+
+      // Extractin the other users who blocked the user and adding them to the list
+      if (userFriends.userToFriend.length > 0 || userFriends.friendToUser.length > 0) {
+        userFriends.userToFriend.forEach((item) => {
+          if (item.friendStatus === 'BLOCKED' && item.blockedBy !== item.user.id) {
+            blockedByList.push(item.friend);
+          }
+        });
+        // In friendToUser array, the user is the friend and friend is the user
+        userFriends.friendToUser.forEach((item) => {
+          if (item.friendStatus === 'BLOCKED' && item.blockedBy === item.user.id) {
+            blockedByList.push(item.user);
+          }
+        });
+      }
+
+      return blockedByList;
     } catch (error) {
       throw new BadRequestException(
         'Unexpected Error in getting blocked by list',
