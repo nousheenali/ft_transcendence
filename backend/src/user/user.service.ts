@@ -58,7 +58,6 @@ export class UserService {
 
   /* Get user information using full name */
   async getUserByName(fullName: string) {
-    console.log("Inside getUserByName function")
     try {
       const user = await this.prisma.user.findMany({
         where: {

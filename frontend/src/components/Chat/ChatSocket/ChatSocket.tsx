@@ -79,6 +79,7 @@ export default function ChatSocket({
         // TODO // Send notification to the user that he has been invited to the channel.
         const { invitedBy, channelName } = data;
         setReRenderAll(true);
+        console.log("UserInvitedToChannel");
         toast.info(
           `You have been invited to the channel: ${channelName} by ${invitedBy}`,
           {
@@ -160,6 +161,14 @@ export default function ChatSocket({
         // TODO // Display message on the channel that user has left.
         const { leaver, channelName } = data;
         setReRenderAll(true);
+        console.log("UserInvitedToChannel");
+
+// ============================== TO BE EDITED ==============================//
+        socket.disconnect();
+        socket.connect();
+// ============================== TO BE EDITED ==============================//
+
+
         toast.info(`user ${leaver} has left the channel ${channelName}`, {
           position: "top-center",
           autoClose: 800,

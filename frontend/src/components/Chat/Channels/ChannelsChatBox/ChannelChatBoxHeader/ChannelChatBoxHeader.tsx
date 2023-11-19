@@ -7,7 +7,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { ChannelsProps } from "@/components/Chat/types";
 import { Socket } from "socket.io-client";
-import { set } from "date-fns";
+import { toast } from "react-toastify";
 
 /**======================================================================================================**/
 
@@ -22,6 +22,21 @@ const handleInviteUser = ({
   channel: ChannelsProps;
   invitedBy: string;
 }) => {
+  const trimmedUser = user.trim();
+  if (trimmedUser === "") {
+    toast.error("User cannot be empty", {
+      position: "top-center",
+      autoClose: 800,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+    return;
+  }
+  if (!user || !channel || !invitedBy) return;
   socket.emit("InviteUserToChannel", {
     channelName: channel.channelName,
     channelType: channel.channelType,

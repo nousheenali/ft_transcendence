@@ -6,6 +6,7 @@ import {
   activateClickedChannel,
   useSentMessageState,
   useReceivedMessageState,
+  useReRenderAllState,
 } from "@/context/store";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelMessagesData } from "../../../../../../services/channels";
@@ -16,10 +17,18 @@ export default function ChannelChat() {
   const { user } = useContext(AuthContext);
   const { activeChannel } = activateClickedChannel();
   const [messages, setMessages] = useState<MessagesProps[]>([]);
+  const { reRenderAll } = useReRenderAllState();
   const { sentMessage } = useSentMessageState();
   const { receivedMessage } = useReceivedMessageState();
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
 
+  /**-------------------------------------------------------------------------**/
+  /**
+   **╭── 🟣
+   **├ 👇 useEffect to fetch the messages of the active channel and refresh the messages when
+   **├    a new message is sent or received.
+   **└── 🟣
+   **/
   useEffect(() => {
     if (user && user.login && activeChannel.channelName) {
       const fetchData = async () => {
@@ -33,8 +42,9 @@ export default function ChannelChat() {
     } else {
       setMessages([]);
     }
-  }, [user, activeChannel, sentMessage, receivedMessage]);
+  }, [user, activeChannel, sentMessage, receivedMessage, reRenderAll]);
 
+  /**-------------------------------------------------------------------------**/
   /**
    **╭── 🟣
    **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
@@ -48,10 +58,12 @@ export default function ChannelChat() {
     }
   }, [activeChannel, messages]);
 
+  /**-------------------------------------------------------------------------**/
   if (messages === undefined || activeChannel.channelName === undefined)
     return <div className="overflow-y-scroll px-3"></div>;
   messages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
 
+  /**-------------------------------------------------------------------------**/
   return (
     <div className="overflow-y-scroll px-3" ref={chatScrollRef}>
       {messages.map((message, index) => {
