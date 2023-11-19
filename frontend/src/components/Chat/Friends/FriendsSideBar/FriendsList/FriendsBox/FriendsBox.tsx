@@ -79,7 +79,7 @@ export default function FriendsBox() {
         <input
           className="ml-2 bg-search-box-fill font-thin text-sm text-search-box-text w-full h-full focus:outline-none hover:cursor-text"
           type="search"
-          name="search channel users"
+          name="search friends"
           placeholder="Search Friends"
           onChange={handleSearchInputChange}
         />
@@ -92,6 +92,8 @@ export default function FriendsBox() {
         />
       </div>
 
+      <hr className="w-80 border-line-break" />
+
       {/* ======================================================================================== */}
       <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
         {filteredData.length === 0 && (
@@ -101,6 +103,8 @@ export default function FriendsBox() {
             </span>
           </div>
         )}
+        {/* ======================================================================================== */}
+
         {filteredData.map((OneFriend, index) => (
           <div key={index}>
             <Friend key={index} friend={OneFriend} />

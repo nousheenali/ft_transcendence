@@ -248,10 +248,6 @@ export class ChatGateway
     if (channelType === 'PRIVATE') {
       const user = await this.userService.getUserByName(invitedUserName);
       const channel = await this.channelService.getChannelByName(channelName);
-      const isExist = await this.channelRelationService.isRelationExist(
-        channel.id,
-        user.id,
-      );
 
       //  if the user does not exist, emit message to the client to notify the user
       //    that the user does not exist
@@ -259,8 +255,13 @@ export class ChatGateway
         this.server.to(client.id).emit('UserNotExists');
         return;
       }
+
+      const isExist = await this.channelRelationService.isRelationExist(
+        channel.id,
+        user.id,
+      );
       //  if the user exists, check if the user is already in the channel
-      else if (isExist) {
+      if (isExist) {
         const userRoom = this.roomsService.getRoom(invitedBy, 'USERS');
         this.server.to(userRoom.name).emit('UserAlreadyInChannel');
         return;

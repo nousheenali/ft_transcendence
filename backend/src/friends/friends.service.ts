@@ -409,43 +409,57 @@ export class FriendsService {
   /*------------------------------------------------------------------------------------*/
 
   /** To get a list of the user that blocked the user */
-  async getBlockedBy(login: string) {
+  async getBlockedBy(userLogin: string) {
     try {
-      const userData = await this.userService.getUserByLogin(login);
-      if (!userData) throw new NotFoundException('User Id does not exist');
-  
-      const result1 = await this.prisma.friendRelation.findMany({
+      const userFriends = await this.prisma.user.findFirst({
         where: {
-          userId: userData.id,
-          friendStatus: 'BLOCKED',
-          blockedBy: userData.id,
+          login: userLogin,
         },
         select: {
-          friend: true,
+          userToFriend: {
+            select: {
+              user: {
+                select: {
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
+          friendToUser: {
+            select: {
+              user: {
+                select: {
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
         },
       });
-  
-      const result2 = await this.prisma.friendRelation.findMany({
-        where: {
-          friendId: userData.id,
-          friendStatus: 'BLOCKED',
-          blockedBy: userData.id,
-        },
-        select: {
-          user: true,
-        },
-      });
-      /*combine the result , but change the label in json result from user to friend */
-      const fullResult = [
-        ...result1,
-        ...result2.map((item) => ({ friend: item.user })),
-      ];
-  
-      /*remove nesting of the json output*/
-      const friends = fullResult.map((item) => item.friend);
-      return friends;
+      return userFriends;
     } catch (error) {
-      throw new BadRequestException('Unexpected Error in getting blocked by list');
+      throw new BadRequestException(
+        'Unexpected Error in getting blocked by list',
+      );
     }
   }
+  /*------------------------------------------------------------------------------------*/
 }

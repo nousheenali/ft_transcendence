@@ -164,6 +164,19 @@ export class FriendsController {
     }
   }
 
+  /* List all blocked friends */
+  @Get('blockedByList/:login')
+  getBlockeByList(@Param('login') login: string) {
+    try {
+      return this.friendsService.getBlockedBy(login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while listing the friends who blocked the user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   /* When user unfriends a friend/ delete a friend relation*/
   @Delete('deleteFriend')
   deleteFriendRequest(@Body() dto: FriendsDto) {
