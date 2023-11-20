@@ -33,7 +33,7 @@ import { comparePassword } from 'src/utils/bcrypt';
  * │ type UserLoginType = string | string[];
  * │ export const roomsArray: UserLoginType[] = []; // (room name) = (useLogin)
  * │ ========================================================================================== **
- * │  cors: { origin: 'http://10.11.3.8:3000' }: This is to allow
+ * │  cors: { origin: 'http://localhost:3000' }: This is to allow
  * │ the frontend to connect to the websocket server
  * ╰──========================================================================================= **/
 
@@ -127,23 +127,23 @@ export class ChatGateway
   )
   async sendToUser(@MessageBody() data: CreateChatDto) {
     try {
-    const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
+      const receiverRoom = this.roomsService.getRoom(data.receiver, 'USERS');
 
-    //  Creating the message in the database
-    await this.userMessagesService.createUserMessage(data);
+      //  Creating the message in the database
+      await this.userMessagesService.createUserMessage(data);
 
-    //  Emitting the message to the receiver room
-    this.server.to(receiverRoom.name).emit('ServerToClient', data);
+      //  Emitting the message to the receiver room
+      this.server.to(receiverRoom.name).emit('ServerToClient', data);
 
-    //   Printing the rooms array to the console for debugging
-    // this.roomsService.printAllRooms();
+      //   Printing the rooms array to the console for debugging
+      // this.roomsService.printAllRooms();
 
-    console.log(
-      chalk.greenBright('Message To: ') +
-        chalk.blue(`[${data.receiver}]`) +
-        chalk.white(' => ') +
-        chalk.yellow(data.message),
-    );
+      console.log(
+        chalk.greenBright('Message To: ') +
+          chalk.blue(`[${data.receiver}]`) +
+          chalk.white(' => ') +
+          chalk.yellow(data.message),
+      );
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }

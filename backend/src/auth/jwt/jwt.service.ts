@@ -73,12 +73,12 @@ export class JwtAuthService {
   }
 
   private generateCookieOptions(): CookieOptions {
-    const domain = '10.11.3.8';
+    const domain = 'localhost';
     const cookieOptions = {
       domain: domain,
       httpOnly: false,
       sameSite: 'lax',
-      secure: domain !== '10.11.3.8',
+      secure: domain !== 'localhost',
     } as CookieOptions;
     return cookieOptions;
   }

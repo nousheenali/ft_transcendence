@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { Modal, Button } from "react-daisyui";
 import { getUserMuteStatus } from "../../../../../../../services/user";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
-import { is } from "date-fns/locale";
 
 export default function ChannelUser({
   currentUser,
@@ -108,6 +107,7 @@ export default function ChannelUser({
    **├ 👇 use effect to get the user state in the channel, if he is muted or not
    **└── 🟣
    **/
+
   useEffect(() => {
     if (
       user &&
@@ -116,15 +116,19 @@ export default function ChannelUser({
       channel.channelName !== undefined &&
       channel.channelName !== ""
     ) {
-      const fetchData = async () => {
-        const isUserMuted: boolean = await getUserMuteStatus(
-          user.login,
-          API_ENDPOINTS.isUserMuted + channel.channelName + "/"
-        );
-        setIsMuted(isUserMuted);
-      };
-      fetchData();
-      if (reRenderAll) setReRenderAll(false);
+      try {
+        const fetchData = async () => {
+          const isUserMuted: boolean = await getUserMuteStatus(
+            user.login,
+            API_ENDPOINTS.isUserMuted + channel.channelName + "/"
+          );
+          setIsMuted(isUserMuted);
+        };
+        fetchData();
+        if (reRenderAll) setReRenderAll(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [user, channel, currentUser, reRenderAll]);
 

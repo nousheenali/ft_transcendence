@@ -12,11 +12,11 @@ import { AuthContext } from "@/context/AuthProvider";
 const fetchData = async (activeUser: string | null) => {
   try {
     const getUserByLogin = await fetch(
-      "http://10.11.3.8:3001/user/getByLogin/" + activeUser
+      "http://localhost:3001/user/getByLogin/" + activeUser
     ).then((res) => res.json());
     if (getUserByLogin) {
       const data = await fetch(
-        "http://10.11.3.8:3001/notification/getById/" + getUserByLogin.id
+        "http://localhost:3001/notification/getById/" + getUserByLogin.id
       ).then((res) => res.json());
       return data;
     }
@@ -63,7 +63,7 @@ export default function NotificationIcon() {
 
   useEffect(() => {
     if (user && userData) {
-      const socket = io("http://10.11.3.8:8001", {
+      const socket = io("http://localhost:8001", {
         query: { userId: userData },
       });
       socket.on("connect", () => {
