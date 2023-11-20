@@ -3,11 +3,15 @@ import { AuthContext } from "@/context/AuthProvider";
 import { activateClickedChannel, useChatSocket } from "@/context/store";
 import { getUserData } from "../../../../../../services/user";
 import { userInformation } from "@/components/Profile/types";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { ChannelsProps } from "@/components/Chat/types";
 import { Socket } from "socket.io-client";
 import { set } from "date-fns";
+import { FaGears } from "react-icons/fa6";
+import Link from "next/link";
+import { Button, Drawer, Menu } from "react-daisyui";
+import ChatSetting from "@/components/channelSetting/ChannelSetting";
 
 /**======================================================================================================**/
 
@@ -59,7 +63,10 @@ export default function ChannelChatBoxHeader() {
    **├ 👇 use effect for enter key
    **└── 🟣
    **/
-
+  const [visible, setVisible] = useState(false);
+  const toggleVisible = useCallback(() => {
+    setVisible((visible) => !visible);
+  }, []);
   useEffect(() => {
     if (!activeChannel || !activeChannel.channelName || !currectUser) return;
     const listener = (event: any) => {
@@ -147,6 +154,23 @@ export default function ChannelChatBoxHeader() {
               onChange={(e) => setInvitedUser(e.target.value)}
               className="border border-main-yellow  p-2 bg-box-fill rounded-xl text-main-text font-thin"
             />
+            {/* <Link href={`/chat/${activeChannel.id}`}>
+              <FaGears size={40} color={"#FFD700"} />
+            </Link> */}
+            <Drawer
+              end={true}
+              open={visible}
+              onClickOverlay={toggleVisible}
+              side={
+                <Menu className="p-3 h-full w-2/4 text-base-content flex justify-center">
+                  <ChatSetting channelId={activeChannel.id} />
+                </Menu>
+              }
+            >
+              <Button color="ghost" onClick={toggleVisible}>
+                <FaGears size={40} color={"rgba(213, 242, 35, 0.8)"} />
+              </Button>
+            </Drawer>
           </div>
         )}
     </div>

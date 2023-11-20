@@ -142,6 +142,7 @@ export class ChannelService {
             select: {
               channel: {
                 select: {
+                  id: true,
                   channelMembers: true,
                   channelName: true,
                   channelType: true,
@@ -186,6 +187,7 @@ export class ChannelService {
             select: {
               channel: {
                 select: {
+                  id: true,
                   channelMembers: true,
                   channelName: true,
                   channelType: true,
