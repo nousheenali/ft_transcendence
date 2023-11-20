@@ -12,6 +12,7 @@ import { FaGears } from "react-icons/fa6";
 import Link from "next/link";
 import { Button, Drawer, Menu } from "react-daisyui";
 import ChatSetting from "@/components/channelSetting/ChannelSetting";
+import { toast } from "react-toastify";
 
 /**======================================================================================================**/
 
@@ -26,6 +27,22 @@ const handleInviteUser = ({
   channel: ChannelsProps;
   invitedBy: string;
 }) => {
+  // Handle the case when the invited user field is empty
+  const trimmedUser = user.trim();
+  if (trimmedUser === "") {
+    toast.error("User cannot be empty", {
+      position: "top-center",
+      autoClose: 800,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+    return;
+  }
+  if (!user || !channel || !invitedBy) return;
   socket.emit("InviteUserToChannel", {
     channelName: channel.channelName,
     channelType: channel.channelType,
@@ -137,6 +154,7 @@ export default function ChannelChatBoxHeader() {
                   channel: activeChannel,
                   invitedBy: currectUser.login,
                 });
+                setInvitedUser("");
               }}
             >
               <Image

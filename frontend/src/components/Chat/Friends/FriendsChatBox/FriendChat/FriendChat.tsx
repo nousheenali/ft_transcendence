@@ -1,6 +1,7 @@
 import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
+import { userInformation } from "@/components/Profile/types";
 import { getMessages } from "../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import React, { useEffect, useState, useRef, useContext } from "react";
@@ -37,18 +38,19 @@ export default function FriendChat() {
       fetchData();
     }
   }, [user, activeFriend, sentMessage, receivedMessage]);
-
+  
   /**
    **╭── 🟣
    **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
    **└── 🟣
    **/
-
+  
   useEffect(() => {
     if (chatScrollRef.current) {
       chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
     }
   }, [friendChat]);
+
 
   return (
     <div className="overflow-y-scroll px-3" ref={chatScrollRef}>

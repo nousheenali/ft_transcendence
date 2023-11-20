@@ -76,7 +76,6 @@ export default function ChatSocket({
 
       /**-------------------------------------------------------------------------**/
       socket.on("UserInvitedToChannel", (data) => {
-        // TODO // Send notification to the user that he has been invited to the channel.
         const { invitedBy, channelName } = data;
         setReRenderAll(true);
         toast.info(
@@ -96,7 +95,6 @@ export default function ChatSocket({
 
       /**-------------------------------------------------------------------------**/
       socket.on("newChannelJoiner", (data) => {
-        // TODO // Display message on the channel that new user joined.
         const { newJoiner, channelName } = data;
         setReRenderAll(true);
         toast.success(`user ${newJoiner} has joined the channel ${channelName}`, {
@@ -157,7 +155,6 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
 
       socket.on("UserLeftChannel", (data) => {
-        // TODO // Display message on the channel that user has left.
         const { leaver, channelName } = data;
         setReRenderAll(true);
         toast.info(`user ${leaver} has left the channel ${channelName}`, {

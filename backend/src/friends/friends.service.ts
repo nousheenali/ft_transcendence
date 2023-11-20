@@ -409,43 +409,178 @@ export class FriendsService {
   /*------------------------------------------------------------------------------------*/
 
   /** To get a list of the user that blocked the user */
-  async getBlockedBy(login: string) {
+  async getBlockedBy(userLogin: string) {
     try {
-      const userData = await this.userService.getUserByLogin(login);
-      if (!userData) throw new NotFoundException('User Id does not exist');
-  
-      const result1 = await this.prisma.friendRelation.findMany({
+      const blockedByList = [];
+      const userFriends = await this.prisma.user.findFirst({
         where: {
-          userId: userData.id,
-          friendStatus: 'BLOCKED',
-          blockedBy: userData.id,
+          login: userLogin,
         },
         select: {
-          friend: true,
+          /*------------------------------------------------*/
+          userToFriend: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
+          /*------------------------------------------------*/
+          friendToUser: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
+          /*------------------------------------------------*/
         },
       });
-  
-      const result2 = await this.prisma.friendRelation.findMany({
-        where: {
-          friendId: userData.id,
-          friendStatus: 'BLOCKED',
-          blockedBy: userData.id,
-        },
-        select: {
-          user: true,
-        },
-      });
-      /*combine the result , but change the label in json result from user to friend */
-      const fullResult = [
-        ...result1,
-        ...result2.map((item) => ({ friend: item.user })),
-      ];
-  
-      /*remove nesting of the json output*/
-      const friends = fullResult.map((item) => item.friend);
-      return friends;
+
+      // Extractin the other users who blocked the user and adding them to the list
+      if (
+        userFriends.userToFriend.length > 0 ||
+        userFriends.friendToUser.length > 0
+      ) {
+        userFriends.userToFriend.forEach((item) => {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy !== item.user.id
+          ) {
+            blockedByList.push(item.friend.login);
+          }
+        });
+        // In friendToUser array, the user is the friend and friend is the user
+        userFriends.friendToUser.forEach((item) => {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy === item.user.id
+          ) {
+            blockedByList.push(item.user.login);
+          }
+        });
+      }
+
+      return blockedByList;
     } catch (error) {
-      throw new BadRequestException('Unexpected Error in getting blocked by list');
+      throw new BadRequestException(
+        'Unexpected Error in getting blocked by list',
+      );
     }
   }
+  /*------------------------------------------------------------------------------------*/
+
+  /** To get a list of all the friends logins that the user blocked */
+  async getBlockedLogins(userLogin: string) {
+    try {
+      const blockedLogins = [];
+      const userFriends = await this.prisma.user.findFirst({
+        where: {
+          login: userLogin,
+        },
+        select: {
+          /*------------------------------------------------*/
+          userToFriend: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
+          /*------------------------------------------------*/
+          friendToUser: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friend: {
+                select: {
+                  id: true,
+                  login: true,
+                  name: true,
+                },
+              },
+              friendStatus: true,
+              blockedBy: true,
+            },
+          },
+          /*------------------------------------------------*/
+        },
+      });
+
+      // Extractin the other users who blocked the user and adding them to the list
+      if (
+        userFriends.userToFriend.length > 0 ||
+        userFriends.friendToUser.length > 0
+      ) {
+        userFriends.userToFriend.forEach((item) => {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy === item.user.id
+          ) {
+            blockedLogins.push(item.friend.login);
+          }
+        });
+        // In friendToUser array, the user is the friend and friend is the user
+        userFriends.friendToUser.forEach((item) => {
+          if (
+            item.friendStatus === 'BLOCKED' &&
+            item.blockedBy !== item.user.id
+          ) {
+            blockedLogins.push(item.user.login);
+          }
+        });
+      }
+
+      return blockedLogins;
+    } catch (error) {
+      throw new BadRequestException(
+        'Unexpected Error in getting blocked by list',
+      );
+    }
+  }
+  /*------------------------------------------------------------------------------------*/
 }

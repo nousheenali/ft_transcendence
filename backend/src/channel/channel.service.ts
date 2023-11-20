@@ -2,6 +2,7 @@ import { Type } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { hashPassword } from 'src/utils/bcrypt';
+import { cursorTo } from 'readline';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()

@@ -15,7 +15,7 @@ import { UserService } from 'src/user/user.service';
 import { GameDto } from './dto/game.dto';
 import { GameStatus } from '@prisma/client';
 
-@WebSocketGateway(8005, { cors: { origin: 'http://localhost:3000' } })
+@WebSocketGateway(8005, { cors: { origin: 'http://10.11.3.8:3000' } })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;

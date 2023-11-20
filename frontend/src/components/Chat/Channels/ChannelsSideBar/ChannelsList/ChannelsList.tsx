@@ -36,6 +36,7 @@ export default function Channels() {
     ChannelsProps[]
   >([]);
 
+  /**-------------------------------------------------------------------------**/
   /**
    **╭── 🟣
    **├ 👇 Fetch the all the private and public channels data from the database
@@ -82,6 +83,7 @@ export default function Channels() {
     joinedPrivateChannels.length,
   ]);
 
+  /**-------------------------------------------------------------------------**/
   /**
    **╭── 🟣
    **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
@@ -104,6 +106,7 @@ export default function Channels() {
     activeChannelType,
   ]);
 
+  /**-------------------------------------------------------------------------**/
   /**
    **╭── 🟣
    **├ 👇 refetch the active channel data when any change happens in the active channel
@@ -127,11 +130,9 @@ export default function Channels() {
       };
       fetchData();
     }
-  }, [
-    user,
-    reRenderAll,
-  ]);
+  }, [user, reRenderAll]);
 
+  /**-------------------------------------------------------------------------**/
   /**
    **╭── 🟣
    **├ 👇 Show the loading spinner while fetching the channels data
@@ -142,6 +143,7 @@ export default function Channels() {
       <span className="loading loading-ring loading-lg text-main-yellow"></span>
     );
 
+  /**-------------------------------------------------------------------------**/
   /**
    **╭── 🟣
    **├ 👇 Render the channels list according to the channel type:

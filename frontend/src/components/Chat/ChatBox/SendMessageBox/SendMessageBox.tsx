@@ -10,12 +10,11 @@ import {
   useSentMessageState,
   useSocket,
   useReRenderAllState,
-  activateClickedChannel,
 } from "@/context/store";
 import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
 import { AuthContext } from "@/context/AuthProvider";
 import { sendNotification } from "../../../../../services/friends";
-import { getUserMuteStatus } from "../../../../../services/user";
+import { getUserMuteStatus, getBlockList } from "../../../../../services/user";
 import { Content } from "@/components/notificationIcon/types";
 import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
 
@@ -35,6 +34,7 @@ export default function SendMessageBox({
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [blockedLogins, setBlockedLogins] = useState<string[]>([]);
 
   /**
    **╭── 🟣
@@ -213,6 +213,30 @@ export default function SendMessageBox({
     }
   }, [receiver, reRenderAll, user]);
 
+  useEffect(() => {
+    if (receiver && "login" in receiver && user && user.login) {
+      const fetchData = async () => {
+        const blockedLoginsList: string[] = await getBlockList(
+          user.login,
+          API_ENDPOINTS.blockedLogins
+        );
+        setBlockedLogins(blockedLoginsList);
+      };
+      if (reRenderAll) setReRenderAll(false);
+      fetchData();
+    }
+  }, [receiver, reRenderAll, user]);
+
+  /**
+   **╭── 🟣
+   **├ 👇 If there is no receiver, then return an empty div
+   **└── 🟣
+   **/
+  if (receiver === undefined || receiver === null)
+    return (
+      <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
+    );
+
   // If the user is muted, then re render the component with the muted message
   if (isMuted)
     return (
@@ -227,14 +251,17 @@ export default function SendMessageBox({
       </div>
     );
 
-  /**
-   **╭── 🟣
-   **├ 👇 If there is no receiver, then return an empty div
-   **└── 🟣
-   **/
-  if (receiver === undefined || receiver === null)
+  if ("login" in receiver && blockedLogins.includes(receiver.login))
     return (
-      <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
+      <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
+        <input
+          className="flex-grow h-full px-4 py-2 rounded-xl focus:outline-none hover:cursor-not-allowed"
+          placeholder="You blocked this user"
+          value={currentMessage}
+          onChange={(e) => setCurrentMessage(e.target.value)}
+          disabled
+        />
+      </div>
     );
 
   // else, return the normal component

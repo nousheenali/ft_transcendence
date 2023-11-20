@@ -11,6 +11,15 @@ export const getUserData = async (login: string, endpoint: string) => {
   }
 };
 
+export const getBlockList = async (login: string, endpoint: string) => {
+  try {
+    const users: string[] = await getData<string[]>(login, endpoint);
+    return users;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getUserMuteStatus = async (login: string, endpoint: string) => {
   try {
     const isMuted: boolean = await getData<boolean>(login, endpoint);

@@ -59,12 +59,15 @@ export class UserService {
   /* Get user information using full name */
   async getUserByName(fullName: string) {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findMany({
         where: {
-          name: fullName,
+          name: {
+            equals: fullName,
+            mode: 'insensitive',
+          },
         },
       });
-      return user;
+      return user[0];
     } catch (error) {
       throw new BadRequestException('Unable to get user by Full Name');
     }

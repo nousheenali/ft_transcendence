@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Modal, Button } from "react-daisyui";
 import { getUserMuteStatus } from "../../../../../../../services/user";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
+import { is } from "date-fns/locale";
 
 export default function ChannelUser({
   currentUser,
@@ -44,7 +45,7 @@ export default function ChannelUser({
         progress: undefined,
         theme: "dark",
       });
-    } else if (currentUser.login === user.login)
+    } else if (currentUser.login === user.login && !isMuted)
       toast.warn("you can't mute yourself", {
         position: "top-center",
         autoClose: 800,

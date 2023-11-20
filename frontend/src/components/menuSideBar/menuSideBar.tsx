@@ -147,7 +147,7 @@ export default function MenuSideBar() {
         <a
           href={`${process.env.NEXT_PUBLIC_SOCKET_URL}/auth/logout`}
           // onClick={() =>
-          //   // signOut({ callbackUrl: "http://localhost:3000/login" })
+          //   // signOut({ callbackUrl: "http://10.11.3.8:3000/login" })
           // }
           className={getButtonStyles("/logout") + " mb-10"}
         >
