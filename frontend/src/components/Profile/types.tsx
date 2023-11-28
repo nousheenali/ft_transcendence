@@ -30,6 +30,8 @@ export interface userInformation {
   isOnline: boolean;
   inAGame: boolean;
   score: number;
+  losses: number;
+  wins: number;
   TFAEnabled: boolean;
   TFAVerified: boolean;
 }

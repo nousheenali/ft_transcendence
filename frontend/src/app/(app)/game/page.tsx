@@ -19,7 +19,7 @@ import {
   WorldDimensions,
   joiningData,
 } from "@/components/GameComponents/types";
-import Preloader from "../../../components/GameComponents/Scenes/Preloader";
+
 
 export default function GamePage() {
   const {
@@ -34,16 +34,11 @@ export default function GamePage() {
     setInvitee,
   } = useGameState();
 
-  // console.log("INCOMING VALUES....", isQueue, isAccepted, invitee, inviter);
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const backendUrl = process.env.NEXT_PUBLIC_GAME_GATEWAY_URL;
-  const world: WorldDimensions = {
-    width: (window.innerWidth * 2) / 3,
-    height: (window.innerHeight * 2) / 3,
-  };
   var socket: Socket;
   var phaserGame: Phaser.Game;
 
@@ -70,6 +65,10 @@ export default function GamePage() {
         query: { login: userData.login, username: userData.name },
       });
       socket.on("connect", () => {
+        const world: WorldDimensions = {
+          width: (window.innerWidth * 2) / 3,
+          height: (window.innerHeight * 2) / 3,
+        };
         /* When user selects queue option */
         if (isQueue) {
           socket.emit("addToQueue", world);
@@ -116,7 +115,7 @@ export default function GamePage() {
             parent: "game-container",
             width: data.worldDimensions.width,
             height: data.worldDimensions.height,
-            // backgroundColor: bgColor,//"#6495ED",//"#87CEEB",//, "#60b922", "#44b18b",
+            // backgroundColor: "#044300", //"#518AA1", //"#1F3573", //"#6495ED",//"#87CEEB",//"#44b18b",
             scene: [Preloader, Game],
             physics: {
               default: "arcade",
