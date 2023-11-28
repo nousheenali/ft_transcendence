@@ -1,9 +1,13 @@
 import Image from "next/image";
 import { MessagesProps } from "../../../../types";
+import { formatDistanceToNow } from "date-fns";
 
 export default function SenderChatBox(data: { message: MessagesProps }) {
+  const formattedTime = formatDistanceToNow(new Date(data.message.createdAt), {
+    addSuffix: true,
+  });
   return (
-    <div className="chat chat-start font-saira-condensed">
+    <div className="chat chat-start font-saira-condensed ">
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
           <Image
@@ -17,9 +21,8 @@ export default function SenderChatBox(data: { message: MessagesProps }) {
 
       <div className="chat-header">
         {data.message.sender.name}
-        <time className="text-xs opacity-50 px-2">
-          {data.message.createdAt}
-        </time>
+
+        <time className="text-xs opacity-50 px-2">{formattedTime}</time>
       </div>
 
       <div className="chat-bubble font-thin bg-sender-chatbox-bg">

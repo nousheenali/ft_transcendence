@@ -27,6 +27,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { comparePassword } from 'src/utils/bcrypt';
+import {
+  UpdateChannelNameDto,
+  UpdateChannelPasswordDto,
+} from 'src/channel/dto/update-channel.dto';
 
 /**╭──🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣
  * │  Array that will store the rooms that are created
@@ -723,6 +727,59 @@ export class ChatGateway
     //  Emitting message to the muted user to notify him that he has been muted by the admin
     const mutedUserRoom = this.roomsService.getRoom(mutedUser, 'USERS');
     this.server.to(mutedUserRoom.name).emit('UserMuted');
+  }
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   *  update channel passowrd,
+   * check if the password is correct
+   * if the password is correct, update the channel password in the database
+   * if the password is not correct, emit message to the client to notify the user that the password
+   */
+  @SubscribeMessage('updateChannelPassword')
+  @UsePipes(ValidationPipe)
+  async handleRemoveChannelPassword(
+    client: Socket,
+    data: UpdateChannelPasswordDto,
+  ) {
+    try {
+      const updatedChannelName =
+        await this.channelService.updateChannelPassword(data);
+      client.emit('ChannelPasswordUpdated');
+      this.server.emit('ReRenderAllUsers');
+    } catch (error) {
+      client.emit('WrongChannelPassword');
+    }
+  }
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   *  update channel passowrd,
+   * check if the password is correct
+   * if the password is correct, update the channel password in the database
+   * if the password is not correct, emit message to the client to notify the user that the password
+   */
+  @SubscribeMessage('removeChannelPassword')
+  @UsePipes(ValidationPipe)
+  async handleChangeChannelPassword(
+    client: Socket,
+    data: UpdateChannelPasswordDto,
+  ) {
+    try {
+      const login = client.handshake.query.userLogin as string;
+      const updatedChannel = await this.channelService.removeChannelPassword(
+        data,
+      );
+      this.roomsService.removeRooms(
+        updatedChannel.channelName + 'PRIVATE',
+        'CHANNELS',
+      );
+      client.emit('ChannelPasswordUpdated');
+      this.roomsService.createRoom(
+        updatedChannel.channelName + 'PUBLIC',
+        login,
+        'CHANNELS',
+      );
+      this.server.emit('ReRenderAllUsers');
+    } catch (error) {
+      client.emit('WrongChannelPassword');
+    }
   }
 
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●

@@ -239,6 +239,19 @@ export default function ChatSocket({
           theme: "dark",
         });
       });
+      socket.on("ChannelPasswordUpdated", () => {
+        // setReRenderAll(true);
+        toast.success("channel password updated successfully", {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
 
       /**-------------------------------------------------------------------------**/
       socket.on("NewChannelAdmin", () => {
@@ -280,6 +293,7 @@ export default function ChatSocket({
         socket.off("UserAlreadyInChannel");
         socket.off("UserInvitedToChannel");
         socket.off("UserKickedFromChannel");
+        socket.off("ChannelPasswordUpdated");
       };
       /**-------------------------------------------------------------------------**/
     } catch (error) {

@@ -74,6 +74,7 @@ type AppState = {
 
 export const activateClickedChannel = create<AppState>((set) => ({
   activeChannel: {
+    id: "",
     channelName: "",
     channelType: "",
     createdBy: "",
@@ -195,6 +196,17 @@ export const useReRenderAllState = create<ReRenderAllState>((set) => ({
   setReRenderAll: (reRenderAll: boolean) => set({ reRenderAll }),
 }));
 
+type SettingToggleVisiblity = {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+};
+
+export const useSettingToggleVisiblity = create<SettingToggleVisiblity>(
+  (set) => ({
+    isVisible: false,
+    setIsVisible: (isVisible: boolean) => set({ isVisible }),
+  })
+);
 /**==============================================================================================
  * ╭── 🌼
  * ├ 👇 State to handle re rendering to the user globally

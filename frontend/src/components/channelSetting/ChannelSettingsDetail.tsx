@@ -1,9 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input } from "react-daisyui";
+import { ChannelsProps } from "../Chat/types";
 
-function ChannelSettingDetails({ ChannelName }: { ChannelName: string }) {
-  const [channelName, setChannelName] = useState<string>("");
+import {
+  useChatSocket,
+  useReRenderAllState,
+  useSettingToggleVisiblity,
+} from "@/context/store";
+
+function ChannelSettingDetails({
+  channelInfo,
+}: {
+  channelInfo: ChannelsProps;
+}) {
   const [currentChannelPassword, setCurrentChannelPassword] =
     useState<string>("");
   const [newChannelPassword, setNewChannelPassword] = useState<string>("");
@@ -12,14 +22,9 @@ function ChannelSettingDetails({ ChannelName }: { ChannelName: string }) {
     useState<boolean>(true);
   const [newChannelPasswordStatus, setNewChannelPasswordStatus] =
     useState<boolean>(true);
-  const [channelNameStatus, setChannelNameStatus] = useState<boolean>(true);
 
   const handleInput = (buttonId: string, value: string) => {
-    if (buttonId === "Edit Channel Name") {
-      if (value.length > 4) setChannelNameStatus(false);
-      else setChannelNameStatus(true);
-      setChannelName(value);
-    } else if (buttonId === "Edit Old Password") {
+    if (buttonId === "Edit Old Password") {
       if (value.length > 4 && newChannelPassword.length > 4) {
         setUpateChannelPasswordStatus(false);
         setNewChannelPasswordStatus(false);
@@ -45,45 +50,56 @@ function ChannelSettingDetails({ ChannelName }: { ChannelName: string }) {
       setNewChannelPassword(value);
     }
   };
+
+  const [buttonId, setButtonId] = useState<string>("");
+  const { socket } = useChatSocket();
+  const { setIsVisible } = useSettingToggleVisiblity();
+  useEffect(() => {
+    const handleSubmitSync = async (buttonId: string) => {
+      if (buttonId === "Update Password") {
+        socket.emit("updateChannelPassword", {
+          channelId: channelInfo.id,
+          oldChannelPassword: currentChannelPassword,
+          newChannelPassword: newChannelPassword,
+        });
+        setIsVisible(false);
+      }
+      if (buttonId === "Remove Password") {
+        socket.emit("removeChannelPassword", {
+          channelId: channelInfo.id,
+          oldChannelPassword: currentChannelPassword,
+          newChannelPassword: newChannelPassword,
+        });
+        setIsVisible(false);
+      }
+    };
+
+    handleSubmitSync(buttonId);
+    setButtonId("");
+    setCurrentChannelPassword("");
+    setNewChannelPassword("");
+    setNewChannelPasswordStatus(true);
+    setUpateChannelPasswordStatus(true);
+  }, [buttonId, setButtonId]);
   const handleSubmit = (buttonId: string) => {
-    console.log(buttonId + " button clicked");
-    console.log("channelName ", channelName);
-    console.log("currentChannelPassword", currentChannelPassword);
-    console.log("newChannelPassword", newChannelPassword);
+    setButtonId(buttonId);
   };
 
   return (
-    <div className="flex flex-col ml-10 mb-80 font-saira-condensed font-bold text-main-text justify-center ">
-      <div className="grid grid-cols-5">
-        <div className="text-xl ml-10"> Channel Name:</div>
-        <Input
-          className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
-          size="lg"
-          placeholder={ChannelName + "..."}
-          onChange={(e) => handleInput("Edit Channel Name", e.target.value)}
-        ></Input>
-        <div className="col-span-1" />
-        <Button
-          size="sm"
-          className="w-40 h-7 rounded-md items-center text-md bg-button-background p-2 hover:bg-"
-          onClick={() => handleSubmit("Edit Channel Name")}
-          disabled={channelNameStatus}
-        >
-          Update Name
-        </Button>
-      </div>
-
+    <div className="flex flex-col ml-10 mb-40 font-saira-condensed font-bold text-main-text justify-center ">
       {/* channel password update */}
       <div className="flex flex-cols gap-20 mt-10 ">
         <div className="text-xl ml-10"> Channel Password:</div>
         <div className="grid grid-cols-2 gap-12">
           <Input
+            value={currentChannelPassword}
             className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
             size="lg"
             placeholder="Old Password..."
             onChange={(e) => handleInput("Edit Old Password", e.target.value)}
           ></Input>
           <Input
+            value={newChannelPassword}
             className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
             size="lg"
             placeholder="New Password..."
@@ -95,7 +111,7 @@ function ChannelSettingDetails({ ChannelName }: { ChannelName: string }) {
           <Button
             size="sm"
             className="w-40 h-7 rounded-md items-center text-md bg-button-background "
-            onClick={() => handleSubmit("Edit Password")}
+            onClick={() => handleSubmit("Update Password")}
             disabled={updateChannelPasswordStatus}
           >
             Update Password
@@ -103,14 +119,13 @@ function ChannelSettingDetails({ ChannelName }: { ChannelName: string }) {
           <Button
             size="sm"
             className="w-40 h-7 rounded-md items-center text-md bg-button-background "
-            onClick={() => handleSubmit("Edit Password")}
+            onClick={() => handleSubmit("Remove Password")}
             disabled={newChannelPasswordStatus}
           >
             Remove Password
           </Button>
         </div>
       </div>
-      {/* <Button className="">Complete</Button> */}
     </div>
   );
 }
