@@ -17,6 +17,7 @@ import Link from "next/link";
 import { Button, Drawer, Menu } from "react-daisyui";
 import ChatSetting from "@/components/channelSetting/ChannelSetting";
 import { toast } from "react-toastify";
+import { IoIosPersonAdd } from "react-icons/io";
 
 /**======================================================================================================**/
 
@@ -161,12 +162,9 @@ export default function ChannelChatBoxHeader() {
                 setInvitedUser("");
               }}
             >
-              <Image
-                alt={"invite"}
-                src={"./chat/user-cirlce-add.svg"}
-                width={100}
-                height={100}
-              />
+              <Button color="ghost">
+                <IoIosPersonAdd size={30} color={"rgba(213, 242, 35, 0.8)"} />
+              </Button>
             </div>
             <input
               id="invite-user-input"
