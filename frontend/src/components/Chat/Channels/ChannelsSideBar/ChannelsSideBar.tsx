@@ -10,12 +10,11 @@ import ChannelUserHeader from "./ChannelUsers/ChannelUserHeader/ChannelUserHeade
 import PublicPrivateBtn from "@/components/Chat/Channels/ChannelsSideBar/PublicPrivateBtn/PublicPrivateBtn";
 import { AuthContext } from "@/context/AuthProvider";
 
-
 //============================================================================================//
 
 export default function ChannelsSideBar() {
   const { user } = useContext(AuthContext);
-  
+
   return (
     <>
       {/* <ChannelsSearch /> */}
@@ -25,7 +24,7 @@ export default function ChannelsSideBar() {
       <ChannelsList />
       <ChannelUserHeader />
       {/* <UsersSearch /> */}
-      <UsersList />
+      <UsersList isVisible="visible" />
       <hr className="w-3/4 border-line-break" />
     </>
   );

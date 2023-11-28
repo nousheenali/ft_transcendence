@@ -10,7 +10,7 @@ import { activateClickedChannel, useReRenderAllState } from "@/context/store";
 import User from "@/components/Chat/Channels/ChannelsSideBar/ChannelUsers/User/User";
 
 //============================================================================================//
-export default function UsersList() {
+export default function UsersList({ isVisible }: { isVisible: string }) {
   const { user } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const { activeChannel } = activateClickedChannel();
@@ -96,7 +96,9 @@ export default function UsersList() {
   return (
     <>
       {/* ======================================================================================== */}
-      <div className="flex justify-stretch items-center rounded-md bg-search-box-fill w-80 h-8 border-[0.5px] border-chat-search-stroke">
+      <div
+        className={`flex justify-stretch items-center rounded-md bg-search-box-fill h-8 border-[0.5px] border-chat-search-stroke  w-80 ${isVisible}`}
+      >
         <input
           className="ml-2 bg-search-box-fill font-thin text-sm text-search-box-text w-full h-full focus:outline-none hover:cursor-text"
           type="search"
@@ -115,7 +117,7 @@ export default function UsersList() {
 
       {/* ======================================================================================== */}
       <div className="flex flex-col w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
-      {filteredData.length === 0 && (
+        {filteredData.length === 0 && (
           <div className="flex flex-col items-center w-full h-1/4 px-1 rounded-xl overflow-y-scroll scroll-container">
             <span className="text-search-box-text font-saira-condensed font-light text-lg">
               No users found!!

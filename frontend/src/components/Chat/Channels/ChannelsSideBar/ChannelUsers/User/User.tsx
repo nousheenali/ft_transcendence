@@ -134,7 +134,7 @@ export default function ChannelUser({
 
   /**========================================================================**/
   return (
-    <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 ml-6 overflow-hidden hover:cursor-pointer">
+    <div className="flex flex-row justify-center items-center w-auto h-14 rounded-xl px-1 py-1 ml-6 overflow-hidden hover:cursor-pointer">
       <div className="indicator profile w-36 h-12 basis-1/6 rounded-3xl overflow-hidden relative">
         <div className="rounded-full w-[45px] h-[45px] overflow-hidden border-2 border-main-yellow">
           <Image alt={user.name} src={user.avatar} width={45} height={45} />

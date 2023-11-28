@@ -86,7 +86,7 @@ function ChannelSettingDetails({
   };
 
   return (
-    <div className="flex flex-col ml-10 mb-80 font-saira-condensed font-bold text-main-text justify-center ">
+    <div className="flex flex-col ml-10 mb-40 font-saira-condensed font-bold text-main-text justify-center ">
       {/* channel password update */}
       <div className="flex flex-cols gap-20 mt-10 ">
         <div className="text-xl ml-10"> Channel Password:</div>
