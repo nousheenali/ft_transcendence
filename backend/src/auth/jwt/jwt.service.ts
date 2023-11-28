@@ -16,7 +16,7 @@ export class JwtAuthService {
     private userService: UserService,
   ) {}
 
-  private accessTokenExpiration: string = '15m';
+  private accessTokenExpiration: string = '50m';
 
   private refreshTokenExpiration: string = '7d';
 
@@ -40,7 +40,8 @@ export class JwtAuthService {
     //   isOnline: booleanString,
     //   score: numberString,
     // } as JwtPayload;
-    console.log('payload to send--------------------======', user);
+
+    // console.log('payload to send--------------------======', user);
     return user;
   }
 

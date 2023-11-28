@@ -97,7 +97,7 @@ export default function NotificationIcon() {
   }, [user, userData]);
 
   useEffect(() => {
-    if (user) {
+    if (user && user.login) {
       getUserData(user.login!, API_ENDPOINTS.getUserbyLogin)
         .then((userData) => {
           setUserData(userData.id);
@@ -109,7 +109,7 @@ export default function NotificationIcon() {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
+    if (user && user.login) {
       fetchData(activeUser).then((data) => {
         setNotifications(
           data.filter(

@@ -30,7 +30,7 @@ export class CreateChatDto {
 
 
 	@ApiProperty()
-	@Length(1, 100, { message: 'The message length must be between 1 and 100 characters.' }) // Use Length to limit message length
+	@Length(1, 200, { message: 'The message length must be between 1 and 100 characters.' }) // Use Length to limit message length
 	@IsNotEmpty({ message: "The 'message' property is required."})
 	message: string;
 }

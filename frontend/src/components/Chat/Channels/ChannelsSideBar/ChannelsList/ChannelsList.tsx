@@ -1,21 +1,27 @@
 import Channel from "./OneChannel";
 
 import { ChannelsProps } from "../../../types";
-import React, { useEffect,useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
-import { getChannelsData } from "../../../../../../services/channels";
-import { useChannelType, activateClickedChannel, useChannelUsersState, useNewChanelState } from "@/context/store";
+import {
+  getChannelsData,
+  getCurrentChannelData,
+} from "../../../../../../services/channels";
+import {
+  useChannelType,
+  activateClickedChannel,
+  useReRenderAllState,
+} from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
+
 /**============================================================================================*/
 
 export default function Channels() {
-
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const { activeChannelType } = useChannelType();
-  const { setActiveChannel } = activateClickedChannel();
-  const { userJoined, setUserJoined } = useChannelUsersState();
-  const { newChannel, setNewChannel } = useNewChanelState();
+  const { activeChannel, setActiveChannel } = activateClickedChannel();
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
 
   const [allPrivateChannels, setAllPrivateChannels] = useState<ChannelsProps[]>(
     []
@@ -30,52 +36,58 @@ export default function Channels() {
     ChannelsProps[]
   >([]);
 
+  /**-------------------------------------------------------------------------**/
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Fetch the all the private and public channels data from the database
    **├ 👇 Fetch the private and public channels that the user joined to.
-   **└── 🌼
+   **└── 🟣
    **/
 
   useEffect(() => {
     if (user && user.login) {
       const fetchData = async () => {
         const allPrivate: ChannelsProps[] = await getChannelsData(
-      user.login!,
+          user.login!,
           API_ENDPOINTS.allChannels + "PRIVATE/"
         );
         setAllPrivateChannels(allPrivate);
 
         const allPublic: ChannelsProps[] = await getChannelsData(
-         user.login!,
+          user.login!,
           API_ENDPOINTS.allChannels + "PUBLIC/"
         );
         setAllPublicChannels(allPublic);
 
         const publicChannels: ChannelsProps[] = await getChannelsData(
-         user.login!,
+          user.login!,
           API_ENDPOINTS.publicChannels
         );
         setJoinedPublicChannels(publicChannels);
 
         const privateChannels: ChannelsProps[] = await getChannelsData(
-         user.login!,
+          user.login!,
           API_ENDPOINTS.privateChannels
         );
         setJoinedPrivateChannels(privateChannels);
 
         setLoading(false);
-        if (userJoined) setUserJoined(false);
-        if (newChannel) setNewChannel(false);
+        if (reRenderAll) setReRenderAll(false);
       };
       fetchData();
     }
-  }, [user, userJoined, newChannel]);
+  }, [
+    user,
+    reRenderAll,
+    joinedPublicChannels.length,
+    joinedPrivateChannels.length,
+  ]);
 
+  /**-------------------------------------------------------------------------**/
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
-   **└── 🌼
+   **└── 🟣
    **/
   useEffect(() => {
     if (activeChannelType === "Public" && joinedPublicChannels.length > 0) {
@@ -85,25 +97,59 @@ export default function Channels() {
       joinedPrivateChannels.length > 0
     ) {
       setActiveChannel(joinedPrivateChannels[0]);
-    } else setActiveChannel({} as ChannelsProps);
-  }, [joinedPrivateChannels, joinedPublicChannels, activeChannelType]);
+    } else {
+      setActiveChannel({} as ChannelsProps);
+    }
+  }, [
+    joinedPublicChannels.length,
+    joinedPrivateChannels.length,
+    activeChannelType,
+  ]);
 
+  /**-------------------------------------------------------------------------**/
   /**
-   **╭── 🌼
+   **╭── 🟣
+   **├ 👇 refetch the active channel data when any change happens in the active channel
+   **└── 🟣
+   **/
+  useEffect(() => {
+    if (
+      user &&
+      user.login &&
+      activeChannel &&
+      activeChannel.channelName !== "" &&
+      activeChannel.channelName !== undefined
+    ) {
+      const fetchData = async () => {
+        const currectChannel: ChannelsProps = await getCurrentChannelData(
+          user.login!,
+          API_ENDPOINTS.oneChannel + activeChannel.channelName + "/"
+        );
+        setActiveChannel(currectChannel);
+        if (reRenderAll) setReRenderAll(false);
+      };
+      fetchData();
+    }
+  }, [user, reRenderAll]);
+
+  /**-------------------------------------------------------------------------**/
+  /**
+   **╭── 🟣
    **├ 👇 Show the loading spinner while fetching the channels data
-   **└── 🌼
+   **└── 🟣
    **/
   if (isLoading)
     return (
       <span className="loading loading-ring loading-lg text-main-yellow"></span>
     );
 
+  /**-------------------------------------------------------------------------**/
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Render the channels list according to the channel type:
    **├   First : render the channels that the user joined to.
    **├   Second: render the channels that the user didn't join to
-   **└── 🌼
+   **└── 🟣
    **/
   let key = 0;
   return (
@@ -128,7 +174,7 @@ export default function Channels() {
                     !joinedPrivateChannels.includes(OneChannel)
                 )
                 .map((OneChannel: ChannelsProps, index: integer) => (
-                  <div key={key++} >
+                  <div key={key++}>
                     <Channel channel={OneChannel} isJoined={false} />
                   </div>
                 ))

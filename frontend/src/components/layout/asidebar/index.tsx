@@ -22,7 +22,7 @@ const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
 
   useEffect(() => {
     // console.log('user in sidebar', user);
-    if (user) {
+    if (user && user.login) {
       getUserData(user.login!, API_ENDPOINTS.getUserbyLogin)
         .then((userData) => {
           setUserData(userData);

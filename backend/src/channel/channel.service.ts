@@ -1,13 +1,18 @@
 import { Type } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { hashPassword } from 'src/utils/bcrypt';
+import { comparePassword, hashPassword } from 'src/utils/bcrypt';
+import {
+  UpdateChannelNameDto,
+  UpdateChannelPasswordDto,
+} from './dto/update-channel.dto';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
 export class ChannelService {
   constructor(private prisma: PrismaService) {} // 👈 Inject PrismaService class into the constructor.
 
+  /**==============================================================================================
   /*
    * create channel and add the creator as a member
    */
@@ -39,10 +44,16 @@ export class ChannelService {
     return create_channel;
   }
 
+  /**==============================================================================================
   /*
    * delete channel
    */
   async DeleteChannel(id: string) {
+    await this.prisma.messages.deleteMany({
+      where: {
+        channelId: id,
+      },
+    });
     await this.prisma.channelRelation.deleteMany({
       where: {
         channelId: id,
@@ -55,7 +66,6 @@ export class ChannelService {
     });
     return `This action removes all channelMember and channels`;
   }
-
 
   /**==============================================================================================*/
   async getChannelByName(channelName: string) {
@@ -70,15 +80,14 @@ export class ChannelService {
       throw new BadRequestException('UNABLE TO GET CHANNEL');
     }
   }
-  
-  
+
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all channels in the server according to the type of the channel.
    * ├    this method will pull all the channels from the database, then compare them with the channels
    * ├    that the user have relation with, and filter the channels that the user dont have any relation
    * ├    with.
-   * └── 🌼
+   * └── 🟣
    * @returns all the private channels in the server according to the type of the channel.
    * @throws BadRequestException if there is an error while getting the private channels
    * ==============================================================================================*/
@@ -95,8 +104,10 @@ export class ChannelService {
           channelType: channelType,
         },
         select: {
+          channelMembers: true,
           channelName: true,
           channelType: true,
+          createdBy: true,
         },
       });
       const channels = allChannels.filter((channel) => {
@@ -110,10 +121,70 @@ export class ChannelService {
     }
   }
 
+  /**
+   *
+   * @param id id of the channel
+   * @param channelPassword the updated channel password
+   * @returns the updated channel
+   */
+  async updateChannelPassword(channelInfoDto: UpdateChannelPasswordDto) {
+    const findChannel = await this.prisma.channel.findMany({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+    });
+    const matchPasswor = comparePassword(
+      channelInfoDto.oldChannelPassword,
+      findChannel[0].channelPassword,
+    );
+    if (!matchPasswor) {
+      throw new BadRequestException('Incorrect password');
+    }
+    const password = hashPassword(channelInfoDto.newChannelPassword);
+    const update_channel = await this.prisma.channel.update({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+      data: {
+        channelPassword: password,
+      },
+    });
+    return update_channel;
+  }
+  /**
+   *
+   * @param channelInfoDto information of the channel to be updated
+   * @returns the updated channel
+   */
+  async removeChannelPassword(channelInfoDto: UpdateChannelPasswordDto) {
+    const findChannel = await this.prisma.channel.findMany({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+    });
+    const matchPasswor = comparePassword(
+      channelInfoDto.oldChannelPassword,
+      findChannel[0].channelPassword,
+    );
+    if (!matchPasswor) {
+      throw new BadRequestException('Incorrect password');
+    }
+    const update_channel = await this.prisma.channel.update({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+      data: {
+        channelPassword: null,
+        channelType: Type.PUBLIC,
+      },
+    });
+    return update_channel;
+  }
+
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all private channels according to the user login
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @returns all the private channels that the user have relation with.
    * @throws BadRequestException if there is an error while getting the private channels
@@ -135,8 +206,11 @@ export class ChannelService {
             select: {
               channel: {
                 select: {
+                  id: true,
+                  channelMembers: true,
                   channelName: true,
                   channelType: true,
+                  createdBy: true,
                 },
               },
             },
@@ -153,9 +227,9 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get all the public channels according to the user login
-   * └── 🌼
+   * └── 🟣
    * @param login: string, the login of the user
    * @returns all the public channels that the user have relation with.
    * @throws BadRequestException if there is an error while getting the public channels
@@ -177,8 +251,11 @@ export class ChannelService {
             select: {
               channel: {
                 select: {
+                  id: true,
+                  channelMembers: true,
                   channelName: true,
                   channelType: true,
+                  createdBy: true,
                 },
               },
             },
@@ -195,9 +272,9 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get channel users according to the channel name
-   * └── 🌼
+   * └── 🟣
    * @param channelName: string, the name of the channel
    * @returns all the users that are members of the channel
    * @throws BadRequestException if there is an error while getting the channel users
@@ -205,7 +282,7 @@ export class ChannelService {
   async getChannelUsers(channelName: string) {
     try {
       const channelUsers = [];
-      const data = await this.prisma.channel.findMany({
+      const data = await this.prisma.channel.findFirst({
         where: {
           channelName: channelName,
         },
@@ -214,6 +291,7 @@ export class ChannelService {
             select: {
               user: {
                 select: {
+                  id: true,
                   login: true,
                   avatar: true,
                   name: true,
@@ -224,7 +302,7 @@ export class ChannelService {
           },
         },
       });
-      data[0].channelMembers.forEach((element) => {
+      data.channelMembers.forEach((element) => {
         channelUsers.push(element.user);
       });
       return channelUsers;
@@ -234,9 +312,9 @@ export class ChannelService {
   }
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 get channel messages according to the channel name
-   * └── 🌼
+   * └── 🟣
    * @param channelName: string, the name of the channel
    * @returns all the messages of the channel
    * @throws BadRequestException if there is an error while getting the channel messages
@@ -273,4 +351,64 @@ export class ChannelService {
       throw new BadRequestException('UNABLE TO GET CHANNEL MESSAGES');
     }
   }
+
+  /**==============================================================================================
+   * ╭── 🟣
+   * ├ 👇 These two methods is to update the admin of the channel according to the oldest
+   * ├    member of the channel
+   * └── 🟣
+   * @param channelName: string, the name of the channel
+   * @returns the new admin of the channel
+   * @throws BadRequestException if there is an error while updating the channel admin
+   *
+   * ==============================================================================================*/
+  async getNewChannelAdminId(channelId: string) {
+    try {
+      const channel = await this.prisma.channel.findUnique({
+        where: {
+          id: channelId,
+        },
+        select: {
+          channelMembers: {
+            orderBy: {
+              createdAt: 'asc',
+            },
+            take: 1,
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  login: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!channel) throw new Error('Channel not found');
+      if (channel.channelMembers.length > 0)
+        return channel.channelMembers[0].user.id;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET NEW CHANNEL ADMIN');
+    }
+  }
+
+  /**==============================================================================================**/
+  async updateChannelAdmin(channelId: string) {
+    try {
+      const newAdminId = await this.getNewChannelAdminId(channelId);
+      if (!newAdminId) throw new Error('New admin not found');
+      await this.prisma.channel.update({
+        where: {
+          id: channelId,
+        },
+        data: {
+          createdBy: newAdminId,
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO UPDATE CHANNEL ADMIN');
+    }
+  }
+  /**==============================================================================================**/
 }

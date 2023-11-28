@@ -9,8 +9,41 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class RoomsService {
   // =================================================================================================
+  private clientSockets: Map<string, Socket> = new Map();
   private userRooms: Room[] = [];
   private channelRooms: Room[] = [];
+
+  // =================================================================================================
+  // add the user login name as a key and the socket as a value to the clientSockets map
+  addClientSocket(userLogin: string, client: Socket) {
+    this.clientSockets.set(userLogin, client);
+  }
+  // =================================================================================================
+  // get the socket of the user by his login name
+  getClientSocket(userLogin: string) {
+    return this.clientSockets.get(userLogin);
+  }
+
+  // =================================================================================================
+  // Remove a socket from the clientSockets map
+  removeClientSocket(userLogin: string) {
+    this.clientSockets.delete(userLogin);
+  }
+
+  // =================================================================================================
+  // print all the users and their sockets
+  printAllClientSockets() {
+    const table = new Table({
+      head: [chalk.yellow('User Login'), chalk.yellow('User Socket ID')],
+    });
+
+    this.clientSockets.forEach((socket, login) => {
+      table.push([chalk.blue(login), chalk.magenta(socket.id)]);
+    });
+
+    console.log(chalk.green('👇 All Client Sockets In clientSockets Map 👇'));
+    console.log(table.toString());
+  }
 
   // =================================================================================================
 
@@ -30,6 +63,7 @@ export class RoomsService {
       return this.userRooms[roomIndex];
     else if (roomIndex !== -1 && roomType === 'CHANNELS')
       return this.channelRooms[roomIndex];
+    return undefined;
   }
 
   // =================================================================================================
@@ -64,8 +98,7 @@ export class RoomsService {
     if (this.isRoomExist(roomName, roomType)) {
       const room = this.getRoom(roomName, roomType);
       socket.join(roomName);
-      if (room.users.indexOf(userName) === -1)
-        room.users.push(userName);
+      if (room.users.indexOf(userName) === -1) room.users.push(userName);
     } else {
       this.createRoom(roomName, userName, roomType);
       socket.join(roomName);
@@ -126,12 +159,24 @@ export class RoomsService {
 
   // =================================================================================================
 
-  removeUserFromRoom(roomName: string, userName: string, roomType: RoomType) {
+  leaveRoom(
+    roomName: string,
+    userName: string,
+    client: Socket,
+    roomType: RoomType,
+  ) {
     if (this.isRoomExist(roomName, roomType)) {
+      const room = this.getRoom(roomName, roomType);
+      // 🟣🟣 Remove the user from the room's users array
       if (this.isUserInRoom(roomName, userName, roomType) === true) {
-        const room = this.getRoom(roomName, roomType);
         room.users.splice(room.users.indexOf(userName), 1);
       }
+      if (this.isRoomAdmin(roomName, userName, roomType) === true) {
+        if (room.users.length > 0) room.admin = room.users[0];
+        else this.removeRooms(roomName, roomType);
+      }
+      // 🟣🟣 Remove the user's socket from the room
+      client.leave(roomName);
     }
   }
 

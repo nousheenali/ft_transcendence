@@ -2,7 +2,11 @@ import Image from "next/image";
 import { MessagesProps } from "../../../../types";
 import { formatDistanceToNow } from "date-fns";
 
-export default function ReceverChatBox({ message }: { message: MessagesProps }) {
+export default function ReceverChatBox({
+  message,
+}: {
+  message: MessagesProps;
+}) {
   const formattedTime = formatDistanceToNow(new Date(message.createdAt), {
     addSuffix: true,
   });

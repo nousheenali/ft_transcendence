@@ -21,6 +21,7 @@ module.exports = {
         'saira-condensed': ['Saira Condensed', 'sans-serif'],
       },
       colors: {
+        'warning': '#CD5C5C',
         'box-fill': 'rgba(14, 18, 17, 0.7)',
         'main-text': '#9e9fa4',
         'main-yellow': 'rgba(213, 242, 35, 0.8)',
@@ -35,7 +36,7 @@ module.exports = {
         'aside-fill-90': 'rgba(14, 18, 17, 0.9)',
         'aside-border': '#696D7D',
         'custom-fill': 'rgba(158, 159, 164, 0.70)',
-        strokeWidth: '0.2px',
+        'strokeWidth': '0.2px',
         'custom-stroke': 'rgba(0, 0, 0, 0.50)',
         'heading-fill': 'rgba(34, 39, 46, 0.8)',
         'heading-stroke': 'rgba(105, 109, 125, 1)',

@@ -8,9 +8,10 @@ import {
   deleteFriendRelation,
   updateFriendRelation,
 } from '../../../services/friends';
-import { useSocket } from '@/context/store';
+import { useSocket, useChatSocket } from '@/context/store';
 import { useContext } from 'react';
 import { AuthContext } from '@/context/AuthProvider';
+
 
 const TableCell: React.FC<TableCellProps> = ({
   dataItem,
@@ -21,6 +22,7 @@ const TableCell: React.FC<TableCellProps> = ({
 
   const { user } = useContext(AuthContext);
   const { currentSocket } = useSocket();
+  const {socket} = useChatSocket();
 
   if (typeof dataItem === 'string') {
     return <div className="py-2 flex-1 text-center">{dataItem}</div>;
@@ -74,6 +76,7 @@ const TableCell: React.FC<TableCellProps> = ({
       case 'BLOCK':
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.blockFriend;
+        socket.emit('BlockUser', {friendLogin: friendLogin, userLogin: user.login});
         break;
       case 'UNBLOCK':
         action = updateFriendRelation;

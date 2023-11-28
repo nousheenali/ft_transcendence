@@ -100,6 +100,7 @@ type AppState = {
 
 export const activateClickedChannel = create<AppState>((set) => ({
   activeChannel: {
+    id: "",
     channelName: "",
     channelType: "",
     createdBy: "",
@@ -208,32 +209,43 @@ export const useSentMessageState = create<SentMessageState>((set) => ({
 
 /**==============================================================================================
  * ╭── 🌼
- * ├ 👇 State to handle if some user joined the channel globaly
+ * ├ 👇 State to handle re rendering to all the users globally
  * └── 🌼
  **/
-type ChannelUsersState = {
-  userJoined: boolean;
-  setUserJoined: (userJoined: boolean) => void;
+type ReRenderAllState = {
+  reRenderAll: boolean;
+  setReRenderAll: (reRenderAll: boolean) => void;
 };
 
-export const useChannelUsersState = create<ChannelUsersState>((set) => ({
-  userJoined: false,
-  setUserJoined: (userJoined: boolean) => set({ userJoined }),
+export const useReRenderAllState = create<ReRenderAllState>((set) => ({
+  reRenderAll: false,
+  setReRenderAll: (reRenderAll: boolean) => set({ reRenderAll }),
 }));
 
-/**==============================================================================================
- * ╭── 🌼
- * ├ 👇 State to handle if some user joined the channel globaly
- * └── 🌼
- **/
-type NewChannelType = {
-  newChannel: boolean;
-  setNewChannel: (newChannel: boolean) => void;
+type SettingToggleVisiblity = {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
 };
 
-export const useNewChanelState = create<NewChannelType>((set) => ({
-  newChannel: false,
-  setNewChannel: (newChannel: boolean) => set({ newChannel }),
+export const useSettingToggleVisiblity = create<SettingToggleVisiblity>(
+  (set) => ({
+    isVisible: false,
+    setIsVisible: (isVisible: boolean) => set({ isVisible }),
+  })
+);
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle re rendering to the user globally
+ * └── 🌼
+ **/
+type ReRenderUserState = {
+  reRenderUser: boolean;
+  setReRenderUser: (reRenderUser: boolean) => void;
+};
+
+export const useReRenderUserState = create<ReRenderUserState>((set) => ({
+  reRenderUser: false,
+  setReRenderUser: (reRenderUser: boolean) => set({ reRenderUser }),
 }));
 
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
@@ -262,3 +274,5 @@ export const useChannelCreateValidate = create<TCreateChannelValidate>(
       set({ validChannelName }),
   })
 );
+
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
