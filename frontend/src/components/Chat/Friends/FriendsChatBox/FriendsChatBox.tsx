@@ -10,6 +10,8 @@ import {
 import SendMessageBox from "../../ChatBox/SendMessageBox/SendMessageBox";
 import FriendsChatBoxHeader from "./FriendsChatBoxHeader/FriendsChatBoxHeader";
 
+/* ================================================================================================ */
+
 export default function FriendsChatBox() {
   const { activeFriend } = activateClickedFriend();
   const [user, setUser] = React.useState<userInformation>();
@@ -17,7 +19,7 @@ export default function FriendsChatBox() {
 
   /*------------------------------------------------------------------------------------*/
   useEffect(() => {
-    if (activeFriend) {
+    if (activeFriend && activeFriend !== "" && activeFriend !== null) {
       const fetchData = async () => {
         const userData: userInformation = await getUserData(
           activeFriend,
@@ -32,6 +34,25 @@ export default function FriendsChatBox() {
     }
   }, [activeFriend, reRenderAll]);
 
+  //------------------------------------------------------------------------------------------------
+  if (
+    !user ||
+    !user.login ||
+    !activeFriend ||
+    activeFriend === "" ||
+    activeFriend === null
+  ) {
+    
+    return (
+      <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
+        <FriendsChatBoxHeader friend={undefined} />
+        <div className="flex flex-col items-center justify-center h-full text-2xl font-bold text-white">
+          <p className="text-center">Select a friend to start chatting</p>
+        </div>
+      </div>
+    );
+  }
+
   /*------------------------------------------------------------------------------------*/
   return (
     <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
@@ -41,3 +62,5 @@ export default function FriendsChatBox() {
     </div>
   );
 }
+
+/* ================================================================================================ */

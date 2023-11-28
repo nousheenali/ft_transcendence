@@ -51,7 +51,7 @@ export class ChatGateway
   private roomsService: RoomsService = new RoomsService();
   //================================================================================================
   private heartbeatInterval: NodeJS.Timeout;
-  
+
   private startHeartbeat(client: Socket) {
     this.heartbeatInterval = setInterval(() => {
       client.emit('ping', { beat: 1 });
@@ -665,6 +665,23 @@ export class ChatGateway
       kickedBy: admin,
       channelName: channelName,
     });
+  }
+
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   *  Handling block-user event by subscribing to the event "BlockUser".
+   */
+  @SubscribeMessage('BlockUser')
+  async blockUser(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: {friendLogin: string, userLogin: string},
+  ) {
+    const { friendLogin, userLogin} = data;
+    // emit event to the user and the blocked user to re-render the friends list
+    const userRoom = this.roomsService.getRoom(userLogin, 'USERS');
+    const friendRoom = this.roomsService.getRoom(friendLogin, 'USERS');
+    this.server.to(userRoom.name).emit('UserBlocked');
+    this.server.to(friendRoom.name).emit('UserBlocked');
   }
 
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●

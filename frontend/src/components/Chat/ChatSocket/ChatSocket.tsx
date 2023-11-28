@@ -57,7 +57,7 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
-      
+
       socket.on("ping", (data) => {
         socket.emit("pong", { beat: 1 });
       });
@@ -246,6 +246,12 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
+
+      socket.on("UserBlocked", () => {
+        setReRenderAll(true);
+      });
+
+      /**-------------------------------------------------------------------------**/
       socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);
       });
@@ -253,7 +259,9 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
 
       return () => {
+        socket.off("ping");
         socket.off("connect");
+        socket.off("BlockUser");
         socket.off("reconnect");
         socket.off("UserMuted");
         socket.off("UserKicked");

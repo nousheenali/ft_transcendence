@@ -12,6 +12,7 @@ import {
 } from "../../../../../../context/store";
 import Message from "@/components/Chat/Friends/FriendsSideBar/LatesMessages/Message/Message";
 
+/**=========================================================================================*/
 export default function MessagesList() {
   const { user } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
@@ -20,12 +21,11 @@ export default function MessagesList() {
   const { setActiveFriend } = activateClickedFriend();
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
   const [blockedByList, setBlockedByList] = useState<string[]>([]);
-  /**=========================================================================================*/
   const [inputValue, setInputValue] = useState<string>("");
   const [filteredData, setFilteredData] =
     useState<MessagesProps[]>(latestMessages);
-  /**=========================================================================================*/
 
+  //------------------------------------------------------------------------------------------------
   useEffect(() => {
     if (user && user.login) {
       const fetchData = async () => {
@@ -46,12 +46,12 @@ export default function MessagesList() {
     }
   }, [user, receivedMessage, reRenderAll]);
 
-  /**=========================================================================================*/
+  //------------------------------------------------------------------------------------------------
   useEffect(() => {
     setInputValue("");
     setFilteredData(latestMessages);
   }, [latestMessages]);
-
+  //------------------------------------------------------------------------------------------------
   const handleSearchInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -63,7 +63,7 @@ export default function MessagesList() {
     );
     setFilteredData(filtered);
   };
-  /**=========================================================================================*/
+  //------------------------------------------------------------------------------------------------
 
   /**
    **╭── 🟣
@@ -75,16 +75,18 @@ export default function MessagesList() {
       setActiveFriend(latestMessages[0].sender.login);
     }
   }, [latestMessages]);
-
+  //------------------------------------------------------------------------------------------------
   if (isLoading)
     return (
       <span className="loading loading-ring loading-lg text-main-yellow"></span>
     );
+  //------------------------------------------------------------------------------------------------
 
   if (latestMessages.length === 0)
     return (
       <div className="flex flex-col w-full h-1/2 rounded-xl pl-5 overflow-y-scroll scroll-container"></div>
     );
+  //------------------------------------------------------------------------------------------------
 
   return (
     <>
@@ -130,3 +132,5 @@ export default function MessagesList() {
     </>
   );
 }
+
+/**=========================================================================================*/

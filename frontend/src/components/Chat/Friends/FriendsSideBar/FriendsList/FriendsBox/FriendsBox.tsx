@@ -37,6 +37,7 @@ export default function FriendsBox() {
       }
     }
     if (friends.length > 0) setActiveFriend(friends[0].login);
+    else setActiveFriend("");
   }, [user, reRenderAll]);
 
   /**=========================================================================================*/

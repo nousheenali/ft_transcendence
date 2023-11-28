@@ -12,6 +12,7 @@ import {
 } from "../../../../../context/store";
 import { AuthContext } from "@/context/AuthProvider";
 
+/* ================================================================================================ */
 export default function FriendChat() {
   const { user } = useContext(AuthContext);
   const { sentMessage } = useSentMessageState();
@@ -27,7 +28,13 @@ export default function FriendChat() {
    **/
 
   useEffect(() => {
-    if (user && user.login && activeFriend) {
+    if (
+      user &&
+      user.login &&
+      activeFriend &&
+      activeFriend !== "" &&
+      activeFriend !== null
+    ) {
       const fetchData = async () => {
         const chat: MessagesProps[] = await getMessages(
           user.login!,
@@ -38,20 +45,21 @@ export default function FriendChat() {
       fetchData();
     }
   }, [user, activeFriend, sentMessage, receivedMessage]);
-  
+
+  //------------------------------------------------------------------------------------------------
+
   /**
    **╭── 🟣
    **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
    **└── 🟣
    **/
-  
+
   useEffect(() => {
     if (chatScrollRef.current) {
       chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
     }
   }, [friendChat]);
-
-
+  //------------------------------------------------------------------------------------------------
   return (
     <div className="overflow-y-scroll px-3" ref={chatScrollRef}>
       {friendChat.map((message, index) => {
@@ -64,3 +72,5 @@ export default function FriendChat() {
     </div>
   );
 }
+
+/* ================================================================================================ */

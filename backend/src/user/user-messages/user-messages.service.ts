@@ -8,13 +8,17 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelService } from 'src/channel/channel.service';
 import { CreateUserMessageDto } from './dto/create-user-message.dto';
+import { FriendsService } from 'src/friends/friends.service';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class UserMessagesService {
   constructor(
     private prisma: PrismaService,
-    private channelService: ChannelService
-    ) {}
+    private channelService: ChannelService,
+    private friendsService: FriendsService,
+    private userService: UserService,
+  ) {}
 
   //===============================================================================
   @UsePipes(
@@ -41,30 +45,30 @@ export class UserMessagesService {
     }
   }
 
-    //===============================================================================
-    @UsePipes(
-      new ValidationPipe({
-        transform: true,
-        enableDebugMessages: true,
-        skipUndefinedProperties: false,
-      }),
-    )
-    async createChannelMessage(data: CreateUserMessageDto) {
-      try {
-        const senderId = await this.getUserIdByLogin(data.sender);
-        const channel = await this.channelService.getChannelByName(data.channel);
-        const message = await this.prisma.messages.create({
-          data: {
-            senderId: senderId,
-            channelId: channel.id,
-            content: data.message,
-          },
-        });
-        return message;
-      } catch (error) {
-        throw new BadRequestException('Unable to create message');
-      }
+  //===============================================================================
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      enableDebugMessages: true,
+      skipUndefinedProperties: false,
+    }),
+  )
+  async createChannelMessage(data: CreateUserMessageDto) {
+    try {
+      const senderId = await this.getUserIdByLogin(data.sender);
+      const channel = await this.channelService.getChannelByName(data.channel);
+      const message = await this.prisma.messages.create({
+        data: {
+          senderId: senderId,
+          channelId: channel.id,
+          content: data.message,
+        },
+      });
+      return message;
+    } catch (error) {
+      throw new BadRequestException('Unable to create message');
     }
+  }
   //===============================================================================
   /* Helper function to get the user using login */
   async getUserIdByLogin(login: string) {
@@ -84,6 +88,7 @@ export class UserMessagesService {
   // 👇 get the user latest messages from other users.
   async userLatestMessages(userId: string) {
     try {
+      const userData = await this.userService.getUserById(userId);
       const latestMessages = await this.prisma.user.findFirst({
         where: {
           id: userId,
@@ -100,6 +105,15 @@ export class UserMessagesService {
           },
         },
       });
+
+      const friends = await this.friendsService.getAllFriends(userData.login);
+      // 👇 extract the friends logins from the friends array.
+      const friendsLogins = friends.map((friend) => friend.login);
+      // 👇 filter the latest messages to get only the messages from the user friends.
+      latestMessages.recievedMessages = latestMessages.recievedMessages.filter(
+        (message) => friendsLogins.includes(message.sender.login),
+      );
+      
       return latestMessages.recievedMessages;
     } catch (error) {
       throw new BadRequestException('Unable to get user messages');

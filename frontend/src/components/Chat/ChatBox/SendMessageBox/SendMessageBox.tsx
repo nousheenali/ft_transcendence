@@ -18,7 +18,7 @@ import { getUserMuteStatus, getBlockList } from "../../../../../services/user";
 import { Content } from "@/components/notificationIcon/types";
 import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
 
-//========================================================================
+/**=========================================================================================*/
 export default function SendMessageBox({
   receiver,
 }: {
@@ -35,6 +35,7 @@ export default function SendMessageBox({
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [blockedLogins, setBlockedLogins] = useState<string[]>([]);
+  //------------------------------------------------------------------------------------------------
 
   /**
    **╭── 🟣
@@ -44,6 +45,7 @@ export default function SendMessageBox({
   const toggleEmojiPicker = () => {
     setShowEmojiPicker((prevState) => !prevState);
   };
+  //------------------------------------------------------------------------------------------------
 
   /**
    **╭── 🟣
@@ -54,6 +56,7 @@ export default function SendMessageBox({
     const updatedMessage = currentMessage + emoji.native;
     setCurrentMessage(updatedMessage);
   };
+  //------------------------------------------------------------------------------------------------
 
   /**
    **╭── 🟣
@@ -78,6 +81,9 @@ export default function SendMessageBox({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  //------------------------------------------------------------------------------------------------
+
   /**
    **╭── 🟣
    **├ 👇 send message to the server and then to the receiver.
@@ -162,6 +168,7 @@ export default function SendMessageBox({
       );
     setCurrentMessage("");
   };
+  //------------------------------------------------------------------------------------------------
 
   /**
    **╭── 🟣
@@ -185,6 +192,7 @@ export default function SendMessageBox({
       // document.removeEventListener("keydown", listener);
     };
   }, [currentMessage]);
+  //------------------------------------------------------------------------------------------------
 
   /**
    **╭── 🟣
@@ -212,6 +220,7 @@ export default function SendMessageBox({
       fetchData();
     }
   }, [receiver, reRenderAll, user]);
+  //------------------------------------------------------------------------------------------------
 
   useEffect(() => {
     if (receiver && "login" in receiver && user && user.login) {
@@ -226,6 +235,7 @@ export default function SendMessageBox({
       fetchData();
     }
   }, [receiver, reRenderAll, user]);
+  //------------------------------------------------------------------------------------------------
 
   /**
    **╭── 🟣
@@ -236,6 +246,7 @@ export default function SendMessageBox({
     return (
       <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg"></div>
     );
+  //------------------------------------------------------------------------------------------------
 
   // If the user is muted, then re render the component with the muted message
   if (isMuted)
@@ -250,7 +261,7 @@ export default function SendMessageBox({
         />
       </div>
     );
-
+  //------------------------------------------------------------------------------------------------
   if ("login" in receiver && blockedLogins.includes(receiver.login))
     return (
       <div className="flex items-center justify-between w-full h-20 px-4 py-2 bg-sender-chatbox-bg rounded-xl font-saira-condensed text-lg">
@@ -263,6 +274,7 @@ export default function SendMessageBox({
         />
       </div>
     );
+  //------------------------------------------------------------------------------------------------
 
   // else, return the normal component
   return (
@@ -315,4 +327,4 @@ export default function SendMessageBox({
   );
 }
 
-//========================================================================
+/**=========================================================================================*/

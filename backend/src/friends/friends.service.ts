@@ -11,44 +11,48 @@ import { UserService } from 'src/user/user.service';
 export class FriendsService {
   constructor(
     private prisma: PrismaService,
-    private readonly userService: UserService,
+    private userService: UserService,
   ) {}
 
   async getAllFriends(login: string) {
-    const userData = await this.userService.getUserByLogin(login);
-    if (!userData) throw new NotFoundException('User Id does not exist');
+    try {
+      const userData = await this.userService.getUserByLogin(login);
+      if (!userData) throw new NotFoundException('User Id does not exist');
 
-    /*gets list of friends to whom the user has sent a request to */
-    const userToFriend = await this.prisma.friendRelation.findMany({
-      where: {
-        userId: userData.id,
-        friendStatus: 'ACCEPTED',
-      },
-      select: {
-        friend: true,
-      },
-    });
+      /*gets list of friends to whom the user has sent a request to */
+      const userToFriend = await this.prisma.friendRelation.findMany({
+        where: {
+          userId: userData.id,
+          friendStatus: 'ACCEPTED',
+        },
+        select: {
+          friend: true,
+        },
+      });
 
-    /*gets list of friends from whom the user received a request from */
-    const friendtoUser = await this.prisma.friendRelation.findMany({
-      where: {
-        friendId: userData.id,
-        friendStatus: 'ACCEPTED',
-      },
-      select: {
-        user: true,
-      },
-    });
+      /*gets list of friends from whom the user received a request from */
+      const friendtoUser = await this.prisma.friendRelation.findMany({
+        where: {
+          friendId: userData.id,
+          friendStatus: 'ACCEPTED',
+        },
+        select: {
+          user: true,
+        },
+      });
 
-    /*combine the result , but change the label in json result from user to friend */
-    const allFriends = [
-      ...userToFriend,
-      ...friendtoUser.map((item) => ({ friend: item.user })),
-    ];
+      /*combine the result , but change the label in json result from user to friend */
+      const allFriends = [
+        ...userToFriend,
+        ...friendtoUser.map((item) => ({ friend: item.user })),
+      ];
 
-    /*remove nesting of the json output*/
-    const friends = allFriends.map(({ friend }) => friend);
-    return friends;
+      /*remove nesting of the json output*/
+      const friends = allFriends.map(({ friend }) => friend);
+      return friends;
+    } catch (error) {
+      throw new BadRequestException('Unexpected Error in getting friends');
+    }
   }
 
   /*------------------------------------------------------------------------------------*/
