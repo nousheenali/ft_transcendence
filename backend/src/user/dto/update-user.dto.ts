@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty , IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsString } from 'class-validator';
 
@@ -13,7 +13,7 @@ export class UpdateUserDto {
 
   @ApiProperty()
   @IsString()
-  refreshToken?: string;
+  refreshToken?: string | null;
 
   @ApiProperty()
   @IsString()
@@ -22,4 +22,12 @@ export class UpdateUserDto {
   @ApiProperty()
   @IsBoolean()
   TFAEnabled?: boolean;
+
+  // @IsNotEmpty()
+  // login: string;
+
+  // @IsEmail()
+  // @IsOptional()
+  // email: string;
+
 }

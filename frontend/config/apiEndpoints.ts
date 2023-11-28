@@ -37,4 +37,6 @@ export const API_ENDPOINTS = {
    **/
   userMessages: "/user-messages/friend-chat/",
   userLatestMessages: "/user-messages/latest-messages/",
+  updateName: '/user/update-name/',
+  updateAvatar: '/user/upload-avatar/',
 };

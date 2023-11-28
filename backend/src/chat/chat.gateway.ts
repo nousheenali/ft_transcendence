@@ -106,6 +106,7 @@ export class ChatGateway
     );
     const channelsRooms = joinedChannels.map((channel) => {
       return channel.channel.channelName + channel.channel.channelType;
+      
     });
 
     // ❂➤ Joining the user to all the channels rooms again
