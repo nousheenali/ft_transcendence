@@ -1,8 +1,11 @@
 import { Type } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { hashPassword } from 'src/utils/bcrypt';
-import { cursorTo } from 'readline';
+import { comparePassword, hashPassword } from 'src/utils/bcrypt';
+import {
+  UpdateChannelNameDto,
+  UpdateChannelPasswordDto,
+} from './dto/update-channel.dto';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
@@ -116,6 +119,66 @@ export class ChannelService {
     } catch (error) {
       throw new BadRequestException('UNABLE TO GET ALL CHANNELS');
     }
+  }
+
+  /**
+   *
+   * @param id id of the channel
+   * @param channelPassword the updated channel password
+   * @returns the updated channel
+   */
+  async updateChannelPassword(channelInfoDto: UpdateChannelPasswordDto) {
+    const findChannel = await this.prisma.channel.findMany({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+    });
+    const matchPasswor = comparePassword(
+      channelInfoDto.oldChannelPassword,
+      findChannel[0].channelPassword,
+    );
+    if (!matchPasswor) {
+      throw new BadRequestException('Incorrect password');
+    }
+    const password = hashPassword(channelInfoDto.newChannelPassword);
+    const update_channel = await this.prisma.channel.update({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+      data: {
+        channelPassword: password,
+      },
+    });
+    return update_channel;
+  }
+  /**
+   *
+   * @param channelInfoDto information of the channel to be updated
+   * @returns the updated channel
+   */
+  async removeChannelPassword(channelInfoDto: UpdateChannelPasswordDto) {
+    const findChannel = await this.prisma.channel.findMany({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+    });
+    const matchPasswor = comparePassword(
+      channelInfoDto.oldChannelPassword,
+      findChannel[0].channelPassword,
+    );
+    if (!matchPasswor) {
+      throw new BadRequestException('Incorrect password');
+    }
+    const update_channel = await this.prisma.channel.update({
+      where: {
+        id: channelInfoDto.channelId,
+      },
+      data: {
+        channelPassword: null,
+        channelType: Type.PUBLIC,
+      },
+    });
+    return update_channel;
   }
 
   /**==============================================================================================
