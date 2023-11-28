@@ -57,6 +57,12 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
+      
+      socket.on("ping", (data) => {
+        socket.emit("pong", { beat: 1 });
+      });
+
+      /**-------------------------------------------------------------------------**/
 
       socket.on("disconnect", (reason) => {
         console.log("Disconnected from the server for reason: ", reason);
@@ -97,16 +103,19 @@ export default function ChatSocket({
       socket.on("newChannelJoiner", (data) => {
         const { newJoiner, channelName } = data;
         setReRenderAll(true);
-        toast.success(`user ${newJoiner} has joined the channel ${channelName}`, {
-          position: "top-center",
-          autoClose: 800,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        toast.success(
+          `user ${newJoiner} has joined the channel ${channelName}`,
+          {
+            position: "top-center",
+            autoClose: 800,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
+        );
       });
 
       /**-------------------------------------------------------------------------**/

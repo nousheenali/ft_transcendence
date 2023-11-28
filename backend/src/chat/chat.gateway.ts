@@ -50,6 +50,19 @@ export class ChatGateway
   ) {}
   private roomsService: RoomsService = new RoomsService();
   //================================================================================================
+  private heartbeatInterval: NodeJS.Timeout;
+  
+  private startHeartbeat(client: Socket) {
+    this.heartbeatInterval = setInterval(() => {
+      client.emit('ping', { beat: 1 });
+    }, 8000);
+  }
+
+  private stopHeartbeat() {
+    clearInterval(this.heartbeatInterval);
+  }
+
+  //================================================================================================
   //  Initializing instance of the websocket server
   @WebSocketServer() server: Server;
 
@@ -67,6 +80,7 @@ export class ChatGateway
    * ================================================================================================*/
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
+    this.startHeartbeat(client);
     //  Extracting the user login from the handshake's query
     const userLogin = client.handshake.query.userLogin as string;
     //  If the user login is undefined or null, return
@@ -74,7 +88,7 @@ export class ChatGateway
 
     //  changing the user status in the database
     this.chatService.updateUserStatus(userLogin, true);
-    //  Emmit the event "UserStatusUpdate" to all the users to re-render the friends list
+    //  Emit the event "UserStatusUpdate" to all the users to re-render the friends list
     this.server.emit('UserStatusUpdate');
 
     //  Logging the new connection
@@ -138,12 +152,12 @@ export class ChatGateway
       //   Printing the rooms array to the console for debugging
       // this.roomsService.printAllRooms();
 
-      console.log(
-        chalk.greenBright('Message To: ') +
-          chalk.blue(`[${data.receiver}]`) +
-          chalk.white(' => ') +
-          chalk.yellow(data.message),
-      );
+      // console.log(
+      //   chalk.greenBright('Message To: ') +
+      //     chalk.blue(`[${data.receiver}]`) +
+      //     chalk.white(' => ') +
+      //     chalk.yellow(data.message),
+      // );
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
@@ -699,6 +713,7 @@ export class ChatGateway
    */
   @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {
+    this.stopHeartbeat();
     const userLogin = client.handshake.query.userLogin as string;
     this.logger.log(
       chalk.red('The client with id of ') +
