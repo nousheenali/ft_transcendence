@@ -1,6 +1,8 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native"]
+  // binaryTargets = ["native"]
+  // binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+   binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -79,10 +81,11 @@ model Notification {
   recivedAt DateTime @default(now())
   read      Boolean  @default(false)
 
-  sender   User   @relation("sender", fields: [senderId], references: [id])
-  senderId String
-  User     User   @relation("receiver", fields: [userId], references: [id])
-  userId   String
+  sender     User     @relation("sender", fields: [senderId], references: [id])
+  senderId   String
+  User       User     @relation("receiver", fields: [userId], references: [id])
+  userId     String
+  isAccepted Boolean? @default(false)
 }
 
 enum Content {

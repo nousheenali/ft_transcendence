@@ -1,26 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { Player, PlayerService } from '../player/player.service';
+import { PlayerService } from '../player/player.service';
+import { GameRoom, Player } from '../types';
 
 @Injectable()
 export class GameRoomService {
+
   private gameRooms: Map<string, GameRoom> = new Map();
+  /* Initial Ball Velocity for a game room */
+  private VelX = 8;
+  private VelY = 4;
 
   constructor(private playerService: PlayerService) {}
 
-  generateUniqueRoomId(): string {
-    const timestamp = new Date().getTime();
-    const randomPart = Math.random().toString(36);
-    // Combine the timestamp and random part to create a unique ID
-    const uniqueId = `${timestamp}-${randomPart}`;
-    return uniqueId;
-  }
+  // generateUniqueRoomId(): string {
+  //   const timestamp = new Date().getTime();
+  //   const randomPart = Math.random().toString(36);
+  //   // Combine the timestamp and random part to create a unique ID
+  //   const uniqueId = `${timestamp}-${randomPart}`;
+  //   return uniqueId;
+  // }
 
-  // Create a new game room
+  /* Creates a new game room */
   createGameRoom(roomID: string, player1: Player, player2: Player): GameRoom {
-    // const roomID = this.generateUniqueRoomId();
     var refPlayer: Player;
+    /* Game room dimensions equals that of the player with smaller window dimensions  */
     if (player1.worldWidth > player2.worldWidth) refPlayer = player2;
     else refPlayer = player1;
+
     const newRoom: GameRoom = {
       roomID,
       players: [player1, player2],
@@ -29,8 +35,8 @@ export class GameRoomService {
         y: 0,
       },
       worldWidth: refPlayer.worldWidth,
-      worldHeight: refPlayer.worldHeight,
-      ballVelocity: { x: 4, y: 2 },
+      worldHeight: (refPlayer.worldWidth * 3) / 4,
+      ballVelocity: { x: this.VelX , y: this.VelY },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,
@@ -46,7 +52,7 @@ export class GameRoomService {
     return newRoom;
   }
 
-  //when a user creates a room and waits for the other user to join
+  /* when a user creates a room and waits for the other user to join */
   createWaitingRoom(roomID: string, player1: Player) {
     const newRoom: GameRoom = {
       roomID,
@@ -56,8 +62,8 @@ export class GameRoomService {
         y: 0,
       },
       worldWidth: player1.worldWidth,
-      worldHeight: player1.worldHeight,
-      ballVelocity: { x: 4, y: 2 },
+      worldHeight: (player1.worldWidth * 3) / 4,
+      ballVelocity: { x: this.VelX, y: this.VelY },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,
@@ -73,6 +79,8 @@ export class GameRoomService {
     const room = this.getGameRoom(roomID);
     if (room && room.players.length == 1) {
       room.players.push(player2);
+      /* Checks if the new user has smaller window dimensions
+      If yes, then game room dimensions are changed to match the new user. */
       if (room.worldWidth > player2.worldHeight) {
         room.worldWidth = player2.worldWidth;
         room.worldHeight = player2.worldHeight;
@@ -89,7 +97,7 @@ export class GameRoomService {
     return null;
   }
 
-  // Remove game room
+  /* Remove game room  from Map */
   removeGameRoom(roomId: string) {
     if (this.gameRooms.has(roomId)) {
       this.gameRooms.delete(roomId);
@@ -97,17 +105,3 @@ export class GameRoomService {
   }
 }
 
-export type GameRoom = {
-  roomID: string;
-  players: Player[];
-  worldWidth: number;
-  worldHeight: number;
-  ballVelocity: { x: number; y: number };
-  ballPosition: { x: number; y: number };
-  paddleWidth: number;
-  paddleHeight: number;
-  ballWidth: number;
-  gameOver: boolean;
-  gameStarted: boolean; // we need separate gameStarted to track users disconnected before starting game
-  increaseSpeed: number; //used as flag for increasing ball speed
-};

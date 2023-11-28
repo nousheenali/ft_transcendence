@@ -6,6 +6,19 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class NotificationService {
   constructor(private prisma: PrismaService) {}
 
+  async update(id: string) {
+    const res = await this.prisma.notification.update({
+      where: {
+        id: id,
+      },
+      data: {
+        isAccepted: true,
+      },
+    });
+    return res;
+    // console.log('res: ', res);
+  }
+
   async create(createNotificationDto: CreateNotificationDto) {
     const notif = await this.prisma.notification.findMany({
       where: {
@@ -25,6 +38,7 @@ export class NotificationService {
         },
         data: {
           read: false,
+          isAccepted: false,
         },
       });
     }

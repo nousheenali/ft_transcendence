@@ -1,5 +1,4 @@
-version: '3.9'
-
+version: "3.9"
 
 services:
   postgres:
@@ -13,46 +12,38 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    # networks:
-    #   - backend
-
-
-  # nest:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - "3001:3001"
-  #   networks:
-  #     - backend
-  #   volumes:
-  #     - backend:/app
-  #   env_file:
-  #     - ./backend/.env
-  #   restart: on-failure
-  #   depends_on:
-  #     - postgres
-
+    networks:
+      - backend
 
   # frontend:
   #   build:
   #     context: ./frontend
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - backend
+  #     dockerfile: Dockerfile
   #   env_file:
   #     - ./frontend/.env.local
+  #   ports:
+  #     - "3000:3000"
   #   depends_on:
-  #     - nest
+  #     - backend
+  #   networks:
+  #     - backend
+
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - ./backend/.env
+  #   ports:
+  #     - "3001:3001"
+  #     - "5555:5555" # Add this line to expose Prisma Studio port
+  #   depends_on:
   #     - postgres
-
-
-networks:
-  backend:
-
+  #   networks:
+  #     - backend
 
 volumes:
   postgres:
-  # backend:
+
+networks:
+  backend:

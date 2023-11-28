@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { Player } from '../types';
 
 @Injectable()
 export class PlayerService {
@@ -8,10 +9,12 @@ export class PlayerService {
 
   constructor() {}
 
-  addPlayer(client: Socket, userName: string) {
+  /* Creates a player and adds it to players Map */
+  addPlayer(client: Socket, login: string, userName: string) {
     if (!this.players.has(client.id)) {
       const player: Player = {
         id: client.id,
+        login: login,
         name: userName,
         position: { x: 0, y: 0 },
         readyToStart: false,
@@ -25,13 +28,15 @@ export class PlayerService {
     }
   }
 
+  /* Removes player from players Map */
   removePlayer(clientID: string) {
     if (this.players.has(clientID)) {
       this.players.delete(clientID);
     }
   }
 
-  getPlayerByID(clientID: string): Player | null {
+  /* Player by socket id */
+  getPlayerBySocketID(clientID: string): Player | null {
     if (this.players.has(clientID)) {
       const player: Player = this.players.get(clientID);
       return player;
@@ -39,9 +44,10 @@ export class PlayerService {
     return null;
   }
 
-  getPlayerByName(name: string): Player | undefined {
+  /* Player by login */
+  getPlayerByLogin(login: string): Player | undefined {
     for (const player of this.players.values()) {
-      if (player.name === name) {
+      if (player.login === login) {
         return player;
       }
     }
@@ -53,9 +59,9 @@ export class PlayerService {
     if (player) player.readyToStart = true;
   }
 
-  // add player to queue
+  /* Add player to queue */
   addToQueue(clientID: string, width: number, height: number) {
-    const player: Player = this.getPlayerByID(clientID);
+    const player: Player = this.getPlayerBySocketID(clientID);
     player.worldWidth = width;
     player.worldHeight = height;
     if (player) {
@@ -63,17 +69,26 @@ export class PlayerService {
     }
   }
 
+  printQueue() {
+    console.log('----------QUEUE ENTRIES---------------');
+    console.log(
+      'Queue values:',
+      this.queue.map((player) => player.login),
+    );
+    console.log('-------------------------------------');
+  }
+
+  /* Removes player from queue */
   removeFromQueue(playerIdToRemove: string) {
     const indexToRemove = this.queue.findIndex(
       (player) => player.id === playerIdToRemove,
     );
-    if (indexToRemove !== -1)
-      this.queue.splice(indexToRemove, 1);
+    if (indexToRemove !== -1) this.queue.splice(indexToRemove, 1);
   }
 
+  /* Matches and removes the first two players from the queue */
   matchQueuedPlayers(): Player[] | null {
     if (this.queue.length >= 2) {
-      // Get and remove the first two players from the queue
       const players = this.queue.splice(0, 2);
       return players;
     }
@@ -81,14 +96,4 @@ export class PlayerService {
   }
 }
 
-export type Player = {
-  id: string;
-  name: string;
-  position: { x: number; y: number };
-  readyToStart: boolean;
-  worldWidth: number;
-  worldHeight: number;
-  score: number;
-  gameRoom: string;
-  socketInfo: Socket;
-};
+

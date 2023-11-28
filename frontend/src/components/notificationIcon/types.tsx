@@ -15,6 +15,7 @@ import { playerData } from "../commonTypes/types";
 
 export interface NotificationDropdownProps {
   NotificationList: NotificationItems[];
+  GameInviteNotificationList: NotificationItems[];
 }
 
 export interface NotificationItems {
@@ -23,20 +24,20 @@ export interface NotificationItems {
   read: boolean;
   recivedAt: string; // You can use a Date type if you prefer
   sender: userInformation;
+  isAccepted: boolean;
+  User: userInformation;
 }
-
 
 export enum Content {
-  DirectMessage_Recieved = 'DirectMessage_Recieved',
-  ChannelInvite_Recieved = 'ChannelInvite_Recieved',
-  GameInvite_Recieved = 'GameInvite_Recieved',
-  FriendRequest_Recieved = 'FriendRequest_Recieved',
+  DirectMessage_Recieved = "DirectMessage_Recieved",
+  ChannelInvite_Recieved = "ChannelInvite_Recieved",
+  GameInvite_Recieved = "GameInvite_Recieved",
+  FriendRequest_Recieved = "FriendRequest_Recieved",
 }
 
-
-export interface SendNotification{
-  content: string,
-  userId: string,
-  senderId: string,
-  read: boolean,
+export interface SendNotification {
+  content: string;
+  userId: string;
+  senderId: string;
+  read: boolean;
 }
