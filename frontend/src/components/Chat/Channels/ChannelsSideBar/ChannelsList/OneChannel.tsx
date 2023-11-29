@@ -107,14 +107,14 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
         setActiveChannel({} as ChannelsProps);
       }}
     >
-      <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <div className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
         <Image
           alt={"leave channel"}
           src={"./chat/Sign_out_circle_duotone_line.svg"}
           width={30}
           height={30}
         />
-      </Button>
+      </div>
     </div>
   );
 };
