@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
 import { activateClickedFriend } from "../../../../../../context/store";
-import { IoGameController } from "react-icons/io5";
-import { Button } from "react-daisyui";
+
 
 /**=========================================================================================*/
 export default function Friend({ friend }: { friend: userInformation }) {
@@ -41,14 +40,6 @@ export default function Friend({ friend }: { friend: userInformation }) {
         <span className="font-saira-condensed text-main-text font-light truncate ...">
           {friend.name}
         </span>
-      </div>
-
-      {/* ---------------------------------------------------------------------------------- */}
-      {/* [3] */}
-      <div className="flex flex-row justify-center items-center basis-1/6">
-        <Button color="ghost">
-          <IoGameController size={25} color={"rgba(213, 242, 35, 0.8)"} />
-        </Button>
       </div>
       {/* ---------------------------------------------------------------------------------- */}
     </div>

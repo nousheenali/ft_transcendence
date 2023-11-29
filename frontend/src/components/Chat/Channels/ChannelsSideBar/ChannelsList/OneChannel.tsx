@@ -272,12 +272,18 @@ export default function Channel({
                 />
               </Modal.Body>
               <Modal.Actions className="p-0 m-0 flex justify-between">
-                <button className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full">
+                <button
+                  className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full"
+                  onClick={() => {
+                    ref.current?.close();
+                  }}
+                >
                   Cancel
                 </button>
                 <button
                   onClick={() => {
                     handleJoinClick({ channel, socket, channelPassword });
+                    ref.current?.close();
                   }}
                   className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-2xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full"
                 >
