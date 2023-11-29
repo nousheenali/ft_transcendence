@@ -134,7 +134,7 @@ export default function ChannelUser({
 
   /**========================================================================**/
   return (
-    <div className="flex flex-row justify-center items-center w-auto h-14 rounded-xl px-1 py-1 ml-6 overflow-hidden hover:cursor-pointer">
+    <div className="flex flex-row justify-center items-center w-auto h-14 rounded-xl px-1 py-1 ml-6 mr-3 overflow-hidden hover:cursor-pointer hover:bg-authGrad-s hover:rounded-2xl">
       <div className="indicator profile w-36 h-12 basis-1/6 rounded-3xl overflow-hidden relative">
         <div className="rounded-full w-[45px] h-[45px] overflow-hidden border-2 border-main-yellow">
           <Image alt={user.name} src={user.avatar} width={45} height={45} />
@@ -154,18 +154,18 @@ export default function ChannelUser({
 
       {/* ====================================================== */}
       <div className="flex flex-row gap-3">
-        <div onClick={handleMuteClick}>
+        <Button color="ghost" onClick={handleMuteClick}>
           <BiVolumeMute
-            className="text-main-text"
+            className="text-main-text -ml-4 -mr-4"
             size={20}
             color={isMuted ? "rgba(213, 242, 35, 0.8)" : "grey"}
           />
-        </div>
+        </Button>
 
         {/* ====================================================== */}
-        <div onClick={handleKickClick}>
+        <Button color="ghost" onClick={handleKickClick}>
           <RiUserUnfollowLine
-            className="text-main-text"
+            className="text-main-text -ml-4 -mr-4"
             size={20}
             color={
               currentUser.id === channel.createdBy &&
@@ -230,7 +230,7 @@ export default function ChannelUser({
             </Modal.Actions>
           </Modal>
           {/* ====================================================== */}
-        </div>
+        </Button>
       </div>
     </div>
   );

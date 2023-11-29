@@ -212,7 +212,7 @@ export default function Channel({
   // if (channelPassword) setChannelPassword("");
   if (isJoined === false) {
     return (
-      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden">
+      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:bg-authGrad-s hover:rounded-2xl">
         <div
           className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer"
           onClick={() => setActiveChannel({} as ChannelsProps)}
@@ -288,7 +288,7 @@ export default function Channel({
     );
   } else {
     return (
-      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden">
+      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:bg-authGrad-s hover:rounded-2xl">
         <div
           className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer"
           onClick={() => setActiveChannel(channel)}

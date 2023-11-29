@@ -166,7 +166,6 @@ export default function Channels() {
                 <Channel channel={OneChannel} isJoined={true} />
               </div>
             ))
-            .concat(<hr className="w-3/4 py-2 border-line-break" key={key++} />)
             .concat(
               allPrivateChannels
                 .filter(
@@ -185,7 +184,6 @@ export default function Channels() {
                 <Channel channel={OneChannel} isJoined={true} />
               </div>
             ))
-            .concat(<hr className="w-3/4 py-2 border-line-break" key={key++} />)
             .concat(
               allPublicChannels
                 .filter(

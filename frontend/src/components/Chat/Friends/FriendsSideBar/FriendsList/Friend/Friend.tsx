@@ -11,7 +11,7 @@ export default function Friend({ friend }: { friend: userInformation }) {
   );
 
   return (
-    <div className="flex flex-row justify-center items-center w-80 h-14 px-1 py-1 overflow-hidden hover:cursor-pointer mx-auto">
+    <div className="flex flex-row justify-center items-center w-80 h-14 px-1 py-1 overflow-hidden hover:cursor-pointer mx-auto hover:bg-authGrad-s hover:rounded-2xl">
       {/* ---------------------------------------------------------------------------------- */}
       {/* [1] */}
       <div
