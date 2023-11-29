@@ -10,7 +10,6 @@ import { activateClickedChannel, useChatSocket } from "@/context/store";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/Ai";
 
 import { Input, Modal, Button } from "react-daisyui";
-// import Image from "next/image";
 
 /** ======================================================================================================= */
 /**
@@ -107,14 +106,17 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
         setActiveChannel({} as ChannelsProps);
       }}
     >
-      <div className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <Button
+        color="ghost"
+        className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
+      >
         <Image
           alt={"leave channel"}
           src={"./chat/Sign_out_circle_duotone_line.svg"}
           width={30}
           height={30}
         />
-      </div>
+      </Button>
     </div>
   );
 };
@@ -167,7 +169,10 @@ const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
       className="flex flex-row  gap-5 pr-2 items-center"
       onClick={() => handleJoinClick({ channel, socket })}
     >
-      <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <Button
+        color="ghost"
+        className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
+      >
         <Image
           alt={"join channel"}
           src={"./chat/user-cirlce-add.svg"}
@@ -239,14 +244,14 @@ export default function Channel({
         {channel.channelType === "PRIVATE" ? (
           <div className="font-sans">
             <div className="flex flex-row  gap-5 pr-2" onClick={handleShow}>
-              <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+              <div className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
                 <Image
                   alt={"join channel"}
                   src={"./chat/user-cirlce-add.svg"}
                   width={30}
                   height={30}
                 />
-              </Button>
+              </div>
             </div>
             <Modal
               className="overflow-hidden w-[400

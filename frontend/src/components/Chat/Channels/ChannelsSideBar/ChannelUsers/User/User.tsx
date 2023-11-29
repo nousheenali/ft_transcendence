@@ -7,7 +7,7 @@ import { userInformation } from "@/components/Profile/types";
 import { useChatSocket, useReRenderAllState } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Modal, Button } from "react-daisyui";
+import { Button, Modal } from "react-daisyui";
 import { getUserMuteStatus } from "../../../../../../../services/user";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 
@@ -154,18 +154,18 @@ export default function ChannelUser({
 
       {/* ====================================================== */}
       <div className="flex flex-row gap-3">
-        <Button color="ghost" onClick={handleMuteClick}>
+        <div onClick={handleMuteClick}>
           <BiVolumeMute
-            className="text-main-text -ml-4 -mr-4"
+            className="text-main-text"
             size={20}
             color={isMuted ? "rgba(213, 242, 35, 0.8)" : "grey"}
           />
-        </Button>
+        </div>
 
         {/* ====================================================== */}
-        <Button color="ghost" onClick={handleKickClick}>
+        <div onClick={handleKickClick}>
           <RiUserUnfollowLine
-            className="text-main-text -ml-4 -mr-4"
+            className="text-main-text"
             size={20}
             color={
               currentUser.id === channel.createdBy &&
@@ -190,47 +190,45 @@ export default function ChannelUser({
               channel?
             </Modal.Body>
             <Modal.Actions className="flex justify-evenly">
-              <form method="dialog">
-                <Button
-                  className="bg-box-fill text-white border-main-yellow"
-                  onClick={() => {
-                    modalRef.current?.close();
-                  }}
-                >
-                  NO
-                </Button>
-              </form>
+              <Button
+                color="ghost"
+                className="bg-box-fill text-white border-main-yellow"
+                onClick={() => {
+                  modalRef.current?.close();
+                }}
+              >
+                NO
+              </Button>
 
-              <form method="dialog">
-                <Button
-                  className="bg-box-fill text-warning border-main-yellow"
-                  onClick={() => {
-                    socket.emit("KickUser", {
-                      admin: currentUser.name,
-                      kickedUserlogin: user.login,
-                      channelName: channel.channelName,
-                      channelType: channel.channelType,
-                    });
-                    toast.success("user kicked successfully", {
-                      position: "top-center",
-                      autoClose: 800,
-                      hideProgressBar: true,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "dark",
-                    });
-                    modalRef.current?.close();
-                  }}
-                >
-                  YES
-                </Button>
-              </form>
+              <Button
+                color="ghost"
+                className="bg-box-fill text-warning border-main-yellow"
+                onClick={() => {
+                  socket.emit("KickUser", {
+                    admin: currentUser.name,
+                    kickedUserlogin: user.login,
+                    channelName: channel.channelName,
+                    channelType: channel.channelType,
+                  });
+                  toast.success("user kicked successfully", {
+                    position: "top-center",
+                    autoClose: 800,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
+                  modalRef.current?.close();
+                }}
+              >
+                YES
+              </Button>
             </Modal.Actions>
           </Modal>
           {/* ====================================================== */}
-        </Button>
+        </div>
       </div>
     </div>
   );
