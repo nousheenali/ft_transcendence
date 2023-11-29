@@ -167,7 +167,10 @@ const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
       className="flex flex-row  gap-5 pr-2 items-center"
       onClick={() => handleJoinClick({ channel, socket })}
     >
-      <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <Button
+        color="ghost"
+        className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
+      >
         <Image
           alt={"join channel"}
           src={"./chat/user-cirlce-add.svg"}
@@ -239,7 +242,10 @@ export default function Channel({
         {channel.channelType === "PRIVATE" ? (
           <div className="font-sans">
             <div className="flex flex-row  gap-5 pr-2" onClick={handleShow}>
-              <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+              <Button
+                color="ghost"
+                className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
+              >
                 <Image
                   alt={"join channel"}
                   src={"./chat/user-cirlce-add.svg"}
@@ -267,12 +273,18 @@ export default function Channel({
                 />
               </Modal.Body>
               <Modal.Actions className="p-0 m-0 flex justify-between">
-                <button className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full">
+                <button
+                  className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full"
+                  onClick={() => {
+                    ref.current?.close();
+                  }}
+                >
                   Cancel
                 </button>
                 <button
                   onClick={() => {
                     handleJoinClick({ channel, socket, channelPassword });
+                    ref.current?.close();
                   }}
                   className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-2xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full"
                 >
