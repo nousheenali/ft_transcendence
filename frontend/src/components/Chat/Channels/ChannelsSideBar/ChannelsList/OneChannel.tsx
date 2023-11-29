@@ -9,7 +9,7 @@ import { ChannelsProps } from "../../../types";
 import { activateClickedChannel, useChatSocket } from "@/context/store";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/Ai";
 
-import { Input, Modal } from "react-daisyui";
+import { Input, Modal, Button } from "react-daisyui";
 // import Image from "next/image";
 
 /** ======================================================================================================= */
@@ -107,14 +107,14 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
         setActiveChannel({} as ChannelsProps);
       }}
     >
-      <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
         <Image
           alt={"leave channel"}
           src={"./chat/Sign_out_circle_duotone_line.svg"}
           width={30}
           height={30}
         />
-      </button>
+      </Button>
     </div>
   );
 };
@@ -164,17 +164,17 @@ const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
 
   return (
     <div
-      className="flex flex-row  gap-5 pr-2"
+      className="flex flex-row  gap-5 pr-2 items-center"
       onClick={() => handleJoinClick({ channel, socket })}
     >
-      <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
         <Image
           alt={"join channel"}
           src={"./chat/user-cirlce-add.svg"}
           width={30}
           height={30}
         />
-      </button>
+      </Button>
     </div>
   );
 };
@@ -219,7 +219,7 @@ export default function Channel({
         >
           {/* [1] Display the avatar of the channel */}
 
-          <div className="w-36 h-12 basis-1/6 overflow-hidden">
+          <div className="w-36 h-12 basis-1/6 overflow-hidden items-center">
             <Image
               alt={channel.channelName}
               src={"/chat/people.svg"}
@@ -230,7 +230,7 @@ export default function Channel({
 
           {/* [2] Display the name of the channel */}
 
-          <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2">
+          <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2 items-center">
             <span className="font-saira-condensed text-main-text font-light truncate ...">
               {channel.channelName}
             </span>
@@ -239,14 +239,14 @@ export default function Channel({
         {channel.channelType === "PRIVATE" ? (
           <div className="font-sans">
             <div className="flex flex-row  gap-5 pr-2" onClick={handleShow}>
-              <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+              <Button color="ghost" className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
                 <Image
                   alt={"join channel"}
                   src={"./chat/user-cirlce-add.svg"}
                   width={30}
                   height={30}
                 />
-              </button>
+              </Button>
             </div>
             <Modal
               className="overflow-hidden w-[400
