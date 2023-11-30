@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useEffect } from "react";
 import Image from "next/image";
+import React, { useEffect } from "react";
 import ResponsiveTable from "@/components/Table/Table";
-import GameStatus from "@/components/GameStatus/Gamestatus";
-import { generateGameHistoryData } from "@/data/Table/gameHistory";
 import { activateClickedFriend } from "@/context/store";
+import { Game } from "@/components/GameComponents/types";
+import GameStatus from "@/components/GameStatus/Gamestatus";
 import { userInformation } from "@/components/Profile/types";
 import { getUserData } from "../../../../../../services/user";
-import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getGamesHistory } from "../../../../../../services/games";
-import { Game } from "@/components/GameComponents/types";
+import { generateGameHistoryData } from "@/data/Table/gameHistory";
+import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 
 /**======================================================================================================**/
 export default function FriendDashBoard() {
@@ -43,9 +43,6 @@ export default function FriendDashBoard() {
     }
   }, [activeFriend]);
 
-  console.log("active friend", activeFriend);
-  console.log("FriendData", friendData);
-  console.log("gameHistory", gameHistory);
   //------------------------------------------------------------------------------------------------
   if (isLoading)
     return (
