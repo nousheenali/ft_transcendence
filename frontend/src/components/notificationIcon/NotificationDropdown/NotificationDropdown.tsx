@@ -17,7 +17,8 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { isNewNotification, setIsNewNotification } = useSocket();
-  const { setClicked, setInvitee, setInviter, setIsAccepted, setIsQueue} = useGameState();
+  const { setClicked, setInvitee, setInviter, setIsAccepted, setIsQueue } =
+    useGameState();
   const router = useRouter();
 
   const openDropdown = () => {

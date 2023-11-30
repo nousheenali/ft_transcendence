@@ -142,6 +142,22 @@ export const activateClickedFriend = create<clickedFriendState>((set) => ({
   activeFriend: "",
   setActiveFriend: (login) => set({ activeFriend: login }),
 }));
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle the selected friend box globally
+ * └── 🌼
+ **/
+type activeClickedProfilePageType = {
+  activeButton: string;
+  setActiveButton: (login: string) => void;
+};
+
+export const activeClickedProfilePage = create<activeClickedProfilePageType>(
+  (set) => ({
+    activeButton: "friends",
+    setActiveButton: (login) => set({ activeButton: login }),
+  })
+);
 
 /**==============================================================================================
  * ╭── 🌼

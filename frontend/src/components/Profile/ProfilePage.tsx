@@ -1,6 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useRef } from "react";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import ResponsiveTable from "@/components/Table/Table";
 import ProfileInfo from "@/components/Profile/ProfileInfo/ProfileInfo";
@@ -23,22 +22,27 @@ import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
 import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
+import { activeClickedProfilePage } from "@/context/store";
 
 const ProfilePage = () => {
-  const [activeButton, setActiveButton] = useState("friends");
+  // const [activeButton, setActiveButton] = useState("friends");
+  const { activeButton, setActiveButton } = activeClickedProfilePage();
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
   const [userInfo, setUserInfo] = useState<userInformation>();
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
-  const [maxHeight, setMaxHeight] = useState('none');
+  const [maxHeight, setMaxHeight] = useState("none");
   const containerRef = useRef<HTMLDivElement>(null);
   let data: TableRowData[];
 
   const fetchTableData = async (buttonId: string) => {
     try {
       if (user.login) {
-        const userData = await getUserData(user.login, API_ENDPOINTS.getUserbyLogin);
+        const userData = await getUserData(
+          user.login,
+          API_ENDPOINTS.getUserbyLogin
+        );
         if (userData) {
           setUserInfo(userData);
           const dataGeneratorMap: DataGeneratorMap = {
@@ -69,7 +73,7 @@ const ProfilePage = () => {
     if (containerRef.current) {
       const containerHeight = containerRef.current.clientHeight;
       setMaxHeight(`${containerHeight}px`);
-    //  console.log("Container Height:", containerHeight);
+      //  console.log("Container Height:", containerHeight);
     }
   }, [activeButton, login]); // fetch data when button clicked
 

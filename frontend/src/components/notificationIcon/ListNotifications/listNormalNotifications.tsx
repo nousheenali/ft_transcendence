@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { NotificationItems } from "../types";
+import { activeClickedProfilePage } from "@/context/store";
+import { useRouter } from "next/navigation";
 
 {
   /* 
@@ -11,14 +13,30 @@ export const NormalNotificationsList = ({
 }: {
   normalNotifications: NotificationItems[];
 }) => {
+  const { activeButton, setActiveButton } = activeClickedProfilePage();
+  const router = useRouter();
+
+  const handleFriendRequestClick = () => {
+    setActiveButton("friendRequests");
+    router.push("/profile");
+  };
+
+  const handleNotificationClick = (notifType: string) => {
+    if (notifType === "FriendRequest_Recieved") handleFriendRequestClick();
+    console.log("notifType: ", notifType);
+  };
+
   return (
     <>
       {normalNotifications.length ? (
-        <div className="py-2 space-y-2">
+        <div className="py-2 space-y-2 w-full ">
           {normalNotifications.map((item, index) => (
-            <div
+            <button
               key={index}
-              className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg"
+              className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg w-full "
+              onClick={() => {
+                handleNotificationClick(item.content);
+              }}
             >
               <a href="#" className="flex space-x-6 w-full justify-between">
                 <div className="flex relative space-x-2 w-1/5 rounded-full w-25 bg-notification-img-bg">
@@ -35,7 +53,7 @@ export const NormalNotificationsList = ({
                   {item.recivedAt}
                 </div>
               </a>
-            </div>
+            </button>
           ))}
         </div>
       ) : null}
