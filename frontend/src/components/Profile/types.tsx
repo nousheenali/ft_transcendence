@@ -8,7 +8,7 @@ import { playerData } from '../commonTypes/types';
 export interface ProfileInfoProps {
   name: string;
   email: string;
-  rank: string;
+  score: number;
   avatar: string;
   activeButton: string;
   handleButtonClick: (buttonId: string) => void;

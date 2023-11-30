@@ -8,7 +8,7 @@ import { ProfileInfoProps } from '../types';
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
   name,
   email,
-  rank,
+  score,
   avatar,
   activeButton,
   handleButtonClick,
@@ -45,8 +45,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
               <div className="ml-10 truncate max-w-[300px]">{email}</div>
             </div>
             <div className="flex flex-row">
-              <div className="text-subheading-one">Rank:</div>
-              <div className="ml-10">#{rank}</div>
+              <div className="text-subheading-one">Score:</div>
+              <div className="ml-10">{score}</div>
             </div>
           </div>
         </div>

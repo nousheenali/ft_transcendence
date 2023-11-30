@@ -31,10 +31,10 @@ const TableCell: React.FC<TableCellProps> = ({
   if ('playerName' in dataItem) {
     return (
       <div className="py-2 flex-1 text-center">
-        <div className="flex-1 flex items-center justify-center flex-row">
-          <div className="w-12 h-12 mb-2 mr-3">
+        <div className="flex-1 flex items-center justify-start pl-8 flex-row">
+          <div className="w-12 h-12 mb-2 mr-3 pt-1">
             <Image
-              className="rounded-full"
+              className="rounded-full aspect-[1/1]"
               height={50}
               width={50}
               src={dataItem.img}
@@ -43,7 +43,7 @@ const TableCell: React.FC<TableCellProps> = ({
           </div>
           <div>
             {dataItem.name?.length > 10
-              ? `${dataItem.name.substring(0, 10)}..`
+              ? `${dataItem.name.substring(0, 15)}..`
               : dataItem.name}
           </div>
         </div>

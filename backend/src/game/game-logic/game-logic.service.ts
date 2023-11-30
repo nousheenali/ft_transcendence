@@ -117,13 +117,16 @@ export class GameLogicService {
     otherPlyr: Player,
     player: Player,
   ) {
-    /* There will be winner/loser only if the game started */
-    this.gamePrismaService.updateGameEntry(
-      gm.roomID,
-      GameStatus.FINISHED,
-      gm.gameStarted ? otherPlyr.login : null,
-      gm.gameStarted ? player.login : null,
-    );
+    /* if game not started delete database entry*/
+    if(gm.gameStarted)
+      this.gamePrismaService.updateGameEntry(
+        gm.roomID,
+        GameStatus.FINISHED,
+        otherPlyr.login,
+        player.login,
+      );
+    else
+        this.gamePrismaService.deleteGameEntry(gm.roomID);
     const data: GameOver = {
       message: 'Other Player Disconnected',
       name: gm.gameStarted ? otherPlyr.name : null,

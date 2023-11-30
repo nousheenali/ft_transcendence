@@ -45,3 +45,12 @@ export const pendingRequestHeadings = [
   'Losses',
   'Cancel Request',
 ];
+
+export const leaderboardHeadings = [
+  "Rank",
+  "Player",
+  "Score",
+  "Games",
+  "Wins",
+  "Losses",
+];

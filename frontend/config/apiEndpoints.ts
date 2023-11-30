@@ -2,6 +2,7 @@ export const API_ENDPOINTS = {
   //USER module
   getUserbyLogin: "/user/getByLogin/",
   getUserbyId: "/user/getById/",
+  getAllUsers: "/user/allUsers/",
 
   //FRIENDS module
   getAllFriends: "/friends/allFriends/",

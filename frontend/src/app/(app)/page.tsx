@@ -41,7 +41,7 @@ export default function DashBoardPage() {
             headerImage=""
             headings={gameHistoryHeading}
             data={gameHistoryData}
-            maxHeight="540px"
+            maxHeight="1084px"
           ></ResponsiveTable>
         </div>
         <div className="col-span-1 items-center justify-center  border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
@@ -61,7 +61,7 @@ export default function DashBoardPage() {
             headerImage=""
             headings={LiveGamesHeading}
             data={liveGamesData}
-            maxHeight="540px"
+            maxHeight="1084px"
           ></ResponsiveTable>
         </div>
       </div>
