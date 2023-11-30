@@ -1,28 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
-
-export async function verify(token: string, secret: string) {
-  const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
-  return payload;
-}
+import { jwtDecode } from 'jwt-decode';
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken');
-  const jwtSecret: any = process.env.JWT_SECRET;
 
   if (!accessToken) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
-  console.log(accessToken);
+
   try {
-    let payload = await verify(accessToken.value, jwtSecret);
-    // Token is verified, continue to the next middleware or return response
-    console.log('verified', payload);
+    const decodedToken = jwtDecode(accessToken.value);
+    // Optionally, you can add your logic to check the token payload or expiration here
+
+    console.log('Decoded Token:', decodedToken);
+    // Token is decoded, continue to the next middleware or return response
   } catch (error) {
-    console.log(error);
-    // Token verification failed, redirect to login
+    console.error('JWT Decoding Failed:', error);
+    // Decoding failed, possibly due to an invalid format
     return NextResponse.redirect(new URL('/login', request.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
