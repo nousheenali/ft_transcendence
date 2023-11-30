@@ -40,7 +40,7 @@ export const generateGameHistoryData = (
         game.opponent.score,
         formattedTime,
         `10`,
-        game.winnerId === game.opponent.id ? "Win" : "Lose",
+        game.winnerId === userLogin ? "Win" : "Lose",
       ]);
     }
     // --------------------- if the user is the player in the game ---------------------
@@ -57,10 +57,11 @@ export const generateGameHistoryData = (
         game.User.score,
         formattedTime,
         `10`,
-        game.winnerId === game.User.id ? "Win" : "Lose",
+        game.winnerId === userLogin ? "Win" : "Lose",
       ]);
     }
   });
+  console.log("records => ", records);
   return records;
 };
 
