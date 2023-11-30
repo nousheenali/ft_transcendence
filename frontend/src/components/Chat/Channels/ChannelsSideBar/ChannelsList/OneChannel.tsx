@@ -9,8 +9,7 @@ import { ChannelsProps } from "../../../types";
 import { activateClickedChannel, useChatSocket } from "@/context/store";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/Ai";
 
-import { Input, Modal } from "react-daisyui";
-// import Image from "next/image";
+import { Input, Modal, Button } from "react-daisyui";
 
 /** ======================================================================================================= */
 /**
@@ -107,14 +106,17 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
         setActiveChannel({} as ChannelsProps);
       }}
     >
-      <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <Button
+        color="ghost"
+        className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
+      >
         <Image
           alt={"leave channel"}
           src={"./chat/Sign_out_circle_duotone_line.svg"}
           width={30}
           height={30}
         />
-      </button>
+      </Button>
     </div>
   );
 };
@@ -164,17 +166,20 @@ const JoinChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
 
   return (
     <div
-      className="flex flex-row  gap-5 pr-2"
+      className="flex flex-row  gap-5 pr-2 items-center"
       onClick={() => handleJoinClick({ channel, socket })}
     >
-      <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+      <Button
+        color="ghost"
+        className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
+      >
         <Image
           alt={"join channel"}
           src={"./chat/user-cirlce-add.svg"}
           width={30}
           height={30}
         />
-      </button>
+      </Button>
     </div>
   );
 };
@@ -212,7 +217,7 @@ export default function Channel({
   // if (channelPassword) setChannelPassword("");
   if (isJoined === false) {
     return (
-      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden">
+      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:bg-authGrad-s hover:rounded-2xl">
         <div
           className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer"
           onClick={() => setActiveChannel({} as ChannelsProps)}
@@ -230,7 +235,7 @@ export default function Channel({
 
           {/* [2] Display the name of the channel */}
 
-          <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2">
+          <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2 ">
             <span className="font-saira-condensed text-main-text font-light truncate ...">
               {channel.channelName}
             </span>
@@ -239,14 +244,14 @@ export default function Channel({
         {channel.channelType === "PRIVATE" ? (
           <div className="font-sans">
             <div className="flex flex-row  gap-5 pr-2" onClick={handleShow}>
-              <button className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+              <div className="flex flex-row gap-1 text-dimmed-text font-thin">
                 <Image
                   alt={"join channel"}
                   src={"./chat/user-cirlce-add.svg"}
                   width={30}
                   height={30}
                 />
-              </button>
+              </div>
             </div>
             <Modal
               className="overflow-hidden w-[400
@@ -267,12 +272,18 @@ export default function Channel({
                 />
               </Modal.Body>
               <Modal.Actions className="p-0 m-0 flex justify-between">
-                <button className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full">
+                <button
+                  className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full"
+                  onClick={() => {
+                    ref.current?.close();
+                  }}
+                >
                   Cancel
                 </button>
                 <button
                   onClick={() => {
                     handleJoinClick({ channel, socket, channelPassword });
+                    ref.current?.close();
                   }}
                   className="text-start-game font-saira-condensed font-bold text-xl h-18 border-2 border-aside-border rounded-2xl p-2 bg-heading-fill hover:bg-[#111417] opacity-90 w-full"
                 >
@@ -288,7 +299,7 @@ export default function Channel({
     );
   } else {
     return (
-      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden">
+      <div className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:bg-authGrad-s hover:rounded-2xl">
         <div
           className="flex flex-row justify-center items-center w-80 h-14 rounded-xl px-1 py-1 overflow-hidden hover:cursor-pointer"
           onClick={() => setActiveChannel(channel)}

@@ -7,7 +7,7 @@ import { userInformation } from "@/components/Profile/types";
 import { useChatSocket, useReRenderAllState } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Modal, Button } from "react-daisyui";
+import { Button, Modal } from "react-daisyui";
 import { getUserMuteStatus } from "../../../../../../../services/user";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 
@@ -134,7 +134,7 @@ export default function ChannelUser({
 
   /**========================================================================**/
   return (
-    <div className="flex flex-row justify-center items-center w-auto h-14 rounded-xl px-1 py-1 ml-6 overflow-hidden hover:cursor-pointer">
+    <div className="flex flex-row justify-center items-center w-auto h-14 rounded-xl px-1 py-1 ml-6 mr-3 overflow-hidden hover:cursor-pointer hover:bg-authGrad-s hover:rounded-2xl">
       <div className="indicator profile w-36 h-12 basis-1/6 rounded-3xl overflow-hidden relative">
         <div className="rounded-full w-[45px] h-[45px] overflow-hidden border-2 border-main-yellow">
           <Image alt={user.name} src={user.avatar} width={45} height={45} />
@@ -190,43 +190,41 @@ export default function ChannelUser({
               channel?
             </Modal.Body>
             <Modal.Actions className="flex justify-evenly">
-              <form method="dialog">
-                <Button
-                  className="bg-box-fill text-white border-main-yellow"
-                  onClick={() => {
-                    modalRef.current?.close();
-                  }}
-                >
-                  NO
-                </Button>
-              </form>
+              <Button
+                color="ghost"
+                className="bg-box-fill text-white border-main-yellow"
+                onClick={() => {
+                  modalRef.current?.close();
+                }}
+              >
+                NO
+              </Button>
 
-              <form method="dialog">
-                <Button
-                  className="bg-box-fill text-warning border-main-yellow"
-                  onClick={() => {
-                    socket.emit("KickUser", {
-                      admin: currentUser.name,
-                      kickedUserlogin: user.login,
-                      channelName: channel.channelName,
-                      channelType: channel.channelType,
-                    });
-                    toast.success("user kicked successfully", {
-                      position: "top-center",
-                      autoClose: 800,
-                      hideProgressBar: true,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "dark",
-                    });
-                    modalRef.current?.close();
-                  }}
-                >
-                  YES
-                </Button>
-              </form>
+              <Button
+                color="ghost"
+                className="bg-box-fill text-warning border-main-yellow"
+                onClick={() => {
+                  socket.emit("KickUser", {
+                    admin: currentUser.name,
+                    kickedUserlogin: user.login,
+                    channelName: channel.channelName,
+                    channelType: channel.channelType,
+                  });
+                  toast.success("user kicked successfully", {
+                    position: "top-center",
+                    autoClose: 800,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
+                  modalRef.current?.close();
+                }}
+              >
+                YES
+              </Button>
             </Modal.Actions>
           </Modal>
           {/* ====================================================== */}

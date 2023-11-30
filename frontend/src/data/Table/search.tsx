@@ -18,9 +18,9 @@ export const generateProfileSearchData= async (
       records.push([
         { playerName: item.login, img: item.avatar, name: item.name },
         item.score.toString(),
-        `1`,
-        `3`,
-        `4`,
+        (item.wins + item.losses).toString(),
+        item.wins.toString(),
+        item.losses.toString(),
         { iconName: "ADDFRIEND", iconImg: "/user-add.svg" },
       ])
     );

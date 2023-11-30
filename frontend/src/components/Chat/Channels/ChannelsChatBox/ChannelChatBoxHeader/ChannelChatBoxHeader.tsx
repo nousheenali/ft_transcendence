@@ -13,7 +13,6 @@ import { ChannelsProps } from "@/components/Chat/types";
 import { Socket } from "socket.io-client";
 import { set } from "date-fns";
 import { FaGears } from "react-icons/fa6";
-import Link from "next/link";
 import { Button, Drawer, Menu } from "react-daisyui";
 import ChatSetting from "@/components/channelSetting/ChannelSetting";
 import { toast } from "react-toastify";
@@ -89,6 +88,7 @@ export default function ChannelChatBoxHeader() {
   const toggleVisible = useCallback(() => {
     setIsVisible(!isVisible);
   }, [isVisible]);
+
   useEffect(() => {
     if (!activeChannel || !activeChannel.channelName || !currectUser) return;
     const listener = (event: any) => {
@@ -183,6 +183,7 @@ export default function ChannelChatBoxHeader() {
                   <ChatSetting channelInfo={activeChannel} />
                 </Menu>
               }
+              style={{ zIndex: 1000 }}
             >
               <Button color="ghost" onClick={toggleVisible}>
                 <FaGears size={40} color={"rgba(213, 242, 35, 0.8)"} />

@@ -30,6 +30,7 @@ const ProfilePage = () => {
   const [tableData, setTableData] = useState<TableRowData[]>([]);
   const [userInfo, setUserInfo] = useState<userInformation>();
   const { user } = useContext(AuthContext);
+  const login: string = user.login!;
   const [maxHeight, setMaxHeight] = useState('none');
   const containerRef = useRef<HTMLDivElement>(null);
   let data: TableRowData[];
@@ -70,7 +71,7 @@ const ProfilePage = () => {
       setMaxHeight(`${containerHeight}px`);
     //  console.log("Container Height:", containerHeight);
     }
-  }, [activeButton]); // fetch data when button clicked
+  }, [activeButton, login]); // fetch data when button clicked
 
   const handleButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);

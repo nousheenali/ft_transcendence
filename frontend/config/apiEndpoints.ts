@@ -41,4 +41,10 @@ export const API_ENDPOINTS = {
    **/
   userMessages: "/user-messages/friend-chat/",
   userLatestMessages: "/user-messages/latest-messages/",
+  /**==============================================================================================
+   * ╭── 🟣
+   * ├ 👇 User Games endpoints
+   * └── 🟣
+   **/
+  gamesHistory: "/games/history/",
 };

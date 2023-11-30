@@ -11,9 +11,9 @@ export const generateProfileBlockedData = async(login: string) => {
       records.push([
         { playerName: item.login, img: item.avatar, name: item.name },
         item.score.toString(),
-        `1`,
-        `3`,
-        `4`,
+        (item.wins + item.losses).toString(),
+        item.wins.toString(),
+        item.losses.toString(),
         { iconName: "UNBLOCK", iconImg: "/unblock.svg" },
         { iconName: "UNFRIEND", iconImg: "/delete.svg" },
       ])
