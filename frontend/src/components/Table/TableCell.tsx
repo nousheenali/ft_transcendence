@@ -1,16 +1,16 @@
-import Image from "next/image";
-import { TableCellProps } from "./types";
-import { API_ENDPOINTS } from "../../../config/apiEndpoints";
+import Image from 'next/image';
+import { TableCellProps } from './types';
+import { API_ENDPOINTS } from '../../../config/apiEndpoints';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 import {
   createFriendRelation,
   deleteFriendRelation,
   updateFriendRelation,
-} from "../../../services/friends";
-import { useSocket, useChatSocket } from "@/context/store";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthProvider";
+} from '../../../services/friends';
+import { useSocket, useChatSocket } from '@/context/store';
+import { useContext } from 'react';
+import { AuthContext } from '@/context/AuthProvider';
 
 const TableCell: React.FC<TableCellProps> = ({
   dataItem,
@@ -22,11 +22,23 @@ const TableCell: React.FC<TableCellProps> = ({
   const { currentSocket } = useSocket();
   const { socket } = useChatSocket();
 
-  if (typeof dataItem === "string") {
+  if (typeof dataItem === 'string' && dataItem === 'Win') {
+    return (
+      <div className="py-2 flex-1 text-center text-win-color">{dataItem}</div>
+    );
+  }
+
+  if (typeof dataItem === 'string' && dataItem === 'Lose') {
+    return (
+      <div className="py-2 flex-1 text-center text-lose-color">{dataItem}</div>
+    );
+  }
+
+  if (typeof dataItem === 'string') {
     return <div className="py-2 flex-1 text-center">{dataItem}</div>;
   }
   // checks if there is playerName property in the data item then returns the relevent styles for the cell
-  if (dataItem && "playerName" in dataItem) {
+  if (dataItem && 'playerName' in dataItem) {
     return (
       <div className="py-2 flex-1 text-center">
         <div className="flex-1 flex items-center justify-start pl-8 flex-row">
@@ -55,35 +67,35 @@ const TableCell: React.FC<TableCellProps> = ({
     let endpoint;
 
     switch (buttonId) {
-      case "ACCEPT":
+      case 'ACCEPT':
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.acceptFriendRequest;
         break;
-      case "DECLINE":
+      case 'DECLINE':
         action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.declineFriendRequest;
         break;
-      case "ADDFRIEND":
+      case 'ADDFRIEND':
         action = createFriendRelation;
         endpoint = API_ENDPOINTS.sendFriendRequest;
         break;
-      case "CANCEL":
+      case 'CANCEL':
         action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.cancelFriendRequest;
         break;
-      case "BLOCK":
+      case 'BLOCK':
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.blockFriend;
-        socket.emit("BlockUser", {
+        socket.emit('BlockUser', {
           friendLogin: friendLogin,
           userLogin: user.login,
         });
         break;
-      case "UNBLOCK":
+      case 'UNBLOCK':
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.unBlockFriend;
         break;
-      case "UNFRIEND":
+      case 'UNFRIEND':
         action = deleteFriendRelation;
         endpoint = API_ENDPOINTS.deleteFriend;
         break;

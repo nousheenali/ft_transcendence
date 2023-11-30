@@ -56,6 +56,8 @@ module.exports = {
         'search-box-fill': '#151717',
         'search-box-text': '#6B6B6B',
         'chat-search-stroke': '#696D7D',
+        'win-color': '#4CB54EEB',
+         'lose-color': '#CD5555ED',
         'latest-msg-s': 'rgba(34, 39, 46, 0.5)',
         'latest-msg-e': 'rgba(54, 55, 62, 0.5)',
         'dimmed-text': '#6B6B6B',

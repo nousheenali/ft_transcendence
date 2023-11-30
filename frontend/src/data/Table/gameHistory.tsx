@@ -13,8 +13,8 @@
 //   return records;
 // };
 
-import { Game } from "@/components/GameComponents/types";
-import { formatDistanceToNow } from "date-fns";
+import { Game } from '@/components/GameComponents/types';
+import { formatDistanceToNow } from 'date-fns';
 
 /**======================================================================================================**/
 
@@ -39,8 +39,7 @@ export const generateGameHistoryData = (
         },
         `${game.opponent.score}`,
         formattedTime,
-        `10`,
-        game.winnerId === userLogin ? "Win" : "Lose",
+        game.winnerId === userLogin ? 'Win' : 'Lose',
       ]);
     }
     // --------------------- if the user is the player in the game ---------------------
@@ -57,11 +56,11 @@ export const generateGameHistoryData = (
         `${game.User.score}`,
         formattedTime,
         `10`,
-        game.winnerId === userLogin ? "Win" : "Lose",
+        game.winnerId === userLogin ? 'Win' : 'Lose',
       ]);
     }
   });
-  console.log("records => ", records);
+  console.log('records => ', records);
   return records;
 };
 
