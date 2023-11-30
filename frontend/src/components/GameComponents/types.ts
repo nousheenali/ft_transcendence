@@ -1,3 +1,5 @@
+import { userInformation } from "../Profile/types";
+
 export interface InitialData {
   x: number;
   y: number;
@@ -52,4 +54,12 @@ export interface joiningData {
 export interface WaitingRoom {
   invitee: string;
   worldDimensions: WorldDimensions;
+}
+
+export interface Game {
+  gameStatus: string
+  startTime: Date
+  winnerId: string
+  User: userInformation
+  opponent: userInformation
 }

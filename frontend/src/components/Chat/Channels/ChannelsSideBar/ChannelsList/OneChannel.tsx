@@ -224,7 +224,7 @@ export default function Channel({
         >
           {/* [1] Display the avatar of the channel */}
 
-          <div className="w-36 h-12 basis-1/6 overflow-hidden items-center">
+          <div className="w-36 h-12 basis-1/6 overflow-hidden">
             <Image
               alt={channel.channelName}
               src={"/chat/people.svg"}
@@ -235,7 +235,7 @@ export default function Channel({
 
           {/* [2] Display the name of the channel */}
 
-          <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2 items-center">
+          <div className="flex flex-col overflow-y-hidden basis-4/6 ml-2 ">
             <span className="font-saira-condensed text-main-text font-light truncate ...">
               {channel.channelName}
             </span>
@@ -244,7 +244,7 @@ export default function Channel({
         {channel.channelType === "PRIVATE" ? (
           <div className="font-sans">
             <div className="flex flex-row  gap-5 pr-2" onClick={handleShow}>
-              <div className="flex flex-row items-center gap-1 text-dimmed-text font-thin">
+              <div className="flex flex-row gap-1 text-dimmed-text font-thin">
                 <Image
                   alt={"join channel"}
                   src={"./chat/user-cirlce-add.svg"}

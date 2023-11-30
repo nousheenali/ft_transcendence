@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { MessagesProps } from "../../../../types";
 import { formatDistanceToNow } from "date-fns";
+import { ChatBubble } from "react-daisyui";
 
 export default function SenderChatBox({ message }: { message: MessagesProps }) {
   const formattedTime = formatDistanceToNow(new Date(message.createdAt), {
