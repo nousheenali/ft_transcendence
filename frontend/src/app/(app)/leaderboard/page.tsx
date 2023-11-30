@@ -23,6 +23,7 @@ export default function Leaderboard() {
   const fetchTableData = async () => {
     const data = await generateLeaderboardData(login);
     setleaderboardData(data);
+    /* fetching user data again because "data" is in a different format */
     const users: userInformation[] = await getAllUsersData(
       login,
       API_ENDPOINTS.getAllUsers
