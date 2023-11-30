@@ -57,4 +57,17 @@ export class UserController {
       );
     }
   }
+
+  /*Lists all users */
+  @Get('allUsers/:login')
+  getAllUsers(@Param('login') login: string) {
+    try {
+      return this.userService.getAllUsers();
+    } catch (error) {
+      throw new HttpException(
+        'Unexpectd Error while Listing Users.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

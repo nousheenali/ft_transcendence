@@ -71,7 +71,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
             </div>
           </div>
         ) : null}
-        <div className="flex bg-table-header-bg justify-center items-center">
+        <div className=" flex bg-table-header-bg justify-center items-center">
           {/* table headings */}
           {headings.map((heading, index) => (
             <div
@@ -84,7 +84,8 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
         </div>
         <div
           className="overflow-y-scroll text-table-row-text-color"
-          style={{ height:'100%' }}
+          style={{ maxHeight: maxHeight}}
+          // style={{ height: "100%" }}
         >
           {/* table rows */}
           {filteredData.map((rowData: TableRowData, rowIndex) => (

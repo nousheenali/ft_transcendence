@@ -158,4 +158,17 @@ export class UserService {
       throw new Error('An unexpected error occurred while updating the user');
     }
   }
+
+  /* Gets all users */
+  async getAllUsers() {
+    try {
+      return this.prisma.user.findMany({
+        orderBy: {
+          score: 'desc', // highest score first
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException('Unable to get all users');
+    }
+  }
 }

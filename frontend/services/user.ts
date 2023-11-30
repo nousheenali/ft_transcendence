@@ -28,3 +28,15 @@ export const getUserMuteStatus = async (login: string, endpoint: string) => {
     throw new Error(error.message);
   }
 };
+
+export const getAllUsersData = async (login: string, endpoint: string) => {
+  try {
+    const users: userInformation[] = await getData<userInformation[]>(
+      login,
+      endpoint
+    );
+    return users;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
