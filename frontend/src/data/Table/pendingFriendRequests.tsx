@@ -14,9 +14,9 @@ export const generatePendingRequestsData = async(login: string) => {
       records.push([
         { playerName: item.login, img: item.avatar, name: item.name },
         item.score.toString(),
-        `1`,
-        `3`,
-        `4`,
+        (item.wins + item.losses).toString(),
+        item.wins.toString(),
+        item.losses.toString(),
         { iconName: "CANCEL", iconImg: "/user-remove.svg" },
       ])
     );

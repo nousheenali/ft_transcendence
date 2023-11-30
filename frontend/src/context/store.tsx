@@ -31,7 +31,7 @@ export const useGameState = create<TGameColor>((set) => ({
   ballColor: "0xd0f223",
   racketColor: "0xd0f223",
   bgColor: "0xd0f223",
-  isQueue: false,
+  isQueue: true,
   invitee: "Default",
   inviter: "Default",
   isAccepted: false,

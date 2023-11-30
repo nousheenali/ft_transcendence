@@ -30,6 +30,7 @@ const ProfilePage = () => {
   const [tableData, setTableData] = useState<TableRowData[]>([]);
   const [userInfo, setUserInfo] = useState<userInformation>();
   const { user } = useContext(AuthContext);
+  const login: string = user.login!;
   let data: TableRowData[];
 
   const fetchTableData = async (buttonId: string) => {
@@ -63,7 +64,7 @@ const ProfilePage = () => {
   useEffect(() => {
     setIsLoading(true);
     fetchTableData(activeButton);
-  }, [activeButton]); // fetch data when button clicked
+  }, [activeButton, login]); // fetch data when button clicked
 
   const handleButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);
