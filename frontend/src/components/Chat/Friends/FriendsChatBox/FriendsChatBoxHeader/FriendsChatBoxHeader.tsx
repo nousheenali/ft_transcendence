@@ -1,16 +1,22 @@
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
 import { IoGameController } from "react-icons/io5";
-import { Button } from "react-daisyui";
+import { Button, Drawer, Menu } from "react-daisyui";
 import { sendNotification } from "../../../../../../services/friends";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useGameState, useSocket } from "@/context/store";
+import {
+  useGameState,
+  useSocket,
+  useSettingToggleVisiblity,
+} from "@/context/store";
 import { Content } from "@/components/notificationIcon/types";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/AuthProvider";
-import { useContext } from "react";
+import { useContext, useCallback } from "react";
+import FriendDashBoard from "@/components/Chat/Friends/FriendsChatBox/FriendsChatBoxHeader/FriendDashBoard";
 
+/**======================================================================================================**/
 export default function FriendsChatBoxHeader({
   friend,
 }: {
@@ -20,6 +26,11 @@ export default function FriendsChatBoxHeader({
   const { currentSocket } = useSocket();
   const router = useRouter();
   const { user } = useContext(AuthContext);
+
+  const { isVisible, setIsVisible } = useSettingToggleVisiblity();
+  const toggleVisible = useCallback(() => {
+    setIsVisible(!isVisible);
+  }, [isVisible]);
 
   const handleInviteClick = () => {
     inviteAndJoin();
@@ -52,20 +63,35 @@ export default function FriendsChatBoxHeader({
     <div className="indicator w-full h-32 flex justify-between items-center rounded-xl bg-main-theme text-main-texts border-b border-main-yellow px-3">
       <div className="flex  items-center ">
         <div className="indicator px-1 relative">
-          <div className="rounded-full w-[65px] h-[65px] overflow-hidden border-2 border-main-yellow">
-            <Image
-              alt={friend.name}
-              src={friend.avatar}
-              width={65}
-              height={65}
-            />
-          </div>
-          {/* If the player is online, the indicator will be green; otherwise, red */}
-          {friend.isOnline ? (
-            <span className="indicator-item indicator-bottom badge bg-green-400 badge-xs absolute left-12 top-11"></span>
-          ) : (
-            <span className="indicator-item indicator-bottom badge bg-red-400 badge-xs absolute left-12 top-11"></span>
-          )}
+          <Drawer
+            end={true}
+            open={isVisible}
+            onClickOverlay={toggleVisible}
+            side={
+              <Menu className="p-3 h-full w-2/4 text-base-content flex justify-center">
+                <FriendDashBoard />
+              </Menu>
+            }
+            style={{ zIndex: 1000 }}
+          >
+            <div
+              className="rounded-full w-[65px] h-[65px] overflow-hidden border-2 border-main-yellow"
+              onClick={toggleVisible}
+            >
+              <Image
+                alt={friend.name}
+                src={friend.avatar}
+                width={65}
+                height={65}
+              />
+            </div>
+            {/* If the player is online, the indicator will be green; otherwise, red */}
+            {friend.isOnline ? (
+              <span className="indicator-item indicator-bottom badge bg-green-400 badge-xs absolute left-12 top-11"></span>
+            ) : (
+              <span className="indicator-item indicator-bottom badge bg-red-400 badge-xs absolute left-12 top-11"></span>
+            )}
+          </Drawer>
         </div>
         <div className="flex flex-col font-saira-condensed pl-3 pt-5">
           <span className="text-main-text text-lg font-light">
@@ -96,3 +122,5 @@ export default function FriendsChatBoxHeader({
     </div>
   );
 }
+
+/**======================================================================================================**/
