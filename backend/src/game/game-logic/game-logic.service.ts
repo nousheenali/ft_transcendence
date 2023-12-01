@@ -53,9 +53,9 @@ export class GameLogicService {
     gameRoom.players[1].position.y = data.p1Position.y;
   }
 
-  updateBallPosition(gm: GameRoom) {
-    gm.ballPosition.x += gm.ballVelocity.x;
-    gm.ballPosition.y += gm.ballVelocity.y;
+  updateBallPosition(gm: GameRoom, delta) {
+    gm.ballPosition.x += (gm.ballVelocity.x * delta) ;
+    gm.ballPosition.y += (gm.ballVelocity.y * delta);
   }
 
   emitHitPaddle(gm: GameRoom, server: Server, surface: boolean) {
@@ -65,7 +65,7 @@ export class GameLogicService {
   }
 
   emitGameOver(gm: GameRoom, server: Server, winner: Player, loser: Player) {
-    if (gm.players[0].score === 7 || gm.players[1].score === 7) {
+    if (gm.players[0].score === 10 || gm.players[1].score === 10) {
       gm.gameOver = true;
       const data: GameOver = {
         message: 'Game Over!',
@@ -169,7 +169,7 @@ export class GameLogicService {
     this.emitHitPaddle(gm, server, false);
     gm.ballVelocity.x *= -1;
     gm.players[1].score += 1;
-    if (gm.players[1].score === 7)
+    if (gm.players[1].score === 10)
       this.emitGameOver(gm, server, gm.players[1], gm.players[0]);
   }
 
@@ -177,7 +177,7 @@ export class GameLogicService {
     this.emitHitPaddle(gm, server, false);
     gm.ballVelocity.x *= -1; // Reverse the x velocity for left and right wall
     gm.players[0].score += 1;
-    if (gm.players[0].score === 7)
+    if (gm.players[0].score === 10)
       this.emitGameOver(gm, server, gm.players[0], gm.players[1]);
   }
 

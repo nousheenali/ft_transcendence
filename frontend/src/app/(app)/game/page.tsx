@@ -120,6 +120,7 @@ export default function GamePage() {
             physics: {
               default: "arcade",
             },
+            fps: {target : 120}
           };
           phaserGame = new Phaser.Game(config);
           /* Global Variables for Phaser Game */
@@ -178,7 +179,7 @@ export default function GamePage() {
           <span className="mt-10 border-2 loading loading-ring loading-lg text-main-yellow"></span>
           <div className="mt-2"> Matching Players...</div>
         </div>
-        <div className="text-main-yellow font-saira-condensed font-bold text-2xl h-18 w-70 border-2 border-aside-border rounded-2xl p-4 mt-4">
+        <div className="text-start-game font-saira-condensed font-bold text-2xl h-18 w-64 text-center border-2 border-aside-border rounded-2xl p-4 mt-4 bg-heading-fill hover:bg-[#111417] opacity-90">
           <button onClick={exitGame}>Exit Game</button>
         </div>
       </div>

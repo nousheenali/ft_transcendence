@@ -48,9 +48,11 @@ export default class Game extends Scene {
     this.line = gameObj.createBackgroundLine(wW / 2, wH * 2);
     this.circle = gameObj.createBackgroundCircle(wW / 2, wH / 2);
 
+    this.game.renderer.type = Phaser.WEBGL;
+
     /* render sprites */
     this.ball = gameObj.renderBall(wW / 2, wH / 2);
-    this.paddlespeed = 430;
+    this.paddlespeed = 500;
     if (this.ball.body) {
       ballWidth = this.ball.body.width;
       this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
@@ -72,23 +74,30 @@ export default class Game extends Scene {
     }
   }
 
-  update() {
+  /* update() is called by game engine on each frame */
+  /* delta - time elapsed between the current frame and the previous frame(milliseconds) */
+  update(time: number, delta: number) {
 
-    if (this.setupComplete){
+    if (this.setupComplete) {
       /*check if space is pressed and game not started yet*/
-      if (this.keys.space.isDown && !this.gameStarted) 
-        this.initilaiseGame();
+      if (this.keys.space.isDown && !this.gameStarted) this.initilaiseGame();
 
       /*space pressed and game started */
       if (this.gameStarted) {
+        let collision = false; //optimizes the sound playback logic
+
         /*plays audio based on the surface hit*/
         this.socket.on("hitPaddle", (surface: boolean) => {
-          if (surface) this.paddleHitAudio.play();
-          else this.wallHitAudio.play();
+          if (!collision) {
+            collision = true;
+            // Play the appropriate sound
+            if (surface) this.paddleHitAudio.play();
+            else this.wallHitAudio.play();
+          }
         });
 
         this.socket
-          .emit("ballPosition", { roomID: this.roomID })
+          .emit("ballPosition", { roomID: this.roomID, delta })
           .on("updateBallPosition", (data: BallPosition) => {
             this.ball.setPosition(data.position.x, data.position.y);
             this.displayScore(data.p0_score, data.p1_score);
@@ -237,7 +246,7 @@ export default class Game extends Scene {
     this.controls[1].setVisible(false);
     this.displayScore(data.p0_score, data.p1_score);
     if (data.name !== null)
-     this.results[2].setText(data.name + " WINS!").setVisible(true);
+      this.results[2].setText(data.name + " WINS!").setVisible(true);
     const router = this.registry.get("router");
     this.socket.disconnect();
     setTimeout(() => {
