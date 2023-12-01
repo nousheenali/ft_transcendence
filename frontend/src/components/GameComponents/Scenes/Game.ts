@@ -84,7 +84,10 @@ export default class Game extends Scene {
 
       /*space pressed and game started */
       if (this.gameStarted) {
-        let collision = false; //optimizes the sound playback logic
+
+        /*  optimizes the sound playback logic by ensuring that the sound is played once per collision event
+         rather than potentially being triggered continuously in each frame. */
+        let collision = false; 
 
         /*plays audio based on the surface hit*/
         this.socket.on("hitPaddle", (surface: boolean) => {

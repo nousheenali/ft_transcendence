@@ -36,7 +36,7 @@ export default function Leaderboard() {
     if (containerRef1.current) {
       const containerHeight = containerRef1.current.clientHeight;
       setMaxHeight(`${containerHeight}px`);
-       console.log("Container Height:", containerHeight);
+      //  console.log("Container Height:", containerHeight);
     }
   },[login]);
 
