@@ -17,7 +17,7 @@ export default function GameStatus({
   archivement,
 }: GameStatusProps) {
   return (
-    <div className=" text-white border-b-2 border-heading-stroke-30 rounded-b-2xl rounded-t-2xl stroke-slate-200 flex flex-col bg-box-fill mb-6 h-[200px]">
+    <div className=" text-white border-b-2 p-3 border-heading-stroke-30 rounded-b-2xl rounded-t-2xl stroke-slate-200 flex flex-col bg-box-fill mb-6 h-[200px]">
       {/* Game Status Header */}{" "}
       <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke">
         <div className="font-saira-condensed font-bold text-xl text-main-text">

@@ -2,10 +2,16 @@ import { Scene } from "phaser";
 import Sprite from "../Helpers/GameObjects";
 import GameObjects from "../Helpers/GameObjects";
 import { Socket } from "socket.io-client";
-import { GameOver, InitialData, BallPosition, UpdateSpritePositions } from "../types";
+import {
+  GameOver,
+  InitialData,
+  BallPosition,
+  UpdateSpritePositions,
+} from "../types";
 
 export default class Game extends Scene {
   private socket!: Socket;
+  private currentSocket!: Socket;
   private roomID!: string;
   private ball!: Phaser.Physics.Arcade.Sprite;
   private player: Phaser.Physics.Arcade.Sprite[] = [];
@@ -39,6 +45,7 @@ export default class Game extends Scene {
 
     this.socket = this.registry.get("socket");
     this.roomID = this.registry.get("roomID");
+    this.currentSocket = this.registry.get("currentSocket");
 
     const gameObj = new GameObjects(this);
     /* display texts */
@@ -73,14 +80,13 @@ export default class Game extends Scene {
   }
 
   update() {
-
-    if (this.setupComplete){
+    if (this.setupComplete) {
       /*check if space is pressed and game not started yet*/
-      if (this.keys.space.isDown && !this.gameStarted) 
-        this.initilaiseGame();
+      if (this.keys.space.isDown && !this.gameStarted) this.initilaiseGame();
 
       /*space pressed and game started */
       if (this.gameStarted) {
+        this.currentSocket.emit("newLiveGame", "started");
         /*plays audio based on the surface hit*/
         this.socket.on("hitPaddle", (surface: boolean) => {
           if (surface) this.paddleHitAudio.play();
@@ -237,7 +243,7 @@ export default class Game extends Scene {
     this.controls[1].setVisible(false);
     this.displayScore(data.p0_score, data.p1_score);
     if (data.name !== null)
-     this.results[2].setText(data.name + " WINS!").setVisible(true);
+      this.results[2].setText(data.name + " WINS!").setVisible(true);
     const router = this.registry.get("router");
     this.socket.disconnect();
     setTimeout(() => {

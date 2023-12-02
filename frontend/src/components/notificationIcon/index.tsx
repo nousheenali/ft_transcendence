@@ -87,11 +87,15 @@ export default function NotificationIcon() {
         playSound("notif.m4a");
         setIsNewNotification("");
       });
+      socket.on("newLiveGame", () => {
+        console.log("got new live game");
+      });
 
       return () => {
         // console.log("unregistering");
         socket.off("connect");
         socket.off("newNotif");
+        socket.off("newLiveGame");
       };
     }
   }, [user, userData]);

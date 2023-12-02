@@ -40,4 +40,9 @@ export class GatewayNotifGateway {
       recipientSocket.emit('newNotif', body);
     }
   }
+  @SubscribeMessage('newLiveGame')
+  newLiveGame(@ConnectedSocket() sender: Socket) {
+    console.log('got New Live Game');
+    this.server.emit('newLiveGame');
+  }
 }
