@@ -76,73 +76,67 @@ export default function DashBoardPage() {
   //------------------------------------------------------------------------------------------------
 
   return (
-    <div className="p-2 h-full flex flex-col mr-[35px]">
-      {/* -------------------------------------------------------------------------------------------------- */}
-      <GameStatus
-        score={userData?.score!}
-        games={gameHistory?.length!}
-        wins={numberOfWins as number}
-        loses={numberOfLoses as number}
-        archivement={archivement()}
-      />
-
-      {/* -------------------------------------------------------------------------------------------------- */}
-
-      <div className="text-white grid grid-cols-3 gap-10 h-full">
-        <div className="col-span-2 items-center justify-center border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
-          <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
-            <div>
-              <h1 className="font-saira-condensed font-bold text-xl text-main-text">
-                Game History
-              </h1>
-            </div>
-            <div>
-              <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
-            </div>
+    <div className="p-2 grid grid-rows-6 grid-cols-3 grid-flow-col gap-4 mr-[35px]  h-full">
+      {/*  current user game status header */}
+      <div className=" h-full col-span-3">
+        <GameStatus
+          score={userData?.score!}
+          games={gameHistory?.length!}
+          wins={numberOfWins as number}
+          loses={numberOfLoses as number}
+          archivement={archivement()}
+        />
+      </div>
+      {/* current user dashboard */}
+      <div className=" h-full row-start-2 row-end-7 col-span-2 border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
+        <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
+          <div>
+            <h1 className="font-saira-condensed font-bold text-xl text-main-text">
+              Game History
+            </h1>
           </div>
-          <ResponsiveTable
-            searchBar={false}
-            header=""
-            headerImage=""
-            headings={gameHistoryHeading}
-            data={gameHistoryData}
-            maxHeight="1084px"
-            activeButton={""}
-            reloadPageData={function (buttonId: string): void {
-              throw new Error("Function not implemented.");
-            }}
-          ></ResponsiveTable>
-        </div>
-
-        {/* -------------------------------------------------------------------------------------------------- */}
-        <div className="col-span-1 items-center justify-center  border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
-          <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
-            <div>
-              <h1 className="font-saira-condensed font-bold text-xl text-main-text">
-                Live Games
-              </h1>
-            </div>
-            <div>
-              <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
-            </div>
+          <div>
+            <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
           </div>
-          <ResponsiveTable
-            searchBar={false}
-            header=""
-            headerImage=""
-            headings={LiveGamesHeading}
-            data={liveGamesData}
-            maxHeight="1084px"
-            activeButton={""}
-            reloadPageData={function (buttonId: string): void {
-              throw new Error("Function not implemented.");
-            }}
-          ></ResponsiveTable>
         </div>
-        {/* -------------------------------------------------------------------------------------------------- */}
+        <ResponsiveTable
+          searchBar={false}
+          header=""
+          headerImage=""
+          headings={gameHistoryHeading}
+          data={gameHistoryData}
+          maxHeight="1084px"
+          activeButton={""}
+          reloadPageData={function (buttonId: string): void {
+            throw new Error("Function not implemented.");
+          }}
+        ></ResponsiveTable>
+      </div>
+      {/* live game section */}
+      <div className=" h-full row-start-2 row-end-7 border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
+        <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
+          <div>
+            <h1 className="font-saira-condensed font-bold text-xl text-main-text">
+              Live Games
+            </h1>
+          </div>
+          <div>
+            <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
+          </div>
+        </div>
+        <ResponsiveTable
+          searchBar={false}
+          header=""
+          headerImage=""
+          headings={LiveGamesHeading}
+          data={liveGamesData}
+          maxHeight="1084px"
+          activeButton={""}
+          reloadPageData={function (buttonId: string): void {
+            throw new Error("Function not implemented.");
+          }}
+        ></ResponsiveTable>
       </div>
     </div>
   );
 }
-
-/**======================================================================================================**/
