@@ -86,7 +86,13 @@ export default class Game extends Scene {
 
       /*space pressed and game started */
       if (this.gameStarted) {
-        this.currentSocket.emit("newLiveGame", "started");
+        this.currentSocket.emit("newLiveGame", {
+          player1: this.registry.get("player0"),
+          player1Image: this.registry.get("player0Image"),
+          player2: this.registry.get("player1"),
+          player2Image: this.registry.get("player1Image"),
+          startedTime: new Date(),
+        });
         /*plays audio based on the surface hit*/
         this.socket.on("hitPaddle", (surface: boolean) => {
           if (surface) this.paddleHitAudio.play();
@@ -113,6 +119,11 @@ export default class Game extends Scene {
 
       /* game Over */
       this.socket.on("gameOver", (data: GameOver) => {
+        this.currentSocket.emit("finishedLiveGame", {
+          player1: this.registry.get("player0"),
+          player2: this.registry.get("player1"),
+          startedTime: new Date(),
+        });
         this.gameOverContent(data);
       });
     }

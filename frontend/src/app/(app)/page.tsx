@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { getUserData } from "../../../services/user";
 import ResponsiveTable from "@/components/Table/Table";
 import { Game } from "@/components/GameComponents/types";
@@ -9,9 +9,10 @@ import { getGamesHistory } from "../../../services/games";
 import GameStatus from "@/components/GameStatus/Gamestatus";
 import { userInformation } from "@/components/Profile/types";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
-import { generateLiveGamesData } from "@/data/Table/liveGames";
 import { generateGameHistoryData } from "@/data/Table/gameHistory";
 import { AuthContext } from "@/context/AuthProvider";
+import { useSocket } from "@/context/store";
+import { formatDistanceToNow } from "date-fns";
 
 /**======================================================================================================**/
 export default function DashBoardPage() {
@@ -21,12 +22,58 @@ export default function DashBoardPage() {
   const [userData, setUserData] = React.useState<userInformation>();
   //------------------------------------------------------------------------------------------------
   const gameHistoryHeading = ["Player VS ", "Score", "Date", "Moves", "Result"];
-  const LiveGamesHeading = ["Player 1", "Time", "Plater 2"];
+  const LiveGamesHeading = ["Player 1", "Time", "Player 2"];
   //------------------------------------------------------------------------------------------------
-  const liveGamesData = generateLiveGamesData();
   const gameHistoryData = generateGameHistoryData(user.login, gameHistory);
   // const gameHistoryData = generateGameHistoryData();
   //------------------------------------------------------------------------------------------------
+  //Notification socket to use for live games
+
+
+  // state to keep track of live games
+  const [liveGamesData, setLiveGamesData] = useState<any>([]);
+  const { currentSocket } = useSocket();
+  useEffect(() => {
+    if (currentSocket && currentSocket.connected) {
+      currentSocket.on("newLiveGame", (data) => {
+        const formattedTime = formatDistanceToNow(new Date(data.startedTime), {
+          addSuffix: true,
+        });
+        const records: any = [];
+        liveGamesData.forEach((game: any) => {
+          if (game[0].name !== data.player1) records.push(game);
+        });
+        const temp = [
+          {
+            playerName: data.player1,
+            img: data.player1Image,
+            name: data.player1,
+          },
+          formattedTime,
+          {
+            playerName: data.player2,
+            img: data.player2Image,
+            name: data.player2,
+          },
+        ];
+        records.push(temp);
+        if (records.length > 0) {
+          setLiveGamesData(records);
+        }
+      });
+      currentSocket.on("finishedLiveGame", (data) => {
+        const records: any = [];
+        liveGamesData.forEach((game: any) => {
+          if (game[0].name !== data.player1) records.push(game);
+        });
+        setLiveGamesData(records);
+      });
+      return () => {
+        currentSocket.off("newLiveGame");
+        currentSocket.off("finishedLiveGame");
+      };
+    }
+  }, [currentSocket, liveGamesData]);
 
   useEffect(() => {
     if (user && user.login) {
