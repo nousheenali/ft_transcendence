@@ -115,11 +115,12 @@ export default function GamePage() {
             parent: "game-container",
             width: data.worldDimensions.width,
             height: data.worldDimensions.height,
-            // backgroundColor: "#044300", //"#518AA1", //"#1F3573", //"#6495ED",//"#87CEEB",//"#44b18b",
+            backgroundColor: bgColor,
             scene: [Preloader, Game],
             physics: {
               default: "arcade",
             },
+            fps: {target : 120}
           };
           phaserGame = new Phaser.Game(config);
           /* Global Variables for Phaser Game */
@@ -150,9 +151,14 @@ export default function GamePage() {
     initPhaser();
   }, [login]);
 
+  const exitGame = () => {
+    socket.disconnect();
+    router.back();
+  }
+
   return (
     <div>
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-screen">
         <div
           id="game-container"
           key="game-container"
@@ -172,6 +178,9 @@ export default function GamePage() {
           <Image alt="Logo" src="./Logo.svg" width={200} height={200} />
           <span className="mt-10 border-2 loading loading-ring loading-lg text-main-yellow"></span>
           <div className="mt-2"> Matching Players...</div>
+        </div>
+        <div className="text-start-game font-saira-condensed font-bold text-2xl h-18 w-64 text-center border-2 border-aside-border rounded-2xl p-4 mt-4 bg-heading-fill hover:bg-[#111417] opacity-90">
+          <button onClick={exitGame}>Exit Game</button>
         </div>
       </div>
     </div>

@@ -9,6 +9,13 @@ const colors = {
   "0x0000ff": "Blue",
 };
 
+const backgroundColors = {
+  "0x000000": "None",
+  "0x044300": "Green",
+  "0x1F3573": "DeepBlue",
+  "0x6495ED": "LightBlue",
+};
+
 const dropdownStyles = {
   select:
     "hover-bg-heading text-placeholder-text font-saira-condensed normal-case bg-main bg-heading-fill border-1 border-aside-border rounded-2xl w-40 h-8 p-1 flex flex-row justify-between",
@@ -113,7 +120,7 @@ export default function CustomizeGame() {
             onChange={(e) => handleColorChange("bgColor", e.target.value)}
             className={dropdownStyles.select}
           >
-            {Object.entries(colors).map(([value, label]) => (
+            {Object.entries(backgroundColors).map(([value, label]) => (
               <option
                 key={value}
                 value={value}

@@ -53,9 +53,9 @@ export class GameLogicService {
     gameRoom.players[1].position.y = data.p1Position.y;
   }
 
-  updateBallPosition(gm: GameRoom) {
-    gm.ballPosition.x += gm.ballVelocity.x;
-    gm.ballPosition.y += gm.ballVelocity.y;
+  updateBallPosition(gm: GameRoom, delta) {
+    gm.ballPosition.x += (gm.ballVelocity.x * delta) ;
+    gm.ballPosition.y += (gm.ballVelocity.y * delta);
   }
 
   emitHitPaddle(gm: GameRoom, server: Server, surface: boolean) {
