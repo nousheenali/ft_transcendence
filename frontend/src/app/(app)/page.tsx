@@ -48,8 +48,8 @@ export default function DashBoardPage() {
     }
   }, [user, user.login]);
 
-  console.log("userData => ", userData);
-  console.log("gameHistory => ", gameHistory);
+  // console.log("userData => ", userData);
+  // console.log("gameHistory => ", gameHistory);
 
   //------------------------------------------------------------------------------------------------
   const numberOfWins = gameHistory?.filter(
@@ -66,7 +66,7 @@ export default function DashBoardPage() {
     else return "bronze";
   };
 
-  console.log("achivement => ", archivement());
+  // console.log("achivement => ", archivement());
 
   //------------------------------------------------------------------------------------------------
   if (isLoading)

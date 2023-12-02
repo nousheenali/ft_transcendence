@@ -61,7 +61,7 @@ export const generateGameHistoryData = (
       ]);
     }
   });
-  console.log("records => ", records);
+  // console.log("records => ", records);
   return records;
 };
 
