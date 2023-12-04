@@ -20,6 +20,7 @@ import {
   joiningData,
 } from "@/components/GameComponents/types";
 
+import { useSocket } from "@/context/store";
 
 export default function GamePage() {
   const {
@@ -38,6 +39,7 @@ export default function GamePage() {
   const login: string = user.login!;
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const { currentSocket } = useSocket();
   const backendUrl = process.env.NEXT_PUBLIC_GAME_GATEWAY_URL;
   var socket: Socket;
   var phaserGame: Phaser.Game;
@@ -129,6 +131,7 @@ export default function GamePage() {
             player0: data.p0Name,
             player1: data.p1Name,
             socket,
+            currentSocket,
             paddleColor: racketColor,
             ballColor: ballColor,
             worldWidth: data.worldDimensions.width,

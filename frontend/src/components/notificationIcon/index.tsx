@@ -87,7 +87,6 @@ export default function NotificationIcon() {
         playSound("notif.m4a");
         setIsNewNotification("");
       });
-
       return () => {
         // console.log("unregistering");
         socket.off("connect");

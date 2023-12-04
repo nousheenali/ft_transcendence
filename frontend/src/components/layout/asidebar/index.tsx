@@ -38,7 +38,7 @@ const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
       <aside
         className={`${
           !isMobile && 'hidden my-[18px] ml-[35px]'
-        }  w-80 lg:w-[400px]  border-2  border-aside-border bg-aside-fill rounded-3xl overflow-hidden lg:flex flex-col justify-start`}
+        }  w-80 lg:w-[400px]  border-2  border-aside-border bg-aside-fill rounded-3xl overflow-y-auto lg:flex flex-col justify-start`}
       >
         <NotificationIcon />
 

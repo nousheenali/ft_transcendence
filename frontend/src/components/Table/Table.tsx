@@ -88,7 +88,7 @@ const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
           // style={{ height: "100%" }}
         >
           {/* table rows */}
-          {filteredData.map((rowData: TableRowData, rowIndex) => (
+          {filteredData?.map((rowData: TableRowData, rowIndex) => (
             <div
               key={rowIndex}
               className="bg-table-row-bg rounded-[10px] flex mt-3 justify-center items-center"
