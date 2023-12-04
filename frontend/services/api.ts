@@ -95,3 +95,24 @@ export async function deleteData<T>(data: T, endpoint: string) {
     throw new Error(error.message);
   }
 }
+
+export async function postDataWithImage(data: FormData, endpoint: string) {
+  try {
+    const response = await fetch(`${backendUrl}${endpoint}`, {
+      method: "POST",
+      body: data,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `HTTP error!
+                Status: ${response.status}
+                Message: ${errorData.message}`
+      );
+    }
+    return response.text();
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}

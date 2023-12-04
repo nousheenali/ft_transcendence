@@ -47,4 +47,6 @@ export const API_ENDPOINTS = {
    * └── 🟣
    **/
   gamesHistory: "/games/history/",
+  updateName: '/user/update-name/',
+  updateAvatar: '/user/upload-avatar/',
 };
