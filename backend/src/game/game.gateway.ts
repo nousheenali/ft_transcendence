@@ -245,7 +245,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (gm && !gm.gameOver) {
       if (gm.players[0].readyToStart && gm.players[1].readyToStart) {
-        this.gameLogicService.updateBallPosition(gm);
+        this.gameLogicService.updateBallPosition(gm, data.delta);
+        this.gameLogicService.emitBallPosition(gm, this.server);
         const buf = gm.paddleWidth / 3; // this required otherwise ball skids through the wall
 
         /* Handle paddle collisions */
@@ -273,7 +274,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         //   gm.players[0].score + gm.players[1].score === 8
         // )
         //   this.gameLogicService.increaseBallSpeed(gm);
-        this.gameLogicService.emitBallPosition(gm, this.server);
       }
     }
   }

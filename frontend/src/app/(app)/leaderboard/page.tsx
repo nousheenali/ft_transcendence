@@ -23,6 +23,7 @@ export default function Leaderboard() {
   const fetchTableData = async () => {
     const data = await generateLeaderboardData(login);
     setleaderboardData(data);
+    /* fetching user data again because "data" is in a different format */
     const users: userInformation[] = await getAllUsersData(
       login,
       API_ENDPOINTS.getAllUsers
@@ -35,7 +36,7 @@ export default function Leaderboard() {
     if (containerRef1.current) {
       const containerHeight = containerRef1.current.clientHeight;
       setMaxHeight(`${containerHeight}px`);
-       console.log("Container Height:", containerHeight);
+      //  console.log("Container Height:", containerHeight);
     }
   },[login]);
 

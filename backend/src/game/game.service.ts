@@ -53,7 +53,6 @@ export class GameService {
 
   async getGamebyUsers(player1: string, player2: string): Promise<string> {
     try {
-      console.log('', player1, player2);
       const game = await this.prisma.game.findMany({
         where: {
           userId: player1,
