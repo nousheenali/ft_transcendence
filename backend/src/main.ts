@@ -13,6 +13,9 @@ async function bootstrap() {
   app.enableCors({
     origin: 'http://localhost:3000', // Replace with your frontend URL
     credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Origin',
+    preflightContinue: false,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
   // 👇 This block will initiate Swagger using SwaggerModule and DocumentBuilder. 👇

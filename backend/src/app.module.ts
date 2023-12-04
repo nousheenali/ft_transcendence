@@ -11,10 +11,11 @@ import { GatewayNotifModule } from './gateway-notif/gateway-notif.module';
 import { ChatModule } from './chat/chat.module';
 import { GameModule } from './game/game.module';
 import { AuthModule } from './auth/auth.module';
+import { TwoFaModule } from './auth/mfa/two-fa.module';
 
 @Module({
   imports: [
-    AuthModule , 
+    AuthModule,
     UserModule,
     ChatModule,
     GameModule,
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     NotificationModule,
     GatewayNotifModule,
     UserMessagesModule,
+    TwoFaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

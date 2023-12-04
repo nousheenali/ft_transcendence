@@ -1,5 +1,11 @@
 'use client';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { SettingDetailsProps } from '@/components/Setting/types';
 import { useSession } from 'next-auth/react';
 import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
@@ -12,6 +18,9 @@ import { userInformation } from '@/components/Profile/types';
 import { getUserData, updateUserName } from '../../../../services/user';
 import SettingAvatar from '@/components/Setting/SettingAvatar/SettingAvatar';
 import { AuthContext } from '@/context/AuthProvider';
+import { activateTwoFa, verifyTwoFa } from '../../../../services/two-fa';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const { user } = useContext(AuthContext);
@@ -25,64 +34,72 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState('');
 
+  const router =useRouter();
+
   const handleClick = (buttonId: string) => {
     console.log(buttonId + ' button clicked');
   };
 
-  // const handleActivateTwoFa = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     if (userInfo?.TFAEnabled === true) {
-  //       toast.error('ALREADY ACTIVE');
-  //       return;
-  //     }
-  //     const message = await activateTwoFa(
-  //       user.login,
-  //       API_ENDPOINTS.generateSecret
-  //     );
-  //     let parsedResult = JSON.parse(message);
-  //     setQrCode(parsedResult.qrCodeUrl);
+  const handleActivateTwoFa = async () => {
+    try {
+      setIsLoading(true);
+      if (userInfo?.TFAEnabled === true) {
+        toast.error('ALREADY ACTIVE');
+        return;
+      }
+      const message = await activateTwoFa(
+        user.login,
+        API_ENDPOINTS.generateSecret
+      );
+      let parsedResult = JSON.parse(message);
+      setQrCode(parsedResult.qrCodeUrl);
 
-  //     handleShow();
-  //   } catch (error: any) {
-  //     toast.error(error.message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+      handleShow();
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // const [isModalOpen, setModalOpen] = useState(false);
-  // const handleVerify = async () => {
-  //   try {
-  //     setIsLoading(true);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const handleVerify = async (e: any) => {
+    try {
+      e.preventDefault();
+      setIsLoading(true);
 
-  //     if (code === '') {
-  //       toast.error('CODE IS REQUIRED');
-  //       return;
-  //     }
+      if (code === '') {
+        toast.error('CODE IS REQUIRED');
+        return;
+      }
 
-  //     const message = await verifyTwoFa(
-  //       user.login,
-  //       code,
-  //       API_ENDPOINTS.verifyTwoFa
-  //     );
-  //     // console.log(JSON.parse(message));
-  //     let parsedResult = JSON.parse(message);
+      const response = await axios.post(
+        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        { userLogin: user.login!, token: code },
+        { withCredentials: true }
+      );
 
-  //     setQrCode(parsedResult.qrCodeUrl);
+      // Assuming the API sends a response indicating success or failure
+      // You can adjust this based on the actual API response format
+      // if (response.data.isValid) {
+      // toast.success('WELCOME BACK');
+      // location.replace('/');
+      // rout
 
-  //     ref.current?.close();
-  //     if (parsedResult.isValid === false) {
-  //       toast.error('CODE IS NOT VALID');
-  //     } else {
-  //       toast.success('TWO-FACTOR AUTHENTICATION SET SUCCESSFULLY');
-  //     }
-  //   } catch (error: any) {
-  //     toast.error(error.message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+      router.push('/redirect');
+
+      // or use router.push('/') if you are using a routing library
+      // } else {
+      // toast.error('CODE IS NOT VALID');
+      handleShow(); // Show an error or additional info as needed
+      // }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSaveName = async () => {
     try {
@@ -171,7 +188,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           <div className="col-span-1" />
           <button
             className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-            // onClick={() => handleActivateTwoFa()}
+            onClick={() => handleActivateTwoFa()}
           >
             Activate 2FA
           </button>
@@ -211,7 +228,8 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           </Modal.Body>
           <Modal.Actions className="flex items-center  justify-center mt-2 ">
             <button
-              // onClick={() => handleVerify()}
+              type="submit"
+              onClick={(e) => handleVerify(e)}
               className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx"
             >
               VERIFY

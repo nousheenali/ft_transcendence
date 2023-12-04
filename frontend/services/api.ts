@@ -1,12 +1,12 @@
-import { friendRelationDto } from "@/components/Profile/types";
+import { friendRelationDto } from '@/components/Profile/types';
 
-const backendUrl = "http://localhost:3001";
+const backendUrl = 'http://localhost:3001';
 
 // Helper function to make GET requests
 export async function getData<T>(login: string, endpoint: string): Promise<T> {
   try {
     const response = await fetch(`${backendUrl}${endpoint}${login}`, {
-      credentials: "include", // Include credentials in the request
+      credentials: 'include', // Include credentials in the request
     });
     if (!response.ok) {
       const errorData = await response.json();
@@ -27,9 +27,9 @@ export async function getData<T>(login: string, endpoint: string): Promise<T> {
 export async function postData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
@@ -51,9 +51,9 @@ export async function postData<T>(data: T, endpoint: string) {
 export async function updateData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
@@ -76,9 +76,9 @@ export async function updateData<T>(data: T, endpoint: string) {
 export async function deleteData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
@@ -99,7 +99,7 @@ export async function deleteData<T>(data: T, endpoint: string) {
 export async function postDataWithImage(data: FormData, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "POST",
+      method: 'POST',
       body: data,
     });
 

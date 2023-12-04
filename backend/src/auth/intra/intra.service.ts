@@ -23,7 +23,11 @@ export class IntraService {
       dto.avatar = intraUser.avatar;
       user = await this.userService.createUser(dto);
     }
+    else{
+      user = await this.userService.setTFAVerificationRequired(intraUser.login); 
+    }
     console.log('user3', user);
     return this.jwtAuthService.generateJwt(user);
   }
 }
+  

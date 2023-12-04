@@ -198,4 +198,16 @@ export class UserService {
     });
     return updatedName;
   }
+
+  async setTFAVerificationRequired(login: string) {
+    try {
+      const user = await this.prisma.user.update({
+        where: { login: login },
+        data: { TFAVerified: false },
+      });
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Unable to update TFA verification status');
+    }
+  }
 }
