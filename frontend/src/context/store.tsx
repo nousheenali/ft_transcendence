@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { ChannelsProps, SocketMessage } from '@/components/Chat/types';
-import { Socket, io } from 'socket.io-client';
+import { create } from "zustand";
+import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
+import { Socket, io } from "socket.io-client";
 
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 
@@ -32,11 +32,10 @@ export const useGameState = create<TGameColor>((set) => ({
   racketColor: "0xd0f223",
   bgColor: "0x000000",
   isQueue: true,
-  invitee: 'Default',
-  inviter: 'Default',
+  invitee: "Default",
+  inviter: "Default",
   isAccepted: false,
   clicked: false,
-
 
   setBallColor: (ballColor: string) => set({ ballColor }),
   setRacketColor: (racketColor: string) => set({ racketColor }),
@@ -50,7 +49,7 @@ export const useGameState = create<TGameColor>((set) => ({
 }));
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 
-export type ChannelType = 'PUBLIC' | 'PRIVATE';
+export type ChannelType = "PUBLIC" | "PRIVATE";
 
 type TchannelInfo = {
   channelName: string;
@@ -64,9 +63,9 @@ type TchannelInfo = {
 
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
 export const useChannelInfo = create<TchannelInfo>((set) => ({
-  channelName: '',
-  channelType: 'PUBLIC',
-  channelPassword: '',
+  channelName: "",
+  channelType: "PUBLIC",
+  channelPassword: "",
 
   setChannelName: (channelName: string) => set({ channelName }),
   setChannelType: (channelType: ChannelType) => set({ channelType }),
@@ -83,7 +82,7 @@ type SocketState = {
 
 export const useSocket = create<SocketState>((set) => ({
   currentSocket: {} as Socket,
-  isNewNotification: 'hidden',
+  isNewNotification: "hidden",
   setCurrentSocket: (currentSocket: Socket) => set({ currentSocket }),
   setIsNewNotification: (isNewNotification: string) =>
     set({ isNewNotification }),
@@ -101,12 +100,12 @@ type AppState = {
 
 export const activateClickedChannel = create<AppState>((set) => ({
   activeChannel: {
-    id: '',
-    channelName: '',
-    channelType: '',
-    createdBy: '',
-    createdAt: '',
-    updatedAt: '',
+    id: "",
+    channelName: "",
+    channelType: "",
+    createdBy: "",
+    createdAt: "",
+    updatedAt: "",
     channelMembers: [],
     Messages: [],
   } as ChannelsProps,
@@ -125,7 +124,7 @@ type BtnState = {
 };
 
 export const activateClickedTab = create<BtnState>((set) => ({
-  activeTab: 'Messages',
+  activeTab: "Messages",
   setActiveTab: (tab) => set({ activeTab: tab }),
 }));
 
@@ -140,7 +139,7 @@ type clickedFriendState = {
 };
 
 export const activateClickedFriend = create<clickedFriendState>((set) => ({
-  activeFriend: '',
+  activeFriend: "",
   setActiveFriend: (login) => set({ activeFriend: login }),
 }));
 
@@ -172,9 +171,25 @@ type ChannelTypeState = {
 };
 
 export const useChannelType = create<ChannelTypeState>((set) => ({
-  activeChannelType: 'Public',
+  activeChannelType: "Public",
   setActiveChannelType: (channelType: string) =>
     set({ activeChannelType: channelType }),
+}));
+
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle user profile updates globally and re fetch the new data
+ * └── 🌼
+ **/
+type UserPictureUpdatedType = {
+  isUserUpdated: boolean;
+  setIsUserUpdated: (isUserUpdated: boolean) => void;
+};
+
+export const useIsUserUpdated = create<UserPictureUpdatedType>((set) => ({
+  isUserUpdated: false,
+  setIsUserUpdated: (isUserUpdated: boolean) =>
+    set({ isUserUpdated: isUserUpdated }),
 }));
 
 /**==============================================================================================

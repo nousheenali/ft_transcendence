@@ -4,11 +4,13 @@ import { updateUserImg } from "../../../../services/user";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthProvider";
+import { useIsUserUpdated } from "@/context/store";
 
 export default function SettingAvatar({ avatarUrl }: any) {
   // const { data: session } = useSession();
   const {user} = useContext(AuthContext);
   const [newAva, setNewAva] = useState(avatarUrl);
+  const {setIsUserUpdated } = useIsUserUpdated();
 
   const handleSaveImg = async (newAvatar: File) => {
     try {
@@ -16,6 +18,7 @@ export default function SettingAvatar({ avatarUrl }: any) {
       const updatedData = JSON.parse(updatedUser);
       setNewAva(updatedData.avatar);
       toast.success("Avatar updated successfully!!!");
+      setIsUserUpdated(true);
     } catch (error: any) {
       toast.error(error.message);
       console.log(error);

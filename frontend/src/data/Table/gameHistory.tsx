@@ -39,7 +39,6 @@ export const generateGameHistoryData = (
         },
         `${game.opponent.score}`,
         formattedTime,
-        `10`,
         game.winnerId === userLogin ? "Win" : "Lose",
       ]);
     }
@@ -56,7 +55,6 @@ export const generateGameHistoryData = (
         },
         `${game.User.score}`,
         formattedTime,
-        `10`,
         game.winnerId === userLogin ? "Win" : "Lose",
       ]);
     }
