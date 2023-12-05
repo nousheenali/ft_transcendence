@@ -59,7 +59,7 @@ export default class Game extends Scene {
 
     /* render sprites */
     this.ball = gameObj.renderBall(wW / 2, wH / 2);
-    this.paddlespeed = 500;
+    this.paddlespeed = 600;
     if (this.ball.body) {
       ballWidth = this.ball.body.width;
       this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
@@ -81,13 +81,22 @@ export default class Game extends Scene {
     }
   }
 
-  update() {
+  /* update() is called by game engine on each frame */
+  /* delta - time elapsed between the current frame and the previous frame(milliseconds) */
+  update(time: number, delta: number) {
+    
     if (this.setupComplete) {
       /*check if space is pressed and game not started yet*/
-      if (this.keys.space.isDown && !this.gameStarted) this.initilaiseGame();
+      if (this.keys.space.isDown && !this.gameStarted) 
+        this.initilaiseGame();
 
       /*space pressed and game started */
       if (this.gameStarted) {
+
+        /*  optimizes the sound playback logic by ensuring that the sound is played once per collision event
+         rather than potentially being triggered continuously in each frame. */
+        let collision = false;
+        
         this.currentSocket.emit("newLiveGame", {
           player1: this.registry.get("player0"),
           player1Image: this.registry.get("player0Image"),
@@ -95,6 +104,7 @@ export default class Game extends Scene {
           player2Image: this.registry.get("player1Image"),
           startedTime: new Date(),
         });
+        
         /*plays audio based on the surface hit*/
         this.socket.on("hitPaddle", (surface: boolean) => {
           if (!collision) {
