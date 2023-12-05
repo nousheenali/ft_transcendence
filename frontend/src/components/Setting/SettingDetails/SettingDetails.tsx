@@ -1,26 +1,27 @@
-'use client';
+"use client";
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { SettingDetailsProps } from '@/components/Setting/types';
-import { useSession } from 'next-auth/react';
-import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+} from "react";
+import { SettingDetailsProps } from "@/components/Setting/types";
+import { useSession } from "next-auth/react";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import { activateTwoFa, verifyTwoFa } from '../../../../services/twoFa';
-import { Modal } from 'react-daisyui';
-import Image from 'next/image';
-import { userInformation } from '@/components/Profile/types';
-import { getUserData, updateUserName } from '../../../../services/user';
-import SettingAvatar from '@/components/Setting/SettingAvatar/SettingAvatar';
-import { AuthContext } from '@/context/AuthProvider';
-import { activateTwoFa, verifyTwoFa } from '../../../../services/two-fa';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { Modal } from "react-daisyui";
+import Image from "next/image";
+import { userInformation } from "@/components/Profile/types";
+import { getUserData, updateUserName } from "../../../../services/user";
+import SettingAvatar from "@/components/Setting/SettingAvatar/SettingAvatar";
+import { AuthContext } from "@/context/AuthProvider";
+import { activateTwoFa, verifyTwoFa } from "../../../../services/two-fa";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useIsUserUpdated } from "@/context/store";
 
 function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const { user } = useContext(AuthContext);
@@ -28,23 +29,24 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
-  const [qrCode, setQrCode] = useState('');
-  const [code, setCode] = useState('');
+  const [qrCode, setQrCode] = useState("");
+  const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
-  const [newName, setNewName] = useState('');
+  const [newName, setNewName] = useState("");
+  const { setIsUserUpdated } = useIsUserUpdated();
 
-  const router =useRouter();
+  const router = useRouter();
 
   const handleClick = (buttonId: string) => {
-    console.log(buttonId + ' button clicked');
+    console.log(buttonId + " button clicked");
   };
 
   const handleActivateTwoFa = async () => {
     try {
       setIsLoading(true);
       if (userInfo?.TFAEnabled === true) {
-        toast.error('ALREADY ACTIVE');
+        toast.error("ALREADY ACTIVE");
         return;
       }
       const message = await activateTwoFa(
@@ -68,13 +70,13 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
       e.preventDefault();
       setIsLoading(true);
 
-      if (code === '') {
-        toast.error('CODE IS REQUIRED');
+      if (code === "") {
+        toast.error("CODE IS REQUIRED");
         return;
       }
 
       const response = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `http://10.13.8.1:3001${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
@@ -86,16 +88,16 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
       // location.replace('/');
       // rout
 
-      router.push('/redirect');
+      router.push("/redirect");
 
       // or use router.push('/') if you are using a routing library
       // } else {
       // toast.error('CODE IS NOT VALID');
       handleShow(); // Show an error or additional info as needed
       // }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'An error occurred');
+      toast.error(error.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +114,8 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
       const updatedData = JSON.parse(updatedUser);
       setNewName(updatedData.name);
       setIsEditingName(false);
-      toast.success('Name updated successfully!!!');
+      toast.success("Name updated successfully!!!");
+      setIsUserUpdated(true);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -143,11 +146,11 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
     <div>
       <SettingAvatar avatarUrl={userInfo?.avatar} />
       <hr className="mx-20 mt-10 mb-10  border-heading-stroke-30" />
-      <div className="flex flex-col ml-10 mb-10 font-saira-condensed font-bold text-main-text justify-start pl-6">
-        <div className="grid grid-cols-5">
-          <div className="text-xl ml-10"> Name:</div>
+      <div className=" flex flex-col mb-10 font-saira-condensed font-bold text-main-text justify-start pl-6">
+        <div className="flex flx-row align-middle items-center justify-around ">
+          <div className="text-xl w-full text-center"> Name:</div>
           {isEditingName ? (
-            <div className="text-md truncate">
+            <div className="text-md truncate w-full text-center">
               <input
                 type="text"
                 value={newName}
@@ -155,9 +158,9 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
               />
             </div>
           ) : (
-            <div className="text-md truncate">{newName}</div>
+            <div className="text-md truncate w-full text-center">{newName}</div>
           )}
-          <div className="col-span-3 ml-20">
+          <div className="w-full text-center">
             {isEditingName ? (
               <button
                 className="w-40 h-7 rounded-md items-center text-md bg-button-background"
@@ -175,23 +178,22 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
             )}
           </div>
         </div>
-        <div className="grid grid-cols-5 mt-10">
-          {/* <div className="text-xl ml-10"> Email:</div> */}
-          <div className="text-md">{userInfo?.email}</div>
-          <div className="col-span-1" />
-        </div>
-        <div className="grid grid-cols-6 mt-10">
-          <div className="text-xl ml-10"> 2FA:</div>
-          <div className="text-md truncate ml-8">
-            {userInfo?.TFAEnabled ? 'Activated' : 'Not Activated'}
+
+        <br />
+        <div className="flex flx-row align-middle items-center justify-around">
+          <div className="text-xl w-full text-center "> 2FA :</div>
+          <div className="text-md truncate w-full text-center ">
+            {userInfo?.TFAEnabled ? "Activated" : "Not Activated"}
           </div>
-          <div className="col-span-1" />
-          <button
-            className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-            onClick={() => handleActivateTwoFa()}
-          >
-            Activate 2FA
-          </button>
+          {/* <div className="col-span-1" /> */}
+          <div className="w-full text-center">
+            <button
+              className="w-40 h-7 rounded-md items-center text-md bg-button-background"
+              onClick={() => handleActivateTwoFa()}
+            >
+              Activate 2FA
+            </button>
+          </div>
         </div>
         <Modal
           className="overflow-hidden w-[267px] h-[310px] m-0 p-0 gap-0 bg-aside-fill-70  border-b-start-game border-b-2 rounded-2xl "
@@ -216,7 +218,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
             </div>
             <div className="flex justify-center mt-3 p-2 items-center rounded-md bg-search-box-fill w-full h-8 border-[0.5px] border-chat-search-stroke">
               <input
-                className="ml-2 bg-search-box-fill font-thin text-sm text-search-box-text w-40 h-full focus:outline-none hover:cursor-text"
+                className="bg-search-box-fill font-thin text-sm text-search-box-text w-40 h-full focus:outline-none hover:cursor-text"
                 type="search"
                 name="search"
                 placeholder="Enter Authenticator Code"
@@ -242,3 +244,19 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
 }
 
 export default SettingDetails;
+
+{
+  /* <div className="grid grid-cols-5 mt-10"> */
+}
+{
+  /* <div className="text-xl ml-10"> Email:</div> */
+}
+{
+  /* <div className="text-md">{userInfo?.email}</div> */
+}
+{
+  /* <div className="col-span-1" /> */
+}
+{
+  /* </div> */
+}

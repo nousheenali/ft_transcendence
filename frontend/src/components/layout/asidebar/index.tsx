@@ -1,24 +1,25 @@
-'use client';
-import Breaker from '@/components/br/Br';
-import React, { FC, useContext, useEffect } from 'react';
-import { useState } from 'react';
-import NotificationIcon from '../../notificationIcon';
-import UserProfileSide from '../../userProfileSide/userProfileSide';
-import MenuSideBar from '../../menuSideBar/menuSideBar';
+"use client";
+import Breaker from "@/components/br/Br";
+import React, { FC, useContext, useEffect } from "react";
+import { useState } from "react";
+import NotificationIcon from "../../notificationIcon";
+import UserProfileSide from "../../userProfileSide/userProfileSide";
+import MenuSideBar from "../../menuSideBar/menuSideBar";
 
-import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
-import { getUserData } from '../../../../services/user';
-import { userInformation } from '@/components/Profile/types';
-import { AuthContext } from '@/context/AuthProvider';
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { getUserData } from "../../../../services/user";
+import { userInformation } from "@/components/Profile/types";
+import { AuthContext } from "@/context/AuthProvider";
+import { useIsUserUpdated } from "@/context/store";
 
 interface AsideBarProps {
   isMobile: boolean;
 }
 
 const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
-
   const { user } = useContext(AuthContext);
   const [userData, setUserData] = useState<userInformation>();
+  const { isUserUpdated, setIsUserUpdated } = useIsUserUpdated();
 
   useEffect(() => {
     // console.log('user in sidebar', user);
@@ -28,16 +29,17 @@ const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
           setUserData(userData);
         })
         .catch((error) => {
-          console.error('Error fetching user data:', error);
+          console.error("Error fetching user data:", error);
         });
+      setIsUserUpdated(false);
     }
-  }, [user]);
+  }, [user, isUserUpdated]);
 
   return (
     <>
       <aside
         className={`${
-          !isMobile && 'hidden my-[18px] ml-[35px]'
+          !isMobile && "hidden my-[18px] ml-[35px]"
         }  w-80 lg:w-[400px]  border-2  border-aside-border bg-aside-fill rounded-3xl overflow-y-auto lg:flex flex-col justify-start`}
       >
         <NotificationIcon />

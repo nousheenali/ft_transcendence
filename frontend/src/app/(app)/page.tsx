@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 import React, { useEffect, useContext, useState } from "react";
@@ -21,14 +21,13 @@ export default function DashBoardPage() {
   const [gameHistory, setGameHistory] = React.useState<Game[]>();
   const [userData, setUserData] = React.useState<userInformation>();
   //------------------------------------------------------------------------------------------------
-  const gameHistoryHeading = ["Player VS ", "Score", "Date", "Moves", "Result"];
+  const gameHistoryHeading = ["Player VS ", "Score", "Date", "Result"];
   const LiveGamesHeading = ["Player 1", "Time", "Player 2"];
   //------------------------------------------------------------------------------------------------
   const gameHistoryData = generateGameHistoryData(user.login, gameHistory);
   // const gameHistoryData = generateGameHistoryData();
   //------------------------------------------------------------------------------------------------
   //Notification socket to use for live games
-
 
   // state to keep track of live games
   const [liveGamesData, setLiveGamesData] = useState<any>([]);
