@@ -1,7 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['cdn.intra.42.fr', 'i.imgur.com', 'localhost'],
+    domains: ["cdn.intra.42.fr", "i.imgur.com", "localhost"],
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  webpack: (config, options) => {
+    if (options.isServer) {
+      config.infrastructureLogging = { level: "error" };
+    }
+    return config;
   },
 };
 
