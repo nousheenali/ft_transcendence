@@ -60,4 +60,15 @@ export class TwoFaService {
       throw new BadRequestException('Unable to verify token.');
     }
   }
+
+  async deactivateTwoFa(login: string, token: string) {
+    try {
+      return await this.prisma.user.update({
+        where: { login: login },
+        data: { TFAEnabled: false, TFAVerified: false },
+      });
+    } catch (error) {
+      throw new BadRequestException('Unable to deactivate');
+    }
+  }
 }

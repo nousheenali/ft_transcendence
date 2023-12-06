@@ -19,7 +19,6 @@ export class TwoFaController {
     try {
       const secret: any = await this.twoFaService.generateSecret(dto.userLogin);
       const qrCodeUrl = await this.twoFaService.getQRCode(secret);
-      // Remember to store the secret.base32 (or the entire secret object) in your database for later verification.
       return { qrCodeUrl };
     } catch (error) {
       throw new HttpException(
@@ -29,7 +28,6 @@ export class TwoFaController {
     }
   }
 
-  
   @Post('verify')
   async verifyToken(
     @Body() dto: TwofaVerifyDto,
@@ -42,15 +40,32 @@ export class TwoFaController {
       );
       const user: any = await this.userService.getUserByLogin(dto.userLogin);
       console.log(user);
-      const tokens = await this.jwtAuthService.generateJwt(user, true);
-      // return this.jwtAuthService.storeTokensInCookie(res, tokens);
+      const tokens = await this.jwtAuthService.generateJwt(user);
       console.log(tokens);
       return await this.jwtAuthService.storeTokensInCookie(res, tokens);
-      // return res;
-      // console.log('ssscookie \n', res.cookie);
-      // res.redirect(`http://localhost:3000/redirect`);
-      // return tokens;
-      // return { isValid };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        'Unexpected Error while verifying 2FA token.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('deactivate')
+  async deactivateTwoFa(
+    @Body() dto: TwofaVerifyDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const user = await this.twoFaService.deactivateTwoFa(
+        dto.userLogin,
+        dto.token,
+      );
+      console.log(user);
+      const tokens = await this.jwtAuthService.generateJwt(user);
+      console.log(tokens);
+      return await this.jwtAuthService.storeTokensInCookie(res, tokens);
     } catch (error) {
       console.log(error);
       throw new HttpException(

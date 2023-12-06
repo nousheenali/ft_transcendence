@@ -74,26 +74,43 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
         toast.error("CODE IS REQUIRED");
         return;
       }
-
       const response = await axios.post(
-        `http://10.13.8.1:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        { userLogin: user.login!, token: code },
+        { withCredentials: true }
+      );
+      router.push("/redirect");
+      // }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeactivateTwofa = async (e: any) => {
+    try {
+      e.preventDefault();
+      setIsLoading(true);
+
+      if (code === "") {
+        toast.error("CODE IS REQUIRED");
+        return;
+      }
+      const response = await axios.post(
+        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
 
-      // Assuming the API sends a response indicating success or failure
-      // You can adjust this based on the actual API response format
-      // if (response.data.isValid) {
-      // toast.success('WELCOME BACK');
-      // location.replace('/');
-      // rout
-
+      const responsedeactivate = await axios.post(
+        `http://localhost:3001${API_ENDPOINTS.deactivateTwoFa}`,
+        { userLogin: user.login!, token: code },
+        { withCredentials: true }
+      );
+      toast.success("De-activate successfully");
       router.push("/redirect");
-
-      // or use router.push('/') if you are using a routing library
-      // } else {
-      // toast.error('CODE IS NOT VALID');
-      handleShow(); // Show an error or additional info as needed
       // }
     } catch (error: any) {
       console.error(error);
@@ -189,9 +206,11 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           <div className="w-full text-center">
             <button
               className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-              onClick={() => handleActivateTwoFa()}
+              onClick={(e) => {
+                userInfo?.TFAEnabled ? handleShow() : handleActivateTwoFa();
+              }}
             >
-              Activate 2FA
+              {userInfo?.TFAEnabled ? " De-activate 2FA" : " Activate 2FA"}
             </button>
           </div>
         </div>
@@ -207,15 +226,19 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
             </div>
           </Modal.Header>
           <Modal.Body className="flex flex-col m-0 py-2">
-            {/* customize game section */}
-            <div className="flex flex-row justify-center align-center">
-              <Image
-                src={qrCode}
-                width={100}
-                height={100}
-                alt="qr code"
-              ></Image>
-            </div>
+            {user?.TFAEnabled ? (
+              ""
+            ) : (
+              <div className="flex flex-row justify-center align-center">
+                <Image
+                  src={qrCode}
+                  width={100}
+                  height={100}
+                  alt="qr code"
+                ></Image>
+              </div>
+            )}
+
             <div className="flex justify-center mt-3 p-2 items-center rounded-md bg-search-box-fill w-full h-8 border-[0.5px] border-chat-search-stroke">
               <input
                 className="bg-search-box-fill font-thin text-sm text-search-box-text w-40 h-full focus:outline-none hover:cursor-text"
@@ -231,7 +254,11 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           <Modal.Actions className="flex items-center  justify-center mt-2 ">
             <button
               type="submit"
-              onClick={(e) => handleVerify(e)}
+              onClick={(e) =>
+                userInfo?.TFAEnabled
+                  ? handleDeactivateTwofa(e)
+                  : handleActivateTwoFa()
+              }
               className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx"
             >
               VERIFY
