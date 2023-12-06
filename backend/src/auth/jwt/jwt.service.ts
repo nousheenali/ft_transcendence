@@ -18,38 +18,25 @@ export class JwtAuthService {
 
   private accessTokenExpiration: string = '50m';
 
-  private refreshTokenExpiration: string = '7d';
+
 
   private hashsecret: string = process.env.HASH_SECRET;
 
-  private generatePayload(user: User) {
+  private generatePayload(user: User, mfaAuthenticated = false) {
     return user;
   }
 
-  private async updateRefreshToken(user: User, refreshToken: string) {
-    const hash = await argon2.hash(refreshToken, {
-      secret: Buffer.from(this.hashsecret),
-    });
 
-    await this.userService.update(user.login, {
-      refreshToken: hash,
-    });
-  }
 
-  async generateJwt(user: User) {
-    const payload = this.generatePayload(user);
+  async generateJwt(user: User, mfaAuthenticated = false) {
+    const payload = this.generatePayload(user, mfaAuthenticated);
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: this.accessTokenExpiration,
       secret: process.env.JWT_SECRET,
     });
-    const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: this.refreshTokenExpiration,
-      secret: process.env.JWT_SECRET,
-    });
-    await this.updateRefreshToken(user, refreshToken);
+
     return {
       accessToken,
-      refreshToken,
     };
   }
 
@@ -67,7 +54,7 @@ export class JwtAuthService {
   async removeTokensFromCookie(res: Response) {
     const cookieOptions = this.generateCookieOptions();
     res.clearCookie('accessToken', cookieOptions);
-    res.clearCookie('refreshToken', cookieOptions);
+
   }
 
   async storeTokensInCookie(res: Response, authToken: AuthTokens) {
@@ -76,22 +63,10 @@ export class JwtAuthService {
       ...cookieOptions,
       maxAge: ms(this.accessTokenExpiration),
     });
-    res.cookie('refreshToken', authToken.refreshToken, {
-      ...cookieOptions,
-      maxAge: ms(this.refreshTokenExpiration),
-    });
+
   }
 
-  async refreshJwt(login: string) {
-    const user = await this.userService.getUserByLogin(login);
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-    if (!user.refreshToken) {
-      throw new UnauthorizedException('Session expired');
-    }
-    return await this.generateJwt(user);
-  }
+
 }
 
 

@@ -20,7 +20,7 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   isOnline     Boolean  @default(true)
-  refreshToken String?
+
   inAGame      Boolean  @default(false)
 
   // Two factor authentication-----------------------------------------

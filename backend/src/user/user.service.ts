@@ -139,7 +139,7 @@ export class UserService {
           name: updateUserDto.name,
           avatar: updateUserDto.avatar,
           updatedAt: new Date(),
-          refreshToken: updateUserDto.refreshToken,
+
           TFAKey: updateUserDto.TFAKey,
           TFAEnabled: updateUserDto.TFAEnabled,
         },

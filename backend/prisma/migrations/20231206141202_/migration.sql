@@ -20,7 +20,6 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "isOnline" BOOLEAN NOT NULL DEFAULT true,
-    "refreshToken" TEXT,
     "inAGame" BOOLEAN NOT NULL DEFAULT false,
     "TFAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "TFAKey" TEXT,

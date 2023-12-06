@@ -15,7 +15,7 @@ export const AuthContext = createContext<AuthContextType>(
 
 export function signOut() {
   Cookies.remove('accessToken');
-  Cookies.remove('refreshToken');
+
   redirect('/login');
 }
 

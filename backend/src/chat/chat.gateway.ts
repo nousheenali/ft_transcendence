@@ -91,7 +91,7 @@ export class ChatGateway
     if (userLogin === undefined || userLogin === null) return;
 
     //  changing the user status in the database
-    this.chatService.updateUserStatus(userLogin, true);
+    // this.chatService.updateUserStatus(userLogin, true);
     //  Emit the event "UserStatusUpdate" to all the users to re-render the friends list
     this.server.emit('UserStatusUpdate');
 
@@ -117,7 +117,6 @@ export class ChatGateway
     );
     const channelsRooms = joinedChannels.map((channel) => {
       return channel.channel.channelName + channel.channel.channelType;
-      
     });
 
     //  Joining the user to all the channels rooms again
@@ -679,9 +678,9 @@ export class ChatGateway
   async blockUser(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    data: {friendLogin: string, userLogin: string},
+    data: { friendLogin: string; userLogin: string },
   ) {
-    const { friendLogin, userLogin} = data;
+    const { friendLogin, userLogin } = data;
     // emit event to the user and the blocked user to re-render the friends list
     const userRoom = this.roomsService.getRoom(userLogin, 'USERS');
     const friendRoom = this.roomsService.getRoom(friendLogin, 'USERS');

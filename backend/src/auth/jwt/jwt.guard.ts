@@ -35,6 +35,3 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     return user;
   }
 }
-
-@Injectable()
-export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {}

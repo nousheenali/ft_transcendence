@@ -7,7 +7,7 @@ import { UserService } from 'src/user/user.service';
 export class AuthService {
   constructor(private usersService: UserService) {}
   async logout(user: User, res: Response) {
-    await this.usersService.update(user.login, { refreshToken: null });
+
     res.redirect('http://localhost:3000/login');
   }
 }

@@ -11,9 +11,7 @@ export class UpdateUserDto {
   @IsString()
   avatar?: string;
 
-  @ApiProperty()
-  @IsString()
-  refreshToken?: string | null;
+
 
   @ApiProperty()
   @IsString()
