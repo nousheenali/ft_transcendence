@@ -91,7 +91,7 @@ export class ChatGateway
     if (userLogin === undefined || userLogin === null) return;
 
     //  changing the user status in the database
-    // this.chatService.updateUserStatus(userLogin, true);
+    this.chatService.updateUserStatus(userLogin, true);
     //  Emit the event "UserStatusUpdate" to all the users to re-render the friends list
     this.server.emit('UserStatusUpdate');
 
@@ -711,10 +711,27 @@ export class ChatGateway
     const channelData = await this.channelService.getChannelByName(channelName);
 
     // Update the channel relation in the database between the user and the channel
-    await this.channelRelationService.udateIsMutedInChannelRelation(
-      mutedUserData.id,
-      channelData.id,
-    );
+    const isMuted =
+      await this.channelRelationService.updateIsMutedInChannelRelation(
+        mutedUserData.id,
+        channelData.id,
+      );
+
+    // If the user is muted successfully, set a timer to unmute the user after 5 minutes
+    if (isMuted) {
+      setTimeout(async () => {
+        await this.channelRelationService.updateIsMutedInChannelRelation(
+          mutedUserData.id,
+          channelData.id,
+        );
+
+        const channelRoom = this.roomsService.getRoom(
+          channelName + channelData.channelType,
+          'CHANNELS',
+        );
+        this.server.to(channelRoom.name).emit('UserMuted');
+      }, 300000);
+    }
 
     // Emitting message to the channel room to notify the other users that the user has been muted
     const channelRoom = this.roomsService.getRoom(

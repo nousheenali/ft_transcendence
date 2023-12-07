@@ -9,6 +9,8 @@ import {
   useSettingToggleVisiblity,
 } from "@/context/store";
 
+/**======================================================================================================**/
+
 function ChannelSettingDetails({
   channelInfo,
 }: {
@@ -23,6 +25,7 @@ function ChannelSettingDetails({
   const [newChannelPasswordStatus, setNewChannelPasswordStatus] =
     useState<boolean>(true);
 
+  /**======================================================================================================**/
   const handleInput = (buttonId: string, value: string) => {
     if (buttonId === "Edit Old Password") {
       if (value.length > 4 && newChannelPassword.length > 4) {
@@ -50,6 +53,8 @@ function ChannelSettingDetails({
       setNewChannelPassword(value);
     }
   };
+
+  /**======================================================================================================**/
 
   const [buttonId, setButtonId] = useState<string>("");
   const { socket } = useChatSocket();
@@ -84,6 +89,8 @@ function ChannelSettingDetails({
   const handleSubmit = (buttonId: string) => {
     setButtonId(buttonId);
   };
+
+  /**======================================================================================================**/
 
   return (
     <div className="flex flex-col ml-10 mb-40 font-saira-condensed font-bold text-main-text justify-center ">

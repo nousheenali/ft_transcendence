@@ -11,7 +11,6 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { ChannelsProps } from "@/components/Chat/types";
 import { Socket } from "socket.io-client";
-import { set } from "date-fns";
 import { FaGears } from "react-icons/fa6";
 import { Button, Drawer, Menu } from "react-daisyui";
 import ChatSetting from "@/components/channelSetting/ChannelSetting";
@@ -146,6 +145,31 @@ export default function ChannelChatBoxHeader() {
         </div>
       </div>
 
+      {/* ================================================================================================= */}
+      {/* add option to add admin to the channel by the creator of the channel.
+          Creator of the channel can add admins, and admins can not add another admins.
+          they can only add users to the channel 
+      */}
+      {activeChannel.channelType === "PUBLIC" &&
+        currectUser.id === activeChannel.createdBy && (
+          <div className="flex flex-row  gap-5 px-3">
+            <Drawer
+              end={true}
+              open={isVisible}
+              onClickOverlay={toggleVisible}
+              side={
+                <Menu className="p-3 h-full w-2/4 text-base-content flex justify-center">
+                  <ChatSetting channelInfo={activeChannel} />
+                </Menu>
+              }
+              style={{ zIndex: 1000 }}
+            >
+              <Button color="ghost" onClick={toggleVisible}>
+                <FaGears size={40} color={"rgba(213, 242, 35, 0.8)"} />
+              </Button>
+            </Drawer>
+          </div>
+        )}
       {/* ================================================================================================= */}
       {activeChannel.channelType === "PRIVATE" &&
         currectUser.id === activeChannel.createdBy && (
