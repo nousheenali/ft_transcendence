@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "migrate": "npx prisma migrate dev",
+    "migrate": "npx prisma migrate deploy",
     "prisma": "nodemon ./scripts.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
