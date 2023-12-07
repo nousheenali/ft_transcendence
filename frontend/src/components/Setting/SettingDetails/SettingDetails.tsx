@@ -288,7 +288,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
           <Modal.Actions className="flex items-center  justify-center mt-2 ">
             <button
               type="submit"
-              onClick={e =>
+              onClick={(e) =>
                 userInfo?.TFAEnabled
                   ? handleDeactivateTwofa(e)
                   : handleVerify(e)
