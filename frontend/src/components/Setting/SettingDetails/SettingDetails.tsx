@@ -156,6 +156,11 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
     }
   };
 
+  const handleCancelEditName = () => {
+    setNewName(userInfo?.name || "");
+    setIsEditingName(false);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -201,12 +206,20 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
           )}
           <div className="w-full text-center">
             {isEditingName ? (
-              <button
-                className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-                onClick={() => handleSaveName()}
-              >
-                Save
-              </button>
+              <>
+                <button
+                  className="w-20 h-7 rounded-md items-center text-md bg-button-background"
+                  onClick={() => handleSaveName()}
+                >
+                  Save
+                </button>
+                <button
+                  className="w-20 h-7 ml-2 rounded-md items-center text-md bg-button-background"
+                  onClick={handleCancelEditName}
+                >
+                  Cancel
+                </button>
+              </>
             ) : (
               <button
                 className="w-40 h-7 rounded-md items-center text-md bg-button-background"
@@ -227,7 +240,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
           <div className="w-full text-center">
             <button
               className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-              onClick={(e) => {
+              onClick={e => {
                 userInfo?.TFAEnabled ? handleShow() : handleActivateTwoFa();
               }}
             >
@@ -266,7 +279,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
                 type="search"
                 name="search"
                 placeholder="Enter Authenticator Code"
-                onChange={(e) => {
+                onChange={e => {
                   setCode(e.target.value);
                 }}
               />
@@ -275,8 +288,10 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
           <Modal.Actions className="flex items-center  justify-center mt-2 ">
             <button
               type="submit"
-              onClick={(e) =>
-                userInfo?.TFAEnabled ? handleDeactivateTwofa(e) : handleVerify(e)
+              onClick={e =>
+                userInfo?.TFAEnabled
+                  ? handleDeactivateTwofa(e)
+                  : handleVerify(e)
               }
               className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx"
             >
