@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { IoIosPersonAdd } from "react-icons/io";
-import { Button } from "react-daisyui";
-import { Socket } from "socket.io-client";
-import { ChannelsProps } from "@/components/Chat/types";
-import { useChatSocket } from "@/context/store";
-import { toast } from "react-toastify";
 import Image from "next/image";
+import DOMPurify from "dompurify";
+import { Button } from "react-daisyui";
+import { toast } from "react-toastify";
+import { Socket } from "socket.io-client";
+import { IoIosPersonAdd } from "react-icons/io";
+import { useChatSocket } from "@/context/store";
+import React, { useState, useEffect } from "react";
+import { ChannelsProps } from "@/components/Chat/types";
 
 /**======================================================================================================**/
 export function AddAdmin({
@@ -30,9 +31,49 @@ export function AddAdmin({
     channel: ChannelsProps;
     addedBy: string;
   }) => {
-    console.log("Add admin");
+    // Check if input is empty
+    const trimmedInput = addedAdmin.trim();
+    if (trimmedInput === "") {
+      toast.error("Please enter a valid username!", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return;
+    }
+
+    // Sanitize the input
+    const sanitizedMessage = DOMPurify.sanitize(trimmedInput);
+    if (sanitizedMessage !== trimmedInput) {
+      toast.error("Input contains invalid characters", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return;
+    }
+
+    // Emit the event to the server
+    socket.emit("add-admin", {
+      addedAdmin: trimmedInput,
+      channelName: channel.channelName,
+      addedBy: addedBy, // login of the user who added the admin
+    });
+
+    // Reset the input field
+    setAddedAdmin("");
   };
-  
+
   //------------------------------------------------------------------------------------------------
   /**
    **╭── 🟣
@@ -77,19 +118,19 @@ export function AddAdmin({
       </div>
 
       {/* Input field */}
-      <div
-        className="flex flex-row py-10 gap-1 text-dimmed-text font-thin hover:cursor-pointer"
-        onClick={() => {
-          handleAddAdmin({
-            socket: socket,
-            addedAdmin: newAdmin,
-            channel: channelInfo,
-            addedBy: creator,
-          });
-          setAddedAdmin("");
-        }}
-      >
-        <Button color="ghost">
+      <div className="flex flex-row py-10 gap-1 text-dimmed-text font-thin hover:cursor-pointer">
+        <Button
+          color="ghost"
+          onClick={() => {
+            handleAddAdmin({
+              socket: socket,
+              addedAdmin: newAdmin,
+              channel: channelInfo,
+              addedBy: creator,
+            });
+            setAddedAdmin("");
+          }}
+        >
           <IoIosPersonAdd size={30} color={"rgba(213, 242, 35, 0.8)"} />
         </Button>
 
