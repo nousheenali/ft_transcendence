@@ -255,7 +255,9 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
             <button
               type="submit"
               onClick={(e) =>
-                userInfo?.TFAEnabled ? handleDeactivateTwofa(e) : handleVerify(e)
+                userInfo?.TFAEnabled
+                  ? handleDeactivateTwofa(e)
+                  : handleVerify(e)
               }
               className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx"
             >

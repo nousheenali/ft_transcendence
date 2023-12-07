@@ -188,8 +188,8 @@ export class UserService {
     if (!img) {
       throw new Error('Invalid file object received.');
     }
-    const filePath = `/user/getfile?avatar=${img.filename}`;
-    const fileURL = `http://localhost:3001` + filePath; //server URL
+    const filePath = `${img.filename}`;
+    const fileURL = `http://localhost:3001/` + filePath; //server URL
     const updatedName = await this.prisma.user.update({
       where: {
         login: login,

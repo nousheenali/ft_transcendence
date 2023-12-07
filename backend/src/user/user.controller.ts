@@ -97,6 +97,7 @@ export class UserController {
       },
     }),
   }))
+  
   async uploadFile(@Param('login')login: string, @UploadedFile() file: Express.Multer.File) {
     try {
       return await this.userService.getSavedFileURL(login, file);

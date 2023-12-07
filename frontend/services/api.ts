@@ -102,6 +102,7 @@ export async function postDataWithImage(data: FormData, endpoint: string) {
     const response = await fetch(`${backendUrl}${endpoint}`, {
       method: "POST",
       body: data,
+      credentials: "include",
     });
 
     if (!response.ok) {
