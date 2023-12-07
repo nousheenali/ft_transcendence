@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { TiCancel, TiTick } from "react-icons/ti";
 import { NotificationItems } from "../types";
+import InvitaionGameCustomize from "@/components/startGame/startInvitedGame";
 
 export const GameNotificationsList = ({
   GameInviteNotificationList,
@@ -39,14 +40,12 @@ export const GameNotificationsList = ({
                     </p>
                   ) : (
                     <>
-                      <button
-                        onClick={() => {
-                          acceptGameInvite(item);
-                        }}
-                        className="hover:bg-heading-fill p-2 rounded-full"
-                      >
-                        <TiTick className="" color="green" size={30} />
-                      </button>
+                      <InvitaionGameCustomize
+                        handleInviteClick={() => {}}
+                        eventNames="ACCEPT"
+                        acceptGameInvite={acceptGameInvite}
+                        item={item}
+                      />
                       <button
                         onClick={() => {
                           declineGameInvite(item);
