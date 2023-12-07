@@ -32,7 +32,7 @@ export default function InvitaionGameCustomize({
   }, [ref]);
 
   return (
-    <div className="flex items-center justify-center p-4 mb-6">
+    <div className="flex items-center justify-center p-0 ">
       {eventNames === "INVITE" ? (
         <Button color="ghost" className="flex flex-row" onClick={handleShow}>
           <p>{eventNames}</p>
@@ -41,7 +41,7 @@ export default function InvitaionGameCustomize({
       ) : (
         <button
           onClick={handleShow}
-          className="hover:bg-heading-fill p-2 rounded-full"
+          className="hover:bg-heading-fill p-2 rounded-full "
         >
           <TiTick className="" color="green" size={30} />
         </button>
