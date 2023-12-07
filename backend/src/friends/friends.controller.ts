@@ -9,11 +9,14 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { FriendsDto } from './dto/friends.dto';
 import { NotFoundError } from 'rxjs';
+import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
 
+@UseGuards(AccessTokenGuard)
 @Controller('friends')
 export class FriendsController {
   constructor(private friendsService: FriendsService) {}

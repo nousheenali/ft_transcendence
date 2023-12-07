@@ -11,6 +11,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { NotFoundError } from 'rxjs';
@@ -19,7 +20,9 @@ import { diskStorage } from 'multer';
 import { Response } from 'express';
 import  * as path from "path";
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
 
+@UseGuards(AccessTokenGuard)
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}

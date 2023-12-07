@@ -65,6 +65,7 @@ export default function GamePage() {
 
       socket = io(backendUrl!, {
         query: { login: userData.login, username: userData.name },
+        withCredentials: true,
       });
       socket.on("connect", () => {
         const world: WorldDimensions = {
@@ -122,7 +123,7 @@ export default function GamePage() {
             physics: {
               default: "arcade",
             },
-            fps: {target : 120}
+            fps: { target: 120 },
           };
           phaserGame = new Phaser.Game(config);
           /* Global Variables for Phaser Game */
@@ -157,7 +158,7 @@ export default function GamePage() {
   const exitGame = () => {
     socket.disconnect();
     router.back();
-  }
+  };
 
   return (
     <div>

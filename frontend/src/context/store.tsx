@@ -156,6 +156,7 @@ type ChatSocketState = {
 export const useChatSocket = create<ChatSocketState>((set) => ({
   socket: io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
     autoConnect: false,
+    withCredentials: true,
   }),
   setSocket: (socket: Socket) => set({ socket }),
 }));

@@ -4,6 +4,7 @@ import {
   MessageBody,
   WebSocketServer,
   ConnectedSocket,
+  WsException,
 } from '@nestjs/websockets';
 import {
   CreateGatewayNotifDto,
@@ -11,10 +12,21 @@ import {
 } from './dto/create-gateway-notif.dto';
 import { Server, Socket } from 'socket.io';
 import { UserService } from 'src/user/user.service';
+import { Logger, UseGuards } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { SocketAuthGuard } from 'src/auth/socket.guard';
 // , { cors: '*' }
-@WebSocketGateway(8001, { cors: { origin: '*' } })
+@WebSocketGateway(8001, {
+  cors: {
+    origin: process.env.NEXT_PUBLIC_GATEWAY_URL,
+    credentials: true,
+  },
+})
 export class GatewayNotifGateway {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private jwtService: JwtService,
+  ) {}
   private userSocketMap = new Map<string, Socket>();
 
   @WebSocketServer()
@@ -25,6 +37,43 @@ export class GatewayNotifGateway {
   //     console.log(`User ID: ${userId}, Socket ID: ${socket.id}`);
   //   }
   // }
+  private logger: Logger = new Logger('notif');
+
+  afterInit(server: Server) {
+    this.logger.log('Chat GateWay has been initialized!!');
+
+    server.use((socket, next) => {
+      this.validateConnection(socket)
+        .then((user) => {
+          socket.handshake.auth['user'] = user;
+          socket.emit('userLogin', user);
+          next();
+        })
+        .catch((err) => {
+          this.logger.error(
+            `Failed to authenticate user: ${socket.handshake.auth?.user?.login}`,
+            err,
+          );
+        });
+    });
+  }
+
+  private validateConnection(client: Socket) {
+    // this.logger.log(client);
+    console.log(client.handshake.headers.cookie);
+    let token = client.handshake.headers.cookie;
+    const [name, value] = token.trim().split('=');
+    token = value;
+    try {
+      const payload = this.jwtService.verify<any>(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      return this.userService.getUserByLogin(payload.login);
+    } catch {
+      this.logger.error('Token invalid or expired');
+      return Promise.reject(new WsException('Token invalid or expired'));
+    }
+  }
 
   handleConnection(client: Socket, ...args: any[]) {
     // Access userId from the query parameter
@@ -35,6 +84,7 @@ export class GatewayNotifGateway {
     // this.printUserSocketMapContents();
   }
 
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('newNotif')
   newNotification(
     @MessageBody() body: CreateGatewayNotifDto,
@@ -47,6 +97,7 @@ export class GatewayNotifGateway {
   }
 
   // this is a gateway to listen to a new live game
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('newLiveGame')
   async newLiveGame(
     @MessageBody() body: newLiveGameDto,
@@ -63,6 +114,7 @@ export class GatewayNotifGateway {
     });
   }
   // this is a gateway to listen to a finished live game
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('finishedLiveGame')
   finishedLiveGame(
     @MessageBody() body: newLiveGameDto,

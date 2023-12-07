@@ -1,11 +1,13 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { TwoFaService } from './two-fa.service';
 import { TwofaDto, TwofaVerifyDto } from './dto/twoFa.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtAuthService } from '../jwt/jwt.service';
 import { Response } from 'express';
+import { AccessTokenGuard } from '../jwt/jwt.guard';
 
+@UseGuards(AccessTokenGuard)
 @Controller('two-fa')
 export class TwoFaController {
   constructor(

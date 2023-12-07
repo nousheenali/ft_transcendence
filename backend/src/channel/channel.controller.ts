@@ -10,13 +10,16 @@ import {
   HttpStatus,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { Type } from '@prisma/client';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
 import { ChannelRelationService } from './channel-relation.service';
 import { UserService } from '../user/user.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
+import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
 
+@UseGuards(AccessTokenGuard)
 @Controller('channels')
 export class ChannelController {
   constructor(
@@ -59,9 +62,14 @@ export class ChannelController {
    * @example GET /channels/current-channel/:channelName/:login
    **/
   @Get('/current-channel/:channelName/:login')
-  async GetCurrentChannelData(@Param('channelName') channelName: string , @Param('login') login: string) {
+  async GetCurrentChannelData(
+    @Param('channelName') channelName: string,
+    @Param('login') login: string,
+  ) {
     try {
-      const currentChannel = await this.channelService.getChannelByName(channelName);
+      const currentChannel = await this.channelService.getChannelByName(
+        channelName,
+      );
       if (!currentChannel) {
         throw new HttpException(
           'Unexpected Error while Getting The Current Channel',
