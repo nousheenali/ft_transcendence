@@ -151,6 +151,8 @@ export class ChannelService {
     });
     return update_channel;
   }
+  /**==============================================================================================*/
+
   /**
    *
    * @param channelInfoDto information of the channel to be updated
@@ -409,6 +411,49 @@ export class ChannelService {
     } catch (error) {
       throw new BadRequestException('UNABLE TO UPDATE CHANNEL ADMIN');
     }
+  }
+  /**==============================================================================================*
+   * ╭── 🟣
+   * ├ 👇 Add admin to the channel
+   * └── 🟣
+   * @param channelId: string, the id of the channel
+   * @param userId: string, the id of the new admin
+   * @returns the new admin of the channel
+   *
+   * ==============================================================================================
+   * ## STEPS:
+   * ==============================================================================================
+   * 1. get the channel
+   * 2. check if the user is a member of the channel
+   * 3. check if the user is already an admin
+   * 4. update the channel admin
+   * ==============================================================================================
+   */
+  async isAlreadyAdmin(channelId: string, userId: string) {
+    try {
+      const channel = await this.prisma.channel.findUnique({
+        where: {
+          id: channelId,
+        },
+        select: {
+          channelMembers: {
+            where: {
+              userId: userId,
+            },
+          },
+        },
+      });
+      if (!channel) throw new Error('Channel not found');
+      if (channel.channelMembers.length > 0) return true;
+      return false;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO CHECK IF USER IS ADMIN');
+    }
+  }
+
+  async addAdminToChannel(channelId: string, userId: string) {
+    try {
+    } catch (error) {}
   }
   /**==============================================================================================**/
 }

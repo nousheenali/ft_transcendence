@@ -34,9 +34,7 @@ export default function ChatSetting({
           channelName={channelInfo.channelName}
         />
         <hr className="mt-10 mb-10  border-heading-stroke-30" />
-        {channelInfo.channelType === "PRIVATE" && (
           <ChannelSettingDetails channelInfo={channelInfo} />
-        )}
         <AddAdmin creator={currectUser?.name!} channelInfo={channelInfo} />
         <hr className="mt-10 mb-10  border-heading-stroke-30" />
         <div className="flex-col justify-center items-center ">
