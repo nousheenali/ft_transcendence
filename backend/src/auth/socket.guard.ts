@@ -13,8 +13,8 @@ export class SocketAuthGuard implements CanActivate {
     const client: Socket = context.switchToWs().getClient();
     const handshake = client.handshake;
     let token = handshake.headers.cookie;
-    console.log(token);
     const [name, value] = token.trim().split('=');
+    console.log(value, 'value herere');
     try {
       const payload = await this.jwtService.verify(value, {
         secret: process.env.JWT_SECRET,

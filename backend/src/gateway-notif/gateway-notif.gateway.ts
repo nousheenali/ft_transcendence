@@ -29,8 +29,7 @@ export class GatewayNotifGateway {
   ) {}
   private userSocketMap = new Map<string, Socket>();
 
-  @WebSocketServer()
-  server: Server;
+  @WebSocketServer() server: Server;
 
   // printUserSocketMapContents() {
   //   for (const [userId, socket] of this.userSocketMap) {
@@ -40,7 +39,7 @@ export class GatewayNotifGateway {
   private logger: Logger = new Logger('notif');
 
   afterInit(server: Server) {
-    this.logger.log('Chat GateWay has been initialized!!');
+    this.logger.log('NOTIF GateWay has been initialized!!');
 
     server.use((socket, next) => {
       this.validateConnection(socket)
@@ -50,6 +49,7 @@ export class GatewayNotifGateway {
           next();
         })
         .catch((err) => {
+          console.log(err);
           this.logger.error(
             `Failed to authenticate user: ${socket.handshake.auth?.user?.login}`,
             err,
@@ -75,7 +75,7 @@ export class GatewayNotifGateway {
     }
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]) {
     // Access userId from the query parameter
     const userId = client.handshake.query.userId as string;
 

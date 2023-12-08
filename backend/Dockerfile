@@ -11,6 +11,7 @@ COPY prisma ./prisma/
 # Install app dependencies
 RUN npm install
 
+
 COPY . .
 
 RUN npm run build
@@ -25,5 +26,9 @@ COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3001
+
+EXPOSE 8005
+
+EXPOSE 8001
 
 CMD ["sh", "-c", "npm run migrate && npm run start:dev"]
