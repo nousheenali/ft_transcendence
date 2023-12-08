@@ -7,7 +7,7 @@ import { Socket } from "socket.io-client";
 import "react-toastify/dist/ReactToastify.css";
 import { ChannelsProps } from "../../../types";
 import { activateClickedChannel, useChatSocket } from "@/context/store";
-import { AiFillEyeInvisible, AiFillEye } from "react-icons/Ai";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 import { Input, Modal, Button } from "react-daisyui";
 

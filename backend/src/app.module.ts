@@ -12,9 +12,17 @@ import { ChatModule } from './chat/chat.module';
 import { GameModule } from './game/game.module';
 import { AuthModule } from './auth/auth.module';
 import { TwoFaModule } from './auth/mfa/two-fa.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '../uploads'),
+      serveStaticOptions: {
+        index: false,
+      },
+    }),
     AuthModule,
     UserModule,
     ChatModule,

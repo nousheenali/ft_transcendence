@@ -1,25 +1,32 @@
-// import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-// import { Socket } from "socket.io";
-// import { CookieService } from "src/cookie/cookie.service";
-// import { LoggedStrategyJWT } from "../passport/jwt.logged.strategy";
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { Socket } from 'socket.io';
 
-// @Injectable()
-// export class SocketAuthGuard implements CanActivate {
-// 	constructor(private cookieService: CookieService) {}
-	
-// 	async canActivate(context: ExecutionContext): Promise<boolean> {
-// 		const client: Socket = context.switchToWs().getClient();
-// 		const request = context.switchToHttp().getRequest();
-// 		const jwtToken = LoggedStrategyJWT.extractJWTCookie(request);
+// import { CookieService } from 'src/cookie/cookie.service';
+// import { LoggedStrategyJWT } from '../passport/jwt.logged.strategy';
+@Injectable()
+export class SocketAuthGuard implements CanActivate {
+  constructor(private jwtService: JwtService) {}
 
-// 		try {
-// 			const payload = await this.cookieService.verifyJWTToken(jwtToken);
-// 			request.user = payload;
-// 			return true;
-// 		} catch(err) {
-// 			console.log("Token failed to authorize: ", err);
-// 			client.disconnect();
-// 			return false;
-// 		}
-// 	}
-// }
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const client: Socket = context.switchToWs().getClient();
+    const handshake = client.handshake;
+    let token = handshake.headers.cookie;
+    console.log(token);
+    const [name, value] = token.trim().split('=');
+    try {
+      const payload = await this.jwtService.verify(value, {
+        secret: process.env.JWT_SECRET,
+      });
+      console.log(payload, 'verified');
+      // Attach the user payload to the socket object for later use
+      //   client.user = payload;
+      return true;
+    } catch (err) {
+      console.log('Token failed to authorize: ', err);
+      client.disconnect();
+      return false;
+    }
+  }
+}

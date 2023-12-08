@@ -12,16 +12,25 @@ import { AuthContext } from "@/context/AuthProvider";
 const fetchData = async (activeUser: string | null) => {
   try {
     const getUserByLogin = await fetch(
-      "http://localhost:3001/user/getByLogin/" + activeUser
+      "http://localhost:3001/user/getByLogin/" + activeUser,
+      {
+        credentials: "include", // Include credentials here
+      }
     ).then((res) => res.json());
+
     if (getUserByLogin) {
       const data = await fetch(
-        "http://localhost:3001/notification/getById/" + getUserByLogin.id
+        "http://localhost:3001/notification/getById/" + getUserByLogin.id,
+        {
+          credentials: "include", // Include credentials here
+        }
       ).then((res) => res.json());
+
       return data;
     }
     return [];
   } catch (error) {
+    console.log(error); // It's usually a good idea to log the error for debugging purposes
     return [];
   }
 };
@@ -77,6 +86,7 @@ export default function NotificationIcon() {
         process.env.NEXT_NOTIFICATION_URL || "http://localhost:8001";
       const socket = io(backendUrl, {
         query: { userId: userData },
+        withCredentials: true,
       });
       socket.on("connect", () => {
         console.log("connected", socket.id);
