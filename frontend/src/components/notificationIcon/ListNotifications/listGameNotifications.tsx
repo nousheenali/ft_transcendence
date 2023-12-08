@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { TiCancel, TiTick } from "react-icons/ti";
 import { NotificationItems } from "../types";
+import InvitaionGameCustomize from "@/components/startGame/startInvitedGame";
 
 export const GameNotificationsList = ({
   GameInviteNotificationList,
@@ -27,7 +28,7 @@ export const GameNotificationsList = ({
                   <h1 className="truncate max-w-[70px] pt-4">
                     {item.sender.login}
                   </h1>
-                  <span className="absolute bottom-1 left-4 w-2 h-2 bg-green-400 dark:border-gray-800 rounded-full"></span>
+                  <span className="absolute bottom-1 left-4 w-2 h-2  dark:border-gray-800 rounded-full"></span>
                 </div>
                 <div className="truncate w-3/5 py-1 pt-4 max-w-[200px]">
                   {item.content}
@@ -38,24 +39,22 @@ export const GameNotificationsList = ({
                       Accepted/Declined
                     </p>
                   ) : (
-                    <>
-                      <button
-                        onClick={() => {
-                          acceptGameInvite(item);
-                        }}
-                        className="hover:bg-heading-fill p-2 rounded-full"
-                      >
-                        <TiTick className="" color="green" size={30} />
-                      </button>
+                    <div className=" flex flex-row items-center gap-3 ">
+                      <InvitaionGameCustomize
+                        handleInviteClick={() => {}}
+                        eventNames="ACCEPT"
+                        acceptGameInvite={acceptGameInvite}
+                        item={item}
+                      />
                       <button
                         onClick={() => {
                           declineGameInvite(item);
                         }}
-                        className="hover:bg-heading-fill p-2 rounded-full"
+                        className="hover:bg-heading-fill p-2 rounded-full "
                       >
                         <TiCancel color="red" size={30} />
                       </button>
-                    </>
+                    </div>
                   )}
                 </>
               </div>

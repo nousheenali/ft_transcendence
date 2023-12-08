@@ -8,6 +8,8 @@ import { CreateUserDto } from './dto';
 import { NotFoundError } from 'rxjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ValidationError } from 'class-validator';
+import { error } from 'console';
 
 @Injectable()
 export class UserService {
@@ -171,16 +173,29 @@ export class UserService {
       throw new BadRequestException('Unable to get all users');
     }
   }
-  async updateName(login: string, name: string) {
+
+  async updateName(login: string, dto: UpdateUserDto) {
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        name: {
+          equals: dto.name,
+          mode: 'insensitive',
+        },
+        login: { not: login },
+      },
+    });
+    if (existingUser) {
+      throw new BadRequestException('Not a unique name.');
+    }
+
     const updatedName = await this.prisma.user.update({
       where: {
         login: login,
       },
-      data: { name },
+      data: { name: dto.name },
     });
-    if (!updatedName) {
-      throw new BadRequestException(`Unable to update name`);
-    }
+    if (!updatedName)
+      throw new BadRequestException('Unable to update name');
     return updatedName;
   }
 
