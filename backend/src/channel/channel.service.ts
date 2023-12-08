@@ -469,6 +469,7 @@ export class ChannelService {
           userId: userId,
         },
       });
+
       if (!userChannelRelation)
         throw new Error('User is not a member of the channel');
 
@@ -496,7 +497,6 @@ export class ChannelService {
         },
       });
 
-      console.log('user added to channel', newAdmin.login);
       // return the new added admin to the channel
       return newAdmin;
     } catch (error) {

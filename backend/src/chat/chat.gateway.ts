@@ -819,28 +819,59 @@ export class ChatGateway
   ) {
     const { addedAdmin, channelName, addedBy } = data;
 
-    // Getting the data of the new admin and the channel
+    // ------------------ Get the user and the channel from the database ------------------
     const newAdminData = await this.userService.getUserByName(addedAdmin);
     const channelData = await this.channelService.getChannelByName(channelName);
-
-    // If the new admin does not exist, return
+    const addedByData = await this.userService.getUserByName(addedBy);
+    // ------------------ If the user does not exist, return ------------------------------
     if (newAdminData === undefined || newAdminData === null) return;
-    // If the channel does not exist, return
+
+    // ------------------ If the channel does not exist, return ---------------------------
     if (channelData === undefined || channelData === null) return;
 
-    // Update the channel property "channelAdmin" in the database
-    await this.channelService.addAdminToChannel(
-      newAdminData.id,
-      channelData.id,
-    );
-
-    // Emitting message to the channel room to notify the other users that the user has been added
-    //   as an admin
+    // ------------ Get the channel and creator rooms -------------------------------------
     const channelRoom = this.roomsService.getRoom(
       channelName + channelData.channelType,
       'CHANNELS',
     );
-    client.join(channelRoom.name);
+
+    const creatorRoom = this.roomsService.getRoom(addedByData.login, 'USERS');
+
+    // ------------------ Check if the user is already a member ---------------------------
+    const isMember = await this.channelRelationService.isRelationExist(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    if (!isMember) {
+      this.server.to(creatorRoom.name).emit('UserNotMember', {
+        newAdmin: newAdminData.name,
+        channelName: channelName,
+      });
+      return;
+    }
+
+    // ------------------ Check if the user is already an admin ---------------------------
+    const isAdmin = await this.channelService.isAlreadyAdmin(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    if (isAdmin) {
+      this.server.to(creatorRoom.name).emit('UserAlreadyAdmin', {
+        newAdmin: newAdminData.name,
+        channelName: channelName,
+      });
+      return;
+    }
+    
+    // ---------------- Update the "channelAdmin" in the database -------------------------
+    await this.channelService.addAdminToChannel(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    // ------------------ Emitting message to the channel room ---------------------------
     this.server.to(channelRoom.name).emit('NewChannelAdmin', {
       newAdmin: newAdminData.name,
       channelName: channelName,
