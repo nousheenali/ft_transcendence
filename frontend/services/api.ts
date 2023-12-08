@@ -53,6 +53,7 @@ export async function updateData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -78,6 +79,7 @@ export async function deleteData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
       method: "DELETE",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

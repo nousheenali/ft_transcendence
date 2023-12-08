@@ -33,9 +33,6 @@ export default function ChatSocket({
     try {
       const chatSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
         query: { userLogin: user.login },
-        auth: {
-          accessToken: "asad",
-        },
         autoConnect: false,
         withCredentials: true,
       });
