@@ -542,7 +542,7 @@ export class ChatGateway
       }
       //  If the user is the admin, assign the new admin by selecting the oldest member
       //    in the channel
-      await this.channelService.updateChannelAdmin(channelData.id);
+      await this.channelService.updateChannelCreator(channelData.id);
       this.server.to(channelRoom.name).emit('NewChannelAdmin');
     } else {
       //  Delete the channel relation in the database between the user and the channel
@@ -799,6 +799,53 @@ export class ChatGateway
     }
   }
 
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   * Handling event by subscribing to the event "AddAdmin" to add admin to the channel
+   * then:
+   * 1. Get the user and the channel from the database
+   * 2. Update the channel property "channelAdmin" in the database
+   * 3. Emit the message to the channel room to notify the other users that the user has been added
+   *   as an admin
+   */
+  @SubscribeMessage('AddAdmin')
+  async addAdmin(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: {
+      addedAdmin: string;
+      channelName: string;
+      addedBy: string;
+    },
+  ) {
+    const { addedAdmin, channelName, addedBy } = data;
+
+    // Getting the data of the new admin and the channel
+    const newAdminData = await this.userService.getUserByName(addedAdmin);
+    const channelData = await this.channelService.getChannelByName(channelName);
+
+    // If the new admin does not exist, return
+    if (newAdminData === undefined || newAdminData === null) return;
+    // If the channel does not exist, return
+    if (channelData === undefined || channelData === null) return;
+
+    // Update the channel property "channelAdmin" in the database
+    await this.channelService.addAdminToChannel(
+      newAdminData.id,
+      channelData.id,
+    );
+
+    // Emitting message to the channel room to notify the other users that the user has been added
+    //   as an admin
+    const channelRoom = this.roomsService.getRoom(
+      channelName + channelData.channelType,
+      'CHANNELS',
+    );
+    client.join(channelRoom.name);
+    this.server.to(channelRoom.name).emit('NewChannelAdmin', {
+      newAdmin: newAdminData.name,
+      channelName: channelName,
+    });
+  }
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling disconnection
    */

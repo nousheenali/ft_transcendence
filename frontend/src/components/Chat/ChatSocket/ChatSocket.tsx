@@ -265,6 +265,21 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
+      socket.on("NewChannelAdmin", (data:any) => {
+        const { newAdmin, channelName } = data;
+
+        toast.success(`user ${newAdmin} is now an admin of ${channelName}`, {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+
+      /**-------------------------------------------------------------------------**/
       socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);
       });

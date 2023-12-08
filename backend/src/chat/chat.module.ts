@@ -7,6 +7,8 @@ import { ChannelService } from '../channel/channel.service';
 import { FriendsService } from 'src/friends/friends.service';
 import { ChannelRelationService } from '../channel/channel-relation.service';
 import { UserMessagesService } from '../user/user-messages/user-messages.service';
+import { UserModule } from 'src/user/user.module';
+import { ChannelModule } from 'src/channel/channel.module';
 
 @Module({
   providers: [

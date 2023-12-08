@@ -64,7 +64,7 @@ export function AddAdmin({
     }
 
     // Emit the event to the server
-    socket.emit("add-admin", {
+    socket.emit("AddAdmin", {
       addedAdmin: trimmedInput,
       channelName: channel.channelName,
       addedBy: addedBy, // login of the user who added the admin

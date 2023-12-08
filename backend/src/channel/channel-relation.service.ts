@@ -3,7 +3,6 @@ import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; //
 import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
 import { ChannelService } from './channel.service';
 import { UserService } from 'src/user/user.service';
-import chalk from 'chalk';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()

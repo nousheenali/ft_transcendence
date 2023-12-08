@@ -8,6 +8,6 @@ import { UserService } from '../user/user.service';
 @Module({
   controllers: [ChannelController],
   providers: [ChannelService, ChannelRelationService, UserService],
-  imports: [PrismaModule], // 👈 Import PrismaModule so PrismaService is available in this module.
+  imports: [PrismaModule],
 })
 export class ChannelModule {}
