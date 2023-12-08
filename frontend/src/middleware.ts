@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     const decodedToken = jwtDecode(accessToken.value);
     
     // Optionally, you can add your logic to check the token payload or expiration here
-    console.log('Decoded Token:', decodedToken);
+    // console.log('Decoded Token:', decodedToken);
     if (decodedToken.TFAEnabled === true && decodedToken.TFAVerified === false) {
       const currentUrl = new URL('/login', request.url);
       currentUrl.searchParams.set('show2faModal', 'true');
