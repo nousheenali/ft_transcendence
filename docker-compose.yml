@@ -30,8 +30,10 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+      - postgres
     networks:
       - backend
+
 
   backend:
     build:
@@ -41,7 +43,7 @@ services:
       - ./backend/.env
     ports:
       - "3001:3001"
-      - "5555:5555" # Add this line to expose Prisma Studio port
+      - "5555:5555"
     depends_on:
       postgres:
         condition: service_healthy

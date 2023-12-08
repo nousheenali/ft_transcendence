@@ -24,6 +24,6 @@ COPY --from=builder /app/tsconfig.json ./
 
 COPY --from=builder /app/prisma ./prisma
 
-
 EXPOSE 3001
+
 CMD ["sh", "-c", "npm run migrate && npm run start:dev"]
