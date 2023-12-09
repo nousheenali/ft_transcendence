@@ -23,6 +23,7 @@ export default function ChannelUser({
   const { socket } = useChatSocket();
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
+  const [isChannelAdmin, setIsChannelAdmin] = useState<boolean>(false);
 
   const modalRef = React.useRef<HTMLDialogElement>(null);
   const handleModalClick = useCallback(() => {
@@ -124,10 +125,28 @@ export default function ChannelUser({
           );
           setIsMuted(isUserMuted);
         };
+        // setIsMuted(channel.channelMembers.find((member) => member.id === user.id)?.isMuted!);
         fetchData();
         if (reRenderAll) setReRenderAll(false);
       } catch (error) {
         console.log(error);
+      }
+
+      if (
+        channel &&
+        channel.channelName !== undefined &&
+        channel.channelName !== "" &&
+        channel.channelMembers.length > 0
+      ) {
+        if (
+          channel.channelMembers.some(
+            (member) => member.user.id === user.id && member.isAdmin
+          )
+        ) {
+          setIsChannelAdmin(true);
+        } else {
+          setIsChannelAdmin(false);
+        }
       }
     }
   }, [user, channel, currentUser, reRenderAll]);
@@ -151,6 +170,23 @@ export default function ChannelUser({
           {user.name}
         </span>
       </div>
+
+      {/* ====================================================== */}
+      {channel &&
+        channel.channelName !== undefined &&
+        channel.channelName !== "" &&
+        channel.createdBy === user.id && (
+          <span className="font-light text-xs px-2 text-subheading-two font-saira-condensed">
+            creator
+          </span>
+        )}
+      {/* ====================================================== */}
+
+      {isChannelAdmin && (
+        <span className="font-light text-xs px-2 text-subheading-two font-saira-condensed">
+          admin
+        </span>
+      )}
 
       {/* ====================================================== */}
       <div className="flex flex-row gap-3">

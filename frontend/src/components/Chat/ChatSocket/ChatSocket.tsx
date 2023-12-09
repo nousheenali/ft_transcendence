@@ -265,7 +265,7 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
-      socket.on("NewChannelAdmin", (data: any) => {
+      socket.on("ChannelAdminAdded", (data: any) => {
         const { newAdmin, channelName } = data;
 
         toast.success(`user ${newAdmin} is now an admin of ${channelName}`, {
@@ -277,6 +277,7 @@ export default function ChatSocket({
           draggable: true,
           progress: undefined,
         });
+        setReRenderAll(true);
       });
 
       /**-------------------------------------------------------------------------**/
@@ -342,6 +343,7 @@ export default function ChatSocket({
         socket.off("UserStatusUpdate");
         socket.off("ReRenderAllUsers");
         socket.off("UserAlreadyAdmin");
+        socket.off("ChannelAdminAdded");
         socket.off("WrongChannelPassword");
         socket.off("UserAlreadyInChannel");
         socket.off("UserInvitedToChannel");

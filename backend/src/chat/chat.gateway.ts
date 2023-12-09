@@ -864,16 +864,16 @@ export class ChatGateway
       });
       return;
     }
-    
+
     // ---------------- Update the "channelAdmin" in the database -------------------------
-    await this.channelService.addAdminToChannel(
+    const newAdmin = await this.channelService.addAdminToChannel(
       channelData.id,
       newAdminData.id,
     );
 
     // ------------------ Emitting message to the channel room ---------------------------
-    this.server.to(channelRoom.name).emit('NewChannelAdmin', {
-      newAdmin: newAdminData.name,
+    this.server.to(channelRoom.name).emit('ChannelAdminAdded', {
+      newAdmin: newAdmin.name,
       channelName: channelName,
     });
   }

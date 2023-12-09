@@ -74,6 +74,13 @@ export class ChannelService {
         where: {
           channelName: channelName,
         },
+        include: {
+          channelMembers: {
+            include: {
+              user: true,
+            }
+          },
+        },
       });
       return channel;
     } catch (error) {
@@ -104,7 +111,13 @@ export class ChannelService {
           channelType: channelType,
         },
         select: {
-          channelMembers: true,
+          channelMembers: {
+            select: {
+              user: true,
+              isAdmin: true,
+              isMuted: true,
+            },
+          },
           channelName: true,
           channelType: true,
           createdBy: true,
@@ -208,7 +221,13 @@ export class ChannelService {
               channel: {
                 select: {
                   id: true,
-                  channelMembers: true,
+                  channelMembers: {
+                    select: {
+                      user: true,
+                      isAdmin: true,
+                      isMuted: true,
+                    },
+                  },
                   channelName: true,
                   channelType: true,
                   createdBy: true,
@@ -253,7 +272,13 @@ export class ChannelService {
               channel: {
                 select: {
                   id: true,
-                  channelMembers: true,
+                  channelMembers: {
+                    select: {
+                      user: true,
+                      isAdmin: true,
+                      isMuted: true,
+                    },
+                  },
                   channelName: true,
                   channelType: true,
                   createdBy: true,
@@ -299,6 +324,8 @@ export class ChannelService {
                   isOnline: true,
                 },
               },
+              isAdmin: true,
+              isMuted: true,
             },
           },
         },
@@ -495,11 +522,13 @@ export class ChannelService {
           channelId: channelId,
           userId: userId,
         },
+        include: {
+          user: true,
+        },
       });
       if (!updatedRelation) throw new Error('Relation not found');
 
-      console.log(updatedRelation);
-      return updatedRelation;
+      return updatedRelation.user;
     } catch (error) {
       throw new BadRequestException('UNABLE TO ADD ADMIN TO CHANNEL');
     }

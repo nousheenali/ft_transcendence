@@ -22,6 +22,8 @@ export interface channelRelationProps {
   channelId: string;
   userId: string;
   user: ChannelUserProps;
+  isAdmin: boolean;
+  isMuted: boolean;
 }
 
 /*-------------------------------------------------------------------*/
