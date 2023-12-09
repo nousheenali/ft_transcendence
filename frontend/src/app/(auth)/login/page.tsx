@@ -53,7 +53,7 @@ export default function Home() {
       }
 
       const response = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NESTJS_URL}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );

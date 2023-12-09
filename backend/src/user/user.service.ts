@@ -194,8 +194,7 @@ export class UserService {
       },
       data: { name: dto.name },
     });
-    if (!updatedName)
-      throw new BadRequestException('Unable to update name');
+    if (!updatedName) throw new BadRequestException('Unable to update name');
     return updatedName;
   }
 
@@ -204,7 +203,7 @@ export class UserService {
       throw new Error('Invalid file object received.');
     }
     const filePath = `${img.filename}`;
-    const fileURL = `http://localhost:3001/` + filePath; //server URL
+    const fileURL = `${process.env.FILE_STORAGE_URL}` + filePath; //server URL
     const updatedName = await this.prisma.user.update({
       where: {
         login: login,

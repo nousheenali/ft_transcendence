@@ -12,7 +12,7 @@ import { AuthContext } from "@/context/AuthProvider";
 const fetchData = async (activeUser: string | null) => {
   try {
     const getUserByLogin = await fetch(
-      "http://localhost:3001/user/getByLogin/" + activeUser,
+      `${process.env.NESTJS_URL}/user/getByLogin/` + activeUser,
       {
         credentials: "include", // Include credentials here
       }
@@ -20,7 +20,7 @@ const fetchData = async (activeUser: string | null) => {
 
     if (getUserByLogin) {
       const data = await fetch(
-        "http://localhost:3001/notification/getById/" + getUserByLogin.id,
+        `${process.env.NESTJS_URL}/notification/getById/` + getUserByLogin.id,
         {
           credentials: "include", // Include credentials here
         }
@@ -82,8 +82,7 @@ export default function NotificationIcon() {
 
   useEffect(() => {
     if (user && userData) {
-      const backendUrl =
-        process.env.NEXT_NOTIFICATION_URL || "http://localhost:8001";
+      const backendUrl = process.env.NEXT_NOTIFICATION_URL as string;
       const socket = io(backendUrl, {
         query: { userId: userData },
         withCredentials: true,

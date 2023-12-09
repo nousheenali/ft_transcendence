@@ -75,7 +75,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         return;
       }
       const response = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NESTJS_URL}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
@@ -99,13 +99,13 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         return;
       }
       const response = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NESTJS_URL}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
 
       const responsedeactivate = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.deactivateTwoFa}`,
+        `${process.env.NESTJS_URL}${API_ENDPOINTS.deactivateTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
@@ -136,7 +136,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
       );
       const updatedData = JSON.parse(updatedUser);
 
-      setUserInfo(prevUserInfo => {
+      setUserInfo((prevUserInfo) => {
         const updatedUserInfo = { ...prevUserInfo, ...updatedData };
         setNewName(updatedUserInfo.name);
         return updatedUserInfo;
@@ -172,7 +172,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
             API_ENDPOINTS.getUserbyLogin
           );
 
-          setUserInfo(prevUserInfo => {
+          setUserInfo((prevUserInfo) => {
             const updatedUserInfo = { ...prevUserInfo, ...userResult };
             setNewName(updatedUserInfo.name);
             return updatedUserInfo;
@@ -198,7 +198,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
               <input
                 type="text"
                 value={newName}
-                onChange={e => setNewName(e.target.value)}
+                onChange={(e) => setNewName(e.target.value)}
               />
             </div>
           ) : (
@@ -240,7 +240,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
           <div className="w-full text-center">
             <button
               className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-              onClick={e => {
+              onClick={(e) => {
                 userInfo?.TFAEnabled ? handleShow() : handleActivateTwoFa();
               }}
             >
@@ -279,7 +279,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
                 type="search"
                 name="search"
                 placeholder="Enter Authenticator Code"
-                onChange={e => {
+                onChange={(e) => {
                   setCode(e.target.value);
                 }}
               />

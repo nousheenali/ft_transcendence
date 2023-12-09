@@ -1,6 +1,6 @@
 import { friendRelationDto } from "@/components/Profile/types";
 
-const backendUrl = "http://localhost:3001";
+const backendUrl = process.env.NESTJS_URL;
 
 // Helper function to make GET requests
 export async function getData<T>(login: string, endpoint: string): Promise<T> {
