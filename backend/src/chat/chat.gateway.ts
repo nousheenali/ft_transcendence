@@ -836,16 +836,31 @@ export class ChatGateway
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling disconnection
    */
+  // @UseGuards(SocketAuthGuard)
+  // @SubscribeMessage('disconnect')
   @UseGuards(SocketAuthGuard)
   @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {
     this.stopHeartbeat();
+
     const userLogin = client.handshake.query.userLogin as string;
+
+    // Check if userLogin is defined
+    if (!userLogin) {
+      this.logger.warn(
+        `No user login found for disconnected client with id: ${client.id}`,
+      );
+      return; // Exit the method if userLogin is not defined
+    }
+
     this.logger.log(
       chalk.red('The client with id of ') +
         chalk.magenta(client.id) +
+        chalk.red(' and user login ') +
+        chalk.magenta(userLogin) +
         chalk.red(' has been disconnected!!'),
     );
+
     this.chatService.updateUserStatus(userLogin, false);
     this.server.emit('UserStatusUpdate');
   }

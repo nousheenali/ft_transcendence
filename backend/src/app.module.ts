@@ -14,6 +14,8 @@ import { AuthModule } from './auth/auth.module';
 import { TwoFaModule } from './auth/mfa/two-fa.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -34,8 +36,33 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     GatewayNotifModule,
     UserMessagesModule,
     TwoFaModule,
+    /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+     *  RATE LIMTING
+     */
+    // PROTECT FROM BRUTE FORCE ATTACKS
+    // apply the throttler configuration globally
+    // it defined that , within 60 seconds a user can make 10 requests
+    // to prevent from overloadig the system
+    // when the user limit exceeds , subsequent requests will be denied untill the time resets
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 1000,
+      },
+    ]),
+    /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●*/
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+     *  RATE LIMTING
+     */
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard, // RESPONSIBLE FOR ENFORCING THE RATELIMTING TO ALL THE ROUTES IN THE APPLICATION
+    },
+    /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●*/
+  ],
 })
 export class AppModule {}
