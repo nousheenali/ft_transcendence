@@ -5,7 +5,7 @@ import { useGameState, useSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
-import { updateData } from "../../../../services/api";
+import { updateData } from "../../../services/api";
 import { NotificationIcon } from "../notificationIcon";
 import { ListAllNotifications } from "../ListNotifications/listAllNotifications";
 //animate-ping -> for new notification gives animation
@@ -17,7 +17,8 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { isNewNotification, setIsNewNotification } = useSocket();
-  const { setClicked, setInvitee, setInviter, setIsAccepted, setIsQueue} = useGameState();
+  const { setClicked, setInvitee, setInviter, setIsAccepted, setIsQueue } =
+    useGameState();
   const router = useRouter();
 
   const openDropdown = () => {

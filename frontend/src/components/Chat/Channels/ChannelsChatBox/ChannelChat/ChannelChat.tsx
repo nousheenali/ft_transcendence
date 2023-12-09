@@ -9,7 +9,7 @@ import {
   useReRenderAllState,
 } from "@/context/store";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
-import { getChannelMessagesData } from "../../../../../../services/channels";
+import { getChannelMessagesData } from "../../../../../services/channels";
 import { AuthContext } from "@/context/AuthProvider";
 
 /**============================================================================================*/

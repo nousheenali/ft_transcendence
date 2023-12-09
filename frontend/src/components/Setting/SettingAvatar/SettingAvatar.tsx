@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
-import { updateUserImg } from "../../../../services/user";
+import { updateUserImg } from "../../../services/user";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthProvider";
@@ -39,7 +39,7 @@ export default function SettingAvatar({ avatarUrl }: any) {
     try {
       const defaultAvatarUrl = "https://i.imgur.com/6VBx3io.png";
 
-      const blob = await fetch(defaultAvatarUrl).then(r => r.blob());
+      const blob = await fetch(defaultAvatarUrl).then((r) => r.blob());
       const file = new File([blob], "default-avatar.png", {
         type: "image/png",
       });
@@ -70,7 +70,7 @@ export default function SettingAvatar({ avatarUrl }: any) {
         id="avatar-input"
         accept="image/*"
         style={{ display: "none" }}
-        onChange={e => {
+        onChange={(e) => {
           const selectedFile = e.target.files?.[0];
           if (selectedFile) {
             handleSaveImg(selectedFile);

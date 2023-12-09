@@ -5,14 +5,14 @@ import { NotificationItems, SendNotification } from "./types";
 
 import { Socket, io } from "socket.io-client";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
-import { getUserData } from "../../../services/user";
+import { getUserData } from "../../services/user";
 import { useGameState, useSocket } from "@/context/store";
 import { AuthContext } from "@/context/AuthProvider";
 
 const fetchData = async (activeUser: string | null) => {
   try {
     const getUserByLogin = await fetch(
-      `${process.env.NESTJS_URL}/user/getByLogin/` + activeUser,
+      `${process.env.NEXT_PUBLIC_BACKEND}/user/getByLogin/` + activeUser,
       {
         credentials: "include", // Include credentials here
       }
@@ -20,7 +20,7 @@ const fetchData = async (activeUser: string | null) => {
 
     if (getUserByLogin) {
       const data = await fetch(
-        `${process.env.NESTJS_URL}/notification/getById/` + getUserByLogin.id,
+        `${process.env.NEXT_PUBLIC_BACKEND}/notification/getById/` + getUserByLogin.id,
         {
           credentials: "include", // Include credentials here
         }
@@ -82,7 +82,7 @@ export default function NotificationIcon() {
 
   useEffect(() => {
     if (user && userData) {
-      const backendUrl = process.env.NEXT_NOTIFICATION_URL as string;
+      const backendUrl = process.env.NEXT_PUBLIC_NOTIFICATION_URL as string;
       const socket = io(backendUrl, {
         query: { userId: userData },
         withCredentials: true,

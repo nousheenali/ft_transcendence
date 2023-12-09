@@ -13,8 +13,8 @@ import {
 } from "@/context/store";
 import { ChannelsProps, SocketMessage } from "@/components/Chat/types";
 import { AuthContext } from "@/context/AuthProvider";
-import { sendNotification } from "../../../../../services/friends";
-import { getUserMuteStatus, getBlockList } from "../../../../../services/user";
+import { sendNotification } from "../../../../services/friends";
+import { getUserMuteStatus, getBlockList } from "../../../../services/user";
 import { Content } from "@/components/notificationIcon/types";
 import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
 

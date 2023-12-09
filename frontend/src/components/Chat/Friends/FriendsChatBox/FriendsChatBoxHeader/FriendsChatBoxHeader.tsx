@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
 import { Button, Drawer, Menu } from "react-daisyui";
-import { sendNotification } from "../../../../../../services/friends";
+import { sendNotification } from "../../../../../services/friends";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {

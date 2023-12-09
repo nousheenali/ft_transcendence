@@ -15,10 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "react-daisyui";
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
-import { getUserData, updateUserName } from "../../../../services/user";
+import { getUserData, updateUserName } from "../../../services/user";
 import SettingAvatar from "@/components/Setting/SettingAvatar/SettingAvatar";
 import { AuthContext } from "@/context/AuthProvider";
-import { activateTwoFa, verifyTwoFa } from "../../../../services/two-fa";
+import { activateTwoFa, verifyTwoFa } from "../../../services/two-fa";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useIsUserUpdated } from "@/context/store";
@@ -75,7 +75,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         return;
       }
       const response = await axios.post(
-        `${process.env.NESTJS_URL}${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
@@ -99,13 +99,13 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         return;
       }
       const response = await axios.post(
-        `${process.env.NESTJS_URL}${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
 
       const responsedeactivate = await axios.post(
-        `${process.env.NESTJS_URL}${API_ENDPOINTS.deactivateTwoFa}`,
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.deactivateTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );

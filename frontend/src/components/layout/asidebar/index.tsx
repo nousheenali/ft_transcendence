@@ -7,7 +7,7 @@ import UserProfileSide from "../../userProfileSide/userProfileSide";
 import MenuSideBar from "../../menuSideBar/menuSideBar";
 
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
-import { getUserData } from "../../../../services/user";
+import { getUserData } from "../../../services/user";
 import { userInformation } from "@/components/Profile/types";
 import { AuthContext } from "@/context/AuthProvider";
 import { useIsUserUpdated } from "@/context/store";

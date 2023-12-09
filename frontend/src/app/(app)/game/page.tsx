@@ -11,7 +11,7 @@ import React, {
 import io, { Socket } from "socket.io-client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { getUserData } from "../../../../services/user";
+import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
 import {

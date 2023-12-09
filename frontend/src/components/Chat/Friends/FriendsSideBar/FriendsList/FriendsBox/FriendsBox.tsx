@@ -2,7 +2,7 @@ import Image from "next/image";
 import { AuthContext } from "@/context/AuthProvider";
 import { userInformation } from "@/components/Profile/types";
 import React, { useEffect, useState, useContext } from "react";
-import { getFriendsData } from "../../../../../../../services/friends";
+import { getFriendsData } from "../../../../../../services/friends";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import { activateClickedFriend, useReRenderAllState } from "@/context/store";
 import Friend from "@/components/Chat/Friends/FriendsSideBar/FriendsList/Friend/Friend";

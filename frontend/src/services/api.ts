@@ -1,6 +1,6 @@
 import { friendRelationDto } from "@/components/Profile/types";
 
-const backendUrl = process.env.NESTJS_URL;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND;
 
 // Helper function to make GET requests
 export async function getData<T>(login: string, endpoint: string): Promise<T> {

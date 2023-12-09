@@ -1,9 +1,9 @@
 import { TableRowData } from "@/components/Table/types";
 import { userInformation } from "@/components/Profile/types";
-import { getFriendsData } from "../../../services/friends";
+import { getFriendsData } from "../../services/friends";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 
-export const generateFriendRequestsData = async(login: string) => {
+export const generateFriendRequestsData = async (login: string) => {
   const records: TableRowData[] = [];
   const data: userInformation[] = await getFriendsData(
     login,

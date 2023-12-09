@@ -31,7 +31,7 @@ export default function ChatSocket({
    * ======================================================================== **/
   useEffect(() => {
     try {
-      const chatSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
+      const chatSocket = io(process.env.NEXT_PUBLIC_BACKEND as string, {
         query: { userLogin: user.login },
         autoConnect: false,
         withCredentials: true,

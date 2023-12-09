@@ -145,7 +145,7 @@ export default function MenuSideBar() {
         </Link>
 
         <a
-          href={`${process.env.NEXT_PUBLIC_SOCKET_URL}/auth/logout`}
+          href={`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`}
           // onClick={() =>
           //   // signOut({ callbackUrl: "http://localhost:3000/login" })
           // }

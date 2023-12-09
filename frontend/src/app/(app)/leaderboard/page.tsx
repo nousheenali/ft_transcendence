@@ -1,18 +1,17 @@
-'use client'
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import TopPlayer from '@/components/LeaderBoard/TopPlayer/TopPlayer';
-import ResponsiveTable from '@/components/Table/Table';
-import Image from 'next/image';
-import { generateLeaderboardData } from '@/data/Table/leaderBoard';
-import { AuthContext } from '@/context/AuthProvider';
-import { TableRowData } from '@/components/Table/types';
-import { userInformation } from '@/components/Profile/types';
-import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
-import { getAllUsersData } from '../../../../services/user';
-import { leaderboardHeadings } from '@/data/Table/profileTableHeadings';
+"use client";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import TopPlayer from "@/components/LeaderBoard/TopPlayer/TopPlayer";
+import ResponsiveTable from "@/components/Table/Table";
+import Image from "next/image";
+import { generateLeaderboardData } from "@/data/Table/leaderBoard";
+import { AuthContext } from "@/context/AuthProvider";
+import { TableRowData } from "@/components/Table/types";
+import { userInformation } from "@/components/Profile/types";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { getAllUsersData } from "../../../services/user";
+import { leaderboardHeadings } from "@/data/Table/profileTableHeadings";
 
 export default function Leaderboard() {
-
   const [leaderboardData, setleaderboardData] = useState<TableRowData[]>([]);
   const [topPlayers, setTopPlayers] = useState<userInformation[]>([]);
   const [maxHeight, setMaxHeight] = useState("none");
@@ -28,8 +27,8 @@ export default function Leaderboard() {
       login,
       API_ENDPOINTS.getAllUsers
     );
-    setTopPlayers(users.slice(0,3)); //get top 3 players
-  }
+    setTopPlayers(users.slice(0, 3)); //get top 3 players
+  };
 
   useEffect(() => {
     fetchTableData();
@@ -38,8 +37,7 @@ export default function Leaderboard() {
       setMaxHeight(`${containerHeight}px`);
       //  console.log("Container Height:", containerHeight);
     }
-  },[login]);
-
+  }, [login]);
 
   return (
     <div className=" h-full mx-auto p-6">

@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import React, { useEffect, useContext, useState } from "react";
-import { getUserData } from "../../../services/user";
+import { getUserData } from "../../services/user";
 import ResponsiveTable from "@/components/Table/Table";
 import { Game } from "@/components/GameComponents/types";
-import { getGamesHistory } from "../../../services/games";
+import { getGamesHistory } from "../../services/games";
 import GameStatus from "@/components/GameStatus/Gamestatus";
 import { userInformation } from "@/components/Profile/types";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";

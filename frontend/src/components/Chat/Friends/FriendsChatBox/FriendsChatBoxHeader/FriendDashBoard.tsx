@@ -7,8 +7,8 @@ import { activateClickedFriend } from "@/context/store";
 import { Game } from "@/components/GameComponents/types";
 import GameStatus from "@/components/GameStatus/Gamestatus";
 import { userInformation } from "@/components/Profile/types";
-import { getUserData } from "../../../../../../services/user";
-import { getGamesHistory } from "../../../../../../services/games";
+import { getUserData } from "../../../../../services/user";
+import { getGamesHistory } from "../../../../../services/games";
 import { generateGameHistoryData } from "@/data/Table/gameHistory";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 

@@ -7,7 +7,7 @@ import {
   createFriendRelation,
   deleteFriendRelation,
   updateFriendRelation,
-} from "../../../services/friends";
+} from "../../services/friends";
 import { useSocket, useChatSocket } from "@/context/store";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthProvider";
