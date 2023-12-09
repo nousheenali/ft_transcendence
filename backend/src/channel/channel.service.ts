@@ -10,9 +10,7 @@ import {
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
 export class ChannelService {
-  constructor(
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   /**==============================================================================================
   /*
@@ -422,22 +420,17 @@ export class ChannelService {
   async isAlreadyAdmin(channelId: string, userId: string) {
     try {
       // ------------------ get the channel ------------------
-      const channel = await this.prisma.channel.findUnique({
+      const channelMember = await this.prisma.channelRelation.findFirst({
         where: {
-          id: channelId,
+          channelId: channelId,
+          userId: userId,
         },
         select: {
-          channelAdmins: true,
+          isAdmin: true,
         },
       });
-      if (!channel) throw new Error('Channel not found');
-
-      // ------------------ check if the user is already an admin ------------------
-      const admins = channel.channelAdmins;
-      for (let i = 0; i < admins.length; i++) {
-        if (admins[i].id == userId) return true;
-      }
-      return false;
+      if (!channelMember) throw new Error('User not found');
+      return channelMember.isAdmin;
     } catch (error) {
       throw new BadRequestException('UNABLE TO CHECK IF USER IS ADMIN');
     }
@@ -477,28 +470,36 @@ export class ChannelService {
       const isAlreadyAdmin = await this.isAlreadyAdmin(channelId, userId);
       if (isAlreadyAdmin) throw new Error('User is already an admin');
 
-      await this.prisma.channel.update({
+      // ------------------ get the channel relation ------------------
+      const requestedRelation = await this.prisma.channelRelation.findFirst({
         where: {
-          id: channelId,
-        },
-        data: {
-          channelAdmins: {
-            connect: {
-              id: userId,
-            },
-          },
+          channelId: channelId,
+          userId: userId,
         },
       });
+      if (!requestedRelation) throw new Error('Relation not found');
 
       // ------------------ update the channel admin ------------------
-      const newAdmin = await this.prisma.user.findUnique({
+      await this.prisma.channelRelation.update({
         where: {
-          id: userId,
+          id: requestedRelation.id,
+        },
+        data: {
+          isAdmin: true,
         },
       });
 
-      // return the new added admin to the channel
-      return newAdmin;
+      // ------------------ return the channel admin ------------------
+      const updatedRelation = await this.prisma.channelRelation.findFirst({
+        where: {
+          channelId: channelId,
+          userId: userId,
+        },
+      });
+      if (!updatedRelation) throw new Error('Relation not found');
+
+      console.log(updatedRelation);
+      return updatedRelation;
     } catch (error) {
       throw new BadRequestException('UNABLE TO ADD ADMIN TO CHANNEL');
     }
