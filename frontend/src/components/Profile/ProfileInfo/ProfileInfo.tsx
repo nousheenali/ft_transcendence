@@ -24,16 +24,18 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   const login: string = user.login!;
 
   const fetchUsersData = async () => {
-    const data = await getAllUsersData(login, API_ENDPOINTS.getAllUsers);
-    // setUsersData(data);
-    let i = 0;
-    data.forEach((item: userInformation) => {
-      i++;
-      if (item.login === login) {
-        setRank(i);
-        return;
-      }
-    });
+    if (login) {
+      const data = await getAllUsersData(login, API_ENDPOINTS.getAllUsers);
+      // setUsersData(data);
+      let i = 0;
+      data.forEach((item: userInformation) => {
+        i++;
+        if (item.login === login) {
+          setRank(i);
+          return;
+        }
+      });
+    }
   };
 
   fetchUsersData();
