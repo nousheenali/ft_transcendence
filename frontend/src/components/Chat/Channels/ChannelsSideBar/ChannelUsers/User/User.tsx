@@ -39,7 +39,12 @@ export default function ChannelUser({
    *
    */
   const handleMuteClick = () => {
-    if (currentUser.id !== channel.createdBy && channelAdmins.includes(currentUser.login) === false) {
+    // ---------------------------------------------------------------------------------
+    // 🟣🟣 Check if the current user is the admin of the channel or the creator
+    if (
+      currentUser.id !== channel.createdBy &&
+      channelAdmins.includes(currentUser.login) === false
+    ) {
       toast.warn("you are not the creator or admin", {
         position: "top-center",
         autoClose: 800,
@@ -54,7 +59,11 @@ export default function ChannelUser({
       // ---------------------------------------------------------------------------------
     }
     // ---------------------------------------------------------------------------------
-    else if (user.id === channel.createdBy && channelAdmins.includes(currentUser.login)) {
+    // 🟣🟣 check if the admin is trying to mute the creator
+    else if (
+      user.id === channel.createdBy &&
+      channelAdmins.includes(currentUser.login)
+    ) {
       toast.warn("you can't mute the creator", {
         position: "top-center",
         autoClose: 800,
@@ -65,9 +74,9 @@ export default function ChannelUser({
         progress: undefined,
         theme: "dark",
       });
-
     }
     // ---------------------------------------------------------------------------------
+    // 🟣🟣 Check if the admin or the creator trying to mute himself
     else if (currentUser.login === user.login && !isMuted)
       toast.warn("you can't mute yourself", {
         position: "top-center",
@@ -80,7 +89,28 @@ export default function ChannelUser({
         theme: "dark",
       });
     // ---------------------------------------------------------------------------------
-    else if (currentUser.id === channel.createdBy || channelAdmins.includes(currentUser.login)) {
+    // 🟣🟣 check if the admin is trying to mute another admin
+    else if (
+      channelAdmins.includes(user.login) &&
+      channelAdmins.includes(currentUser.login)
+    ) {
+      toast.warn("you can't mute another admin", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+    // ---------------------------------------------------------------------------------
+    // 🟣🟣 If everything is ok, emit the MuteUser event to the server to mute the user
+    else if (
+      currentUser.id === channel.createdBy ||
+      channelAdmins.includes(currentUser.login)
+    ) {
       // 🟣🟣 Emit the MuteUser event to the server to mute the user
       socket.emit("MuteUser", {
         mutedUser: user.login,
@@ -96,10 +126,12 @@ export default function ChannelUser({
    *
    */
   const handleKickClick = () => {
-    // 🟣🟣 Check if the current user is the admin of the channel
-    //    Cause only the admin can kick users
-    if (currentUser.id !== channel.createdBy) {
-      toast.warn("you are not admin", {
+    // ---------------------------------------------------------------------------------
+    if (
+      currentUser.id !== channel.createdBy &&
+      !channelAdmins.includes(currentUser.login)
+    ) {
+      toast.warn("you are not creator or admin", {
         position: "top-center",
         autoClose: 800,
         hideProgressBar: true,
@@ -109,8 +141,27 @@ export default function ChannelUser({
         progress: undefined,
         theme: "dark",
       });
-      // 🟣🟣 Check if the current user is the user to be kicked
-    } else if (currentUser.login === user.login)
+    }
+    // ---------------------------------------------------------------------------------
+    // 🟣🟣 check if the admin is trying to kick the creator
+    else if (
+      user.id === channel.createdBy &&
+      channelAdmins.includes(currentUser.login)
+    ) {
+      toast.warn("you can't kick the creator", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+    // ---------------------------------------------------------------------------------
+    // 🟣🟣 Check if the current user is the user to be kicked
+    else if (currentUser.login === user.login)
       toast.warn("you can't kick yourself", {
         position: "top-center",
         autoClose: 800,
@@ -121,7 +172,28 @@ export default function ChannelUser({
         progress: undefined,
         theme: "dark",
       });
-    else if (currentUser.id === channel.createdBy) {
+    // ---------------------------------------------------------------------------------
+    // 🟣🟣 check if the admin is trying to kick another admin
+    else if (
+      channelAdmins.includes(user.login) &&
+      channelAdmins.includes(currentUser.login)
+    ) {
+      toast.warn("you can't kick another admin", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+    // ---------------------------------------------------------------------------------
+    else if (
+      currentUser.id === channel.createdBy ||
+      channelAdmins.includes(currentUser.login)
+    ) {
       // 🟣🟣 Emit the KickUser event to the server to kick the user
       handleModalClick();
     }
