@@ -23,8 +23,13 @@ export default function ChannelUser({
   const { socket } = useChatSocket();
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
-  const [isChannelAdmin, setIsChannelAdmin] = useState<boolean>(false);
 
+  // 🟣🟣 Get the channel admins
+  const channelAdmins: string[] = channel.channelMembers
+    .filter((member) => member.isAdmin)
+    .map((member) => member.user.login);
+
+  // 🟣🟣 Pop up modal to confirm the kick action
   const modalRef = React.useRef<HTMLDialogElement>(null);
   const handleModalClick = useCallback(() => {
     if (!modalRef.current?.open) modalRef.current?.showModal();
@@ -34,8 +39,8 @@ export default function ChannelUser({
    *
    */
   const handleMuteClick = () => {
-    if (currentUser.id !== channel.createdBy) {
-      toast.warn("you are not admin", {
+    if (currentUser.id !== channel.createdBy && channelAdmins.includes(currentUser.login) === false) {
+      toast.warn("you are not the creator or admin", {
         position: "top-center",
         autoClose: 800,
         hideProgressBar: true,
@@ -45,7 +50,25 @@ export default function ChannelUser({
         progress: undefined,
         theme: "dark",
       });
-    } else if (currentUser.login === user.login && !isMuted)
+
+      // ---------------------------------------------------------------------------------
+    }
+    // ---------------------------------------------------------------------------------
+    else if (user.id === channel.createdBy && channelAdmins.includes(currentUser.login)) {
+      toast.warn("you can't mute the creator", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
+    }
+    // ---------------------------------------------------------------------------------
+    else if (currentUser.login === user.login && !isMuted)
       toast.warn("you can't mute yourself", {
         position: "top-center",
         autoClose: 800,
@@ -56,13 +79,16 @@ export default function ChannelUser({
         progress: undefined,
         theme: "dark",
       });
-    else if (currentUser.id === channel.createdBy) {
+    // ---------------------------------------------------------------------------------
+    else if (currentUser.id === channel.createdBy || channelAdmins.includes(currentUser.login)) {
       // 🟣🟣 Emit the MuteUser event to the server to mute the user
       socket.emit("MuteUser", {
         mutedUser: user.login,
         channelName: channel.channelName,
       });
+      return;
     }
+    // ---------------------------------------------------------------------------------
   };
 
   /**========================================================================
@@ -125,28 +151,12 @@ export default function ChannelUser({
           );
           setIsMuted(isUserMuted);
         };
-        // setIsMuted(channel.channelMembers.find((member) => member.id === user.id)?.isMuted!);
         fetchData();
+        // ---------------------------------------------------------------------------------
+
         if (reRenderAll) setReRenderAll(false);
       } catch (error) {
         console.log(error);
-      }
-
-      if (
-        channel &&
-        channel.channelName !== undefined &&
-        channel.channelName !== "" &&
-        channel.channelMembers.length > 0
-      ) {
-        if (
-          channel.channelMembers.some(
-            (member) => member.user.id === user.id && member.isAdmin
-          )
-        ) {
-          setIsChannelAdmin(true);
-        } else {
-          setIsChannelAdmin(false);
-        }
       }
     }
   }, [user, channel, currentUser, reRenderAll]);
@@ -176,14 +186,20 @@ export default function ChannelUser({
         channel.channelName !== undefined &&
         channel.channelName !== "" &&
         channel.createdBy === user.id && (
-          <span className="font-light text-xs px-2 text-subheading-two font-saira-condensed">
+          <span
+            className="font-light text-xs px-2 text-subheading-two font-saira-condensed truncate"
+            title="creator"
+          >
             creator
           </span>
         )}
       {/* ====================================================== */}
 
-      {isChannelAdmin && (
-        <span className="font-light text-xs px-2 text-subheading-two font-saira-condensed">
+      {channelAdmins.includes(user.login) && (
+        <span
+          className="font-light text-xs px-2 text-subheading-two font-saira-condensed truncate"
+          title="Admin"
+        >
           admin
         </span>
       )}

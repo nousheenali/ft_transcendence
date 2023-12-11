@@ -211,4 +211,30 @@ export class ChannelRelationService {
   }
 
   /** ---------------------------------------------------------------------------------------- **/
+  async getAllAdmins(channelId: string) {
+    try {
+      const adminsData = await this.prisma.channelRelation.findMany({
+        where: {
+          channelId: channelId,
+          isAdmin: true,
+        },
+        select: {
+          user: {
+            select: {
+              login: true,
+            },
+          },
+        },
+      });
+      const adminsLogins = [];
+      for (let i = 0; i < adminsData.length; i++) {
+        adminsLogins[i] = adminsLogins[i].user.login;
+      }
+      return adminsLogins;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO GET THE ADMINS OF THE CHANNEL');
+    }
+  }
+  
+  /** ---------------------------------------------------------------------------------------- **/
 }
