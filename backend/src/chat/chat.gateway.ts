@@ -135,7 +135,7 @@ export class ChatGateway
     if (userLogin === undefined || userLogin === null) return;
 
     //  changing the user status in the database
-    // this.chatService.updateUserStatus(userLogin, true);
+    this.chatService.updateUserStatus(userLogin, true);
     //  Emit the event "UserStatusUpdate" to all the users to re-render the friends list
     this.server.emit('UserStatusUpdate');
 
@@ -589,7 +589,7 @@ export class ChatGateway
       }
       //  If the user is the admin, assign the new admin by selecting the oldest member
       //    in the channel
-      await this.channelService.updateChannelAdmin(channelData.id);
+      await this.channelService.updateChannelCreator(channelData.id);
       this.server.to(channelRoom.name).emit('NewChannelAdmin');
     } else {
       //  Delete the channel relation in the database between the user and the channel
@@ -760,10 +760,27 @@ export class ChatGateway
     const channelData = await this.channelService.getChannelByName(channelName);
 
     // Update the channel relation in the database between the user and the channel
-    await this.channelRelationService.udateIsMutedInChannelRelation(
-      mutedUserData.id,
-      channelData.id,
-    );
+    const isMuted =
+      await this.channelRelationService.updateIsMutedInChannelRelation(
+        mutedUserData.id,
+        channelData.id,
+      );
+
+    // If the user is muted successfully, set a timer to unmute the user after 5 minutes
+    if (isMuted) {
+      setTimeout(async () => {
+        await this.channelRelationService.updateIsMutedInChannelRelation(
+          mutedUserData.id,
+          channelData.id,
+        );
+
+        const channelRoom = this.roomsService.getRoom(
+          channelName + channelData.channelType,
+          'CHANNELS',
+        );
+        this.server.to(channelRoom.name).emit('UserMuted');
+      }, 300000);
+    }
 
     // Emitting message to the channel room to notify the other users that the user has been muted
     const channelRoom = this.roomsService.getRoom(
@@ -833,6 +850,84 @@ export class ChatGateway
     }
   }
 
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   * Handling event by subscribing to the event "AddAdmin" to add admin to the channel
+   * then:
+   * 1. Get the user and the channel from the database
+   * 2. Update the channel property "channelAdmin" in the database
+   * 3. Emit the message to the channel room to notify the other users that the user has been added
+   *   as an admin
+   */
+  @SubscribeMessage('AddAdmin')
+  async addAdmin(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: {
+      addedAdmin: string;
+      channelName: string;
+      addedBy: string;
+    },
+  ) {
+    const { addedAdmin, channelName, addedBy } = data;
+
+    // ------------------ Get the user and the channel from the database ------------------
+    const newAdminData = await this.userService.getUserByName(addedAdmin);
+    const channelData = await this.channelService.getChannelByName(channelName);
+    const addedByData = await this.userService.getUserByName(addedBy);
+    // ------------------ If the user does not exist, return ------------------------------
+    if (newAdminData === undefined || newAdminData === null) return;
+
+    // ------------------ If the channel does not exist, return ---------------------------
+    if (channelData === undefined || channelData === null) return;
+
+    // ------------ Get the channel and creator rooms -------------------------------------
+    const channelRoom = this.roomsService.getRoom(
+      channelName + channelData.channelType,
+      'CHANNELS',
+    );
+
+    const creatorRoom = this.roomsService.getRoom(addedByData.login, 'USERS');
+
+    // ------------------ Check if the user is already a member ---------------------------
+    const isMember = await this.channelRelationService.isRelationExist(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    if (!isMember) {
+      this.server.to(creatorRoom.name).emit('UserNotMember', {
+        newAdmin: newAdminData.name,
+        channelName: channelName,
+      });
+      return;
+    }
+
+    // ------------------ Check if the user is already an admin ---------------------------
+    const isAdmin = await this.channelService.isAlreadyAdmin(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    if (isAdmin) {
+      this.server.to(creatorRoom.name).emit('UserAlreadyAdmin', {
+        newAdmin: newAdminData.name,
+        channelName: channelName,
+      });
+      return;
+    }
+
+    // ---------------- Update the "channelAdmin" in the database -------------------------
+    const newAdmin = await this.channelService.addAdminToChannel(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    // ------------------ Emitting message to the channel room ---------------------------
+    this.server.to(channelRoom.name).emit('ChannelAdminAdded', {
+      newAdmin: newAdmin.name,
+      channelName: channelName,
+    });
+  }
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling disconnection
    */

@@ -266,6 +266,58 @@ export default function ChatSocket({
       });
 
       /**-------------------------------------------------------------------------**/
+      socket.on("ChannelAdminAdded", (data: any) => {
+        const { newAdmin, channelName } = data;
+
+        toast.success(`user ${newAdmin} is now an admin of ${channelName}`, {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setReRenderAll(true);
+      });
+
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserNotMember", (data: any) => {
+        const { newAdmin, channelName } = data;
+
+        toast.warning(
+          `user ${newAdmin} is not a member of ${channelName} channel`,
+          {
+            position: "top-center",
+            autoClose: 800,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+      });
+
+      /**-------------------------------------------------------------------------**/
+      socket.on("UserAlreadyAdmin", (data: any) => {
+        const { newAdmin, channelName } = data;
+
+        toast.warning(
+          `user ${newAdmin} is already an admin of ${channelName} channel`,
+          {
+            position: "top-center",
+            autoClose: 800,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+      });
+
+      /**-------------------------------------------------------------------------**/
       socket.on("ReRenderAllUsers", () => {
         setReRenderAll(true);
       });
@@ -280,6 +332,7 @@ export default function ChatSocket({
         socket.off("UserMuted");
         socket.off("UserKicked");
         socket.off("disconnect");
+        socket.off("UserNotMember");
         socket.off("UserNotExists");
         socket.off("ChannelCreated");
         socket.off("ChannelDeleted");
@@ -290,6 +343,8 @@ export default function ChatSocket({
         socket.off("newChannelJoiner");
         socket.off("UserStatusUpdate");
         socket.off("ReRenderAllUsers");
+        socket.off("UserAlreadyAdmin");
+        socket.off("ChannelAdminAdded");
         socket.off("WrongChannelPassword");
         socket.off("UserAlreadyInChannel");
         socket.off("UserInvitedToChannel");

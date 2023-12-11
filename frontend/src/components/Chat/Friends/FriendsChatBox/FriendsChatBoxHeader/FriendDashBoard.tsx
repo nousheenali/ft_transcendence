@@ -61,7 +61,7 @@ export default function FriendDashBoard() {
       />
       <div className="text-white grid grid-cols-2 gap-10 h-full">
         <div className="col-span-2 w-full items-center justify-center border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden">
-          <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke mt-4">
+          <div className="flex flex-row justify-center items-center space-x-2 h-[30px] bg-heading-fill rounded-t-2xl border-[1px] border-heading-stroke ">
             <div>
               <h1 className="font-saira-condensed font-bold text-xl text-main-text">
                 Game History
