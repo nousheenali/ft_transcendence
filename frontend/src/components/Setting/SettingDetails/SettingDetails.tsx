@@ -79,7 +79,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
-      router.push("/redirect");
+      router.push("/");
       // }
     } catch (error: any) {
       console.error(error);
@@ -110,7 +110,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { withCredentials: true }
       );
       toast.success("De-activate successfully");
-      router.push("/redirect");
+      router.push("/");
       // }
     } catch (error: any) {
       console.error(error);

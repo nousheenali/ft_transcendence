@@ -1,4 +1,13 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { IntraUserProfile } from '../dto/intra.dto';
 import { intraOAuthGuard } from './intra.guard';
@@ -12,28 +21,29 @@ export class IntraController {
     private jwtAuthService: JwtAuthService,
   ) {}
 
+  /** ================================================================================================
+   * 🟣🟣 // this route is just for redirecting to intra oauth
+   * ================================================================================================*/
   @UseGuards(intraOAuthGuard)
   @Get()
-  async intraOAuth() {
-    // this route is just for redirecting to intra oauth
-  }
+  async intraOAuth() {}
 
   @UseGuards(intraOAuthGuard)
   @Get('callback')
-  async intraOAuthCallback(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async intraOAuthCallback(@Req() req: Request, @Res() res: Response) {
     try {
       const user = req.user as IntraUserProfile;
-      console.log(user);
       const tokens = await this.intraService.login(user);
-      await this.jwtAuthService.storeTokensInCookie(res, tokens);
-      res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}/redirect`);
+      await this.jwtAuthService.setCookie(res, tokens);
+      res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}`);
     } catch (error) {
-      console.log(req);
-      console.log(error);
-      return error;
+      if (!(error instanceof BadRequestException)) {
+        throw new HttpException(
+          'Unexpected error during login',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
 }

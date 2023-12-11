@@ -4,11 +4,11 @@ import { AccessTokenGuard } from './jwt.guard';
 
 @Controller('auth/jwt')
 export class JwtAuthController {
-  constructor(private jwtAuthService: JwtAuthService) {}
+  constructor() {}
 
-  @UseGuards(AccessTokenGuard)
-  @Get('validate')
-  async validateToken() {
-    return { msg: 'Valid token' };
-  }
+  // @UseGuards(AccessTokenGuard)
+  // @Get('validate')
+  // async validateToken() {
+  //   return { msg: 'Valid token' };
+  // }
 }

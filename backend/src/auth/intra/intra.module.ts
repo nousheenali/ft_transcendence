@@ -14,3 +14,6 @@ import { IntraStrategy } from './intra.strategy';
   exports: [],
 })
 export class IntraModule {}
+
+// imports : modules intramodule depends on (importing makes services , controller available to this module)
+// exports : export providers to make it available to other modules

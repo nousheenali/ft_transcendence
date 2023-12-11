@@ -8,6 +8,7 @@ import { UserModule } from 'src/user/user.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { GamesController } from './game.controller';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthModule } from 'src/auth/jwt/jwt.module';
 
 @Module({
   providers: [
@@ -20,6 +21,6 @@ import { JwtService } from '@nestjs/jwt';
   ],
   exports: [GameService],
   controllers: [GamesController],
-  imports: [UserModule, PrismaModule],
+  imports: [UserModule, PrismaModule, JwtAuthModule],
 })
 export class GameModule {}

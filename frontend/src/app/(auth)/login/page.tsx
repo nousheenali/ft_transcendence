@@ -1,4 +1,5 @@
 "use client";
+import "react-toastify/dist/ReactToastify.css";
 import { Title } from "@/components/Login/Title/Title";
 import { IntraAuthButton } from "@/components/Login/AuthButton/IntraAuth";
 import Team from "@/components/Login/Team/Team";
@@ -10,7 +11,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthProvider";
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 import { verifyTwoFa } from "../../../services/two-fa";
@@ -27,14 +28,6 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const { user } = useContext(AuthContext);
 
-  // const callbackUrl = "/";
-  // const handleLogin = async () => {
-  //   await signIn("42-school", {
-  //     redirect: true,
-  //     callbackUrl,
-  //   });
-  // };
-
   const router = useRouter();
   const ref = useRef<HTMLDialogElement>(null);
   const handleShow = useCallback(() => {
@@ -42,37 +35,22 @@ export default function Home() {
   }, [ref]);
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const handleVerify = async (e) => {
+  const handleVerify = async (e: any) => {
     try {
       e.preventDefault();
       setIsLoading(true);
-
       if (code === "") {
         toast.error("CODE IS REQUIRED");
         return;
       }
-
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
-
-      // Assuming the API sends a response indicating success or failure
-      // You can adjust this based on the actual API response format
-      // if (response.data.isValid) {
-      // toast.success('WELCOME BACK');
-      // location.replace('/');
-      // rout
-
-      router.push("/redirect");
-
-      // or use router.push('/') if you are using a routing library
-      // } else {
-      // toast.error('CODE IS NOT VALID');
-      handleShow(); // Show an error or additional info as needed
-      // }
-    } catch (error) {
+      router.push("/");
+      handleShow(); 
+    } catch (error: any) {
       console.error(error);
       toast.error(error.response?.data?.message || "An error occurred");
     } finally {
@@ -124,7 +102,6 @@ export default function Home() {
           </Modal.Body>
           <Modal.Actions className="flex items-center  justify-center mt-2 ">
             <button
-              type="submit"
               onClick={(e) => handleVerify(e)}
               className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx"
             >
@@ -132,6 +109,7 @@ export default function Home() {
             </button>
           </Modal.Actions>
         </Modal>
+        <ToastContainer position="top-right" />
       </main>
     </>
   );

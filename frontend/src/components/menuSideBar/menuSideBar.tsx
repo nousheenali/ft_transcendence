@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+
 
 import { usePathname } from "next/navigation";
 
@@ -143,12 +143,8 @@ export default function MenuSideBar() {
             </h1>
           </li>
         </Link>
-
         <a
           href={`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`}
-          // onClick={() =>
-          //   // signOut({ callbackUrl: "http://localhost:3000/login" })
-          // }
           className={getButtonStyles("/logout") + " mb-10"}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">

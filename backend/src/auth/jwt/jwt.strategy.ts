@@ -3,10 +3,9 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt } from 'passport-jwt';
 import { Strategy } from 'passport-jwt';
-
-import { JwtPayload } from '../dto/jwt.dto';
-import * as argon2 from 'argon2';
+import * as cookie from 'cookie';
 import { UserService } from 'src/user/user.service';
+import { JwtPayload } from '../dto/jwt.dto';
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -22,38 +21,23 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   private static getAccessTokenFromCookie(req: Request): string | null {
-    const cookieHeader = req.headers.cookie;
-
-    if (cookieHeader) {
-      const cookies: any = cookieHeader.split(';').reduce((acc, cookie) => {
-        const [name, value] = cookie.trim().split('=');
-        acc[name] = value;
-        return acc;
-      }, {});
-
-      return cookies.accessToken ?? null;
+    const cookies = req.headers.cookie;
+    if (!cookies) {
+      return null;
     }
-
-    return null;
+    const parsedCookies = cookie.parse(cookies);
+    return parsedCookies.accessToken || null;
   }
 
   async validate(payload: JwtPayload) {
     try {
-      // console.log('JwtAuthStrategy - Validate - Payload:', payload);
-
       const user = await this.userService.getUserByLogin(payload.login);
-
       if (!user) {
-        // console.log('JwtAuthStrategy - Validate - User not found');
         throw new UnauthorizedException('User not found');
       }
-
-      // console.log('JwtAuthStrategy - Validate - User:', user);
       return user;
     } catch (error) {
-      // console.error('JwtAuthStrategy - Validate - Error:', error);
       throw new UnauthorizedException('Unauthorized', 'Invalid credentials');
     }
   }
 }
-

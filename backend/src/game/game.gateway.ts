@@ -33,6 +33,7 @@ import { Console } from 'console';
 import chalk from 'chalk';
 import { JwtService } from '@nestjs/jwt';
 import { SocketAuthGuard } from 'src/auth/socket.guard';
+import { JwtAuthService } from 'src/auth/jwt/jwt.service';
 
 @WebSocketGateway(8005, {
   cors: {
@@ -52,14 +53,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly gameLogicService: GameLogicService,
     private readonly gamePrismaService: GameService,
     private readonly userService: UserService,
-    private jwtService: JwtService,
+    private jwtAuthService: JwtAuthService,
   ) {}
 
   afterInit(server: Server) {
     this.logger.log('Chat GateWay has been initialized!!');
 
     server.use((socket, next) => {
-      this.validateConnection(socket)
+      this.jwtAuthService
+        .validateSocketConnection(socket)
         .then((user) => {
           socket.handshake.auth['user'] = user;
           socket.emit('userLogin', user);
@@ -72,23 +74,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           );
         });
     });
-  }
-
-  private validateConnection(client: Socket) {
-    // this.logger.log(client);
-    console.log(client.handshake.headers.cookie);
-    let token = client.handshake.headers.cookie;
-    const [name, value] = token.trim().split('=');
-    token = value;
-    try {
-      const payload = this.jwtService.verify<any>(token, {
-        secret: process.env.JWT_SECRET,
-      });
-      return this.userService.getUserByLogin(payload.login);
-    } catch {
-      this.logger.error('Token invalid or expired');
-      return Promise.reject(new WsException('Token invalid or expired'));
-    }
   }
 
   /*  Handle a new player connection */

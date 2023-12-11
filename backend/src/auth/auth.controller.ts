@@ -24,9 +24,9 @@ export class AuthController {
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     try {
       const user = req.user as User;
-      await this.jwtAuthService.removeTokensFromCookie(res);
-      console.log('Redireting');
-      return await this.authService.logout(user, res);
+      await this.jwtAuthService.removeCookie(res);
+      await this.authService.logout(user, res);
+      // res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}`);
     } catch (error) {
       console.log(error);
       return error;

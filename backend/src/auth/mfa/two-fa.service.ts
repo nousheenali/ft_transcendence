@@ -2,18 +2,18 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as speakeasy from 'speakeasy';
 import * as qrcode from 'qrcode';
-import { TwofaDto } from './dto/twoFa.dto';
 
 @Injectable()
 export class TwoFaService {
   constructor(private prisma: PrismaService) {}
 
   async generateSecret(login: string) {
-    // check if user exists
     try {
       const secret = speakeasy.generateSecret({ length: 10 });
       await this.prisma.user.update({
         where: { login: login },
+        // TOTP (Time-based One-time Password)
+        // rquires the secret to be encoded in base 32 as specified in TOTP standard
         data: { TFAKey: secret.base32 },
       });
       return secret;

@@ -4,7 +4,6 @@ import {
   MessageBody,
   WebSocketServer,
   ConnectedSocket,
-  WsException,
 } from '@nestjs/websockets';
 import {
   CreateGatewayNotifDto,
@@ -15,7 +14,7 @@ import { UserService } from 'src/user/user.service';
 import { Logger, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SocketAuthGuard } from 'src/auth/socket.guard';
-// , { cors: '*' }
+import { JwtAuthService } from 'src/auth/jwt/jwt.service';
 @WebSocketGateway(8001, {
   cors: {
     origin: process.env.NEXT_PUBLIC_GATEWAY_URL,
@@ -25,7 +24,7 @@ import { SocketAuthGuard } from 'src/auth/socket.guard';
 export class GatewayNotifGateway {
   constructor(
     private readonly userService: UserService,
-    private jwtService: JwtService,
+    private jwtAuthService: JwtAuthService,
   ) {}
   private userSocketMap = new Map<string, Socket>();
 
@@ -42,7 +41,8 @@ export class GatewayNotifGateway {
     this.logger.log('NOTIF GateWay has been initialized!!');
 
     server.use((socket, next) => {
-      this.validateConnection(socket)
+      this.jwtAuthService
+        .validateSocketConnection(socket)
         .then((user) => {
           socket.handshake.auth['user'] = user;
           socket.emit('userLogin', user);
@@ -56,23 +56,6 @@ export class GatewayNotifGateway {
           );
         });
     });
-  }
-
-  private validateConnection(client: Socket) {
-    // this.logger.log(client);
-    console.log(client.handshake.headers.cookie);
-    let token = client.handshake.headers.cookie;
-    const [name, value] = token.trim().split('=');
-    token = value;
-    try {
-      const payload = this.jwtService.verify<any>(token, {
-        secret: process.env.JWT_SECRET,
-      });
-      return this.userService.getUserByLogin(payload.login);
-    } catch {
-      this.logger.error('Token invalid or expired');
-      return Promise.reject(new WsException('Token invalid or expired'));
-    }
   }
 
   async handleConnection(client: Socket, ...args: any[]) {

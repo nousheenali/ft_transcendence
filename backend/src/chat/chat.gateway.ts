@@ -32,10 +32,10 @@ import {
   UpdateChannelNameDto,
   UpdateChannelPasswordDto,
 } from 'src/channel/dto/update-channel.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
+
 import { SocketAuthGuard } from 'src/auth/socket.guard';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthService } from 'src/auth/jwt/jwt.service';
 
 /**╭──🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣
  * │  Array that will store the rooms that are created
@@ -61,7 +61,7 @@ export class ChatGateway
     private readonly channelRelationService: ChannelRelationService,
     private readonly userService: UserService,
     private readonly channelService: ChannelService,
-    private jwtService: JwtService,
+    private jwtAuthService: JwtAuthService,
   ) {}
   private roomsService: RoomsService = new RoomsService();
   //================================================================================================
@@ -89,7 +89,8 @@ export class ChatGateway
     this.logger.log('Chat GateWay has been initialized!!');
 
     server.use((socket, next) => {
-      this.validateConnection(socket)
+      this.jwtAuthService
+        .validateSocketConnection(socket)
         .then((user) => {
           socket.handshake.auth['user'] = user;
           socket.emit('userLogin', user);
@@ -102,23 +103,6 @@ export class ChatGateway
           );
         });
     });
-  }
-
-  private validateConnection(client: Socket) {
-    // this.logger.log(client);
-    console.log(client.handshake.headers.cookie);
-    let token = client.handshake.headers.cookie;
-    const [name, value] = token.trim().split('=');
-    token = value;
-    try {
-      const payload = this.jwtService.verify<any>(token, {
-        secret: process.env.JWT_SECRET,
-      });
-      return this.userService.getUserByLogin(payload.login);
-    } catch {
-      this.logger.error('Token invalid or expired');
-      return Promise.reject(new WsException('Token invalid or expired'));
-    }
   }
 
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●

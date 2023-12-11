@@ -1,11 +1,8 @@
-'use client';
-import React, { createContext, useCallback, useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
-import { redirect, useRouter } from 'next/navigation';
+"use client";
+import React, { ReactNode, createContext, useState } from "react";
 
 type AuthContextType = {
-  user: any; // Adjust the type accordingly
+  user: any;
   setUser: React.Dispatch<React.SetStateAction<any>>; // Adjust the type accordingly
 };
 
@@ -13,42 +10,12 @@ export const AuthContext = createContext<AuthContextType>(
   {} as AuthContextType
 );
 
-export function signOut() {
-  Cookies.remove('accessToken');
+type AuthProviderProps = {
+  children: ReactNode; // Define a type for 'children'
+};
 
-  redirect('/login');
-}
-
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState({});
-  const router = useRouter();
-  const verifyToken = useCallback((token) => {
-    try {
-      const decoded = jwtDecode(token);
-      return decoded;
-    } catch (error) {
-      return null;
-      // console.log('error', error);
-      // signOut();
-    }
-  }, []);
-
-  useEffect(() => {
-    const accessToken = Cookies.get('accessToken');
-    const decodedToken = verifyToken(accessToken);
-
-    if (accessToken && decodedToken) {
-      console.log(decodedToken);
-      if (decodedToken.TFAEnabled === true && decodedToken.TFAVerified === false)
-        router.push('/login?show2faModal=true');
-      setUser(decodedToken);
-    } else {
-      router.push('/login');
-      // signOut();
-      // Handle the case when there's no accessToken or it's not valid
-    }
-  }, [router, verifyToken]);
-
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       {children}

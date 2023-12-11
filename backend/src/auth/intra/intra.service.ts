@@ -14,6 +14,7 @@ export class IntraService {
     private jwtAuthService: JwtAuthService,
   ) {}
   async login(intraUser: IntraUserProfile): Promise<AuthTokens> {
+    
     let user = await this.userService.getUserByLogin(intraUser.login);
     if (!user) {
       const dto = new CreateUserDto();
@@ -22,12 +23,15 @@ export class IntraService {
       dto.email = intraUser.email;
       dto.avatar = intraUser.avatar;
       user = await this.userService.createUser(dto);
+    } else {
+      //
+      if (user.TFAEnabled === true) {
+        user = await this.userService.setTFAVerificationRequired(
+          intraUser.login,
+        );
+      }
     }
-    else{
-      user = await this.userService.setTFAVerificationRequired(intraUser.login); 
-    }
-    console.log('user3', user);
     return this.jwtAuthService.generateJwt(user);
+
   }
 }
-  
