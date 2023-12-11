@@ -20,7 +20,7 @@ import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
-import { getUserData } from "../../../services/user";
+import { getUserData } from "../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
 
@@ -31,14 +31,17 @@ const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState<userInformation>();
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
-  const [maxHeight, setMaxHeight] = useState('none');
+  const [maxHeight, setMaxHeight] = useState("none");
   const containerRef = useRef<HTMLDivElement>(null);
   let data: TableRowData[];
 
   const fetchTableData = async (buttonId: string) => {
     try {
       if (user.login) {
-        const userData = await getUserData(user.login, API_ENDPOINTS.getUserbyLogin);
+        const userData = await getUserData(
+          user.login,
+          API_ENDPOINTS.getUserbyLogin
+        );
         if (userData) {
           setUserInfo(userData);
           const dataGeneratorMap: DataGeneratorMap = {
@@ -69,7 +72,7 @@ const ProfilePage = () => {
     if (containerRef.current) {
       const containerHeight = containerRef.current.clientHeight;
       setMaxHeight(`${containerHeight}px`);
-    //  console.log("Container Height:", containerHeight);
+      //  console.log("Container Height:", containerHeight);
     }
   }, [activeButton, login]); // fetch data when button clicked
 

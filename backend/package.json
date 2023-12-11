@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "migrate": "npx prisma migrate dev",
+    "migrate": "npx prisma migrate deploy",
     "prisma": "nodemon ./scripts.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -31,7 +31,9 @@
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.2.7",
+    "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^7.1.10",
+    "@nestjs/throttler": "^5.1.0",
     "@nestjs/websockets": "^10.2.7",
     "@prisma/client": "^5.2.0",
     "@types/bcrypt": "^5.0.2",

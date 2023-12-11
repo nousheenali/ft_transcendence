@@ -7,8 +7,8 @@ import { ChannelService } from '../channel/channel.service';
 import { FriendsService } from 'src/friends/friends.service';
 import { ChannelRelationService } from '../channel/channel-relation.service';
 import { UserMessagesService } from '../user/user-messages/user-messages.service';
-import { UserModule } from 'src/user/user.module';
-import { ChannelModule } from 'src/channel/channel.module';
+import { JwtAuthModule } from 'src/auth/jwt/jwt.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   providers: [
@@ -20,6 +20,8 @@ import { ChannelModule } from 'src/channel/channel.module';
     FriendsService,
     UserMessagesService,
     ChannelRelationService,
+    JwtService,
   ],
+  imports: [JwtAuthModule],
 })
 export class ChatModule {}

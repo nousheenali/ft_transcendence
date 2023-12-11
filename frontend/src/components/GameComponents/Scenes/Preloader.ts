@@ -6,14 +6,14 @@ export default class Preloader extends Scene {
   }
 
   preload() {
-    this.load.image("ball", "/gameAssets/ball.png");
-    this.load.image("paddle", "/gameAssets/paddle1.png");
-    this.load.image("logo", "/gameAssets/game_logo.png");
-    this.load.image("player1keys", "/gameAssets/keys5.png");
-    this.load.image("player2keys", "/gameAssets/keys6.png");
-    this.load.audio("ballHit", "/gameAssets/ballHit.mp3");
-    this.load.audio("wallHit", "/gameAssets/wallHit.mp3");
-    this.load.audio("gameOver", "/gameAssets/gameOver2.mp3");
+    this.load.image("ball", "/GameAssets/ball.png");
+    this.load.image("paddle", "/GameAssets/paddle1.png");
+    this.load.image("logo", "/GameAssets/Game_logo.png");
+    this.load.image("player1keys", "/GameAssets/keys5.png");
+    this.load.image("player2keys", "/GameAssets/keys6.png");
+    this.load.audio("ballHit", "/GameAssets/ballHit.mp3");
+    this.load.audio("wallHit", "/GameAssets/wallHit.mp3");
+    this.load.audio("gameOver", "/GameAssets/gameOver2.mp3");
   }
 
   create() {

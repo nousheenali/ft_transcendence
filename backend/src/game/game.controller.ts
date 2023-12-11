@@ -4,9 +4,11 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { GameService } from './game.service';
-
+import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
+@UseGuards(AccessTokenGuard)
 @Controller('games')
 export class GamesController {
   constructor(private readonly gameService: GameService) {}

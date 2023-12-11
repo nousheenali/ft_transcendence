@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
-import { IoGameController } from "react-icons/io5";
 import { Button, Drawer, Menu } from "react-daisyui";
-import { sendNotification } from "../../../../../../services/friends";
+import { sendNotification } from "../../../../../services/friends";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -15,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/AuthProvider";
 import { useContext, useCallback } from "react";
 import FriendDashBoard from "@/components/Chat/Friends/FriendsChatBox/FriendsChatBoxHeader/FriendDashBoard";
+import InvitaionGameCustomize from "@/components/startGame/startInvitedGame";
 
 /**======================================================================================================**/
 export default function FriendsChatBoxHeader({
@@ -109,14 +109,10 @@ export default function FriendsChatBoxHeader({
       in the chat box header
        */}
       <div className="flex flex-row justify-center items-center basis-1/6">
-        <Button
-          color="ghost"
-          className="flex flex-row"
-          onClick={handleInviteClick}
-        >
-          <p>INVITE</p>
-          <IoGameController size={25} color={"rgba(213, 242, 35, 0.8)"} />
-        </Button>
+        <InvitaionGameCustomize
+          handleInviteClick={handleInviteClick}
+          eventNames="INVITE"
+        />
       </div>
       {/* ---------------------------------------------------------------------------------- */}
     </div>

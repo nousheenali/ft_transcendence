@@ -6,7 +6,7 @@ import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import {
   getChannelsData,
   getCurrentChannelData,
-} from "../../../../../../services/channels";
+} from "../../../../../services/channels";
 import {
   useChannelType,
   activateClickedChannel,

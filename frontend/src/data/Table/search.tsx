@@ -1,13 +1,11 @@
-
-
 import { userInformation } from "@/components/Profile/types";
 import { TableRowData } from "@/components/Table/types";
-import { getFriendsData } from "../../../services/friends";
+import { getFriendsData } from "../../services/friends";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 
-export const generateProfileSearchData= async (
+export const generateProfileSearchData = async (
   login: string
-) : Promise<TableRowData[]> => {
+): Promise<TableRowData[]> => {
   const records: TableRowData[] = [];
   const data: userInformation[] = await getFriendsData(
     login,

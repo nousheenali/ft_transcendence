@@ -15,15 +15,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "react-daisyui";
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
-import { getUserData, updateUserName } from "../../../../services/user";
+import { getUserData, updateUserName } from "../../../services/user";
 import SettingAvatar from "@/components/Setting/SettingAvatar/SettingAvatar";
 import { AuthContext } from "@/context/AuthProvider";
-import { activateTwoFa, verifyTwoFa } from "../../../../services/two-fa";
+import { activateTwoFa, verifyTwoFa } from "../../../services/two-fa";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useIsUserUpdated } from "@/context/store";
 
-function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
+function SettingDetails({ name, Auth }: SettingDetailsProps) {
   const { user } = useContext(AuthContext);
   const ref = useRef<HTMLDialogElement>(null);
   const handleShow = useCallback(() => {
@@ -75,7 +75,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
         return;
       }
       const response = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
@@ -99,13 +99,13 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
         return;
       }
       const response = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
 
       const responsedeactivate = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.deactivateTwoFa}`,
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.deactivateTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
@@ -120,19 +120,35 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
     }
   };
 
+  const [userInfo, setUserInfo] = useState<userInformation>();
+
   const handleSaveName = async () => {
     try {
       setIsLoading(true);
+      if (newName === "") {
+        toast.error("Name cannot be empty");
+        return;
+      }
       const updatedUser = await updateUserName(
         user.login,
         newName,
         API_ENDPOINTS.updateName
       );
       const updatedData = JSON.parse(updatedUser);
-      setNewName(updatedData.name);
-      setIsEditingName(false);
-      toast.success("Name updated successfully!!!");
-      setIsUserUpdated(true);
+
+      setUserInfo((prevUserInfo) => {
+        const updatedUserInfo = { ...prevUserInfo, ...updatedData };
+        setNewName(updatedUserInfo.name);
+        return updatedUserInfo;
+      });
+
+      if (updatedData.name !== userInfo?.name) {
+        setIsEditingName(false);
+        toast.success("Name updated successfully!!!");
+        setIsUserUpdated(true);
+      } else {
+        toast.warning("No change. Name is the same.");
+      }
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -140,19 +156,30 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
     }
   };
 
-  const [userInfo, setUserInfo] = useState<userInformation>();
+  const handleCancelEditName = () => {
+    setNewName(userInfo?.name || "");
+    setIsEditingName(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
 
       if (user && user.login) {
-        const userResult: userInformation = await getUserData(
-          user.login,
-          API_ENDPOINTS.getUserbyLogin
-        );
-        setUserInfo(userResult);
-        setNewName(userResult.name);
+        try {
+          const userResult: userInformation = await getUserData(
+            user.login,
+            API_ENDPOINTS.getUserbyLogin
+          );
+
+          setUserInfo((prevUserInfo) => {
+            const updatedUserInfo = { ...prevUserInfo, ...userResult };
+            setNewName(updatedUserInfo.name);
+            return updatedUserInfo;
+          });
+        } catch (error) {
+          console.error(error);
+        }
       }
       setIsLoading(false);
     };
@@ -164,7 +191,7 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
       <SettingAvatar avatarUrl={userInfo?.avatar} />
       <hr className="mx-20 mt-10 mb-10  border-heading-stroke-30" />
       <div className=" flex flex-col mb-10 font-saira-condensed font-bold text-main-text justify-start pl-6">
-        <div className="flex flx-row align-middle items-center justify-around ">
+        <div className="flex flex-row align-middle items-center justify-around ">
           <div className="text-xl w-full text-center"> Name:</div>
           {isEditingName ? (
             <div className="text-md truncate w-full text-center">
@@ -179,12 +206,20 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           )}
           <div className="w-full text-center">
             {isEditingName ? (
-              <button
-                className="w-40 h-7 rounded-md items-center text-md bg-button-background"
-                onClick={() => handleSaveName()}
-              >
-                Save
-              </button>
+              <>
+                <button
+                  className="w-20 h-7 rounded-md items-center text-md bg-button-background"
+                  onClick={() => handleSaveName()}
+                >
+                  Save
+                </button>
+                <button
+                  className="w-20 h-7 ml-2 rounded-md items-center text-md bg-button-background"
+                  onClick={handleCancelEditName}
+                >
+                  Cancel
+                </button>
+              </>
             ) : (
               <button
                 className="w-40 h-7 rounded-md items-center text-md bg-button-background"
@@ -202,7 +237,6 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
           <div className="text-md truncate w-full text-center ">
             {userInfo?.TFAEnabled ? "Activated" : "Not Activated"}
           </div>
-          {/* <div className="col-span-1" /> */}
           <div className="w-full text-center">
             <button
               className="w-40 h-7 rounded-md items-center text-md bg-button-background"
@@ -255,7 +289,9 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
             <button
               type="submit"
               onClick={(e) =>
-                userInfo?.TFAEnabled ? handleDeactivateTwofa(e) : handleVerify(e)
+                userInfo?.TFAEnabled
+                  ? handleDeactivateTwofa(e)
+                  : handleVerify(e)
               }
               className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx"
             >
@@ -269,19 +305,3 @@ function SettingDetails({ name, email, Auth }: SettingDetailsProps) {
 }
 
 export default SettingDetails;
-
-{
-  /* <div className="grid grid-cols-5 mt-10"> */
-}
-{
-  /* <div className="text-xl ml-10"> Email:</div> */
-}
-{
-  /* <div className="text-md">{userInfo?.email}</div> */
-}
-{
-  /* <div className="col-span-1" /> */
-}
-{
-  /* </div> */
-}

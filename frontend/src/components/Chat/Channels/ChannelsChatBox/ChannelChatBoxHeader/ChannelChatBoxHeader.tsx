@@ -5,7 +5,7 @@ import {
   useChatSocket,
   useSettingToggleVisiblity,
 } from "@/context/store";
-import { getUserData } from "../../../../../../services/user";
+import { getUserData } from "../../../../../services/user";
 import { userInformation } from "@/components/Profile/types";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";

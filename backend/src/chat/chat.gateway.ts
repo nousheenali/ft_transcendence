@@ -23,6 +23,7 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -31,6 +32,10 @@ import {
   UpdateChannelNameDto,
   UpdateChannelPasswordDto,
 } from 'src/channel/dto/update-channel.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
+import { SocketAuthGuard } from 'src/auth/socket.guard';
+import { JwtService } from '@nestjs/jwt';
 
 /**╭──🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣
  * │  Array that will store the rooms that are created
@@ -41,7 +46,12 @@ import {
  * │ the frontend to connect to the websocket server
  * ╰──========================================================================================= **/
 
-@WebSocketGateway({ cors: { origin: process.env.NEXT_PUBLIC_GATEWAY_URL } })
+@WebSocketGateway({
+  cors: {
+    origin: process.env.NEXT_PUBLIC_GATEWAY_URL,
+    credentials: true,
+  },
+})
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -51,6 +61,7 @@ export class ChatGateway
     private readonly channelRelationService: ChannelRelationService,
     private readonly userService: UserService,
     private readonly channelService: ChannelService,
+    private jwtService: JwtService,
   ) {}
   private roomsService: RoomsService = new RoomsService();
   //================================================================================================
@@ -76,12 +87,45 @@ export class ChatGateway
   //  Initializing the gateway
   afterInit(server: Server) {
     this.logger.log('Chat GateWay has been initialized!!');
+
+    server.use((socket, next) => {
+      this.validateConnection(socket)
+        .then((user) => {
+          socket.handshake.auth['user'] = user;
+          socket.emit('userLogin', user);
+          next();
+        })
+        .catch((err) => {
+          this.logger.error(
+            `Failed to authenticate user: ${socket.handshake.auth?.user?.login}`,
+            err,
+          );
+        });
+    });
+  }
+
+  private validateConnection(client: Socket) {
+    // this.logger.log(client);
+    console.log(client.handshake.headers.cookie);
+    let token = client.handshake.headers.cookie;
+    const [name, value] = token.trim().split('=');
+    token = value;
+    try {
+      const payload = this.jwtService.verify<any>(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      return this.userService.getUserByLogin(payload.login);
+    } catch {
+      this.logger.error('Token invalid or expired');
+      return Promise.reject(new WsException('Token invalid or expired'));
+    }
   }
 
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling connection by subscribing to the event "connection" and adding the user to the
    * (usersMap) and (roomsArray) and join the user's room.
    * ================================================================================================*/
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
     this.startHeartbeat(client);
@@ -129,6 +173,7 @@ export class ChatGateway
    *  Handling event by subscribing to the event "ClientToServer" and emitting the message
    * to the receiver room.
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('ClientToServer')
   @UsePipes(
     new ValidationPipe({
@@ -175,7 +220,7 @@ export class ChatGateway
    * 3. add the user to the channel's members by creating a channel relation in the database between
    *    the user and the channel.
    */
-
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('JoinChannel')
   async joinChannel(
     @ConnectedSocket() client: Socket,
@@ -274,7 +319,7 @@ export class ChatGateway
    *  channel
    * ## . Emit the message to the client to notify the user that the user has joined the channel
    **/
-
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('InviteUserToChannel')
   async inviteUserToChannel(
     @ConnectedSocket() client: Socket,
@@ -390,6 +435,7 @@ export class ChatGateway
    * 1. create the channel room
    * 2. join the client's socket to the channel room
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('CreateChannel')
   async createChannel(
     @ConnectedSocket() client: Socket,
@@ -460,6 +506,7 @@ export class ChatGateway
    * 3. remove the user from the channel's members by deleting the channel relation in the database
    *   between the user and the channel.
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('LeaveChannel')
   async leaveChannel(
     @ConnectedSocket() client: Socket,
@@ -568,6 +615,7 @@ export class ChatGateway
    *  Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('ChannelToServer')
   async sendToChannel(
     @MessageBody() data: SocketMessage,
@@ -674,6 +722,7 @@ export class ChatGateway
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling block-user event by subscribing to the event "BlockUser".
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('BlockUser')
   async blockUser(
     @ConnectedSocket() client: Socket,
@@ -751,6 +800,7 @@ export class ChatGateway
    * if the password is correct, update the channel password in the database
    * if the password is not correct, emit message to the client to notify the user that the password
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('updateChannelPassword')
   @UsePipes(ValidationPipe)
   async handleRemoveChannelPassword(
@@ -772,6 +822,7 @@ export class ChatGateway
    * if the password is correct, update the channel password in the database
    * if the password is not correct, emit message to the client to notify the user that the password
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('removeChannelPassword')
   @UsePipes(ValidationPipe)
   async handleChangeChannelPassword(
@@ -880,15 +931,31 @@ export class ChatGateway
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling disconnection
    */
+  // @UseGuards(SocketAuthGuard)
+  // @SubscribeMessage('disconnect')
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {
     this.stopHeartbeat();
+
     const userLogin = client.handshake.query.userLogin as string;
+
+    // Check if userLogin is defined
+    if (!userLogin) {
+      this.logger.warn(
+        `No user login found for disconnected client with id: ${client.id}`,
+      );
+      return; // Exit the method if userLogin is not defined
+    }
+
     this.logger.log(
       chalk.red('The client with id of ') +
         chalk.magenta(client.id) +
+        chalk.red(' and user login ') +
+        chalk.magenta(userLogin) +
         chalk.red(' has been disconnected!!'),
     );
+
     this.chatService.updateUserStatus(userLogin, false);
     this.server.emit('UserStatusUpdate');
   }

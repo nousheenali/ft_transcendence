@@ -1,22 +1,22 @@
-'use client';
-import { Title } from '@/components/Login/Title/Title';
-import { IntraAuthButton } from '@/components/Login/AuthButton/IntraAuth';
-import Team from '@/components/Login/Team/Team';
-import { Footer } from '@/components/Login/Footer/Footer';
+"use client";
+import { Title } from "@/components/Login/Title/Title";
+import { IntraAuthButton } from "@/components/Login/AuthButton/IntraAuth";
+import Team from "@/components/Login/Team/Team";
+import { Footer } from "@/components/Login/Footer/Footer";
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { toast } from 'react-toastify';
-import { AuthContext } from '@/context/AuthProvider';
-import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
-import { verifyTwoFa } from '../../../../services/two-fa';
-import { Modal } from 'react-daisyui';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+} from "react";
+import { toast } from "react-toastify";
+import { AuthContext } from "@/context/AuthProvider";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
+import { verifyTwoFa } from "../../../services/two-fa";
+import { Modal } from "react-daisyui";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 /*
  * TODO: Put more spacing between the button and the team section.
@@ -40,20 +40,20 @@ export default function Home() {
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const handleVerify = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
 
-      if (code === '') {
-        toast.error('CODE IS REQUIRED');
+      if (code === "") {
+        toast.error("CODE IS REQUIRED");
         return;
       }
 
       const response = await axios.post(
-        `http://localhost:3001${API_ENDPOINTS.verifyTwoFa}`,
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
@@ -65,7 +65,7 @@ export default function Home() {
       // location.replace('/');
       // rout
 
-      router.push('/redirect');
+      router.push("/redirect");
 
       // or use router.push('/') if you are using a routing library
       // } else {
@@ -74,7 +74,7 @@ export default function Home() {
       // }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'An error occurred');
+      toast.error(error.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +82,7 @@ export default function Home() {
   useEffect(() => {
     // Use URLSearchParams to work with query strings
     const queryParams = new URLSearchParams(window.location.search);
-    if (queryParams.get('show2faModal') === 'true') {
+    if (queryParams.get("show2faModal") === "true") {
       handleShow();
     }
   }, []);
@@ -91,7 +91,7 @@ export default function Home() {
     <>
       <main className="w-screen h-full flex flex-col items-center gap-20 mt-32">
         <Title />
-        <a href={`${process.env.NEXT_PUBLIC_SOCKET_URL}/auth/intra`}>
+        <a href={`${process.env.NEXT_PUBLIC_BACKEND}/auth/intra`}>
           <button>
             <IntraAuthButton />
           </button>

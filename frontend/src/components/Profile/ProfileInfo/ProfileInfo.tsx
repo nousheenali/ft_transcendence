@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React, { useContext, useState } from 'react';
-import Image from 'next/image';
-import ProfileNavBar from './ProfileNavBar/ProfileNavBar';
-import { ProfileInfoProps, userInformation } from '../types';
-import { generateLeaderboardData } from '@/data/Table/leaderBoard';
-import { TableRowData } from '@/components/Table/types';
-import { AuthContext } from '@/context/AuthProvider';
-import { getAllUsersData } from '../../../../services/user';
-import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
+import React, { useContext, useState } from "react";
+import Image from "next/image";
+import ProfileNavBar from "./ProfileNavBar/ProfileNavBar";
+import { ProfileInfoProps, userInformation } from "../types";
+import { generateLeaderboardData } from "@/data/Table/leaderBoard";
+import { TableRowData } from "@/components/Table/types";
+import { AuthContext } from "@/context/AuthProvider";
+import { getAllUsersData } from "../../../services/user";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
   name,
@@ -18,7 +18,6 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   activeButton,
   handleButtonClick,
 }) => {
-
   // const [usersData, setUsersData] = useState<userInformation[]>([]);
   const [rank, setRank] = useState(0);
   const { user } = useContext(AuthContext);
@@ -35,10 +34,10 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         return;
       }
     });
-  }
+  };
 
   fetchUsersData();
-    
+
   return (
     <>
       <div className="flex flex-col w-full">

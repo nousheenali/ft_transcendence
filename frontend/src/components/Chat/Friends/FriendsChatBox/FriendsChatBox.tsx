@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import FriendChat from "./FriendChat/FriendChat";
-import { getUserData } from "../../../../../services/user";
+import { getUserData } from "../../../../services/user";
 import { userInformation } from "@/components/Profile/types";
 import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
 import {
@@ -42,7 +42,6 @@ export default function FriendsChatBox() {
     activeFriend === "" ||
     activeFriend === null
   ) {
-    
     return (
       <div className="w-9/12 mt-5 mb-14 ml-4 flex flex-col justify-between border-b border-main-yellow bg-box-fill rounded-xl">
         <FriendsChatBoxHeader friend={undefined} />

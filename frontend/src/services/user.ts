@@ -1,12 +1,12 @@
-import { API_ENDPOINTS } from '../config/apiEndpoints';
-import { userInformation } from '@/components/Profile/types';
-import { getData, postData, updateData, postDataWithImage } from './api';
+import { API_ENDPOINTS } from "../../config/apiEndpoints";
+import { userInformation } from "@/components/Profile/types";
+import { getData, postData, updateData, postDataWithImage } from "./api";
 import {
   SettingDetailsProps,
   UpdateName,
   UpdateImg,
-} from '@/components/Setting/types';
-import { error } from 'console';
+} from "@/components/Setting/types";
+import { error } from "console";
 
 export const getUserData = async (login: string, endpoint: string) => {
   try {
@@ -64,6 +64,7 @@ export const getAllUsersData = async (login: string, endpoint: string) => {
     throw new Error(error.message);
   }
 };
+
 export const updateUserImg = async (
   login: string,
   newAvatar: File,
@@ -71,8 +72,7 @@ export const updateUserImg = async (
 ) => {
   try {
     const formData = new FormData();
-    formData.append('file', newAvatar); // Assuming 'file' is the field name expected by the server
-
+    formData.append("file", newAvatar);
     return postDataWithImage(formData, endpoint + login);
   } catch (error: any) {
     throw new Error(error.message);

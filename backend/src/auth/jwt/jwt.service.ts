@@ -16,9 +16,7 @@ export class JwtAuthService {
     private userService: UserService,
   ) {}
 
-  private accessTokenExpiration: string = '50m';
-
-
+  // private accessTokenExpiration: string = '50m';
 
   private hashsecret: string = process.env.HASH_SECRET;
 
@@ -26,12 +24,9 @@ export class JwtAuthService {
     return user;
   }
 
-
-
   async generateJwt(user: User, mfaAuthenticated = false) {
     const payload = this.generatePayload(user, mfaAuthenticated);
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: this.accessTokenExpiration,
       secret: process.env.JWT_SECRET,
     });
 
@@ -45,8 +40,6 @@ export class JwtAuthService {
     const cookieOptions = {
       domain: domain,
       httpOnly: false,
-      sameSite: 'lax',
-      secure: domain !== 'localhost',
     } as CookieOptions;
     return cookieOptions;
   }
@@ -54,19 +47,13 @@ export class JwtAuthService {
   async removeTokensFromCookie(res: Response) {
     const cookieOptions = this.generateCookieOptions();
     res.clearCookie('accessToken', cookieOptions);
-
   }
 
   async storeTokensInCookie(res: Response, authToken: AuthTokens) {
     const cookieOptions = this.generateCookieOptions();
     res.cookie('accessToken', authToken.accessToken, {
       ...cookieOptions,
-      maxAge: ms(this.accessTokenExpiration),
+      // maxAge: ms(this.accessTokenExpiration),
     });
-
   }
-
-
 }
-
-

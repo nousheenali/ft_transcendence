@@ -8,7 +8,7 @@ import { useChatSocket, useReRenderAllState } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button, Modal } from "react-daisyui";
-import { getUserMuteStatus } from "../../../../../../../services/user";
+import { getUserMuteStatus } from "../../../../../../services/user";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 
 export default function ChannelUser({

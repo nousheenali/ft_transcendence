@@ -11,7 +11,7 @@ async function bootstrap() {
   // app.useWebSocketAdapter(new IoAdapter(app));
   //(CORS) is a mechanism that allows resources to be requested from another domain(NEXTJS frontend in our case)
   app.enableCors({
-    origin: 'http://localhost:3000', // Replace with your frontend URL
+    origin: process.env.NEXT_PUBLIC_GATEWAY_URL, // Replace with your frontend URL
     credentials: true,
     allowedHeaders: 'Content-Type, Accept, Origin',
     preflightContinue: false,

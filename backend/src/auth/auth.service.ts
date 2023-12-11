@@ -7,7 +7,6 @@ import { UserService } from 'src/user/user.service';
 export class AuthService {
   constructor(private usersService: UserService) {}
   async logout(user: User, res: Response) {
-
-    res.redirect('http://localhost:3000/login');
+    res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}/login`);
   }
 }
