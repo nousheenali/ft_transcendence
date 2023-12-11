@@ -24,16 +24,17 @@ export default function ChannelUser({
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const { reRenderAll, setReRenderAll } = useReRenderAllState();
 
+  // 🟣🟣 Pop up modal to confirm the kick action
+  const modalRef = React.useRef<HTMLDialogElement>(null);
+  const handleModalClick = useCallback(() => {
+    modalRef.current?.showModal();
+  }, [modalRef]);
+
   // 🟣🟣 Get the channel admins
   const channelAdmins: string[] = channel.channelMembers
     .filter((member) => member.isAdmin)
     .map((member) => member.user.login);
 
-  // 🟣🟣 Pop up modal to confirm the kick action
-  const modalRef = React.useRef<HTMLDialogElement>(null);
-  const handleModalClick = useCallback(() => {
-    if (!modalRef.current?.open) modalRef.current?.showModal();
-  }, [modalRef]);
   /**========================================================================
    *  🟣🟣 Handle the mute button click
    *
@@ -314,41 +315,48 @@ export default function ChannelUser({
               channel?
             </Modal.Body>
             <Modal.Actions className="flex justify-evenly">
-              <Button
-                color="ghost"
-                className="bg-box-fill text-white border-main-yellow"
-                onClick={() => {
-                  modalRef.current?.close();
-                }}
-              >
-                NO
-              </Button>
+              <form method="dialog">
+                <Button
+                  color="ghost"
+                  className="bg-box-fill text-white border-main-yellow"
+                  onClick={() => {
+                    modalRef.current?.close();
+                  }}
+                >
+                  NO
+                </Button>
+              </form>
 
-              <Button
-                color="ghost"
-                className="bg-box-fill text-warning border-main-yellow"
-                onClick={() => {
-                  socket.emit("KickUser", {
-                    admin: currentUser.name,
-                    kickedUserlogin: user.login,
-                    channelName: channel.channelName,
-                    channelType: channel.channelType,
-                  });
-                  toast.success("user kicked successfully", {
-                    position: "top-center",
-                    autoClose: 800,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                  });
-                  modalRef.current?.close();
-                }}
-              >
-                YES
-              </Button>
+              <form method="dialog">
+                <Button
+                  color="ghost"
+                  className="bg-box-fill text-warning border-main-yellow"
+                  onClick={() => {
+                    modalRef.current?.close();
+                    //---------------------------------------------------------------------------------
+                    // 🟣🟣 Emit the KickUser event to the server to kick the user
+                    socket.emit("KickUser", {
+                      admin: currentUser.name,
+                      kickedUserlogin: user.login,
+                      channelName: channel.channelName,
+                      channelType: channel.channelType,
+                    });
+                    //---------------------------------------------------------------------------------
+                    toast.success("user kicked successfully", {
+                      position: "top-center",
+                      autoClose: 800,
+                      hideProgressBar: true,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "dark",
+                    });
+                  }}
+                >
+                  YES
+                </Button>
+              </form>
             </Modal.Actions>
           </Modal>
           {/* ====================================================== */}
