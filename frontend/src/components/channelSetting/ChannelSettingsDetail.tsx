@@ -51,6 +51,11 @@ function ChannelSettingDetails({
         setNewChannelPasswordStatus(true);
       }
       setNewChannelPassword(value);
+    } else if (buttonId === "Add New Password") {
+      if (value.length > 4 && newChannelPassword.length > 4) {
+        setNewChannelPasswordStatus(false);
+      }
+      setNewChannelPassword(value);
     }
   };
 
@@ -73,6 +78,15 @@ function ChannelSettingDetails({
         socket.emit("removeChannelPassword", {
           channelId: channelInfo.id,
           oldChannelPassword: currentChannelPassword,
+          newChannelPassword: "noPassword",
+        });
+        setIsVisible(false);
+      }
+      if (buttonId === "Add Password") {
+        console.log("Add New Password");
+        socket.emit("addChannelPassword", {
+          channelId: channelInfo.id,
+          oldChannelPassword: "noPassword",
           newChannelPassword: newChannelPassword,
         });
         setIsVisible(false);
@@ -98,41 +112,66 @@ function ChannelSettingDetails({
       <div className="flex flex-cols gap-20 mt-10 ">
         <div className="text-xl ml-10"> Channel Password:</div>
         <div className="grid grid-cols-2 gap-12">
-          {channelInfo.channelType === "PRIVATE" && (
+          {channelInfo.channelType === "PRIVATE" ? (
+            <>
+              <Input
+                value={currentChannelPassword}
+                className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
+                size="lg"
+                placeholder="Old Password..."
+                onChange={(e) =>
+                  handleInput("Edit Old Password", e.target.value)
+                }
+              ></Input>
+              <Input
+                value={newChannelPassword}
+                className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
+                size="lg"
+                placeholder="New Password..."
+                onChange={(e) =>
+                  handleInput("Edit New Password", e.target.value)
+                }
+              ></Input>
+            </>
+          ) : (
             <Input
-              value={currentChannelPassword}
+              value={newChannelPassword}
               className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
               size="lg"
-              placeholder="Old Password..."
-              onChange={(e) => handleInput("Edit Old Password", e.target.value)}
+              placeholder="New Password..."
+              onChange={(e) => handleInput("Add New Password", e.target.value)}
             ></Input>
           )}
-          <Input
-            value={newChannelPassword}
-            className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
-            size="lg"
-            placeholder="New Password..."
-            onChange={(e) => handleInput("Edit New Password", e.target.value)}
-          ></Input>
         </div>
         <div className="" />
         <div className="grid grid-cols-2 gap-8 ">
-          <Button
-            size="sm"
-            className="w-40 h-7 rounded-md items-center text-md bg-button-background "
-            onClick={() => handleSubmit("Update Password")}
-            disabled={updateChannelPasswordStatus}
-          >
-            Update Password
-          </Button>
-          {channelInfo.channelType === "PRIVATE" && (
+          {channelInfo.channelType === "PRIVATE" ? (
+            <>
+              <Button
+                size="sm"
+                className="w-40 h-7 rounded-md items-center text-md bg-button-background "
+                onClick={() => handleSubmit("Update Password")}
+                disabled={updateChannelPasswordStatus}
+              >
+                Update Password
+              </Button>
+              <Button
+                size="sm"
+                className="w-40 h-7 rounded-md items-center text-md bg-button-background "
+                onClick={() => handleSubmit("Remove Password")}
+                disabled={newChannelPasswordStatus}
+              >
+                Remove Password
+              </Button>
+            </>
+          ) : (
             <Button
               size="sm"
               className="w-40 h-7 rounded-md items-center text-md bg-button-background "
-              onClick={() => handleSubmit("Remove Password")}
+              onClick={() => handleSubmit("Add Password")}
               disabled={newChannelPasswordStatus}
             >
-              Remove Password
+              Set Password
             </Button>
           )}
         </div>
