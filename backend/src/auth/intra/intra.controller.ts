@@ -47,7 +47,11 @@ export class IntraController {
       }
       const tokens = await this.intraService.login(user);
       await this.jwtAuthService.setCookie(res, tokens);
-      res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}`);
+      if (userOnline) {
+        res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}`);
+      } else {
+        res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}/settings`);
+      }
     } catch (error) {
       if (!(error instanceof BadRequestException)) {
         console.log(error);
