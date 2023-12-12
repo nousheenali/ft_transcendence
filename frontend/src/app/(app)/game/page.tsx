@@ -46,7 +46,7 @@ export default function GamePage() {
 
   useEffect(() => {
     async function initPhaser() {
-      if (!login) {
+      if (!login || !currentSocket || currentSocket.disconnected) {
         return;
       }
       const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
@@ -156,7 +156,8 @@ export default function GamePage() {
   }, [login]);
 
   const exitGame = () => {
-    socket.disconnect();
+    if (socket)
+      socket.disconnect();
     router.back();
   };
 
