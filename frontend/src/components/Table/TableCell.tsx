@@ -22,13 +22,13 @@ const TableCell: React.FC<TableCellProps> = ({
   const { currentSocket } = useSocket();
   const { socket } = useChatSocket();
 
-  if (typeof dataItem === "string" && dataItem === "Win") {
+  if (typeof dataItem === "string" && (dataItem === "Win" || dataItem === "Yes")) {
     return (
       <div className="py-2 flex-1 text-center text-win-color">{dataItem}</div>
     );
   }
 
-  if (typeof dataItem === "string" && dataItem === "Lose") {
+  if (typeof dataItem === "string" && (dataItem === "Lose" || dataItem === "No")) {
     return (
       <div className="py-2 flex-1 text-center text-lose-color">{dataItem}</div>
     );
