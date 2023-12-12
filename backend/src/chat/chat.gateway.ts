@@ -829,6 +829,7 @@ export class ChatGateway
     client: Socket,
     data: UpdateChannelPasswordDto,
   ) {
+    console.log('remove password');
     try {
       const login = client.handshake.query.userLogin as string;
       const updatedChannel = await this.channelService.removeChannelPassword(
@@ -848,6 +849,40 @@ export class ChatGateway
     } catch (error) {
       client.emit('WrongChannelPassword');
     }
+  }
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   *  add password to channel,
+   * check if the password is correct
+   * if the password is correct, add password to the channel and make it private
+   * if the password is not correct, emit message to the client to notify the user that the password
+   */
+  @UseGuards(SocketAuthGuard)
+  @SubscribeMessage('addChannelPassword')
+  @UsePipes(ValidationPipe)
+  async handleAddPasswordToChannel(
+    client: Socket,
+    data: UpdateChannelPasswordDto,
+  ) {
+    console.log('add new password to a channel');
+    // try {
+    //   const login = client.handshake.query.userLogin as string;
+    //   const updatedChannel = await this.channelService.removeChannelPassword(
+    //     data,
+    //   );
+    //   this.roomsService.removeRooms(
+    //     updatedChannel.channelName + 'PRIVATE',
+    //     'CHANNELS',
+    //   );
+    //   client.emit('ChannelPasswordUpdated');
+    //   this.roomsService.createRoom(
+    //     updatedChannel.channelName + 'PUBLIC',
+    //     login,
+    //     'CHANNELS',
+    //   );
+    //   this.server.emit('ReRenderAllUsers');
+    // } catch (error) {
+    //   client.emit('WrongChannelPassword');
+    // }
   }
 
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
