@@ -11,12 +11,12 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     const request = context.switchToHttp().getRequest();
 
     // Log information about the incoming request
-    console.log(
-      'Request to AccessTokenGuard:',
-      request.method,
-      request.url,
-      request.headers,
-    );
+    // console.log(
+    //   'Request to AccessTokenGuard:',
+    //   request.method,
+    //   request.url,
+    //   request.headers,
+    // );
 
     // You can add additional logic here if needed
 
@@ -35,6 +35,3 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     return user;
   }
 }
-
-@Injectable()
-export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {}

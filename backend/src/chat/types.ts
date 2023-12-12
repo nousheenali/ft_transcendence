@@ -1,6 +1,6 @@
 //===============================================================================
 /**
- * ❂➤ Rooms interface:
+ * 🟣🟣 Rooms interface:
  * name: name of the room
  * 			=>(channel name or user login name)
  * admin: the user that created the room
@@ -9,22 +9,22 @@
  * 			=>(channel users or only the user that send the private message)
  */
 export interface Room {
-	name: string;
-	admin: string;
-	users: string[];
-  }
+  name: string;
+  admin: string;
+  users: string[];
+}
 
 //===============================================================================
 export interface SocketMessage {
-	socketId: string;
-	sender: string;
-	receiver?: string;
-	channel?: string;
-	channelType?: string;
-	message: string;
-  }
-  
+  socketId: string;
+  sender: string;
+  receiver?: string;
+  channel?: string;
+  channelType?: string;
+  message: string;
+}
+
 //===============================================================================
-export type RoomType = "CHANNELS" | "USERS";
+export type RoomType = 'CHANNELS' | 'USERS';
 
 //==============================================================================

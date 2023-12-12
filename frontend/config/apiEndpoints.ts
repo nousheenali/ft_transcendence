@@ -2,6 +2,7 @@ export const API_ENDPOINTS = {
   //USER module
   getUserbyLogin: "/user/getByLogin/",
   getUserbyId: "/user/getById/",
+  getAllUsers: "/user/allUsers/",
 
   //FRIENDS module
   getAllFriends: "/friends/allFriends/",
@@ -16,25 +17,45 @@ export const API_ENDPOINTS = {
   declineFriendRequest: "/friends/declineRequest/",
   blockFriend: "/friends/block/",
   unBlockFriend: "/friends/unBlock/",
-
+  blockedByList: "/friends/blocked-by-list/", // + login
+  blockedLogins: "/friends/blocked-logins/", // + login
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 All the Channels endpoints
-   * └── 🌼
+   * └── 🟣
    **/
+  isUserMuted: "/channels/channel-property/is-muted/",
   allChannels: "/channels/all-channels/",
   privateChannels: "/channels/private-channels/",
   publicChannels: "/channels/public-channels/",
+  oneChannel: "/channels/current-channel/",
   channelUsers: "/channels/users/",
   channelMessages: "/channels/messages/",
   createChannel: "/channels/create/",
   deleteChannel: "/channels/delete/",
 
   /**==============================================================================================
-   * ╭── 🌼
+   * ╭── 🟣
    * ├ 👇 User Messages endpoints
-   * └── 🌼
+   * └── 🟣
    **/
   userMessages: "/user-messages/friend-chat/",
   userLatestMessages: "/user-messages/latest-messages/",
+  /**==============================================================================================
+   * ╭── 🟣
+   * ├ 👇 User Games endpoints
+   * └── 🟣
+   **/
+  gamesHistory: "/games/history/",
+  updateName: "/user/update-name/",
+  updateAvatar: "/user/upload-avatar/",
+
+  /**==============================================================================================
+   * ╭── 🟣
+   * ├ 👇 two-fa end points
+   * └── 🟣
+   **/
+  generateSecret: "/two-fa/generateSecret",
+  verifyTwoFa: "/two-fa/verify",
+  deactivateTwoFa: "/two-fa/deactivate",
 };

@@ -8,6 +8,8 @@ import { CreateUserDto } from './dto';
 import { NotFoundError } from 'rxjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ValidationError } from 'class-validator';
+import { error } from 'console';
 
 @Injectable()
 export class UserService {
@@ -53,6 +55,23 @@ export class UserService {
       return user;
     } catch (error) {
       throw new BadRequestException('Unable to get user by Login');
+    }
+  }
+
+  /* Get user information using full name */
+  async getUserByName(fullName: string) {
+    try {
+      const user = await this.prisma.user.findMany({
+        where: {
+          name: {
+            equals: fullName,
+            mode: 'insensitive',
+          },
+        },
+      });
+      return user[0];
+    } catch (error) {
+      throw new BadRequestException('Unable to get user by Full Name');
     }
   }
 
@@ -112,23 +131,22 @@ export class UserService {
     }
   }
 
-
   async update(login: string, updateUserDto: UpdateUserDto) {
     try {
       console.log('updatedt', updateUserDto);
-      
+
       const updatedUser = await this.prisma.user.update({
         where: { login: login },
         data: {
           name: updateUserDto.name,
           avatar: updateUserDto.avatar,
           updatedAt: new Date(),
-          refreshToken: updateUserDto.refreshToken,
+
           TFAKey: updateUserDto.TFAKey,
           TFAEnabled: updateUserDto.TFAEnabled,
         },
       });
-  
+
       return updatedUser;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -136,11 +154,74 @@ export class UserService {
         console.error('Prisma error:', error.message);
         throw error;
       }
-  
+
       // Handle any other errors
       console.error('Unexpected error occurred:', error);
       throw new Error('An unexpected error occurred while updating the user');
     }
   }
-  
+
+  /* Gets all users */
+  async getAllUsers() {
+    try {
+      return this.prisma.user.findMany({
+        orderBy: {
+          score: 'desc', // highest score first
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException('Unable to get all users');
+    }
+  }
+
+  async updateName(login: string, dto: UpdateUserDto) {
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        name: {
+          equals: dto.name,
+          mode: 'insensitive',
+        },
+        login: { not: login },
+      },
+    });
+    if (existingUser) {
+      throw new BadRequestException('Not a unique name.');
+    }
+
+    const updatedName = await this.prisma.user.update({
+      where: {
+        login: login,
+      },
+      data: { name: dto.name },
+    });
+    if (!updatedName) throw new BadRequestException('Unable to update name');
+    return updatedName;
+  }
+
+  async getSavedFileURL(login: string, img: Express.Multer.File) {
+    if (!img) {
+      throw new Error('Invalid file object received.');
+    }
+    const filePath = `${img.filename}`;
+    const fileURL = `${process.env.FILE_STORAGE_URL}` + filePath; //server URL
+    const updatedName = await this.prisma.user.update({
+      where: {
+        login: login,
+      },
+      data: { avatar: fileURL },
+    });
+    return updatedName;
+  }
+
+  async setTFAVerificationRequired(login: string) {
+    try {
+      const user = await this.prisma.user.update({
+        where: { login: login },
+        data: { TFAVerified: false },
+      });
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Unable to update TFA verification status');
+    }
+  }
 }

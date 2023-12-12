@@ -2,7 +2,7 @@ import { useChannelCreateValidate, useChannelInfo } from "@/context/store";
 import React, { useEffect, useState } from "react";
 import { Input } from "react-daisyui";
 
-import { AiFillEyeInvisible, AiFillEye } from "react-icons/Ai";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 export default function ChannelPasswordTextBox(isPrivate: {
   isPrivate: boolean;

@@ -22,6 +22,8 @@ export interface channelRelationProps {
   channelId: string;
   userId: string;
   user: ChannelUserProps;
+  isAdmin: boolean;
+  isMuted: boolean;
 }
 
 /*-------------------------------------------------------------------*/
@@ -39,6 +41,7 @@ export interface ChannelUserProps {
 
 /*-------------------------------------------------------------------*/
 export interface ChannelsProps {
+  id: string;
   channelName: string;
   channelType: string;
   createdBy: string;
@@ -62,12 +65,12 @@ export interface ChatFriendsProps {
 
 /*-------------------------------------------------------------------*/
 export interface SocketMessage {
-	socketId: string;
-	sender: string;
-	receiver?: string;
-	channel?: string;
-	channelType?: string;
-	message: string;
-  }
+  socketId: string;
+  sender: string;
+  receiver?: string;
+  channel?: string;
+  channelType?: string;
+  message: string;
+}
 
 /*-------------------------------------------------------------------*/

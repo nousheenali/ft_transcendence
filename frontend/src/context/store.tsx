@@ -30,8 +30,8 @@ type TGameColor = {
 export const useGameState = create<TGameColor>((set) => ({
   ballColor: "0xd0f223",
   racketColor: "0xd0f223",
-  bgColor: "0xd0f223",
-  isQueue: false,
+  bgColor: "0x000000",
+  isQueue: true,
   invitee: "Default",
   inviter: "Default",
   isAccepted: false,
@@ -100,6 +100,7 @@ type AppState = {
 
 export const activateClickedChannel = create<AppState>((set) => ({
   activeChannel: {
+    id: "",
     channelName: "",
     channelType: "",
     createdBy: "",
@@ -153,8 +154,9 @@ type ChatSocketState = {
 };
 
 export const useChatSocket = create<ChatSocketState>((set) => ({
-  socket: io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
+  socket: io(process.env.NEXT_PUBLIC_BACKEND as string, {
     autoConnect: false,
+    withCredentials: true,
   }),
   setSocket: (socket: Socket) => set({ socket }),
 }));
@@ -173,6 +175,22 @@ export const useChannelType = create<ChannelTypeState>((set) => ({
   activeChannelType: "Public",
   setActiveChannelType: (channelType: string) =>
     set({ activeChannelType: channelType }),
+}));
+
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle user profile updates globally and re fetch the new data
+ * └── 🌼
+ **/
+type UserPictureUpdatedType = {
+  isUserUpdated: boolean;
+  setIsUserUpdated: (isUserUpdated: boolean) => void;
+};
+
+export const useIsUserUpdated = create<UserPictureUpdatedType>((set) => ({
+  isUserUpdated: false,
+  setIsUserUpdated: (isUserUpdated: boolean) =>
+    set({ isUserUpdated: isUserUpdated }),
 }));
 
 /**==============================================================================================
@@ -208,32 +226,43 @@ export const useSentMessageState = create<SentMessageState>((set) => ({
 
 /**==============================================================================================
  * ╭── 🌼
- * ├ 👇 State to handle if some user joined the channel globaly
+ * ├ 👇 State to handle re rendering to all the users globally
  * └── 🌼
  **/
-type ChannelUsersState = {
-  userJoined: boolean;
-  setUserJoined: (userJoined: boolean) => void;
+type ReRenderAllState = {
+  reRenderAll: boolean;
+  setReRenderAll: (reRenderAll: boolean) => void;
 };
 
-export const useChannelUsersState = create<ChannelUsersState>((set) => ({
-  userJoined: false,
-  setUserJoined: (userJoined: boolean) => set({ userJoined }),
+export const useReRenderAllState = create<ReRenderAllState>((set) => ({
+  reRenderAll: false,
+  setReRenderAll: (reRenderAll: boolean) => set({ reRenderAll }),
 }));
 
-/**==============================================================================================
- * ╭── 🌼
- * ├ 👇 State to handle if some user joined the channel globaly
- * └── 🌼
- **/
-type NewChannelType = {
-  newChannel: boolean;
-  setNewChannel: (newChannel: boolean) => void;
+type SettingToggleVisiblity = {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
 };
 
-export const useNewChanelState = create<NewChannelType>((set) => ({
-  newChannel: false,
-  setNewChannel: (newChannel: boolean) => set({ newChannel }),
+export const useSettingToggleVisiblity = create<SettingToggleVisiblity>(
+  (set) => ({
+    isVisible: false,
+    setIsVisible: (isVisible: boolean) => set({ isVisible }),
+  })
+);
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle re rendering to the user globally
+ * └── 🌼
+ **/
+type ReRenderUserState = {
+  reRenderUser: boolean;
+  setReRenderUser: (reRenderUser: boolean) => void;
+};
+
+export const useReRenderUserState = create<ReRenderUserState>((set) => ({
+  reRenderUser: false,
+  setReRenderUser: (reRenderUser: boolean) => set({ reRenderUser }),
 }));
 
 /*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/
@@ -262,3 +291,5 @@ export const useChannelCreateValidate = create<TCreateChannelValidate>(
       set({ validChannelName }),
   })
 );
+
+/*🌼🌼🌼🌼───────────────────────────────────────────────────────────────────────────────🌼🌼🌼🌼*/

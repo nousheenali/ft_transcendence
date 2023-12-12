@@ -10,7 +10,13 @@ export const NotificationIcon = ({
   isNewNotification: string;
 }) => {
   return (
-    <div className="flex items-center justify-center rounded-2xl w-6 h-6 bg-gray-500 hover:bg-[#696A71] opacity-70 p-1 ">
+    <div
+      className={
+        (isNewNotification == "" &&
+          "flex items-center justify-center rounded-2xl w-6 h-6 bg-gray-500 opacity-70 p-1 animate-ping") ||
+        "flex items-center justify-center rounded-2xl w-6 h-6 bg-gray-500 hover:bg-[#696A71] opacity-70 p-1"
+      }
+    >
       <svg
         className=""
         xmlns="http://www.w3.org/2000/svg"

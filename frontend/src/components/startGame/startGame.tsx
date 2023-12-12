@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import { useGameState, useSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getUserData } from "../../../services/user";
-import { sendNotification } from "../../../services/friends";
+import { getUserData } from "../../services/user";
+import { sendNotification } from "../../services/friends";
 import { Content } from "../notificationIcon/types";
 import { AuthContext } from "@/context/AuthProvider";
 

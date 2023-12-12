@@ -20,10 +20,12 @@ export default function RootLoginRedirectPage() {
     }
   }, [setUser, router]);
 
+  
+
   useEffect(() => {
     if (user.login) {
-      if (user.TFAEnabled) {
-        router.push('/auth/2fa');
+      if (user.TFAEnabled === true && user.TFAVerified === false) {
+        router.push('/login?show2faModal=true');
       } else {
         router.push('/');
       }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { useState } from "react";
 
 import ResponsiveTable from "@/components/Table/Table";
@@ -20,7 +20,7 @@ import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
-import { getUserData } from "../../../services/user";
+import { getUserData } from "../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
 
@@ -30,12 +30,18 @@ const ProfilePage = () => {
   const [tableData, setTableData] = useState<TableRowData[]>([]);
   const [userInfo, setUserInfo] = useState<userInformation>();
   const { user } = useContext(AuthContext);
+  const login: string = user.login!;
+  const [maxHeight, setMaxHeight] = useState("none");
+  const containerRef = useRef<HTMLDivElement>(null);
   let data: TableRowData[];
 
   const fetchTableData = async (buttonId: string) => {
     try {
       if (user.login) {
-        const userData = await getUserData(user.login, API_ENDPOINTS.getUserbyLogin);
+        const userData = await getUserData(
+          user.login,
+          API_ENDPOINTS.getUserbyLogin
+        );
         if (userData) {
           setUserInfo(userData);
           const dataGeneratorMap: DataGeneratorMap = {
@@ -63,7 +69,12 @@ const ProfilePage = () => {
   useEffect(() => {
     setIsLoading(true);
     fetchTableData(activeButton);
-  }, [activeButton]); // fetch data when button clicked
+    if (containerRef.current) {
+      const containerHeight = containerRef.current.clientHeight;
+      setMaxHeight(`${containerHeight}px`);
+      //  console.log("Container Height:", containerHeight);
+    }
+  }, [activeButton, login]); // fetch data when button clicked
 
   const handleButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);
@@ -84,7 +95,7 @@ const ProfilePage = () => {
               headerImage="people.svg"
               headings={friendsProfileHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="friends"
               reloadPageData={fetchTableData}
             />
@@ -97,7 +108,7 @@ const ProfilePage = () => {
               headerImage="people.svg"
               headings={searchProfileHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="search"
               reloadPageData={fetchTableData}
             />
@@ -110,7 +121,7 @@ const ProfilePage = () => {
               headerImage="user-minus.svg"
               headings={blockedFriendsHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="blocked"
               reloadPageData={fetchTableData}
             />
@@ -123,7 +134,7 @@ const ProfilePage = () => {
               headerImage="user-plus.svg"
               headings={friendsRequestHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="friendRequests"
               reloadPageData={fetchTableData}
             />
@@ -136,7 +147,7 @@ const ProfilePage = () => {
               headerImage="user-plus.svg"
               headings={pendingRequestHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="pendingRequests"
               reloadPageData={fetchTableData}
             />
@@ -150,15 +161,20 @@ const ProfilePage = () => {
   return (
     <>
       <div className="w-full h-full text-center text-white flex flex-col p-6">
-        <ProfileInfo
-          name={userInfo?.name || "name"}
-          email={userInfo?.email || "email"}
-          rank="12"
-          avatar={userInfo?.avatar || "avatar"}
-          activeButton={activeButton}
-          handleButtonClick={handleButtonClick}
-        />
-        <div className="h-full mt-[10px] border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden ">
+        <div className="h-1/5">
+          <ProfileInfo
+            name={userInfo?.name || "name"}
+            email={userInfo?.email || "email"}
+            score={userInfo?.score || 0}
+            avatar={userInfo?.avatar || "avatar"}
+            activeButton={activeButton}
+            handleButtonClick={handleButtonClick}
+          />
+        </div>
+        <div
+          ref={containerRef}
+          className=" h-4/5 mt-[10px] border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden"
+        >
           {renderTable()}
         </div>
       </div>

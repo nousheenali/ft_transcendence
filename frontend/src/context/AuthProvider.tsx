@@ -15,7 +15,7 @@ export const AuthContext = createContext<AuthContextType>(
 
 export function signOut() {
   Cookies.remove('accessToken');
-  Cookies.remove('refreshToken');
+
   redirect('/login');
 }
 
@@ -38,13 +38,16 @@ export const AuthProvider: React.FC = ({ children }) => {
     const decodedToken = verifyToken(accessToken);
 
     if (accessToken && decodedToken) {
+      console.log(decodedToken);
+      if (decodedToken.TFAEnabled === true && decodedToken.TFAVerified === false)
+        router.push('/login?show2faModal=true');
       setUser(decodedToken);
     } else {
       router.push('/login');
       // signOut();
       // Handle the case when there's no accessToken or it's not valid
     }
-  }, []);
+  }, [router, verifyToken]);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>

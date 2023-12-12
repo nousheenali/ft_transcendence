@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import Image from "next/image";
 import { useGameState } from "@/context/store";
-import { getUserData } from "../../../services/user";
+import { getUserData } from "../../services/user";
 import { userInformation } from "../Profile/types";
 import { AuthContext } from "@/context/AuthProvider";
 

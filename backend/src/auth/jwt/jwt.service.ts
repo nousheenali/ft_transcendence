@@ -16,58 +16,22 @@ export class JwtAuthService {
     private userService: UserService,
   ) {}
 
-  private accessTokenExpiration: string = '15m';
-
-  private refreshTokenExpiration: string = '7d';
+  // private accessTokenExpiration: string = '50m';
 
   private hashsecret: string = process.env.HASH_SECRET;
 
   private generatePayload(user: User, mfaAuthenticated = false) {
-    // return {
-    //   sub: user.login,
-    //   sub: String,
-    //   email: String, // email
-    //   TFAEnabled: booleanString,
-    //   TFAVerified: booleanString,
-    //   iat: numberString, // issued at
-    //   exp: numberString, // expiration
-    //   id: String,
-    //   login: String,
-    //   name: String,
-    //   avatar: String,
-    //   createdAt: String,
-    //   updatedAt: String,
-    //   isOnline: booleanString,
-    //   score: numberString,
-    // } as JwtPayload;
-    console.log('payload to send--------------------======', user);
     return user;
-  }
-
-  private async updateRefreshToken(user: User, refreshToken: string) {
-    const hash = await argon2.hash(refreshToken, {
-      secret: Buffer.from(this.hashsecret),
-    });
-
-    await this.userService.update(user.login, {
-      refreshToken: hash,
-    });
   }
 
   async generateJwt(user: User, mfaAuthenticated = false) {
     const payload = this.generatePayload(user, mfaAuthenticated);
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: this.accessTokenExpiration,
       secret: process.env.JWT_SECRET,
     });
-    const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: this.refreshTokenExpiration,
-      secret: process.env.JWT_SECRET,
-    });
-    await this.updateRefreshToken(user, refreshToken);
+
     return {
       accessToken,
-      refreshToken,
     };
   }
 
@@ -76,8 +40,6 @@ export class JwtAuthService {
     const cookieOptions = {
       domain: domain,
       httpOnly: false,
-      sameSite: 'lax',
-      secure: domain !== 'localhost',
     } as CookieOptions;
     return cookieOptions;
   }
@@ -85,29 +47,13 @@ export class JwtAuthService {
   async removeTokensFromCookie(res: Response) {
     const cookieOptions = this.generateCookieOptions();
     res.clearCookie('accessToken', cookieOptions);
-    res.clearCookie('refreshToken', cookieOptions);
   }
 
   async storeTokensInCookie(res: Response, authToken: AuthTokens) {
     const cookieOptions = this.generateCookieOptions();
     res.cookie('accessToken', authToken.accessToken, {
       ...cookieOptions,
-      maxAge: ms(this.accessTokenExpiration),
+      // maxAge: ms(this.accessTokenExpiration),
     });
-    res.cookie('refreshToken', authToken.refreshToken, {
-      ...cookieOptions,
-      maxAge: ms(this.refreshTokenExpiration),
-    });
-  }
-
-  async refreshJwt(login: string) {
-    const user = await this.userService.getUserByLogin(login);
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-    if (!user.refreshToken) {
-      throw new UnauthorizedException('Session expired');
-    }
-    return await this.generateJwt(user);
   }
 }

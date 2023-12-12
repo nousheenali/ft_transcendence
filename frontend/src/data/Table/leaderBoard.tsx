@@ -1,16 +1,30 @@
-export const generateLeaderboardData = (numRecords = 100) => {
-  const records = [];
+import { userInformation } from "@/components/Profile/types";
+import { TableRowData } from "@/components/Table/types";
+import { getAllUsersData } from "../../services/user";
+import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 
-  for (let i = 1; i <= numRecords; i++) {
-    records.push([
-      `${i}`,
-      { playerName: `Player${i}`, img: `/av1.svg`, name: `Name${i}` },
-      `1801`,
-      `10`,
-      `7`,
-      `3`,
-    ]);
+export const generateLeaderboardData = async (
+  login: string,
+  numRecords = 100
+) => {
+  const records: TableRowData[] = [];
+  const data: userInformation[] = await getAllUsersData(
+    login,
+    API_ENDPOINTS.getAllUsers
+  );
+  let i = 1;
+  if (Array.isArray(data)) {
+    data.map((item: userInformation) => {
+      records.push([
+        `${i}`,
+        { playerName: item.login, img: item.avatar, name: item.name },
+        item.score.toString(),
+        (item.wins + item.losses).toString(),
+        item.wins.toString(),
+        item.losses.toString(),
+      ]);
+      i++;
+    });
   }
-
   return records;
 };

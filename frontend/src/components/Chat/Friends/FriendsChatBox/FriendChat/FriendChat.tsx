@@ -1,12 +1,10 @@
-
 import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
-import React, { useEffect, useState, useRef, useContext } from "react";
-// import { getUserData } from "../../../../../../services/user";
-// import { userInformation } from "@/components/Profile/types";
-import { getMessages } from "../../../../../../services/messages";
+import { userInformation } from "@/components/Profile/types";
+import { getMessages } from "../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
   activateClickedFriend,
   useSentMessageState,
@@ -14,50 +12,29 @@ import {
 } from "../../../../../context/store";
 import { AuthContext } from "@/context/AuthProvider";
 
-
-
+/* ================================================================================================ */
 export default function FriendChat() {
   const { user } = useContext(AuthContext);
   const { sentMessage } = useSentMessageState();
   const { activeFriend } = activateClickedFriend();
-  // const [user, setUser] = useState<userInformation>();
-  // const [friend, setFriend] = useState<userInformation>();
   const { receivedMessage } = useReceivedMessageState();
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const [friendChat, setFriendChat] = useState<MessagesProps[]>([]);
 
   /**
-   **╭── 🌼
-   **├ 👇 Fetch the user and the friend data from the database
-   **└── 🌼
-   **/
-
-  // useEffect(() => {
-  //   if (sentMessage || receivedMessage) {
-  //     const fetchData = async () => {
-  //       const userData: userInformation = await getUserData(
-  //         session?.data?.user.login!,
-  //         API_ENDPOINTS.getUserbyLogin
-  //       );
-  //       setUser(userData);
-  //       const friendData: userInformation = await getUserData(
-  //         activeFriend!,
-  //         API_ENDPOINTS.getUserbyLogin
-  //       );
-  //       setFriend(friendData);
-  //     };
-  //     fetchData();
-  //   }
-  // }, [session]);
-
-  /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 Fetch the private and public channels data from the database
-   **└── 🌼
+   **└── 🟣
    **/
 
   useEffect(() => {
-    if (activeFriend) {
+    if (
+      user &&
+      user.login &&
+      activeFriend &&
+      activeFriend !== "" &&
+      activeFriend !== null
+    ) {
       const fetchData = async () => {
         const chat: MessagesProps[] = await getMessages(
           user.login!,
@@ -69,10 +46,12 @@ export default function FriendChat() {
     }
   }, [user, activeFriend, sentMessage, receivedMessage]);
 
+  //------------------------------------------------------------------------------------------------
+
   /**
-   **╭── 🌼
+   **╭── 🟣
    **├ 👇 This useEffect is used to scroll the chat to the bottom when a new message is received.
-   **└── 🌼
+   **└── 🟣
    **/
 
   useEffect(() => {
@@ -80,19 +59,18 @@ export default function FriendChat() {
       chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
     }
   }, [friendChat]);
-
+  //------------------------------------------------------------------------------------------------
   return (
     <div className="overflow-y-scroll px-3" ref={chatScrollRef}>
       {friendChat.map((message, index) => {
-        if (
-          user.login &&
-          message.sender.login === user.login
-        ) {
+        if (user.login && message.sender.login === user.login) {
           return <ReceiverChatBox key={index} message={message} />;
-        } else {
+        } else if (activeFriend && message.sender.login === activeFriend) {
           return <SenderChatBox key={index} message={message} />;
         }
       })}
     </div>
   );
 }
+
+/* ================================================================================================ */

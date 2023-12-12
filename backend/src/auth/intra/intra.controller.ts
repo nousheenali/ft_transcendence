@@ -29,7 +29,7 @@ export class IntraController {
       console.log(user);
       const tokens = await this.intraService.login(user);
       await this.jwtAuthService.storeTokensInCookie(res, tokens);
-      res.redirect(`http://localhost:3000/redirect`);
+      res.redirect(`${process.env.NEXT_PUBLIC_GATEWAY_URL}/redirect`);
     } catch (error) {
       console.log(req);
       console.log(error);

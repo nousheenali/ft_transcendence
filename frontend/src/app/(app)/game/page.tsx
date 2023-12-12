@@ -11,7 +11,7 @@ import React, {
 import io, { Socket } from "socket.io-client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { getUserData } from "../../../../services/user";
+import { getUserData } from "../../../services/user";
 import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
 import {
@@ -19,7 +19,8 @@ import {
   WorldDimensions,
   joiningData,
 } from "@/components/GameComponents/types";
-import Preloader from "../../../components/GameComponents/Scenes/Preloader";
+
+import { useSocket } from "@/context/store";
 
 export default function GamePage() {
   const {
@@ -34,16 +35,12 @@ export default function GamePage() {
     setInvitee,
   } = useGameState();
 
-  // console.log("INCOMING VALUES....", isQueue, isAccepted, invitee, inviter);
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const { currentSocket } = useSocket();
   const backendUrl = process.env.NEXT_PUBLIC_GAME_GATEWAY_URL;
-  const world: WorldDimensions = {
-    width: (window.innerWidth * 2) / 3,
-    height: (window.innerHeight * 2) / 3,
-  };
   var socket: Socket;
   var phaserGame: Phaser.Game;
 
@@ -68,8 +65,13 @@ export default function GamePage() {
 
       socket = io(backendUrl!, {
         query: { login: userData.login, username: userData.name },
+        withCredentials: true,
       });
       socket.on("connect", () => {
+        const world: WorldDimensions = {
+          width: (window.innerWidth * 2) / 3,
+          height: (window.innerHeight * 2) / 3,
+        };
         /* When user selects queue option */
         if (isQueue) {
           socket.emit("addToQueue", world);
@@ -116,11 +118,12 @@ export default function GamePage() {
             parent: "game-container",
             width: data.worldDimensions.width,
             height: data.worldDimensions.height,
-            // backgroundColor: bgColor,//"#6495ED",//"#87CEEB",//, "#60b922", "#44b18b",
+            backgroundColor: bgColor,
             scene: [Preloader, Game],
             physics: {
               default: "arcade",
             },
+            fps: { target: 120 },
           };
           phaserGame = new Phaser.Game(config);
           /* Global Variables for Phaser Game */
@@ -129,6 +132,7 @@ export default function GamePage() {
             player0: data.p0Name,
             player1: data.p1Name,
             socket,
+            currentSocket,
             paddleColor: racketColor,
             ballColor: ballColor,
             worldWidth: data.worldDimensions.width,
@@ -151,9 +155,14 @@ export default function GamePage() {
     initPhaser();
   }, [login]);
 
+  const exitGame = () => {
+    socket.disconnect();
+    router.back();
+  };
+
   return (
     <div>
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-screen">
         <div
           id="game-container"
           key="game-container"
@@ -173,6 +182,9 @@ export default function GamePage() {
           <Image alt="Logo" src="./Logo.svg" width={200} height={200} />
           <span className="mt-10 border-2 loading loading-ring loading-lg text-main-yellow"></span>
           <div className="mt-2"> Matching Players...</div>
+        </div>
+        <div className="text-start-game font-saira-condensed font-bold text-2xl h-18 w-64 text-center border-2 border-aside-border rounded-2xl p-4 mt-4 bg-heading-fill hover:bg-[#111417] opacity-90">
+          <button onClick={exitGame}>Exit Game</button>
         </div>
       </div>
     </div>

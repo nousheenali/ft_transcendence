@@ -7,18 +7,10 @@ export class GameRoomService {
 
   private gameRooms: Map<string, GameRoom> = new Map();
   /* Initial Ball Velocity for a game room */
-  private VelX = 8;
-  private VelY = 4;
+  private VelX = 0.5;
+  private VelY = 0.5;
 
   constructor(private playerService: PlayerService) {}
-
-  // generateUniqueRoomId(): string {
-  //   const timestamp = new Date().getTime();
-  //   const randomPart = Math.random().toString(36);
-  //   // Combine the timestamp and random part to create a unique ID
-  //   const uniqueId = `${timestamp}-${randomPart}`;
-  //   return uniqueId;
-  // }
 
   /* Creates a new game room */
   createGameRoom(roomID: string, player1: Player, player2: Player): GameRoom {

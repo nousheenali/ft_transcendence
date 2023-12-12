@@ -39,67 +39,21 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JwtPayload) {
     try {
-      console.log('JwtAuthStrategy - Validate - Payload:', payload);
+      // console.log('JwtAuthStrategy - Validate - Payload:', payload);
 
       const user = await this.userService.getUserByLogin(payload.login);
 
       if (!user) {
-        console.log('JwtAuthStrategy - Validate - User not found');
+        // console.log('JwtAuthStrategy - Validate - User not found');
         throw new UnauthorizedException('User not found');
       }
 
-      console.log('JwtAuthStrategy - Validate - User:', user);
+      // console.log('JwtAuthStrategy - Validate - User:', user);
       return user;
     } catch (error) {
-      console.error('JwtAuthStrategy - Validate - Error:', error);
+      // console.error('JwtAuthStrategy - Validate - Error:', error);
       throw new UnauthorizedException('Unauthorized', 'Invalid credentials');
     }
   }
 }
 
-@Injectable()
-export class RefreshJwtStrategy extends PassportStrategy(
-  Strategy,
-  'jwt-refresh',
-) {
-  constructor(private usersService: UserService) {
-    super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        RefreshJwtStrategy.getRefreshTokenFromCookie,
-        ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ]),
-      ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET,
-      passReqToCallback: true,
-    });
-  }
-  private hashsecret: string = process.env.HASH_SECRET;
-
-  async validate(req: Request, payload: JwtPayload) {
-    const refreshToken =
-      RefreshJwtStrategy.extractRefreshJwtFromBearer(req) ??
-      RefreshJwtStrategy.getRefreshTokenFromCookie(req);
-    if (!refreshToken) {
-      throw new UnauthorizedException('Session expired');
-    }
-    const user = await this.usersService.getUserByLogin(payload.sub);
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-    const isValid = await argon2.verify(user.refreshToken, refreshToken, {
-      secret: Buffer.from(this.hashsecret),
-    });
-    if (!isValid) {
-      throw new UnauthorizedException('Session expired');
-    }
-    return user;
-  }
-
-  private static extractRefreshJwtFromBearer(req: Request): string | null {
-    return req.get('Authorization')?.replace('Bearer', '').trim();
-  }
-
-  private static getRefreshTokenFromCookie(req: Request): string | null {
-    return req.cookies?.refreshToken ?? null;
-  }
-}

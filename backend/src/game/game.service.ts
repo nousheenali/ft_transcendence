@@ -53,7 +53,6 @@ export class GameService {
 
   async getGamebyUsers(player1: string, player2: string): Promise<string> {
     try {
-      console.log('', player1, player2);
       const game = await this.prisma.game.findMany({
         where: {
           userId: player1,
@@ -92,17 +91,59 @@ export class GameService {
     }
   }
 
-  async deleteGameEntry(
-    gameID: string,
-  ) {
+  async deleteGameEntry(gameID: string) {
     try {
       await this.prisma.game.delete({
         where: {
           id: gameID,
-        }
+        },
       });
     } catch (error) {
       throw new BadRequestException('Unable to delete game entry');
     }
   }
+
+  //------------------------------------------------------------------------------------------------
+  async getGameHistory(userLogin: string) {
+    try {
+      const userData = await this.userService.getUserByLogin(userLogin);
+      if (!userData) throw new NotFoundException('User Id does not exist');
+
+      const game = await this.prisma.game.findMany({
+        where: {
+          OR: [
+            { userId: userData.id, gameStatus: 'FINISHED' },
+            { opponentId: userData.id, gameStatus: 'FINISHED' },
+          ],
+        },
+        select: {
+          gameStatus: true,
+          winnerId: true,
+          startTime: true,
+          opponent: {
+            select: {
+              id: true,
+              login: true,
+              name: true,
+              avatar: true,
+              score: true,
+            },
+          },
+          User: {
+            select: {
+              id: true,
+              login: true,
+              name: true,
+              avatar: true,
+              score: true,
+            },
+          },
+        },
+      });
+      return game;
+    } catch (error) {
+      throw new BadRequestException('Unable to find game');
+    }
+  }
+  //------------------------------------------------------------------------------------------------
 }

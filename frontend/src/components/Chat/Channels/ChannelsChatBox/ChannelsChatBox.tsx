@@ -1,13 +1,15 @@
-import { ChannelsProps } from "../../types";
 import ChannelChat from "./ChannelChat/ChannelChat";
+import { AuthContext } from "@/context/AuthProvider";
 import { activateClickedChannel } from "@/context/store";
+import { getUserData } from "../../../../services/user";
+import { userInformation } from "@/components/Profile/types";
+import React, { useState, useEffect, useContext } from "react";
+import { API_ENDPOINTS } from "../../../../../config/apiEndpoints";
 import SendMessageBox from "../../ChatBox/SendMessageBox/SendMessageBox";
 import ChannelChatBoxHeader from "./ChannelChatBoxHeader/ChannelChatBoxHeader";
 
-
 export default function ChannelsChatBox() {
   const { activeChannel } = activateClickedChannel();
-
 
   if (activeChannel.channelName === "")
     return (
