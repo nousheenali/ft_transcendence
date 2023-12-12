@@ -35,6 +35,14 @@ export default class GameObjects {
       .setOrigin(0.55)
       .setVisible(false);
 
+    msg[3] = this.showText(
+      wW / 2,
+      (wH * 4) / 5,
+      "FIRST PLAYER TO SCORE 7 POINTS WINS!",
+      30,
+      "#d0f223"
+    ).setOrigin(0.55);
+
     return msg;
   }
 
@@ -52,7 +60,7 @@ export default class GameObjects {
     results[0] = this.showText(
       wW / 2 + 70,
       50,
-      this.scene.registry.get("player0") + ": 0",
+      this.scene.registry.get("player0").substring(0,10) + ": 0",
       25,
       "#D0F223"
     ).setOrigin(-0.2, 0);
@@ -60,7 +68,7 @@ export default class GameObjects {
     results[1] = this.showText(
       wW / 2 - 100,
       50,
-      this.scene.registry.get("player1") + ": 0",
+      this.scene.registry.get("player1").substring(0, 10) + ": 0",
       25,
       "#D0F223"
     ).setOrigin(1, 0);

@@ -183,6 +183,7 @@ export default class Game extends Scene {
   initilaiseGame() {
     this.socket.emit("playerReady");
     this.messages[0].setVisible(false);
+    this.messages[3].setVisible(false);
     this.controls[0].setVisible(false);
     this.controls[1].setVisible(false);
     this.socket
@@ -247,10 +248,14 @@ export default class Game extends Scene {
     this.p0_score = p0_score;
     this.p1_score = p1_score;
     this.results[0].setText(
-      this.registry.get("player0") + " : " + this.p0_score.toString()
+      this.registry.get("player0").substring(0, 10) +
+        " : " +
+        this.p0_score.toString()
     );
     this.results[1].setText(
-      this.registry.get("player1") + " : " + this.p1_score.toString()
+      this.registry.get("player1").substring(0, 10) +
+        " : " +
+        this.p1_score.toString()
     );
   }
 
@@ -265,6 +270,7 @@ export default class Game extends Scene {
     this.results[3].setText(data.message).setVisible(true);
     this.messages[2].setVisible(true);
     this.messages[0].setVisible(false);
+    this.messages[3].setVisible(false);
     this.messages[1].setVisible(false);
     this.controls[0].setVisible(false);
     this.controls[1].setVisible(false);

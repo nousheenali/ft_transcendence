@@ -23,11 +23,13 @@ export default function Leaderboard() {
     const data = await generateLeaderboardData(login);
     setleaderboardData(data);
     /* fetching user data again because "data" is in a different format */
-    const users: userInformation[] = await getAllUsersData(
-      login,
-      API_ENDPOINTS.getAllUsers
-    );
-    setTopPlayers(users.slice(0, 3)); //get top 3 players
+    if(login) {
+      const users: userInformation[] = await getAllUsersData(
+        login,
+        API_ENDPOINTS.getAllUsers
+      );
+      setTopPlayers(users.slice(0, 3)); //get top 3 players
+    }
   };
 
   useEffect(() => {
