@@ -42,7 +42,10 @@ export class TwoFaController {
   }
 
   @Post('verify')
-  async verifyToken(@Body() dto: TwofaVerifyDto, @Res() res: Response) {
+  async verifyToken(
+    @Body() dto: TwofaVerifyDto,
+    @Res() res: Response,
+  ) {
     try {
       const isValid = await this.twoFaService.verifyToken(
         dto.userLogin,
@@ -53,10 +56,11 @@ export class TwoFaController {
         throw new BadRequestException('Token is not valid');
       }
       const user: any = await this.userService.getUserByLogin(dto.userLogin);
-      console.log(user);
+      // console.log(user);
       const tokens = await this.jwtAuthService.generateJwt(user);
-      console.log(tokens);
-      return await this.jwtAuthService.setCookie(res, tokens);
+      // console.log(tokens);
+      await this.jwtAuthService.setCookie(res, tokens);
+      return res.send({ user });
     } catch (error) {
       console.log(error);
       if (!(error instanceof BadRequestException)) {
@@ -72,7 +76,7 @@ export class TwoFaController {
   @Post('deactivate')
   async deactivateTwoFa(
     @Body() dto: TwofaVerifyDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ) {
     try {
       const user = await this.twoFaService.deactivateTwoFa(
@@ -82,8 +86,10 @@ export class TwoFaController {
       console.log(user);
       const tokens = await this.jwtAuthService.generateJwt(user);
       console.log(tokens);
-      return await this.jwtAuthService.setCookie(res, tokens);
+      await this.jwtAuthService.setCookie(res, tokens);
+      res.send({ user });
     } catch (error) {
+      console.log(error);
       if (!(error instanceof BadRequestException)) {
         throw new HttpException(
           'Unexpected error during deactivation',

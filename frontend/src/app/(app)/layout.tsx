@@ -14,10 +14,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser, userUpdated } = useContext(AuthContext);
 
   const router = useRouter();
-  console.log(user);
+  // console.log(user);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -32,7 +32,11 @@ export default function RootLayout({
         if (data.TFAEnabled === true && data.TFAVerified === false) {
           router.push("/login?show2faModal=true");
         }
+        console.log(data);
         setUser(data);
+        // if (data.newUser === true) {
+        //   router.push("/settings");
+        // }
       } catch (error) {
         console.log(error);
         if (user) {
@@ -42,7 +46,7 @@ export default function RootLayout({
       }
     };
     checkLogin();
-  }, []);
+  }, [userUpdated]);
 
   if (
     !user?.login ||

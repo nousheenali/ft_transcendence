@@ -24,7 +24,6 @@ export class IntraService {
       dto.avatar = intraUser.avatar;
       user = await this.userService.createUser(dto);
     } else {
-      //
       if (user.TFAEnabled === true) {
         user = await this.userService.setTFAVerificationRequired(
           intraUser.login,
@@ -32,6 +31,5 @@ export class IntraService {
       }
     }
     return this.jwtAuthService.generateJwt(user);
-
   }
 }
