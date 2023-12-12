@@ -9,6 +9,8 @@ import {
   useSettingToggleVisiblity,
 } from "@/context/store";
 
+/**======================================================================================================**/
+
 function ChannelSettingDetails({
   channelInfo,
 }: {
@@ -23,6 +25,7 @@ function ChannelSettingDetails({
   const [newChannelPasswordStatus, setNewChannelPasswordStatus] =
     useState<boolean>(true);
 
+  /**======================================================================================================**/
   const handleInput = (buttonId: string, value: string) => {
     if (buttonId === "Edit Old Password") {
       if (value.length > 4 && newChannelPassword.length > 4) {
@@ -50,6 +53,8 @@ function ChannelSettingDetails({
       setNewChannelPassword(value);
     }
   };
+
+  /**======================================================================================================**/
 
   const [buttonId, setButtonId] = useState<string>("");
   const { socket } = useChatSocket();
@@ -85,19 +90,23 @@ function ChannelSettingDetails({
     setButtonId(buttonId);
   };
 
+  /**======================================================================================================**/
+
   return (
     <div className="flex flex-col ml-10 mb-40 font-saira-condensed font-bold text-main-text justify-center ">
       {/* channel password update */}
       <div className="flex flex-cols gap-20 mt-10 ">
         <div className="text-xl ml-10"> Channel Password:</div>
         <div className="grid grid-cols-2 gap-12">
-          <Input
-            value={currentChannelPassword}
-            className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
-            size="lg"
-            placeholder="Old Password..."
-            onChange={(e) => handleInput("Edit Old Password", e.target.value)}
-          ></Input>
+          {channelInfo.channelType === "PRIVATE" && (
+            <Input
+              value={currentChannelPassword}
+              className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
+              size="lg"
+              placeholder="Old Password..."
+              onChange={(e) => handleInput("Edit Old Password", e.target.value)}
+            ></Input>
+          )}
           <Input
             value={newChannelPassword}
             className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
@@ -116,14 +125,16 @@ function ChannelSettingDetails({
           >
             Update Password
           </Button>
-          <Button
-            size="sm"
-            className="w-40 h-7 rounded-md items-center text-md bg-button-background "
-            onClick={() => handleSubmit("Remove Password")}
-            disabled={newChannelPasswordStatus}
-          >
-            Remove Password
-          </Button>
+          {channelInfo.channelType === "PRIVATE" && (
+            <Button
+              size="sm"
+              className="w-40 h-7 rounded-md items-center text-md bg-button-background "
+              onClick={() => handleSubmit("Remove Password")}
+              disabled={newChannelPasswordStatus}
+            >
+              Remove Password
+            </Button>
+          )}
         </div>
       </div>
     </div>

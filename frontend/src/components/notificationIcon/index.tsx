@@ -93,7 +93,7 @@ export default function NotificationIcon() {
       });
       socket.on("newNotif", (data) => {
         setNewNotification(true);
-        playSound("notif.m4a");
+        // playSound("notif.m4a");
         setIsNewNotification("");
       });
       return () => {

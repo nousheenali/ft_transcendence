@@ -49,7 +49,7 @@ export default function Home() {
         { withCredentials: true }
       );
       router.push("/");
-      handleShow(); 
+      handleShow();
     } catch (error: any) {
       console.error(error);
       toast.error(error.response?.data?.message || "An error occurred");
@@ -62,6 +62,11 @@ export default function Home() {
     const queryParams = new URLSearchParams(window.location.search);
     if (queryParams.get("show2faModal") === "true") {
       handleShow();
+    }
+    if (queryParams.get("duplicateLogin") === "true") {
+      toast.error("already Logged in another browser");
+      // router.push(`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`);
+      // handleShow();
     }
   }, []);
 

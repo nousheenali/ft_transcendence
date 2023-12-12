@@ -18,4 +18,9 @@ export class ChatService {
   /** ================================================================================================
    * 🟣🟣 Getting all the users from the database
    * ================================================================================================*/
+  async getUserStaus(login: string) {
+    return await this.prisma.user.findUnique({
+      where: { login: login },
+    });
+  }
 }

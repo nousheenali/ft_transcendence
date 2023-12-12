@@ -19,7 +19,7 @@ CREATE TABLE "User" (
     "avatar" TEXT DEFAULT 'https://i.imgur.com/6VBx3io.png',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "isOnline" BOOLEAN NOT NULL DEFAULT true,
+    "isOnline" BOOLEAN NOT NULL DEFAULT false,
     "inAGame" BOOLEAN NOT NULL DEFAULT false,
     "TFAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "TFAKey" TEXT,
@@ -89,6 +89,7 @@ CREATE TABLE "ChannelRelation" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "channelId" TEXT NOT NULL,
+    "isAdmin" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "ChannelRelation_pkey" PRIMARY KEY ("id")
 );

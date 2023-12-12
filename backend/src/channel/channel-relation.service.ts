@@ -3,7 +3,6 @@ import { CreateChannelRelationDto } from './dto/create-channel-relation.dto'; //
 import { PrismaService } from '../prisma/prisma.service'; // 👈 Import PrismaService
 import { ChannelService } from './channel.service';
 import { UserService } from 'src/user/user.service';
-import chalk from 'chalk';
 
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
@@ -34,7 +33,6 @@ export class ChannelRelationService {
       } else {
         return false;
       }
-      
     } catch (error) {
       throw new BadRequestException(
         'UNABLE TO CHECK IF THE USER IS A MEMBER OF THE CHANNEL',
@@ -77,7 +75,7 @@ export class ChannelRelationService {
    * @example
    * updateChannelRelation(13, 14224, true)
    */
-  async udateIsMutedInChannelRelation(userId: string, channelId: string) {
+  async updateIsMutedInChannelRelation(userId: string, channelId: string) {
     try {
       const isUserMuted = await this.isUserMuted(channelId, userId);
 
@@ -92,6 +90,7 @@ export class ChannelRelationService {
             isMuted: false,
           },
         });
+        return false;
       } else {
         await this.prisma.channelRelation.updateMany({
           where: {
@@ -102,8 +101,8 @@ export class ChannelRelationService {
             isMuted: true,
           },
         });
+        return true;
       }
-      return;
     } catch (error) {
       throw new BadRequestException('UNABLE TO UPDATE THE CHANNEL RELATION');
     }
@@ -210,6 +209,5 @@ export class ChannelRelationService {
       throw new BadRequestException('UNABLE TO DELETE THE CHANNEL RELATION');
     }
   }
-
   /** ---------------------------------------------------------------------------------------- **/
 }

@@ -29,7 +29,6 @@ export default function RootLayout({
             withCredentials: true,
           }
         );
-        console.log(data);
         if (data.TFAEnabled === true && data.TFAVerified === false) {
           router.push("/login?show2faModal=true");
         }
