@@ -96,14 +96,15 @@ export default class Game extends Scene {
         /*  optimizes the sound playback logic by ensuring that the sound is played once per collision event
          rather than potentially being triggered continuously in each frame. */
         let collision = false;
-        
-        this.currentSocket.emit("newLiveGame", {
-          player1: this.registry.get("player0"),
-          player1Image: this.registry.get("player0Image"),
-          player2: this.registry.get("player1"),
-          player2Image: this.registry.get("player1Image"),
-          startedTime: new Date(),
-        });
+        if (this.currentSocket && this.currentSocket.connected) {
+          this.currentSocket.emit("newLiveGame", {
+            player1: this.registry.get("player0"),
+            player1Image: this.registry.get("player0Image"),
+            player2: this.registry.get("player1"),
+            player2Image: this.registry.get("player1Image"),
+            startedTime: new Date(),
+          });
+        }
         
         /*plays audio based on the surface hit*/
         this.socket.on("hitPaddle", (surface: boolean) => {
@@ -135,11 +136,14 @@ export default class Game extends Scene {
 
       /* game Over */
       this.socket.on("gameOver", (data: GameOver) => {
-        this.currentSocket.emit("finishedLiveGame", {
-          player1: this.registry.get("player0"),
-          player2: this.registry.get("player1"),
-          startedTime: new Date(),
-        });
+        this.gameStarted = false
+        if (this.currentSocket &&  this.currentSocket.connected){
+          this.currentSocket.emit("finishedLiveGame", {
+            player1: this.registry.get("player0"),
+            player2: this.registry.get("player1"),
+            startedTime: new Date(),
+          });
+        }
         this.gameOverContent(data);
       });
     }
