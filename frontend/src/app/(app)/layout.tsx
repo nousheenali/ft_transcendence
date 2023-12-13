@@ -17,7 +17,6 @@ export default function RootLayout({
   const { user, setUser } = useContext(AuthContext);
 
   const router = useRouter();
-  console.log(user);
   const pathname = usePathname();
 
   useEffect(() => {

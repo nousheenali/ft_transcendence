@@ -124,4 +124,17 @@ export class UserController {
     const filePath = path.join(__dirname, `../../../uploads/${avatar}`);
     res.sendFile(filePath);
   }
+
+  // To Serve File
+  @Get('/game-status/:userLogin')
+  getUserGameStatus(@Param('userLogin') userLogin: string) {
+    try {
+      return this.userService.getUserGameStatus(userLogin);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error getting user game status',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
 }

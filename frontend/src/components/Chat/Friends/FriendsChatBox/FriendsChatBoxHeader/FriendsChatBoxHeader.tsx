@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
-import { Button, Drawer, Menu } from "react-daisyui";
+import { Drawer, Menu } from "react-daisyui";
 import { sendNotification } from "../../../../../services/friends";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,9 +12,12 @@ import {
 import { Content } from "@/components/notificationIcon/types";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/AuthProvider";
-import { useContext, useCallback } from "react";
+import { useContext, useCallback, useEffect, useState } from "react";
 import FriendDashBoard from "@/components/Chat/Friends/FriendsChatBox/FriendsChatBoxHeader/FriendDashBoard";
 import InvitaionGameCustomize from "@/components/startGame/startInvitedGame";
+import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
+import { getUserGameData } from "../../../../../services/user";
+import { fr } from "date-fns/locale";
 
 /**======================================================================================================**/
 export default function FriendsChatBoxHeader({
@@ -26,6 +29,25 @@ export default function FriendsChatBoxHeader({
   const { currentSocket } = useSocket();
   const router = useRouter();
   const { user } = useContext(AuthContext);
+  // const [InGame, setInGame] = useState(false);
+
+  // useEffect to check if the user is in a game or not
+  // if the user is in a game, the invite button will be disabled
+  // useEffect(() => {
+  //   if (friend && friend.login) {
+  //     const fetchData = async () => {
+  //       const userGameData: boolean = await getUserGameData(
+  //         friend.login,
+  //         API_ENDPOINTS.getUserbyLogin
+  //       );
+  //       setInGame(userGameData);
+  //     };
+  //     fetchData();
+  //   }
+  // }, [friend]);
+
+  // console.log("InGame", InGame)
+
 
   const { isVisible, setIsVisible } = useSettingToggleVisiblity();
   const toggleVisible = useCallback(() => {
@@ -108,12 +130,15 @@ export default function FriendsChatBoxHeader({
       invite user to plat a game button
       in the chat box header
        */}
-      <div className="flex flex-row justify-center items-center basis-1/6">
-        <InvitaionGameCustomize
-          handleInviteClick={handleInviteClick}
-          eventNames="INVITE"
-        />
-      </div>
+      {/* ---------------------------------------------------------------------------------- */}
+      {friend.isOnline && (
+        <div className="flex flex-row justify-center items-center basis-1/6">
+          <InvitaionGameCustomize
+            handleInviteClick={handleInviteClick}
+            eventNames="INVITE"
+          />
+        </div>
+      )}
       {/* ---------------------------------------------------------------------------------- */}
     </div>
   );

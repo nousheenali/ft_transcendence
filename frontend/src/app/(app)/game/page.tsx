@@ -72,6 +72,7 @@ export default function GamePage() {
           width: (window.innerWidth * 2) / 3,
           height: (window.innerHeight * 2) / 3,
         };
+
         /* When user selects queue option */
         if (isQueue) {
           socket.emit("addToQueue", world);
@@ -92,7 +93,6 @@ export default function GamePage() {
             });
           }
         }
-
         /* When inviter disconnects before the invitee joins */
         socket.on("inviterDisconnected", () => {
           if (isAccepted) alert("Inviter disconnected the game");
@@ -156,7 +156,9 @@ export default function GamePage() {
   }, [login]);
 
   const exitGame = () => {
-    socket.disconnect();
+    if (socket) {
+      socket.disconnect();
+    }
     router.back();
   };
 
