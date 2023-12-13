@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { NotificationItems } from "../types";
-import { activeClickedProfilePage } from "@/context/store";
+import {
+  activateClickedFriend,
+  activeClickedProfilePage,
+} from "@/context/store";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 
@@ -15,6 +18,7 @@ export const NormalNotificationsList = ({
   normalNotifications: NotificationItems[];
 }) => {
   const { activeButton, setActiveButton } = activeClickedProfilePage();
+  const { activeFriend, setActiveFriend } = activateClickedFriend();
   const router = useRouter();
 
   const handleFriendRequestClick = () => {
@@ -22,12 +26,17 @@ export const NormalNotificationsList = ({
     router.push("/profile");
   };
 
-  const handleNotificationClick = (notifType: string) => {
-    if (notifType === "FriendRequest_Recieved") handleFriendRequestClick();
-    console.log("notifType: ", notifType);
+  const handleDirectMessageClick = (sender: string) => {
+    setActiveFriend(sender);
+    router.push("/chat");
   };
 
-  // const formattedTime = ;
+  const handleNotificationClick = (notif: NotificationItems) => {
+    if (notif.content === "FriendRequest_Recieved") handleFriendRequestClick();
+    else if (notif.content === "DirectMessage_Recieved")
+      handleDirectMessageClick(notif.sender.login);
+  };
+
   return (
     <>
       {normalNotifications.length ? (
@@ -37,7 +46,7 @@ export const NormalNotificationsList = ({
               key={index}
               className="flex flex-row px-1 py-1 my-1 mx-1 h-14 text-sm font-extralight text-table-row-text-color font-saira-condensed hover:text-gray-300 rounded-full bg-notification-row-bg w-full "
               onClick={() => {
-                handleNotificationClick(item.content);
+                handleNotificationClick(item);
               }}
             >
               <a href="#" className="flex space-x-6 w-full justify-between">
