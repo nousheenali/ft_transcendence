@@ -32,7 +32,6 @@ export interface UpdateSpritePositions {
   ballWidth: number;
 }
 
-
 export interface BallPosition {
   position: SpritePosition;
   p0_score: number; //player0 score
@@ -57,9 +56,9 @@ export interface WaitingRoom {
 }
 
 export interface Game {
-  gameStatus: string
-  startTime: Date
-  winnerId: string
-  User: userInformation
-  opponent: userInformation
+  gameStatus: string;
+  startTime: Date;
+  winnerId: string;
+  User: userInformation;
+  opponent: userInformation;
 }

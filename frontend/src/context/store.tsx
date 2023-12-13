@@ -30,7 +30,7 @@ type TGameColor = {
 export const useGameState = create<TGameColor>((set) => ({
   ballColor: "0xd0f223",
   racketColor: "0xd0f223",
-  bgColor: "0xd0f223",
+  bgColor: "0x000000",
   isQueue: true,
   invitee: "Default",
   inviter: "Default",
@@ -170,8 +170,9 @@ type ChatSocketState = {
 };
 
 export const useChatSocket = create<ChatSocketState>((set) => ({
-  socket: io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
+  socket: io(process.env.NEXT_PUBLIC_BACKEND as string, {
     autoConnect: false,
+    withCredentials: true,
   }),
   setSocket: (socket: Socket) => set({ socket }),
 }));
@@ -190,6 +191,22 @@ export const useChannelType = create<ChannelTypeState>((set) => ({
   activeChannelType: "Public",
   setActiveChannelType: (channelType: string) =>
     set({ activeChannelType: channelType }),
+}));
+
+/**==============================================================================================
+ * ╭── 🌼
+ * ├ 👇 State to handle user profile updates globally and re fetch the new data
+ * └── 🌼
+ **/
+type UserPictureUpdatedType = {
+  isUserUpdated: boolean;
+  setIsUserUpdated: (isUserUpdated: boolean) => void;
+};
+
+export const useIsUserUpdated = create<UserPictureUpdatedType>((set) => ({
+  isUserUpdated: false,
+  setIsUserUpdated: (isUserUpdated: boolean) =>
+    set({ isUserUpdated: isUserUpdated }),
 }));
 
 /**==============================================================================================

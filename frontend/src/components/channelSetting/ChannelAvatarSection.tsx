@@ -8,7 +8,7 @@ export default function ChannelAvatarSection({
   channelCreater: string;
 }) {
   return (
-    <div className="flex flex-row mt-20 mb-20 ml-96 ">
+    <div className="flex flex-row gap-4 mt-20 mb-20 ml-96 ">
       <div className="flex w-1/5 justify-center">
         <img height={100} width={117} src="/av1.svg" alt="avatar" />
       </div>

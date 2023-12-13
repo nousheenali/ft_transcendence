@@ -2,6 +2,7 @@ import Image from "next/image";
 import { NotificationItems } from "../types";
 import { activeClickedProfilePage } from "@/context/store";
 import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
 
 {
   /* 
@@ -26,6 +27,7 @@ export const NormalNotificationsList = ({
     console.log("notifType: ", notifType);
   };
 
+  // const formattedTime = ;
   return (
     <>
       {normalNotifications.length ? (
@@ -50,7 +52,9 @@ export const NormalNotificationsList = ({
                   {item.content}
                 </div>
                 <div className="w-1/5 grow py-1 pt-4 text-end pr-2 text-dimmed-text">
-                  {item.recivedAt}
+                  {formatDistanceToNow(new Date(item.recivedAt), {
+                    addSuffix: true,
+                  })}
                 </div>
               </a>
             </button>

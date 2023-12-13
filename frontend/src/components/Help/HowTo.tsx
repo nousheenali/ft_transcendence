@@ -14,8 +14,8 @@ export default function HowTo() {
         player misses the ball, the opponent scores a point.
       </p>
       <p>
-        The ball's bounce direction changes based on how it hits the pad. Enjoy
-        the exciting gameplay!
+        The ball&apos;s bounce direction changes based on how it hits the pad.
+        Enjoy the exciting gameplay!
       </p>
     </div>
   );

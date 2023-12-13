@@ -19,7 +19,7 @@ import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
-import { getUserData } from "../../../services/user";
+import { getUserData } from "../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
 import { activeClickedProfilePage } from "@/context/store";

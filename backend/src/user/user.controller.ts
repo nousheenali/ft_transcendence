@@ -7,11 +7,24 @@ import {
   Param,
   Post,
   Res,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto';
 import { UserService } from './user.service';
 import { NotFoundError } from 'rxjs';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { Response } from 'express';
+import * as path from 'path';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
 
+@UseGuards(AccessTokenGuard)
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -69,5 +82,46 @@ export class UserController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  //updates user name
+  @Put('update-name/:login')
+  @UsePipes(ValidationPipe)
+  updateName(@Param('login') login: string, @Body() dto: UpdateUserDto) {
+    return this.userService.updateName(login, dto);
+  }
+
+  //uplaods new user avatar
+  @Post('/upload-avatar/:login')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          cb(null, `${file.originalname}`);
+        },
+      }),
+    }),
+  )
+  async uploadFile(
+    @Param('login') login: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      return await this.userService.getSavedFileURL(login, file);
+    } catch (error) {
+      console.error('Error uploading file:1', error);
+      throw new HttpException(
+        'Error uploading file:2',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // To Serve File
+  @Get('/getFile')
+  getFile(@Res() res: Response, @Query('avatar') avatar: string) {
+    const filePath = path.join(__dirname, `../../../uploads/${avatar}`);
+    res.sendFile(filePath);
   }
 }

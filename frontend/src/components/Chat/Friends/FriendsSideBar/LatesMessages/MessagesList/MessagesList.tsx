@@ -2,8 +2,8 @@ import Image from "next/image";
 import { AuthContext } from "@/context/AuthProvider";
 import { MessagesProps } from "@/components/Chat/types";
 import React, { useContext, useEffect, useState } from "react";
-import { getBlockList } from "../../../../../../../services/user";
-import { getMessages } from "../../../../../../../services/messages";
+import { getBlockList } from "../../../../../../services/user";
+import { getMessages } from "../../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
 import {
   useReceivedMessageState,

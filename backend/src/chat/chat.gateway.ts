@@ -20,9 +20,11 @@ import { ChannelRelationService } from './../channel/channel-relation.service';
 import { UserService } from './../user/user.service';
 import chalk from 'chalk';
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Logger,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -31,6 +33,12 @@ import {
   UpdateChannelNameDto,
   UpdateChannelPasswordDto,
 } from 'src/channel/dto/update-channel.dto';
+
+import { SocketAuthGuard } from 'src/auth/socket.guard';
+import { JwtService } from '@nestjs/jwt';
+import { JwtAuthService } from 'src/auth/jwt/jwt.service';
+import { Client } from 'socket.io/dist/client';
+import { User } from '@prisma/client';
 
 /**╭──🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣🟣
  * │  Array that will store the rooms that are created
@@ -41,7 +49,12 @@ import {
  * │ the frontend to connect to the websocket server
  * ╰──========================================================================================= **/
 
-@WebSocketGateway({ cors: { origin: process.env.NEXT_PUBLIC_GATEWAY_URL } })
+@WebSocketGateway({
+  cors: {
+    origin: process.env.NEXT_PUBLIC_GATEWAY_URL,
+    credentials: true,
+  },
+})
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -51,6 +64,7 @@ export class ChatGateway
     private readonly channelRelationService: ChannelRelationService,
     private readonly userService: UserService,
     private readonly channelService: ChannelService,
+    private jwtAuthService: JwtAuthService,
   ) {}
   private roomsService: RoomsService = new RoomsService();
   //================================================================================================
@@ -76,20 +90,49 @@ export class ChatGateway
   //  Initializing the gateway
   afterInit(server: Server) {
     this.logger.log('Chat GateWay has been initialized!!');
+
+    server.use((socket, next) => {
+      this.jwtAuthService
+        .validateSocketConnection(socket)
+        .then((user) => {
+          socket.handshake.auth['user'] = user;
+          // if (this.roomsService.getClientSocket(user.login)) {
+          //   socket.emit('duplicateLogin', user);
+          //   socket.disconnect();
+          //   return Promise.reject(new WsException('duplicate login'));
+          // }
+          next();
+        })
+        .catch((err) => {
+          this.logger.error(
+            `Failed to authenticate user: ${socket.handshake.auth?.user?.login}`,
+            err,
+          );
+        });
+    });
   }
 
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling connection by subscribing to the event "connection" and adding the user to the
    * (usersMap) and (roomsArray) and join the user's room.
    * ================================================================================================*/
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('connect')
   async handleConnection(@ConnectedSocket() client: Socket) {
     this.startHeartbeat(client);
     //  Extracting the user login from the handshake's query
     const userLogin = client.handshake.query.userLogin as string;
+    this.logger.log(userLogin);
     //  If the user login is undefined or null, return
     if (userLogin === undefined || userLogin === null) return;
 
+    // let userStatus: any = await this.chatService.getUserStaus(userLogin);
+
+    // if (userStatus.isOnline && this.roomsService.getClientSocket(userLogin)) {
+    //   client.emit('duplicateLogin');
+    //   client.disconnect();
+    //   // return Promise.reject(new WsException('duplicate login'));
+    // }
     //  changing the user status in the database
     this.chatService.updateUserStatus(userLogin, true);
     //  Emit the event "UserStatusUpdate" to all the users to re-render the friends list
@@ -104,6 +147,7 @@ export class ChatGateway
     );
 
     // save the socket id in the clientSockets map in rooms service
+
     this.roomsService.addClientSocket(userLogin, client);
 
     //  Joining the user's room at connection
@@ -129,6 +173,7 @@ export class ChatGateway
    *  Handling event by subscribing to the event "ClientToServer" and emitting the message
    * to the receiver room.
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('ClientToServer')
   @UsePipes(
     new ValidationPipe({
@@ -175,7 +220,7 @@ export class ChatGateway
    * 3. add the user to the channel's members by creating a channel relation in the database between
    *    the user and the channel.
    */
-
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('JoinChannel')
   async joinChannel(
     @ConnectedSocket() client: Socket,
@@ -274,7 +319,7 @@ export class ChatGateway
    *  channel
    * ## . Emit the message to the client to notify the user that the user has joined the channel
    **/
-
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('InviteUserToChannel')
   async inviteUserToChannel(
     @ConnectedSocket() client: Socket,
@@ -390,6 +435,7 @@ export class ChatGateway
    * 1. create the channel room
    * 2. join the client's socket to the channel room
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('CreateChannel')
   async createChannel(
     @ConnectedSocket() client: Socket,
@@ -460,6 +506,7 @@ export class ChatGateway
    * 3. remove the user from the channel's members by deleting the channel relation in the database
    *   between the user and the channel.
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('LeaveChannel')
   async leaveChannel(
     @ConnectedSocket() client: Socket,
@@ -542,7 +589,7 @@ export class ChatGateway
       }
       //  If the user is the admin, assign the new admin by selecting the oldest member
       //    in the channel
-      await this.channelService.updateChannelAdmin(channelData.id);
+      await this.channelService.updateChannelCreator(channelData.id);
       this.server.to(channelRoom.name).emit('NewChannelAdmin');
     } else {
       //  Delete the channel relation in the database between the user and the channel
@@ -568,6 +615,7 @@ export class ChatGateway
    *  Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('ChannelToServer')
   async sendToChannel(
     @MessageBody() data: SocketMessage,
@@ -674,13 +722,14 @@ export class ChatGateway
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling block-user event by subscribing to the event "BlockUser".
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('BlockUser')
   async blockUser(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    data: {friendLogin: string, userLogin: string},
+    data: { friendLogin: string; userLogin: string },
   ) {
-    const { friendLogin, userLogin} = data;
+    const { friendLogin, userLogin } = data;
     // emit event to the user and the blocked user to re-render the friends list
     const userRoom = this.roomsService.getRoom(userLogin, 'USERS');
     const friendRoom = this.roomsService.getRoom(friendLogin, 'USERS');
@@ -711,10 +760,27 @@ export class ChatGateway
     const channelData = await this.channelService.getChannelByName(channelName);
 
     // Update the channel relation in the database between the user and the channel
-    await this.channelRelationService.udateIsMutedInChannelRelation(
-      mutedUserData.id,
-      channelData.id,
-    );
+    const isMuted =
+      await this.channelRelationService.updateIsMutedInChannelRelation(
+        mutedUserData.id,
+        channelData.id,
+      );
+
+    // If the user is muted successfully, set a timer to unmute the user after 5 minutes
+    if (isMuted) {
+      setTimeout(async () => {
+        await this.channelRelationService.updateIsMutedInChannelRelation(
+          mutedUserData.id,
+          channelData.id,
+        );
+
+        const channelRoom = this.roomsService.getRoom(
+          channelName + channelData.channelType,
+          'CHANNELS',
+        );
+        this.server.to(channelRoom.name).emit('UserMuted');
+      }, 300000);
+    }
 
     // Emitting message to the channel room to notify the other users that the user has been muted
     const channelRoom = this.roomsService.getRoom(
@@ -734,6 +800,7 @@ export class ChatGateway
    * if the password is correct, update the channel password in the database
    * if the password is not correct, emit message to the client to notify the user that the password
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('updateChannelPassword')
   @UsePipes(ValidationPipe)
   async handleRemoveChannelPassword(
@@ -755,12 +822,14 @@ export class ChatGateway
    * if the password is correct, update the channel password in the database
    * if the password is not correct, emit message to the client to notify the user that the password
    */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('removeChannelPassword')
   @UsePipes(ValidationPipe)
   async handleChangeChannelPassword(
     client: Socket,
     data: UpdateChannelPasswordDto,
   ) {
+    console.log('remove password');
     try {
       const login = client.handshake.query.userLogin as string;
       const updatedChannel = await this.channelService.removeChannelPassword(
@@ -781,20 +850,149 @@ export class ChatGateway
       client.emit('WrongChannelPassword');
     }
   }
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   *  add password to channel,
+   * check if the password is correct
+   * if the password is correct, add password to the channel and make it private
+   * if the password is not correct, emit message to the client to notify the user that the password
+   */
+  @UseGuards(SocketAuthGuard)
+  @SubscribeMessage('addChannelPassword')
+  @UsePipes(ValidationPipe)
+  async handleAddPasswordToChannel(
+    client: Socket,
+    data: UpdateChannelPasswordDto,
+  ) {
+    console.log('add new password to a channel');
+    // try {
+    //   const login = client.handshake.query.userLogin as string;
+    //   const updatedChannel = await this.channelService.removeChannelPassword(
+    //     data,
+    //   );
+    //   this.roomsService.removeRooms(
+    //     updatedChannel.channelName + 'PRIVATE',
+    //     'CHANNELS',
+    //   );
+    //   client.emit('ChannelPasswordUpdated');
+    //   this.roomsService.createRoom(
+    //     updatedChannel.channelName + 'PUBLIC',
+    //     login,
+    //     'CHANNELS',
+    //   );
+    //   this.server.emit('ReRenderAllUsers');
+    // } catch (error) {
+    //   client.emit('WrongChannelPassword');
+    // }
+  }
 
+  /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+   * Handling event by subscribing to the event "AddAdmin" to add admin to the channel
+   * then:
+   * 1. Get the user and the channel from the database
+   * 2. Update the channel property "channelAdmin" in the database
+   * 3. Emit the message to the channel room to notify the other users that the user has been added
+   *   as an admin
+   */
+  @SubscribeMessage('AddAdmin')
+  async addAdmin(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: {
+      addedAdmin: string;
+      channelName: string;
+      addedBy: string;
+    },
+  ) {
+    const { addedAdmin, channelName, addedBy } = data;
+
+    // ------------------ Get the user and the channel from the database ------------------
+    const newAdminData = await this.userService.getUserByName(addedAdmin);
+    const channelData = await this.channelService.getChannelByName(channelName);
+    const addedByData = await this.userService.getUserByName(addedBy);
+    // ------------------ If the user does not exist, return ------------------------------
+    if (newAdminData === undefined || newAdminData === null) return;
+
+    // ------------------ If the channel does not exist, return ---------------------------
+    if (channelData === undefined || channelData === null) return;
+
+    // ------------ Get the channel and creator rooms -------------------------------------
+    const channelRoom = this.roomsService.getRoom(
+      channelName + channelData.channelType,
+      'CHANNELS',
+    );
+
+    const creatorRoom = this.roomsService.getRoom(addedByData.login, 'USERS');
+
+    // ------------------ Check if the user is already a member ---------------------------
+    const isMember = await this.channelRelationService.isRelationExist(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    if (!isMember) {
+      this.server.to(creatorRoom.name).emit('UserNotMember', {
+        newAdmin: newAdminData.name,
+        channelName: channelName,
+      });
+      return;
+    }
+
+    // ------------------ Check if the user is already an admin ---------------------------
+    const isAdmin = await this.channelService.isAlreadyAdmin(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    if (isAdmin) {
+      this.server.to(creatorRoom.name).emit('UserAlreadyAdmin', {
+        newAdmin: newAdminData.name,
+        channelName: channelName,
+      });
+      return;
+    }
+
+    // ---------------- Update the "channelAdmin" in the database -------------------------
+    const newAdmin = await this.channelService.addAdminToChannel(
+      channelData.id,
+      newAdminData.id,
+    );
+
+    // ------------------ Emitting message to the channel room ---------------------------
+    this.server.to(channelRoom.name).emit('ChannelAdminAdded', {
+      newAdmin: newAdmin.name,
+      channelName: channelName,
+    });
+  }
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling disconnection
    */
+  // @UseGuards(SocketAuthGuard)
+  // @SubscribeMessage('disconnect')
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {
     this.stopHeartbeat();
+
     const userLogin = client.handshake.query.userLogin as string;
+
+    // Check if userLogin is defined
+    if (!userLogin) {
+      this.logger.warn(
+        `No user login found for disconnected client with id: ${client.id}`,
+      );
+      return; // Exit the method if userLogin is not defined
+    }
+
     this.logger.log(
       chalk.red('The client with id of ') +
         chalk.magenta(client.id) +
+        chalk.red(' and user login ') +
+        chalk.magenta(userLogin) +
         chalk.red(' has been disconnected!!'),
     );
+
     this.chatService.updateUserStatus(userLogin, false);
+    // this.roomsService.removeClientSocket(userLogin);
     this.server.emit('UserStatusUpdate');
   }
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●*/

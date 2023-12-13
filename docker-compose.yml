@@ -14,6 +14,11 @@ services:
       - "5432:5432"
     networks:
       - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # frontend:
   #   build:
@@ -25,6 +30,7 @@ services:
   #     - "3000:3000"
   #   depends_on:
   #     - backend
+  #     - postgres
   #   networks:
   #     - backend
 
@@ -36,9 +42,12 @@ services:
   #     - ./backend/.env
   #   ports:
   #     - "3001:3001"
-  #     - "5555:5555" # Add this line to expose Prisma Studio port
+  #     - "5555:5555"
+  #     - "8005:8005"
+  #     - "8001:8001"
   #   depends_on:
-  #     - postgres
+  #     postgres:
+  #       condition: service_healthy
   #   networks:
   #     - backend
 

@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import { useGameState, useSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getUserData } from "../../../services/user";
-import { sendNotification } from "../../../services/friends";
+import { getUserData } from "../../services/user";
+import { sendNotification } from "../../services/friends";
 import { Content } from "../notificationIcon/types";
 import { AuthContext } from "@/context/AuthProvider";
 
@@ -20,11 +20,15 @@ export default function StartGameCustomize() {
   const ref = useRef<HTMLDialogElement>(null);
   const { invitee, isQueue, inviter, setIsQueue, setInviter, setInvitee } =
     useGameState();
+  const { setBallColor, setBgColor, setRacketColor } = useGameState();
   const [isFriend, setIsFriend] = useState(false);
   const handleShow = useCallback(() => {
     ref.current?.showModal();
     setInviter("Default");
     setInvitee("Default");
+    setBallColor("0xd0f223");
+    setBgColor("0x000000");
+    setRacketColor("0xd0f223");
   }, [ref]);
 
   const router = useRouter();

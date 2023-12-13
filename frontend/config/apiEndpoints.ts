@@ -47,4 +47,15 @@ export const API_ENDPOINTS = {
    * └── 🟣
    **/
   gamesHistory: "/games/history/",
+  updateName: "/user/update-name/",
+  updateAvatar: "/user/upload-avatar/",
+
+  /**==============================================================================================
+   * ╭── 🟣
+   * ├ 👇 two-fa end points
+   * └── 🟣
+   **/
+  generateSecret: "/two-fa/generateSecret",
+  verifyTwoFa: "/two-fa/verify",
+  deactivateTwoFa: "/two-fa/deactivate",
 };

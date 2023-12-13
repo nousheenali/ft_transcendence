@@ -2,10 +2,16 @@ import { Scene } from "phaser";
 import Sprite from "../Helpers/GameObjects";
 import GameObjects from "../Helpers/GameObjects";
 import { Socket } from "socket.io-client";
-import { GameOver, InitialData, BallPosition, UpdateSpritePositions } from "../types";
+import {
+  GameOver,
+  InitialData,
+  BallPosition,
+  UpdateSpritePositions,
+} from "../types";
 
 export default class Game extends Scene {
   private socket!: Socket;
+  private currentSocket!: Socket;
   private roomID!: string;
   private ball!: Phaser.Physics.Arcade.Sprite;
   private player: Phaser.Physics.Arcade.Sprite[] = [];
@@ -39,6 +45,7 @@ export default class Game extends Scene {
 
     this.socket = this.registry.get("socket");
     this.roomID = this.registry.get("roomID");
+    this.currentSocket = this.registry.get("currentSocket");
 
     const gameObj = new GameObjects(this);
     /* display texts */
@@ -48,9 +55,11 @@ export default class Game extends Scene {
     this.line = gameObj.createBackgroundLine(wW / 2, wH * 2);
     this.circle = gameObj.createBackgroundCircle(wW / 2, wH / 2);
 
+    this.game.renderer.type = Phaser.WEBGL;
+
     /* render sprites */
     this.ball = gameObj.renderBall(wW / 2, wH / 2);
-    this.paddlespeed = 430;
+    this.paddlespeed = 600;
     if (this.ball.body) {
       ballWidth = this.ball.body.width;
       this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
@@ -72,23 +81,43 @@ export default class Game extends Scene {
     }
   }
 
-  update() {
-
-    if (this.setupComplete){
+  /* update() is called by game engine on each frame */
+  /* delta - time elapsed between the current frame and the previous frame(milliseconds) */
+  update(time: number, delta: number) {
+    
+    if (this.setupComplete) {
       /*check if space is pressed and game not started yet*/
       if (this.keys.space.isDown && !this.gameStarted) 
         this.initilaiseGame();
 
       /*space pressed and game started */
       if (this.gameStarted) {
+
+        /*  optimizes the sound playback logic by ensuring that the sound is played once per collision event
+         rather than potentially being triggered continuously in each frame. */
+        let collision = false;
+        if (this.currentSocket && this.currentSocket.connected) {
+          this.currentSocket.emit("newLiveGame", {
+            player1: this.registry.get("player0"),
+            player1Image: this.registry.get("player0Image"),
+            player2: this.registry.get("player1"),
+            player2Image: this.registry.get("player1Image"),
+            startedTime: new Date(),
+          });
+        }
+        
         /*plays audio based on the surface hit*/
         this.socket.on("hitPaddle", (surface: boolean) => {
-          if (surface) this.paddleHitAudio.play();
-          else this.wallHitAudio.play();
+          if (!collision) {
+            collision = true;
+            // Play the appropriate sound
+            if (surface) this.paddleHitAudio.play();
+            else this.wallHitAudio.play();
+          }
         });
 
         this.socket
-          .emit("ballPosition", { roomID: this.roomID })
+          .emit("ballPosition", { roomID: this.roomID, delta })
           .on("updateBallPosition", (data: BallPosition) => {
             this.ball.setPosition(data.position.x, data.position.y);
             this.displayScore(data.p0_score, data.p1_score);
@@ -107,6 +136,14 @@ export default class Game extends Scene {
 
       /* game Over */
       this.socket.on("gameOver", (data: GameOver) => {
+        this.gameStarted = false
+        if (this.currentSocket &&  this.currentSocket.connected){
+          this.currentSocket.emit("finishedLiveGame", {
+            player1: this.registry.get("player0"),
+            player2: this.registry.get("player1"),
+            startedTime: new Date(),
+          });
+        }
         this.gameOverContent(data);
       });
     }
@@ -150,6 +187,7 @@ export default class Game extends Scene {
   initilaiseGame() {
     this.socket.emit("playerReady");
     this.messages[0].setVisible(false);
+    this.messages[3].setVisible(false);
     this.controls[0].setVisible(false);
     this.controls[1].setVisible(false);
     this.socket
@@ -214,10 +252,14 @@ export default class Game extends Scene {
     this.p0_score = p0_score;
     this.p1_score = p1_score;
     this.results[0].setText(
-      this.registry.get("player0") + " : " + this.p0_score.toString()
+      this.registry.get("player0").substring(0, 10) +
+        " : " +
+        this.p0_score.toString()
     );
     this.results[1].setText(
-      this.registry.get("player1") + " : " + this.p1_score.toString()
+      this.registry.get("player1").substring(0, 10) +
+        " : " +
+        this.p1_score.toString()
     );
   }
 
@@ -232,12 +274,13 @@ export default class Game extends Scene {
     this.results[3].setText(data.message).setVisible(true);
     this.messages[2].setVisible(true);
     this.messages[0].setVisible(false);
+    this.messages[3].setVisible(false);
     this.messages[1].setVisible(false);
     this.controls[0].setVisible(false);
     this.controls[1].setVisible(false);
     this.displayScore(data.p0_score, data.p1_score);
     if (data.name !== null)
-     this.results[2].setText(data.name + " WINS!").setVisible(true);
+      this.results[2].setText(data.name + " WINS!").setVisible(true);
     const router = this.registry.get("router");
     this.socket.disconnect();
     setTimeout(() => {

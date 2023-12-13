@@ -3,9 +3,9 @@ import { AuthContext } from "@/context/AuthProvider";
 import { ChannelUserProps } from "@/components/Chat/types";
 import { userInformation } from "@/components/Profile/types";
 import React, { useContext, useEffect, useState } from "react";
-import { getUserData } from "../../../../../../../services/user";
+import { getUserData } from "../../../../../../services/user";
 import { API_ENDPOINTS } from "../../../../../../../config/apiEndpoints";
-import { getChannelUsersData } from "../../../../../../../services/channels";
+import { getChannelUsersData } from "../../../../../../services/channels";
 import { activateClickedChannel, useReRenderAllState } from "@/context/store";
 import User from "@/components/Chat/Channels/ChannelsSideBar/ChannelUsers/User/User";
 

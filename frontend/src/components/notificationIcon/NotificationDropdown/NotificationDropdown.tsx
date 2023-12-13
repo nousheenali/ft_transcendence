@@ -5,7 +5,7 @@ import { useGameState, useSocket } from "@/context/store";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
-import { updateData } from "../../../../services/api";
+import { updateData } from "../../../services/api";
 import { NotificationIcon } from "../notificationIcon";
 import { ListAllNotifications } from "../ListNotifications/listAllNotifications";
 //animate-ping -> for new notification gives animation

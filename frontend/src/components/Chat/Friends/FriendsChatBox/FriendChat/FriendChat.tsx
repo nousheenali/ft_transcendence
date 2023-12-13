@@ -2,7 +2,7 @@ import ReceiverChatBox from "./Sender/Sender";
 import SenderChatBox from "./Receiver/Receiver";
 import { MessagesProps } from "@/components/Chat/types";
 import { userInformation } from "@/components/Profile/types";
-import { getMessages } from "../../../../../../services/messages";
+import { getMessages } from "../../../../../services/messages";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import React, { useEffect, useState, useRef, useContext } from "react";
 import {

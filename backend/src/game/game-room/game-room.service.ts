@@ -4,21 +4,12 @@ import { GameRoom, Player } from '../types';
 
 @Injectable()
 export class GameRoomService {
-
   private gameRooms: Map<string, GameRoom> = new Map();
   /* Initial Ball Velocity for a game room */
-  private VelX = 8;
-  private VelY = 4;
+  private VelX = 0.6;
+  private VelY = 0.6;
 
   constructor(private playerService: PlayerService) {}
-
-  // generateUniqueRoomId(): string {
-  //   const timestamp = new Date().getTime();
-  //   const randomPart = Math.random().toString(36);
-  //   // Combine the timestamp and random part to create a unique ID
-  //   const uniqueId = `${timestamp}-${randomPart}`;
-  //   return uniqueId;
-  // }
 
   /* Creates a new game room */
   createGameRoom(roomID: string, player1: Player, player2: Player): GameRoom {
@@ -36,7 +27,7 @@ export class GameRoomService {
       },
       worldWidth: refPlayer.worldWidth,
       worldHeight: (refPlayer.worldWidth * 3) / 4,
-      ballVelocity: { x: this.VelX , y: this.VelY },
+      ballVelocity: { x: this.VelX, y: this.VelY },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,
@@ -104,4 +95,3 @@ export class GameRoomService {
     }
   }
 }
-

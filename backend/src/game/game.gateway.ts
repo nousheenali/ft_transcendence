@@ -1,10 +1,16 @@
-import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+  UseGuards,
+} from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GameRoomService } from './game-room/game-room.service';
@@ -25,8 +31,16 @@ import {
 } from './types';
 import { Console } from 'console';
 import chalk from 'chalk';
+import { JwtService } from '@nestjs/jwt';
+import { SocketAuthGuard } from 'src/auth/socket.guard';
+import { JwtAuthService } from 'src/auth/jwt/jwt.service';
 
-@WebSocketGateway(8005, { cors: { origin: 'http://localhost:3000' } })
+@WebSocketGateway(8005, {
+  cors: {
+    origin: process.env.NEXT_PUBLIC_GATEWAY_URL,
+    credentials: true,
+  },
+})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -39,7 +53,28 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly gameLogicService: GameLogicService,
     private readonly gamePrismaService: GameService,
     private readonly userService: UserService,
+    private jwtAuthService: JwtAuthService,
   ) {}
+
+  afterInit(server: Server) {
+    this.logger.log('Chat GateWay has been initialized!!');
+
+    server.use((socket, next) => {
+      this.jwtAuthService
+        .validateSocketConnection(socket)
+        .then((user) => {
+          socket.handshake.auth['user'] = user;
+          socket.emit('userLogin', user);
+          next();
+        })
+        .catch((err) => {
+          this.logger.error(
+            `Failed to authenticate user: ${socket.handshake.auth?.user?.login}`,
+            err,
+          );
+        });
+    });
+  }
 
   /*  Handle a new player connection */
   handleConnection(client: Socket) {
@@ -102,6 +137,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /* when user joins a queue */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('addToQueue')
   async handleFindMatch(client: Socket, data: WorldDimensions) {
     try {
@@ -128,6 +164,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   /* when a user Invites a friend for a game. The inviter creates 
   a game-room and waits for the friend to join */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('createWaitingRoom')
   async handleCreateWaitingRoom(client: Socket, data: WaitingRoom) {
     const player: Player = this.playerService.getPlayerBySocketID(client.id);
@@ -151,6 +188,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /* On receiving the invitation the friend accepts or rejects the request */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('joinWaitingRoom')
   async handleJoinWaitingRoom(client: Socket, data: JoinWaitingRoom) {
     const player: Player = this.playerService.getPlayerBySocketID(client.id);
@@ -196,6 +234,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /* initial positions of all sprites */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('updateSpritePositions')
   handleSpritePositions(client: Socket, data: UpdateSpritePositions) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
@@ -203,6 +242,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /* Sets readytoSTartt flag to 'true' indicating 'space' button has benn pressed */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('playerReady')
   handleplayerReady(client: Socket) {
     this.playerService.playerReady(client.id);
@@ -210,6 +250,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /* setting ball position and assigning keyboard controls */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('initSettings')
   handleInitBallVelocity(client: Socket, roomID: string) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(roomID);
@@ -239,13 +280,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /* Changes Ball Position */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('ballPosition')
   handleBallPosition(client: Socket, data) {
     const gm: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
 
     if (gm && !gm.gameOver) {
       if (gm.players[0].readyToStart && gm.players[1].readyToStart) {
-        this.gameLogicService.updateBallPosition(gm);
+        this.gameLogicService.updateBallPosition(gm, data.delta);
+        this.gameLogicService.emitBallPosition(gm, this.server);
         const buf = gm.paddleWidth / 3; // this required otherwise ball skids through the wall
 
         /* Handle paddle collisions */
@@ -273,12 +316,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         //   gm.players[0].score + gm.players[1].score === 8
         // )
         //   this.gameLogicService.increaseBallSpeed(gm);
-        this.gameLogicService.emitBallPosition(gm, this.server);
       }
     }
   }
 
   /*  tracking paddle movement */
+  @UseGuards(SocketAuthGuard)
   @SubscribeMessage('movePaddle')
   handleMovePaddle(client: Socket, data) {
     const gameRoom: GameRoom = this.gameRoomService.getGameRoom(data.roomID);
