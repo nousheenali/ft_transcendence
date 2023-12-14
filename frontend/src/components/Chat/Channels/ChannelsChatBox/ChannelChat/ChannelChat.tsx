@@ -11,16 +11,19 @@ import {
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 import { getChannelMessagesData } from "../../../../../services/channels";
 import { AuthContext } from "@/context/AuthProvider";
+import { getBlockList } from "@/services/user";
+import { set } from "date-fns";
 
 /**============================================================================================*/
 export default function ChannelChat() {
   const { user } = useContext(AuthContext);
   const { activeChannel } = activateClickedChannel();
   const [messages, setMessages] = useState<MessagesProps[]>([]);
-  const { reRenderAll } = useReRenderAllState();
+  const { reRenderAll, setReRenderAll } = useReRenderAllState();
   const { sentMessage } = useSentMessageState();
   const { receivedMessage } = useReceivedMessageState();
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
+  const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
 
   /**-------------------------------------------------------------------------**/
   /**
@@ -37,11 +40,18 @@ export default function ChannelChat() {
           API_ENDPOINTS.channelMessages + activeChannel.channelName + "/"
         );
         setMessages(channelMessages);
+
+        const blockedUsers: string[] = await getBlockList(
+          user.login,
+          API_ENDPOINTS.blockedLogins
+        );
+        setBlockedUsers(blockedUsers);
       };
       fetchData();
     } else {
       setMessages([]);
     }
+    // if (reRenderAll) setReRenderAll(false);
   }, [user, activeChannel, sentMessage, receivedMessage, reRenderAll]);
 
   /**-------------------------------------------------------------------------**/
@@ -69,6 +79,8 @@ export default function ChannelChat() {
       {messages.map((message, index) => {
         if (messages[index].sender.login === user.login!)
           return <Receiver key={index} message={message} />;
+        else if (blockedUsers.includes(messages[index].sender.login))
+          return null;
         else return <Sender key={index} message={message} />;
       })}
     </div>
