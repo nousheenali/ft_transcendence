@@ -1,6 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useRef } from "react";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import ResponsiveTable from "@/components/Table/Table";
 import ProfileInfo from "@/components/Profile/ProfileInfo/ProfileInfo";
@@ -23,9 +22,11 @@ import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
 import { getUserData } from "../../services/user";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
 import { AuthContext } from "@/context/AuthProvider";
+import { activeClickedProfilePage } from "@/context/store";
 
 const ProfilePage = () => {
-  const [activeButton, setActiveButton] = useState("friends");
+  // const [activeButton, setActiveButton] = useState("friends");
+  const { activeButton, setActiveButton } = activeClickedProfilePage();
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
   const [userInfo, setUserInfo] = useState<userInformation>();

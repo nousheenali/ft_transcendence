@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
  * */
 
 export default function Home() {
-  const { user } = useContext(AuthContext);
+  const { user, setUserUpdated } = useContext(AuthContext);
 
   const router = useRouter();
   const ref = useRef<HTMLDialogElement>(null);
@@ -35,6 +35,7 @@ export default function Home() {
   }, [ref]);
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const handleVerify = async (e: any) => {
     try {
       e.preventDefault();
@@ -48,6 +49,7 @@ export default function Home() {
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
+      setUserUpdated(response.data.user);
       router.push("/");
       handleShow();
     } catch (error: any) {

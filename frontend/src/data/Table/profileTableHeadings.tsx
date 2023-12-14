@@ -1,5 +1,7 @@
 export const friendsProfileHeadings = [
   'Friend',
+  'isOnline',
+  'inGame',
   'Score',
   'Games',
   'Wins',

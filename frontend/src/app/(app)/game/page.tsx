@@ -46,120 +46,133 @@ export default function GamePage() {
 
   useEffect(() => {
     async function initPhaser() {
-      if (!login) {
-        return;
-      }
-      const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
-      if (userData.inAGame) {
-        alert("You are already in a game");
-        router.back();
-        return;
-      }
-      const Phaser = await import("phaser");
-      const { default: Preloader } = await import(
-        "../../../components/GameComponents/Scenes/Preloader"
-      );
-      const { default: Game } = await import(
-        "../../../components/GameComponents/Scenes/Game"
-      );
-
-      socket = io(backendUrl!, {
-        query: { login: userData.login, username: userData.name },
-        withCredentials: true,
-      });
-      socket.on("connect", () => {
-        const world: WorldDimensions = {
-          width: (window.innerWidth * 2) / 3,
-          height: (window.innerHeight * 2) / 3,
-        };
-
-        /* When user selects queue option */
-        if (isQueue) {
-          socket.emit("addToQueue", world);
-        } else {
-          if (login === inviter) {
-            /* Inviter creates a game room and waits for the invitee */
-            const input: WaitingRoom = {
-              invitee: invitee,
-              worldDimensions: world,
-            };
-            socket.emit("createWaitingRoom", input);
-          } else if (login === invitee) {
-            /* Invitee creates socket and either accepts/declines the invite */
-            socket.emit("joinWaitingRoom", {
-              inviter: inviter,
-              worldDimensions: world,
-              accept: isAccepted,
-            });
-          }
+      try {
+        if (!login) {
+          return;
         }
-        /* When inviter disconnects before the invitee joins */
-        socket.on("inviterDisconnected", () => {
-          if (isAccepted) alert("Inviter disconnected the game");
-          socket.disconnect();
+        const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
+        if (userData.inAGame) {
+          alert("You are already in a game");
           router.back();
+          return;
+        }
+
+        const Phaser = await import("phaser");
+        const { default: Preloader } = await import(
+          "../../../components/GameComponents/Scenes/Preloader"
+        );
+        const { default: Game } = await import(
+          "../../../components/GameComponents/Scenes/Game"
+        );
+
+        socket = io(backendUrl!, {
+          query: { login: userData.login, username: userData.name },
+          withCredentials: true,
         });
-
-        /* When invitee declines invitation */
-        socket.on("invitationDeclined", () => {
-          if (login === inviter) alert("Other player Declined your invitation");
-          socket.disconnect();
-          router.back();
-        });
-
-        /* game room created and both players joined */
-        socket.on("matched", (data: joiningData) => {
-          const loadingText = document.getElementById("loading-text");
-          loadingText?.remove();
-
-          /* Phaser game config */
-          var config: Phaser.Types.Core.GameConfig = {
-            type: Phaser.AUTO,
-            parent: "game-container",
-            width: data.worldDimensions.width,
-            height: data.worldDimensions.height,
-            backgroundColor: bgColor,
-            scene: [Preloader, Game],
-            physics: {
-              default: "arcade",
-            },
-            fps: { target: 120 },
+        socket.on("connect", () => {
+          const world: WorldDimensions = {
+            width: (window.innerWidth * 2) / 3,
+            height: (window.innerHeight * 2) / 3,
           };
-          phaserGame = new Phaser.Game(config);
-          /* Global Variables for Phaser Game */
-          phaserGame.registry.merge({
-            roomID: data.roomID,
-            player0: data.p0Name,
-            player1: data.p1Name,
-            socket,
-            currentSocket,
-            paddleColor: racketColor,
-            ballColor: ballColor,
-            worldWidth: data.worldDimensions.width,
-            worldHeight: data.worldDimensions.width,
-            router,
+          /* When user selects queue option */
+          if (isQueue) {
+            socket.emit("addToQueue", world);
+          } else {
+            if (login === inviter) {
+              /* Inviter creates a game room and waits for the invitee */
+              const input: WaitingRoom = {
+                invitee: invitee,
+                worldDimensions: world,
+              };
+              socket.emit("createWaitingRoom", input);
+            } else if (login === invitee) {
+              /* Invitee creates socket and either accepts/declines the invite */
+              socket.emit("joinWaitingRoom", {
+                inviter: inviter,
+                worldDimensions: world,
+                accept: isAccepted,
+              });
+            }
+          }
+
+          /* When inviter disconnects before the invitee joins */
+          socket.on("inviterDisconnected", () => {
+            if (isAccepted) alert("Inviter disconnected the game");
+            if (socket && socket.connected) socket.disconnect();
+            router.back();
+          });
+
+          /* When invitee declines invitation */
+          socket.on("invitationDeclined", () => {
+            if (login === inviter)
+              alert("Other player Declined your invitation");
+            if (socket && socket.connected) socket.disconnect();
+            router.back();
+          });
+
+          /* game room created and both players joined */
+          socket.on("matched", (data: joiningData) => {
+            const loadingText = document.getElementById("loading-text");
+            loadingText?.remove();
+
+            /* Phaser game config */
+            var config: Phaser.Types.Core.GameConfig = {
+              type: Phaser.AUTO,
+              parent: "game-container",
+              width: data.worldDimensions.width,
+              height: data.worldDimensions.height,
+              backgroundColor: bgColor,
+              scene: [Preloader, Game],
+              physics: {
+                default: "arcade",
+              },
+              fps: { target: 120 },
+            };
+            phaserGame = new Phaser.Game(config);
+            /* Global Variables for Phaser Game */
+            phaserGame.registry.merge({
+              roomID: data.roomID,
+              player0: data.p0Name,
+              player1: data.p1Name,
+              socket,
+              currentSocket,
+              paddleColor: racketColor,
+              ballColor: ballColor,
+              worldWidth: data.worldDimensions.width,
+              worldHeight: data.worldDimensions.width,
+              router,
+            });
           });
         });
-      });
 
-      /* user clicks back navigation in browswer */
-      const handlePopstate = () => {
-        socket.disconnect();
+        /* user clicks back navigation in browswer */
+        const handlePopstate = () => {
+          if (socket && socket.connected) socket.disconnect();
+          if (phaserGame) phaserGame.destroy(true);
+        };
+        window.addEventListener("popstate", handlePopstate);
+        return () => {
+          window.removeEventListener("popstate", handlePopstate);
+        };
+      } catch (error) {
+        /* To avoid unexpected error specially ChuckLoadError */
+        console.log("Unable to load Phaser Game. Try Again!");
+        if (socket && socket.connected) socket.disconnect();
         if (phaserGame) phaserGame.destroy(true);
-      };
-      window.addEventListener("popstate", handlePopstate);
-      return () => {
-        window.removeEventListener("popstate", handlePopstate);
-      };
+        router.back();
+      }
     }
     initPhaser();
   }, [login]);
 
   const exitGame = () => {
-    if (socket) {
-      socket.disconnect();
+    try {
+      if (socket && socket.connected) socket.disconnect();
+      if (phaserGame) phaserGame.destroy(true);
+      router.back();
+    } catch (error) {
+      router.back();
     }
-    router.back();
   };
 
   return (

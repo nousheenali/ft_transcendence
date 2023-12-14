@@ -20,11 +20,15 @@ export default function StartGameCustomize() {
   const ref = useRef<HTMLDialogElement>(null);
   const { invitee, isQueue, inviter, setIsQueue, setInviter, setInvitee } =
     useGameState();
+  const { setBallColor, setBgColor, setRacketColor } = useGameState();
   const [isFriend, setIsFriend] = useState(false);
   const handleShow = useCallback(() => {
     ref.current?.showModal();
     setInviter("Default");
     setInvitee("Default");
+    setBallColor("0xd0f223");
+    setBgColor("0x000000");
+    setRacketColor("0xd0f223");
   }, [ref]);
 
   const router = useRouter();

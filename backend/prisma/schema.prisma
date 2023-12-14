@@ -23,6 +23,8 @@ model User {
 
   inAGame Boolean @default(false)
 
+  newUser Boolean @default(true)
+
   // Two factor authentication-----------------------------------------
   TFAEnabled            Boolean        @default(false)
   TFAKey                String?

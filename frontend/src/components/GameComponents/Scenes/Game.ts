@@ -39,109 +39,124 @@ export default class Game extends Scene {
   preload() {}
 
   create() {
-    var ballWidth = 0;
-    const wH = this.physics.world.bounds.height; //world height
-    const wW = this.physics.world.bounds.width; //world width
+    try {
+      var ballWidth = 0;
+      const wH = this.physics.world.bounds.height; //world height
+      const wW = this.physics.world.bounds.width; //world width
 
-    this.socket = this.registry.get("socket");
-    this.roomID = this.registry.get("roomID");
-    this.currentSocket = this.registry.get("currentSocket");
+      this.socket = this.registry.get("socket");
+      this.roomID = this.registry.get("roomID");
+      this.currentSocket = this.registry.get("currentSocket");
 
-    const gameObj = new GameObjects(this);
-    /* display texts */
-    this.messages = gameObj.initialDisplay(wH, wW, this.messages);
-    this.controls = gameObj.displayControls(wH, wW, this.controls);
-    this.results = gameObj.displayResults(wH, wW, this.results);
-    this.line = gameObj.createBackgroundLine(wW / 2, wH * 2);
-    this.circle = gameObj.createBackgroundCircle(wW / 2, wH / 2);
+      const gameObj = new GameObjects(this);
+      /* display texts */
+      this.messages = gameObj.initialDisplay(wH, wW, this.messages);
+      this.controls = gameObj.displayControls(wH, wW, this.controls);
+      this.results = gameObj.displayResults(wH, wW, this.results);
+      this.line = gameObj.createBackgroundLine(wW / 2, wH * 2);
+      this.circle = gameObj.createBackgroundCircle(wW / 2, wH / 2);
 
-    this.game.renderer.type = Phaser.WEBGL;
+      this.game.renderer.type = Phaser.WEBGL;
 
-    /* render sprites */
-    this.ball = gameObj.renderBall(wW / 2, wH / 2);
-    this.paddlespeed = 600;
-    if (this.ball.body) {
-      ballWidth = this.ball.body.width;
-      this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
-      this.player[1] = gameObj.renderPaddle(ballWidth / 2, wH / 2);
+      /* render sprites */
+      this.ball = gameObj.renderBall(wW / 2, wH / 2);
+      this.paddlespeed = 600;
+      if (this.ball.body) {
+        ballWidth = this.ball.body.width;
+        this.player[0] = gameObj.renderPaddle(wW - ballWidth / 2, wH / 2);
+        this.player[1] = gameObj.renderPaddle(ballWidth / 2, wH / 2);
 
-      /* update game room sprite positions on server*/
-      this.initilaiseSprites(ballWidth);
+        /* update game room sprite positions on server*/
+        this.initilaiseSprites(ballWidth);
 
-      /* Setup keyboard keys to use */
-      this.addKeys();
+        /* Setup keyboard keys to use */
+        this.addKeys();
 
-      /* Add Audio */
-      this.paddleHitAudio = this.sound.add("ballHit");
-      this.wallHitAudio = this.sound.add("wallHit");
-      this.gameOver = this.sound.add("gameOver");
+        /* Add Audio */
+        this.paddleHitAudio = this.sound.add("ballHit");
+        this.wallHitAudio = this.sound.add("wallHit");
+        this.gameOver = this.sound.add("gameOver");
 
-      /* to activate update() */
-      this.setupComplete = true;
+        /* to activate update() */
+        this.setupComplete = true;
+      }
+    } catch (error) {
+      if (this.socket && this.socket.connected) this.socket.disconnect();
+      if (this.game) this.game.destroy(true);
+      const router = this.registry.get("router");
+      router.push("/");
     }
   }
 
   /* update() is called by game engine on each frame */
   /* delta - time elapsed between the current frame and the previous frame(milliseconds) */
   update(time: number, delta: number) {
-    
-    if (this.setupComplete) {
-      /*check if space is pressed and game not started yet*/
-      if (this.keys.space.isDown && !this.gameStarted) 
-        this.initilaiseGame();
+    try {
+      if (this.setupComplete) {
+        /*check if space is pressed and game not started yet*/
+        if (this.keys.space.isDown && !this.gameStarted) this.initilaiseGame();
 
-      /*space pressed and game started */
-      if (this.gameStarted) {
-
-        /*  optimizes the sound playback logic by ensuring that the sound is played once per collision event
+        /*space pressed and game started */
+        if (this.gameStarted) {
+          /*  optimizes the sound playback logic by ensuring that the sound is played once per collision event
          rather than potentially being triggered continuously in each frame. */
-        let collision = false;
-        
-        this.currentSocket.emit("newLiveGame", {
-          player1: this.registry.get("player0"),
-          player1Image: this.registry.get("player0Image"),
-          player2: this.registry.get("player1"),
-          player2Image: this.registry.get("player1Image"),
-          startedTime: new Date(),
-        });
-        
-        /*plays audio based on the surface hit*/
-        this.socket.on("hitPaddle", (surface: boolean) => {
-          if (!collision) {
-            collision = true;
-            // Play the appropriate sound
-            if (surface) this.paddleHitAudio.play();
-            else this.wallHitAudio.play();
+          let collision = false;
+          if (this.currentSocket && this.currentSocket.connected) {
+            this.currentSocket.emit("newLiveGame", {
+              player1: this.registry.get("player0"),
+              player1Image: this.registry.get("player0Image"),
+              player2: this.registry.get("player1"),
+              player2Image: this.registry.get("player1Image"),
+              startedTime: new Date(),
+            });
           }
-        });
 
-        this.socket
-          .emit("ballPosition", { roomID: this.roomID, delta })
-          .on("updateBallPosition", (data: BallPosition) => {
-            this.ball.setPosition(data.position.x, data.position.y);
-            this.displayScore(data.p0_score, data.p1_score);
+          /*plays audio based on the surface hit*/
+          this.socket.on("hitPaddle", (surface: boolean) => {
+            if (!collision) {
+              collision = true;
+              // Play the appropriate sound
+              if (surface) this.paddleHitAudio.play();
+              else this.wallHitAudio.play();
+            }
           });
 
-        /* prevents paddle from moving continuously on one key press */
-        this.player[0].setVelocityY(0);
-        this.player[1].setVelocityY(0);
+          this.socket
+            .emit("ballPosition", { roomID: this.roomID, delta })
+            .on("updateBallPosition", (data: BallPosition) => {
+              this.ball.setPosition(data.position.x, data.position.y);
+              this.displayScore(data.p0_score, data.p1_score);
+            });
 
-        /* when arrows are used paddle moves for player on right side */
-        if (this.keysAssigned === "arrows") this.movePlayerZero();
+          /* prevents paddle from moving continuously on one key press */
+          this.player[0].setVelocityY(0);
+          this.player[1].setVelocityY(0);
 
-        /* when 'W' and 'S' keys are used paddle moves for player on left side */
-        if (this.keysAssigned === "ws") this.movePlayerOne();
-      }
+          /* when arrows are used paddle moves for player on right side */
+          if (this.keysAssigned === "arrows") this.movePlayerZero();
 
-      /* game Over */
-      this.socket.on("gameOver", (data: GameOver) => {
-        this.currentSocket.emit("finishedLiveGame", {
-          player1: this.registry.get("player0"),
-          player2: this.registry.get("player1"),
-          startedTime: new Date(),
+          /* when 'W' and 'S' keys are used paddle moves for player on left side */
+          if (this.keysAssigned === "ws") this.movePlayerOne();
+        }
+
+        /* game Over */
+        this.socket.on("gameOver", (data: GameOver) => {
+          this.gameStarted = false;
+          if (this.currentSocket && this.currentSocket.connected) {
+            this.currentSocket.emit("finishedLiveGame", {
+              player1: this.registry.get("player0"),
+              player2: this.registry.get("player1"),
+              startedTime: new Date(),
+            });
+          }
+          this.gameOverContent(data);
         });
-        this.gameOverContent(data);
-      });
+      }
+    } catch (error) {
+      if (this.socket && this.socket.connected) this.socket.disconnect();
+      if (this.game) this.game.destroy(true);
+      const router = this.registry.get("router");
+      router.push("/");
     }
   }
 
@@ -278,9 +293,9 @@ export default class Game extends Scene {
     if (data.name !== null)
       this.results[2].setText(data.name + " WINS!").setVisible(true);
     const router = this.registry.get("router");
-    this.socket.disconnect();
+    if (this.socket && this.socket.connected) this.socket.disconnect();
     setTimeout(() => {
-      this.game.destroy(true);
+      if (this.game) this.game.destroy(true);
       router.push("/");
     }, 3000);
   }

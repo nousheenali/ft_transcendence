@@ -4,7 +4,6 @@ import { GameRoom, Player } from '../types';
 
 @Injectable()
 export class GameRoomService {
-
   private gameRooms: Map<string, GameRoom> = new Map();
   /* Initial Ball Velocity for a game room */
   private VelX = 0.5;
@@ -28,7 +27,7 @@ export class GameRoomService {
       },
       worldWidth: refPlayer.worldWidth,
       worldHeight: (refPlayer.worldWidth * 3) / 4,
-      ballVelocity: { x: this.VelX , y: this.VelY },
+      ballVelocity: { x: this.VelX, y: this.VelY },
       paddleWidth: 0,
       paddleHeight: 0,
       ballWidth: 0,
@@ -96,4 +95,3 @@ export class GameRoomService {
     }
   }
 }
-

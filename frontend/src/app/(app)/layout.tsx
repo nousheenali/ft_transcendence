@@ -4,7 +4,7 @@ import MainLayout from "@/components/layout";
 import { ToastContainer, toast } from "react-toastify";
 import Background from "@/components/Background/Background";
 import ChatSocket from "@/components/Chat/ChatSocket/ChatSocket";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthProvider";
 import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
@@ -14,7 +14,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser, userUpdated } = useContext(AuthContext);
+
+  const [settingsModel, setSettingsModel] = useState();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -31,7 +33,11 @@ export default function RootLayout({
         if (data.TFAEnabled === true && data.TFAVerified === false) {
           router.push("/login?show2faModal=true");
         }
+        console.log(data);
         setUser(data);
+        if (data.isOnline === true) {
+          router.push("/login?duplicateLogin=true");
+        }
       } catch (error) {
         console.log(error);
         if (user) {
@@ -41,7 +47,7 @@ export default function RootLayout({
       }
     };
     checkLogin();
-  }, []);
+  }, [userUpdated]);
 
   if (
     !user?.login ||

@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import { useIsUserUpdated } from "@/context/store";
 
 function SettingDetails({ name, Auth }: SettingDetailsProps) {
-  const { user } = useContext(AuthContext);
+  const { user, setUserUpdated } = useContext(AuthContext);
   const ref = useRef<HTMLDialogElement>(null);
   const handleShow = useCallback(() => {
     ref.current?.showModal();
@@ -79,6 +79,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
+      setUserUpdated(response.data.user);
       router.push("/");
       // }
     } catch (error: any) {
@@ -109,6 +110,8 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
+      console.log("done");
+      setUserUpdated(responsedeactivate.data.user);
       toast.success("De-activate successfully");
       router.push("/");
       // }
@@ -287,7 +290,6 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
           </Modal.Body>
           <Modal.Actions className="flex items-center  justify-center mt-2 ">
             <button
-              type="submit"
               onClick={(e) =>
                 userInfo?.TFAEnabled
                   ? handleDeactivateTwofa(e)
