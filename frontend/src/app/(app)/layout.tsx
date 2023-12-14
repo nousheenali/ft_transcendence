@@ -19,7 +19,6 @@ export default function RootLayout({
   const [settingsModel, setSettingsModel] = useState();
 
   const router = useRouter();
-  // console.log(user);
   const pathname = usePathname();
 
   useEffect(() => {

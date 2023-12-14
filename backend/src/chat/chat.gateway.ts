@@ -968,7 +968,7 @@ export class ChatGateway
    */
   // @UseGuards(SocketAuthGuard)
   // @SubscribeMessage('disconnect')
-  @UseGuards(SocketAuthGuard)
+  // @UseGuards(SocketAuthGuard)
   @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {
     this.stopHeartbeat();

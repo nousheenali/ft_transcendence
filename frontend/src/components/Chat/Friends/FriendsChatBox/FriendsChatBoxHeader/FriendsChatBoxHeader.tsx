@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { userInformation } from "@/components/Profile/types";
-import { Button, Drawer, Menu } from "react-daisyui";
+import { Drawer, Menu } from "react-daisyui";
 import { sendNotification } from "../../../../../services/friends";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,9 +12,11 @@ import {
 import { Content } from "@/components/notificationIcon/types";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/AuthProvider";
-import { useContext, useCallback } from "react";
+import { useContext, useCallback, useEffect, useState } from "react";
 import FriendDashBoard from "@/components/Chat/Friends/FriendsChatBox/FriendsChatBoxHeader/FriendDashBoard";
 import InvitaionGameCustomize from "@/components/startGame/startInvitedGame";
+import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
+import axios from "axios";
 
 /**======================================================================================================**/
 export default function FriendsChatBoxHeader({
@@ -32,9 +34,33 @@ export default function FriendsChatBoxHeader({
     setIsVisible(!isVisible);
   }, [isVisible]);
 
-  const handleInviteClick = () => {
-    inviteAndJoin();
+  const handleInviteClick = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.getUserbyLogin}` +
+          friend!.login,
+        { withCredentials: true }
+      );
+      if (response.data.inAGame == false) {
+        inviteAndJoin();
+      } else {
+        toast.error(`User ${friend?.login!} is in game`, {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+      // ---------------------------------------------------------------------------------
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   const inviteAndJoin = () => {
     setIsQueue(false);
     setInviter(user.login!);
@@ -108,12 +134,15 @@ export default function FriendsChatBoxHeader({
       invite user to plat a game button
       in the chat box header
        */}
-      <div className="flex flex-row justify-center items-center basis-1/6">
-        <InvitaionGameCustomize
-          handleInviteClick={handleInviteClick}
-          eventNames="INVITE"
-        />
-      </div>
+      {/* ---------------------------------------------------------------------------------- */}
+      {friend.isOnline && (
+        <div className="flex flex-row justify-center items-center basis-1/6">
+          <InvitaionGameCustomize
+            handleInviteClick={handleInviteClick}
+            eventNames="INVITE"
+          />
+        </div>
+      )}
       {/* ---------------------------------------------------------------------------------- */}
     </div>
   );

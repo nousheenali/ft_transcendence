@@ -30,6 +30,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   /* Get user information using uuid */
   async getUserById(id: string) {
     try {
@@ -44,6 +45,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   /* Get user information using login */
   async getUserByLogin(login: string) {
     try {
@@ -58,6 +60,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   /* Get user information using full name */
   async getUserByName(fullName: string) {
     try {
@@ -75,6 +78,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   async updateUserScore(login: string, score: number, win: boolean) {
     const user = await this.getUserByLogin(login);
     if (!user) throw new NotFoundException('User Id does not exist');
@@ -113,6 +117,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   async updateUserGameStatus(login: string, status: boolean) {
     const user = await this.getUserByLogin(login);
     if (!user) throw new NotFoundException('User Id does not exist');
@@ -131,6 +136,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   async update(login: string, updateUserDto: UpdateUserDto) {
     try {
       console.log('updatedt', updateUserDto);
@@ -161,6 +167,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   /* Gets all users */
   async getAllUsers() {
     try {
@@ -174,6 +181,7 @@ export class UserService {
     }
   }
 
+  //------------------------------------------------------------------------------------------------
   async updateName(login: string, dto: UpdateUserDto) {
     const existingUser = await this.prisma.user.findFirst({
       where: {
@@ -197,7 +205,7 @@ export class UserService {
     if (!updatedName) throw new BadRequestException('Unable to update name');
     return updatedName;
   }
-
+  //------------------------------------------------------------------------------------------------
   async getSavedFileURL(login: string, img: Express.Multer.File) {
     if (!img) {
       throw new Error('Invalid file object received.');
@@ -212,7 +220,7 @@ export class UserService {
     });
     return updatedName;
   }
-
+  //------------------------------------------------------------------------------------------------
   async setTFAVerificationRequired(login: string) {
     try {
       const user = await this.prisma.user.update({
@@ -224,4 +232,5 @@ export class UserService {
       throw new BadRequestException('Unable to update TFA verification status');
     }
   }
+  //------------------------------------------------------------------------------------------------
 }

@@ -57,7 +57,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   afterInit(server: Server) {
-    this.logger.log('Chat GateWay has been initialized!!');
+    this.logger.log('Game GateWay has been initialized!!');
 
     server.use((socket, next) => {
       this.jwtAuthService
@@ -125,6 +125,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
       }
       this.userService.updateUserGameStatus(plyr.login, false);
+
       this.playerService.removePlayer(client.id);
       this.logger.log(
         chalk.gray(

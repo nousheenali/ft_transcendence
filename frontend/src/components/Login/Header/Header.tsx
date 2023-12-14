@@ -24,7 +24,6 @@ export const Header: React.FC = () => {
 
         <div className="flex flex-row justify-center items-center">
           <ul className="flex justify-center items-center text-main-yellow font-saira-condensed text-xl shadow-inner border-b-2 border-nav-stroke">
-            <li className="ml-20 hover:text-hover-login-nav-text"><Link href={"/login"}>Login</Link></li>
             <li className="ml-10 hover:text-hover-login-nav-text"><Link href={"/login#team-section"}>Our Team</Link></li>
             {/* <li className="ml-10 mr-14 hover:text-hover-login-nav-text"><Link href={"/about"}>About Spin Masters</Link></li> */}
           </ul>
