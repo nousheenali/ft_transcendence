@@ -53,10 +53,11 @@ export default function FriendDashBoard() {
   ).length;
 
   const archivement = () => {
-    if (numberOfWins! >= 20) return "champion";
-    else if (numberOfWins! >= 10) return "gold";
-    else if (numberOfWins! >= 5) return "silver";
-    else return "bronze";
+    if (numberOfWins! >= 30) return "champion";
+    else if (numberOfWins! >= 20) return "gold";
+    else if (numberOfWins! >= 10) return "silver";
+    else if (numberOfWins! >= 5) return "bronze";
+    else return "none";
   };
 
   //------------------------------------------------------------------------------------------------
