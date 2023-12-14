@@ -36,9 +36,9 @@ export default function RootLayout({
         }
         console.log(data);
         setUser(data);
-        // if (data.newUser === true) {
-        //   router.push("/settings");
-        // }
+        if (data.isOnline === true) {
+          router.push("/login?duplicateLogin=true");
+        }
       } catch (error) {
         console.log(error);
         if (user) {

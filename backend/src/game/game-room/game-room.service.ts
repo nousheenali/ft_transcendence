@@ -6,8 +6,8 @@ import { GameRoom, Player } from '../types';
 export class GameRoomService {
   private gameRooms: Map<string, GameRoom> = new Map();
   /* Initial Ball Velocity for a game room */
-  private VelX = 0.6;
-  private VelY = 0.6;
+  private VelX = 0.5;
+  private VelY = 0.5;
 
   constructor(private playerService: PlayerService) {}
 
