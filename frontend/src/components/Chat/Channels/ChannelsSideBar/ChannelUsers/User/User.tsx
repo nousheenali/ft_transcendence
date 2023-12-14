@@ -93,7 +93,8 @@ export default function ChannelUser({
     // 🟣🟣 check if the admin is trying to mute another admin
     else if (
       channelAdmins.includes(user.login) &&
-      channelAdmins.includes(currentUser.login)
+      channelAdmins.includes(currentUser.login) &&
+      currentUser.id !== channel.createdBy
     ) {
       toast.warn("you can't mute another admin", {
         position: "top-center",
@@ -258,19 +259,16 @@ export default function ChannelUser({
       {channel &&
         channel.channelName !== undefined &&
         channel.channelName !== "" &&
-        channel.createdBy === user.id && (
+        channel.createdBy === user.id ? (
           <span
-            className="font-light text-xs px-2 text-subheading-two font-saira-condensed truncate"
+            className="font-light text-xs px-2 text-subheading-two font-saira-condensed "
             title="creator"
           >
             creator
           </span>
-        )}
-      {/* ====================================================== */}
-
-      {channelAdmins.includes(user.login) && (
+        ) : channelAdmins.includes(user.login) && channel.createdBy !== user.id && (
         <span
-          className="font-light text-xs px-2 text-subheading-two font-saira-condensed truncate"
+          className="font-light text-xs px-2 text-subheading-two font-saira-condensed "
           title="Admin"
         >
           admin

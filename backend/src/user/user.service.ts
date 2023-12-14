@@ -232,19 +232,5 @@ export class UserService {
       throw new BadRequestException('Unable to update TFA verification status');
     }
   }
-
-  //------------------------------------------------------------------------------------------------
-  async getUserGameStatus(userLogin: string) {
-    try {
-      const userData = await this.prisma.user.findUnique({
-        where: {
-          id: userLogin,
-        },
-      });
-      return userData.inAGame;
-    } catch (error) {
-      throw new BadRequestException('Unable to find User Status');
-    }
-  }
   //------------------------------------------------------------------------------------------------
 }

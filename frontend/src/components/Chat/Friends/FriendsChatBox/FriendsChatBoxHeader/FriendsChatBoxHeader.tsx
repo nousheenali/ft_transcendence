@@ -16,8 +16,7 @@ import { useContext, useCallback, useEffect, useState } from "react";
 import FriendDashBoard from "@/components/Chat/Friends/FriendsChatBox/FriendsChatBoxHeader/FriendDashBoard";
 import InvitaionGameCustomize from "@/components/startGame/startInvitedGame";
 import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
-import { getUserGameData } from "../../../../../services/user";
-import { fr } from "date-fns/locale";
+import axios from "axios";
 
 /**======================================================================================================**/
 export default function FriendsChatBoxHeader({
@@ -29,34 +28,39 @@ export default function FriendsChatBoxHeader({
   const { currentSocket } = useSocket();
   const router = useRouter();
   const { user } = useContext(AuthContext);
-  // const [InGame, setInGame] = useState(false);
-
-  // useEffect to check if the user is in a game or not
-  // if the user is in a game, the invite button will be disabled
-  // useEffect(() => {
-  //   if (friend && friend.login) {
-  //     const fetchData = async () => {
-  //       const userGameData: boolean = await getUserGameData(
-  //         friend.login,
-  //         API_ENDPOINTS.getUserbyLogin
-  //       );
-  //       setInGame(userGameData);
-  //     };
-  //     fetchData();
-  //   }
-  // }, [friend]);
-
-  // console.log("InGame", InGame)
-
 
   const { isVisible, setIsVisible } = useSettingToggleVisiblity();
   const toggleVisible = useCallback(() => {
     setIsVisible(!isVisible);
   }, [isVisible]);
 
-  const handleInviteClick = () => {
-    inviteAndJoin();
+  const handleInviteClick = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.getUserbyLogin}` +
+          friend!.login,
+        { withCredentials: true }
+      );
+      if (response.data.inAGame == false) {
+        inviteAndJoin();
+      } else {
+        toast.error(`User ${friend?.login!} is in game`, {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+      // ---------------------------------------------------------------------------------
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   const inviteAndJoin = () => {
     setIsQueue(false);
     setInviter(user.login!);

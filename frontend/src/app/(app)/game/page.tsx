@@ -1,13 +1,7 @@
 "use client";
 
 import { useGameState } from "@/context/store";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import io, { Socket } from "socket.io-client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -21,6 +15,7 @@ import {
 } from "@/components/GameComponents/types";
 
 import { useSocket } from "@/context/store";
+import { set } from "date-fns";
 
 export default function GamePage() {
   const {
@@ -38,6 +33,7 @@ export default function GamePage() {
   const { user } = useContext(AuthContext);
   const login: string = user.login!;
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
+
   const router = useRouter();
   const { currentSocket } = useSocket();
   const backendUrl = process.env.NEXT_PUBLIC_GAME_GATEWAY_URL;
@@ -52,7 +48,7 @@ export default function GamePage() {
         }
         const userData = await getUserData(login, API_ENDPOINTS.getUserbyLogin);
         if (userData.inAGame) {
-          alert("You are already in a game");
+          // alert("You are already in a game");
           router.back();
           return;
         }
@@ -105,8 +101,9 @@ export default function GamePage() {
           /* When invitee declines invitation */
           socket.on("invitationDeclined", () => {
             if (login === inviter)
-              alert("Other player Declined your invitation");
-            if (socket && socket.connected) socket.disconnect();
+              if (socket && socket.connected)
+                // alert("Other player Declined your invitation");
+                socket.disconnect();
             router.back();
           });
 

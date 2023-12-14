@@ -20,18 +20,6 @@ export const getUserData = async (login: string, endpoint: string) => {
   }
 };
 
-export const getUserGameData = async (login: string, endpoint: string) => {
-  try {
-    const InGame: boolean = await getData<boolean>(
-      login,
-      endpoint
-    );
-    return InGame;
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
-
 export const getBlockList = async (login: string, endpoint: string) => {
   try {
     const users: string[] = await getData<string[]>(login, endpoint);
