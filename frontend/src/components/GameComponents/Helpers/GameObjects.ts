@@ -41,7 +41,7 @@ export default class GameObjects {
       "FIRST PLAYER TO SCORE 7 POINTS WINS!",
       30,
       "#d0f223"
-    ).setOrigin(0.55);
+    ).setOrigin(0.5);
 
     return msg;
   }
