@@ -443,7 +443,7 @@ export class ChatGateway
     data: { channelName: string; channelType: string; creator: string },
   ) {
     const creatorData = await this.userService.getUserById(data.creator);
-    console.log(creatorData);
+    // console.log(creatorData);
     const { channelName, channelType, creator } = data;
     //  create the channel room
     this.roomsService.createRoom(
@@ -639,6 +639,7 @@ export class ChatGateway
     //   Printing the rooms array to the console for debugging
     // this.roomsService.printAllRooms();
   }
+
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling event by subscribing to the event "ChannelToServer" and emitting the message
    * to the channel room.
@@ -966,8 +967,6 @@ export class ChatGateway
   /** ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
    *  Handling disconnection
    */
-  // @UseGuards(SocketAuthGuard)
-  // @SubscribeMessage('disconnect')
   // @UseGuards(SocketAuthGuard)
   @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {

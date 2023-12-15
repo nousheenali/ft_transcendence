@@ -42,6 +42,7 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
     getUserData();
   }, []);
 
+  /** ==================== Validate Channel Name ==================== */
   // update the status of the button
   useEffect(() => {
     if (channelType === "PUBLIC" && validChannelName) {
@@ -51,6 +52,7 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
     } else setIsValid(false);
   }, [validChannelName, validPassword, channelType]);
 
+  /** ==================== Create Channel ==================== */
   const createChannelButton = async () => {
     const newChannel: CreateChannelItems = {
       channelName: channelName,
@@ -63,6 +65,8 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
         newChannel,
         API_ENDPOINTS.createChannel
       );
+
+
       setChannelName("");
       setChannelPassword("");
       setValidChannelName(false);
@@ -75,7 +79,7 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
         channelType: newChannel.channelType,
         creator: newChannel.createdBy,
       });
-      console.log("The creater is: ", newChannel.createdBy);
+      // console.log("The creater is: ", newChannel.createdBy);
       // glopal value to re-render the channel list
       toast.success("Channel created successfully", {
         position: "top-center",
@@ -93,18 +97,20 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
       setValidChannelName(false);
       setValidPassword(false);
       modalRef.current?.close();
-      toast.error("Channel creation failed: " + error.message, {
-        position: "top-center",
-        autoClose: 800,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      // toast.error("Channel creation failed: " + error.message, {
+      //   position: "top-center",
+      //   autoClose: 800,
+      //   hideProgressBar: true,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "dark",
+      // });
     }
   };
+
+  /** ==================================================================================== */
   return (
     <div>
       <ChannelCreateBtn onClick={handleClick} />
@@ -145,3 +151,5 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
     </div>
   );
 }
+
+/** ==================================================================================== */

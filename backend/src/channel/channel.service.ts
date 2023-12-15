@@ -7,6 +7,7 @@ import {
   UpdateChannelPasswordDto,
 } from './dto/update-channel.dto';
 
+
 /** ------------------------------------------------------------------------------------------- **/
 @Injectable()
 export class ChannelService {
@@ -16,32 +17,37 @@ export class ChannelService {
   /*
    * create channel and add the creator as a member
    */
-  async createChannel(CreateChannelDto) {
-    const find_duplicate = await this.prisma.channel.findMany({
-      where: {
-        channelName: CreateChannelDto.channelName,
-      },
-    });
-
-    if (find_duplicate.length > 0) {
-      throw new BadRequestException('Channel already exists');
+  async createChannel(CreateChannelDto: any) {
+    try {
+      const find_duplicate = await this.prisma.channel.findMany({
+        where: {
+          channelName: CreateChannelDto.channelName,
+        },
+      });
+  
+      if (find_duplicate.length > 0) {
+        return;
+        // throw new BadRequestException('Channel already exists');
+      }
+      const password = hashPassword(CreateChannelDto.channelPassword);
+      const create_channel = await this.prisma.channel.create({
+        data: {
+          channelName: CreateChannelDto.channelName,
+          channelType: CreateChannelDto.channelType,
+          createdBy: CreateChannelDto.createdBy,
+          channelPassword: password,
+        },
+      });
+      const res = await this.prisma.channelRelation.create({
+        data: {
+          channelId: create_channel.id,
+          userId: CreateChannelDto.createdBy,
+        },
+      });
+      return create_channel;
+    } catch (error) {
+      throw new BadRequestException('UNABLE TO CREATE CHANNEL');
     }
-    const password = hashPassword(CreateChannelDto.channelPassword);
-    const create_channel = await this.prisma.channel.create({
-      data: {
-        channelName: CreateChannelDto.channelName,
-        channelType: CreateChannelDto.channelType,
-        createdBy: CreateChannelDto.createdBy,
-        channelPassword: password,
-      },
-    });
-    const res = await this.prisma.channelRelation.create({
-      data: {
-        channelId: create_channel.id,
-        userId: CreateChannelDto.createdBy,
-      },
-    });
-    return create_channel;
   }
 
   /**==============================================================================================
