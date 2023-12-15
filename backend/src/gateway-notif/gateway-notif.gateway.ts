@@ -103,7 +103,7 @@ export class GatewayNotifGateway {
     @MessageBody() body: newLiveGameDto,
     @ConnectedSocket() sender: Socket,
   ) {
-    console.log('got Finished Live Game');
+    // console.log('got Finished Live Game');
     this.server.emit('finishedLiveGame', {
       player1: body.player1,
       player2: body.player2,

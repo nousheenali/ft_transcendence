@@ -167,7 +167,7 @@ const ProfilePage = () => {
             name={userInfo?.name || "name"}
             email={userInfo?.email || "email"}
             score={userInfo?.score || 0}
-            avatar={userInfo?.avatar || "avatar"}
+            avatar={userInfo?.avatar || "https://i.imgur.com/6VBx3io.png"}
             activeButton={activeButton}
             handleButtonClick={handleButtonClick}
           />

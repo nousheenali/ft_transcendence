@@ -129,9 +129,48 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
     try {
       setIsLoading(true);
       if (newName === "") {
-        toast.error("Name cannot be empty");
+        toast.error("Name cannot be empty", {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
         return;
       }
+
+      const pattern = /^[a-zA-Z0-9]+$/;
+      if (pattern.test(newName) === false) {
+        toast.error("Name can only contain letters and numbers", {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        return;
+      }
+
+      if (newName.length < 4 || newName.length > 20) {
+        toast.error("Minimum 3 characters and maximum 20 characters", {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        return;
+      }
+
       const updatedUser = await updateUserName(
         user.login,
         newName,
