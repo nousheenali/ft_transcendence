@@ -11,6 +11,7 @@ import {
   UsePipes,
   ValidationPipe,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { Type } from '@prisma/client';
 import { ChannelService } from './channel.service'; // 👈 Import ChannelService
@@ -36,10 +37,13 @@ export class ChannelController {
     try {
       return this.channelService.createChannel(CreateChannelDto);
     } catch (error) {
-      throw new HttpException(
-        'Error while Creating Channel.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (!(error instanceof BadRequestException)) {
+        throw new HttpException(
+          'Unexpected Error while creating a new channel.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
 
@@ -103,10 +107,13 @@ export class ChannelController {
     try {
       return this.channelService.getAllChannels(channelType, login);
     } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting All Channels of the server ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (!(error instanceof BadRequestException)) {
+        throw new HttpException(
+          'Unexpected Error while getting all channels.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
 
@@ -125,10 +132,13 @@ export class ChannelController {
     try {
       return this.channelService.getUserPrivateChannels(login);
     } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting The Private Channels of the user ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (!(error instanceof BadRequestException)) {
+        throw new HttpException(
+          'Unexpected Error while getting private channels.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
 
@@ -147,10 +157,13 @@ export class ChannelController {
     try {
       return this.channelService.getUserPublicChannels(login);
     } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting The Public Channels of the server ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (!(error instanceof BadRequestException)) {
+        throw new HttpException(
+          'Unexpected Error while getting public channels.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
   /**===============================================================================================
@@ -172,10 +185,13 @@ export class ChannelController {
     try {
       return this.channelService.getChannelUsers(channelName);
     } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting The Channels of the user ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (!(error instanceof BadRequestException)) {
+        throw new HttpException(
+          'Unexpected Error while getting channel users.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
 
@@ -198,10 +214,13 @@ export class ChannelController {
     try {
       return this.channelService.getChannelMessages(channelName);
     } catch (error) {
-      throw new HttpException(
-        'Unexpected Error while Getting The Private Channels of the user ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (!(error instanceof BadRequestException)) {
+        throw new HttpException(
+          'Unexpected Error while getting channel messages.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
 
@@ -212,10 +231,22 @@ export class ChannelController {
     @Param('channelName') channelName: string,
     @Param('login') login: string,
   ) {
-    const user = await this.userService.getUserByLogin(login);
-    const channel = await this.channelService.getChannelByName(channelName);
+    try {
+      const user = await this.userService.getUserByLogin(login);
+      const channel = await this.channelService.getChannelByName(channelName);
 
-    return this.channelRelationService.isUserMuted(channel.id, user.id);
+      return await this.channelRelationService.isUserMuted(channel.id, user.id);
+    } catch (error) {
+    //   if (!(error instanceof BadRequestException)) {
+    //     throw new HttpException(
+    //       'Unexpected Error while checking if the user is muted.',
+    //       HttpStatus.INTERNAL_SERVER_ERROR,
+    //     );
+    //   }
+    //   throw error;
+    // }
+    return false;
+    }
   }
   /**===============================================================================================*/
 }
