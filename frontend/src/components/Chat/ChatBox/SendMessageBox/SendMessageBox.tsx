@@ -1,6 +1,7 @@
 import Image from "next/image";
 import DOMPurify from "dompurify";
-import Picker from "@emoji-mart/react";
+// import Picker from "@emoji-mart/react";
+import EmojiPicker from "emoji-picker-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useEffect, useRef, useContext } from "react";
@@ -52,8 +53,8 @@ export default function SendMessageBox({
    **├ 👇 handle emoji select, when the user clicks on an emoji, it will be added to the message.
    **└── 🟣
    **/
-  const handleEmojiSelect = (emoji: { native: string }) => {
-    const updatedMessage = currentMessage + emoji.native;
+  const handleEmojiSelect = (emoji: any) => {
+    const updatedMessage = currentMessage + emoji.emoji;
     setCurrentMessage(updatedMessage);
   };
   //------------------------------------------------------------------------------------------------
@@ -307,12 +308,16 @@ export default function SendMessageBox({
             className="absolute bottom-16 right-40"
             ref={(el) => (emojiPickerRef.current = el)}
           >
-            <Picker
+            <EmojiPicker 
+              onEmojiClick={handleEmojiSelect}
+            
+            />
+            {/* <Picker
               onEmojiSelect={handleEmojiSelect}
               set="emojione"
               title="Pick your emoji"
               emoji="point_up"
-            />
+            /> */}
           </div>
         )}
 

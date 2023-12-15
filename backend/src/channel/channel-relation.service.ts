@@ -59,9 +59,10 @@ export class ChannelRelationService {
       });
       return isUserMuted.isMuted;
     } catch (error) {
-      throw new BadRequestException(
-        'UNABLE TO CHECK IF THE USER IS MUTED OR NOT',
-      );
+      // throw new BadRequestException(
+      //   'UNABLE TO CHECK IF THE USER IS MUTED OR NOT',
+      // );
+      return false;
     }
   }
 
