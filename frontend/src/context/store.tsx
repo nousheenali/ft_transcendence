@@ -254,6 +254,18 @@ export const useReRenderAllState = create<ReRenderAllState>((set) => ({
   reRenderAll: false,
   setReRenderAll: (reRenderAll: boolean) => set({ reRenderAll }),
 }));
+/**
+ * Leave Channel Button state, wait for the other event to finish before
+ */
+type LeaveButtonState = {
+  isActive: boolean;
+  setIsActiveButton: (isActive: boolean) => void;
+};
+
+export const useIsActiveButton = create<LeaveButtonState>((set) => ({
+  isActive: false,
+  setIsActiveButton: (isActive: boolean) => set({ isActive }),
+}));
 
 type SettingToggleVisiblity = {
   isVisible: boolean;

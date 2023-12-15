@@ -6,7 +6,11 @@ import React, { useState, useCallback, useRef } from "react";
 import { Socket } from "socket.io-client";
 import "react-toastify/dist/ReactToastify.css";
 import { ChannelsProps } from "../../../types";
-import { activateClickedChannel, useChatSocket } from "@/context/store";
+import {
+  activateClickedChannel,
+  useChatSocket,
+  useIsActiveButton,
+} from "@/context/store";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 import { Input, Modal, Button } from "react-daisyui";
@@ -84,11 +88,14 @@ const ModalBody = ({
 const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
   const { socket } = useChatSocket();
   const { setActiveChannel } = activateClickedChannel();
-
+  const { isActive, setIsActiveButton } = useIsActiveButton();
   return (
-    <div
-      className="flex flex-row  gap-5 pr-2"
+    <Button
+      color="ghost"
+      className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
+      disabled={isActive}
       onClick={() => {
+        setIsActiveButton(true);
         socket.emit("LeaveChannel", {
           channelName: channel.channelName,
           channelType: channel.channelType,
@@ -104,20 +111,18 @@ const LeaveChannelBtn = ({ channel }: { channel: ChannelsProps }) => {
           theme: "dark",
         });
         setActiveChannel({} as ChannelsProps);
+        setTimeout(() => {
+          setIsActiveButton(false);
+        }, 500);
       }}
     >
-      <Button
-        color="ghost"
-        className="flex flex-row items-center gap-1 text-dimmed-text font-thin"
-      >
-        <Image
-          alt={"leave channel"}
-          src={"./chat/Sign_out_circle_duotone_line.svg"}
-          width={30}
-          height={30}
-        />
-      </Button>
-    </div>
+      <Image
+        alt={"leave channel"}
+        src={"./chat/Sign_out_circle_duotone_line.svg"}
+        width={30}
+        height={30}
+      />
+    </Button>
   );
 };
 
