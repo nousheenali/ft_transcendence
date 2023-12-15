@@ -20,7 +20,8 @@ const fetchData = async (activeUser: string | null) => {
 
     if (getUserByLogin) {
       const data = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND}/notification/getById/` + getUserByLogin.id,
+        `${process.env.NEXT_PUBLIC_BACKEND}/notification/getById/` +
+          getUserByLogin.id,
         {
           credentials: "include", // Include credentials here
         }
@@ -144,16 +145,16 @@ export default function NotificationIcon() {
         NotificationList={notifications}
         GameInviteNotificationList={gameInviteNotifications}
       />
-      <h1>
+      <h1 className="pr-4">
         <span className="text-yellow-300 text-stroke-3 ">Spin</span>
         <span className="text-main-text">Masters</span>
       </h1>
-      <input
+      {/* <input
         type="checkbox"
         className="toggle w-15 h-6"
         checked={isChecked}
         onChange={handleToggleChange}
-      />
+      /> */}
     </div>
   );
 }

@@ -67,7 +67,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     router.push("/game");
   };
   return (
-    <div>
+    <div className="pl-4">
       <div>
         <button onClick={openDropdown} className="btn-xs btn-ghost btn-circle">
           <NotificationIcon isNewNotification={isNewNotification} />
