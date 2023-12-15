@@ -45,7 +45,7 @@ export default function ChatSocket({
         chatSocket.connect();
       }
     } catch (error) {
-      console.log(error);
+    //   console.log(error);
     }
   }, [user]);
 
@@ -58,7 +58,7 @@ export default function ChatSocket({
   useEffect(() => {
     try {
       socket.on("connect", () => {
-        console.log(`Connected to the server with socket id: ${socket.id}`);
+        // console.log(`Connected to the server with socket id: ${socket.id}`);
       });
 
       /**-------------------------------------------------------------------------**/
@@ -70,13 +70,13 @@ export default function ChatSocket({
       /**-------------------------------------------------------------------------**/
 
       socket.on("disconnect", (reason) => {
-        console.log("Disconnected from the server for reason: ", reason);
+        // console.log("Disconnected from the server for reason: ", reason);
       });
 
       /**-------------------------------------------------------------------------**/
 
       socket.on("reconnect", (attempt) => {
-        console.log("Reconnected to the server on attempt number: ", attempt);
+        // console.log("Reconnected to the server on attempt number: ", attempt);
       });
 
       /**-------------------------------------------------------------------------**/
@@ -364,7 +364,7 @@ export default function ChatSocket({
       };
       /**-------------------------------------------------------------------------**/
     } catch (error) {
-      console.log(error);
+    //   console.log(error);
     }
     /**-------------------------------------------------------------------------**/
   }, [socket, user]);

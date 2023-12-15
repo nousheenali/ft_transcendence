@@ -18,6 +18,7 @@ import { verifyTwoFa } from "../../../services/two-fa";
 import { Modal } from "react-daisyui";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import DOMPurify from "dompurify";
 
 /*
  * TODO: Put more spacing between the button and the team section.
@@ -33,6 +34,7 @@ export default function Home() {
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
+
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +46,19 @@ export default function Home() {
         toast.error("CODE IS REQUIRED");
         return;
       }
+
+	  if (code.length != 6)
+	  {
+		toast.error("Should be 6 digits");
+        return;
+	  }
+	  
+	  const sanitizedMessage = DOMPurify.sanitize(code);
+
+	  if (sanitizedMessage !== code) {
+		toast.error("Message contains invalid characters");
+		return;
+	  }
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
@@ -51,9 +66,10 @@ export default function Home() {
       );
       setUserUpdated(response.data.user);
       router.push("/");
+
       handleShow();
     } catch (error: any) {
-      console.error(error);
+    //   console.error(error);
       toast.error(error.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
@@ -66,10 +82,15 @@ export default function Home() {
       handleShow();
     }
     if (queryParams.get("duplicateLogin") === "true") {
-      toast.error("already Logged in another browser");
+     	toast.error("already Logged in another browser");
       // router.push(`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`);
       // handleShow();
     }
+	if (user?.TFAEnabled === true && user?.TFAVerified === false) {
+		router.push("/login?show2faModal=true");
+	}
+	  
+
   }, []);
 
   return (

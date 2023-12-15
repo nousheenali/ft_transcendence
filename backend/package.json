@@ -45,6 +45,7 @@
     "bcrypt": "^5.1.1",
     "chalk": "^2.4.2",
     "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "cli-table3": "^0.6.3",
     "cookie": "^0.6.0",
     "dompurify": "^3.0.6",

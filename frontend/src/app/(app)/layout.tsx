@@ -34,13 +34,13 @@ export default function RootLayout({
         if (data.TFAEnabled === true && data.TFAVerified === false) {
           router.push("/login?show2faModal=true");
         }
-        console.log(data);
+        // console.log(data);
         setUser(data);
-        if (data.isOnline === true) {
-          router.push("/login?duplicateLogin=true");
-        }
+        // if (data.isOnline === true) {
+        //   router.push("/login?duplicateLogin=true");
+        // }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         if (user) {
           router.push(`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`);
         }

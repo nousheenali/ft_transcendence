@@ -53,7 +53,8 @@ export class TwoFaController {
         dto.token,
       );
       if (!isValid) {
-        throw new BadRequestException('Token is not valid');
+        // throw new BadRequestException('Token is not valid');
+		return res.json({"Token not valid"})
       }
       const user: any = await this.userService.getUserByLogin(dto.userLogin);
       // console.log(user);

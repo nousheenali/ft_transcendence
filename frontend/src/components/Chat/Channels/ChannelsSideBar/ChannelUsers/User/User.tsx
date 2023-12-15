@@ -229,7 +229,7 @@ export default function ChannelUser({
 
         if (reRenderAll) setReRenderAll(false);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
   }, [user, channel, currentUser, reRenderAll]);

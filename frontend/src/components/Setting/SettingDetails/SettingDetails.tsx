@@ -22,6 +22,7 @@ import { activateTwoFa, verifyTwoFa } from "../../../services/two-fa";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useIsUserUpdated } from "@/context/store";
+import DOMPurify from "dompurify";
 
 function SettingDetails({ name, Auth }: SettingDetailsProps) {
   const { user, setUserUpdated } = useContext(AuthContext);
@@ -39,7 +40,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
   const router = useRouter();
 
   const handleClick = (buttonId: string) => {
-    console.log(buttonId + " button clicked");
+    // console.log(buttonId + " button clicked");
   };
 
   const handleActivateTwoFa = async () => {
@@ -74,6 +75,20 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         toast.error("CODE IS REQUIRED");
         return;
       }
+
+	  if (code.length != 6)
+	  {
+		toast.error("Should be 6 digits");
+        return;
+	  }
+
+
+	  const sanitizedMessage = DOMPurify.sanitize(code);
+	  if (sanitizedMessage !== code) {
+		toast.error("Message contains invalid characters");
+		return;
+	  }
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
@@ -83,7 +98,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
       router.push("/");
       // }
     } catch (error: any) {
-      console.error(error);
+    //   console.error(error);
       toast.error(error.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
@@ -99,6 +114,18 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         toast.error("CODE IS REQUIRED");
         return;
       }
+
+		if (code.length != 6)
+	  {
+		toast.error("Should be 6 digits");
+        return;
+	  }
+
+	  const sanitizedMessage = DOMPurify.sanitize(code);
+	  if (sanitizedMessage !== code) {
+		toast.error("Message contains invalid characters");
+		return;
+	  }
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
@@ -110,13 +137,13 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
-      console.log("done");
+    //   console.log("done");
       setUserUpdated(responsedeactivate.data.user);
       toast.success("De-activate successfully");
       router.push("/");
       // }
     } catch (error: any) {
-      console.error(error);
+    //   console.error(error);
       toast.error(error.response?.data?.message || "An error occurred");
     } finally {
       setIsLoading(false);
@@ -181,7 +208,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
             return updatedUserInfo;
           });
         } catch (error) {
-          console.error(error);
+        //   console.error(error);
         }
       }
       setIsLoading(false);
