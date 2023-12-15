@@ -27,10 +27,10 @@ export default function UserProfileSide({ image, name }: UserProfileSideProps) {
       ) : (
         <div className="flex flex-row items-center justify-between px-[50px] pt-8 pb-4">
           <div className="relative">
-            <span className="loading loading-ring loading-lg text-main-yellow w-24 h-24 rounded-full object-cover"></span>
+            <span className="loading loading-ring loading-lg text-main-yellow h-24 rounded-full object-cover"></span>
           </div>
           <div className="text-main-text font-saira-condensed font-bold text-xl">
-            <span className="loading loading-ring loading-lg text-main-yellow w-24 h-24 rounded-full object-cover"></span>
+            <span className="loading loading-ring loading-lg text-main-yellow h-24 rounded-full object-cover"></span>
           </div>
         </div>
       )}
