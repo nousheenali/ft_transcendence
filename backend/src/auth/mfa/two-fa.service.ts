@@ -21,6 +21,7 @@ export class TwoFaService {
       throw new BadRequestException('Unable to generate secret');
     }
   }
+  
   async getQRCode(secret: { otpauth_url: string }) {
     const dataURL = await qrcode.toDataURL(secret.otpauth_url);
     return dataURL;
@@ -45,7 +46,7 @@ export class TwoFaService {
       if (isValid) {
         await this.prisma.user.update({
           where: { login: login },
-          data: { TFAEnabled: true },
+          data: { TFAEnabled: true , isOnline : false },
         });
 
         if (user.TFAVerified === false && user.TFAEnabled === true) {
@@ -55,8 +56,9 @@ export class TwoFaService {
           });
         }
       }
-      return isValid;
+      return isValid;	
     } catch (error) {
+	  console.log(error);
       throw new BadRequestException('Unable to verify token.');
     }
   }

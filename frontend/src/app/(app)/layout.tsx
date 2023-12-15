@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import MainLayout from "@/components/layout";
-import { ToastContainer, toast } from "react-toastify";
-import Background from "@/components/Background/Background";
-import ChatSocket from "@/components/Chat/ChatSocket/ChatSocket";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/context/AuthProvider";
-import axios from "axios";
-import { useRouter, usePathname } from "next/navigation";
+import MainLayout from '@/components/layout';
+import { ToastContainer, toast } from 'react-toastify';
+import Background from '@/components/Background/Background';
+import ChatSocket from '@/components/Chat/ChatSocket/ChatSocket';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/context/AuthProvider';
+import axios from 'axios';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function RootLayout({
   children,
@@ -31,22 +31,32 @@ export default function RootLayout({
           }
         );
         if (data.TFAEnabled === true && data.TFAVerified === false) {
-          router.push("/login?show2faModal=true");
+          router.push('/login?show2faModal=true');
         }
-        console.log(data);
+        // console.log(data);
         setUser(data);
-        if (data.isOnline === true) {
-          router.push("/login?duplicateLogin=true");
-        }
       } catch (error) {
-        console.log(error);
         if (user) {
           router.push(`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`);
         }
-        router.push("/login");
+        router.push('/login');
       }
     };
     checkLogin();
+
+    // axios.interceptors.response.use(
+    //   (response) => {
+    //     return response;
+    //   },
+    //   (error) => {
+    //     if (error.response.status === 401) {
+    //       // Redirect user to the login page
+    //       window.location.href = '/login';
+    //     }
+    //     return Promise.reject(error);
+    //   }
+    // );
+
   }, [userUpdated]);
 
   if (
@@ -56,10 +66,10 @@ export default function RootLayout({
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
         }}
       >
         <Background />

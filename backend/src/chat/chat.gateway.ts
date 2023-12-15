@@ -96,11 +96,6 @@ export class ChatGateway
         .validateSocketConnection(socket)
         .then((user) => {
           socket.handshake.auth['user'] = user;
-          // if (this.roomsService.getClientSocket(user.login)) {
-          //   socket.emit('duplicateLogin', user);
-          //   socket.disconnect();
-          //   return Promise.reject(new WsException('duplicate login'));
-          // }
           next();
         })
         .catch((err) => {

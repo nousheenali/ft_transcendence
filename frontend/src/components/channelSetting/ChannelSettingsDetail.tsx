@@ -83,7 +83,7 @@ function ChannelSettingDetails({
         setIsVisible(false);
       }
       if (buttonId === "Add Password") {
-        console.log("Add New Password");
+        // console.log("Add New Password");
         socket.emit("addChannelPassword", {
           channelId: channelInfo.id,
           oldChannelPassword: "noPassword",

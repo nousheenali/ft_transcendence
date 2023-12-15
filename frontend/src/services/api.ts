@@ -1,13 +1,23 @@
-import { friendRelationDto } from "@/components/Profile/types";
+import { friendRelationDto } from '@/components/Profile/types';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND;
 
 // Helper function to make GET requests
-export async function getData<T>(login: string, endpoint: string): Promise<T> {
+export async function getData<T>(
+  login: string,
+  endpoint: string
+): Promise<T | null> {
   try {
     const response = await fetch(`${backendUrl}${endpoint}${login}`, {
-      credentials: "include", // Include credentials in the request
+      credentials: 'include', // Include credentials in the request
     });
+
+    if (response.status === 401) {
+      // Redirect to login if unauthorized
+      window.location.href = '/login';
+      return null;
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
@@ -27,13 +37,19 @@ export async function getData<T>(login: string, endpoint: string): Promise<T> {
 export async function postData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "POST",
-      credentials: "include",
+      method: 'POST',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
+
+    if (response.status === 401) {
+      // Redirect to login if unauthorized
+      window.location.href = '/login';
+      return null;
+    }
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
@@ -52,14 +68,18 @@ export async function postData<T>(data: T, endpoint: string) {
 export async function updateData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "PUT",
-      credentials: "include",
+      method: 'PUT',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
-
+    if (response.status === 401) {
+      // Redirect to login if unauthorized
+      window.location.href = '/login';
+      return null;
+    }
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
@@ -78,13 +98,19 @@ export async function updateData<T>(data: T, endpoint: string) {
 export async function deleteData<T>(data: T, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "DELETE",
-      credentials: "include",
+      method: 'DELETE',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
+
+    if (response.status === 401) {
+      // Redirect to login if unauthorized
+      window.location.href = '/login';
+      return null;
+    }
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
@@ -102,11 +128,15 @@ export async function deleteData<T>(data: T, endpoint: string) {
 export async function postDataWithImage(data: FormData, endpoint: string) {
   try {
     const response = await fetch(`${backendUrl}${endpoint}`, {
-      method: "POST",
+      method: 'POST',
       body: data,
-      credentials: "include",
+      credentials: 'include',
     });
-
+    if (response.status === 401) {
+      // Redirect to login if unauthorized
+      window.location.href = '/login';
+      return null;
+    }
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(

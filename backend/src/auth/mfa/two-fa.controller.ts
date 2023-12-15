@@ -42,10 +42,7 @@ export class TwoFaController {
   }
 
   @Post('verify')
-  async verifyToken(
-    @Body() dto: TwofaVerifyDto,
-    @Res() res: Response,
-  ) {
+  async verifyToken(@Body() dto: TwofaVerifyDto, @Res() res: Response) {
     try {
       const isValid = await this.twoFaService.verifyToken(
         dto.userLogin,
@@ -53,7 +50,8 @@ export class TwoFaController {
         dto.token,
       );
       if (!isValid) {
-        throw new BadRequestException('Token is not valid');
+        // throw new BadRequestException('Token is not valid');
+        return res.json({ isValid: false, message: 'Token not valid' });
       }
       const user: any = await this.userService.getUserByLogin(dto.userLogin);
       // console.log(user);
@@ -74,10 +72,7 @@ export class TwoFaController {
   }
 
   @Post('deactivate')
-  async deactivateTwoFa(
-    @Body() dto: TwofaVerifyDto,
-    @Res() res: Response,
-  ) {
+  async deactivateTwoFa(@Body() dto: TwofaVerifyDto, @Res() res: Response) {
     try {
       const user = await this.twoFaService.deactivateTwoFa(
         dto.userLogin,

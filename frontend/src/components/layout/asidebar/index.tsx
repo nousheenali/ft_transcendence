@@ -29,7 +29,7 @@ const AsideBar: FC<AsideBarProps> = ({ isMobile }) => {
           setUserData(userData);
         })
         .catch((error) => {
-          console.error("Error fetching user data:", error);
+        //   console.error("Error fetching user data:", error);
         });
       setIsUserUpdated(false);
     }

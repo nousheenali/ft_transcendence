@@ -79,7 +79,7 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
         channelType: newChannel.channelType,
         creator: newChannel.createdBy,
       });
-      // console.log("The creater is: ", newChannel.createdBy);
+    //   console.log("The creater is: ", newChannel.createdBy);
       // glopal value to re-render the channel list
       toast.success("Channel created successfully", {
         position: "top-center",

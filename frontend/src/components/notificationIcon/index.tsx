@@ -31,7 +31,7 @@ const fetchData = async (activeUser: string | null) => {
     }
     return [];
   } catch (error) {
-    console.log(error); // It's usually a good idea to log the error for debugging purposes
+    // console.log(error); // It's usually a good idea to log the error for debugging purposes
     return [];
   }
 };
@@ -89,7 +89,7 @@ export default function NotificationIcon() {
         withCredentials: true,
       });
       socket.on("connect", () => {
-        console.log("connected", socket.id);
+        // console.log("connected", socket.id);
         setCurrentSocket(socket);
       });
       socket.on("newNotif", (data) => {
@@ -112,7 +112,7 @@ export default function NotificationIcon() {
           setUserData(userData.id);
         })
         .catch((error) => {
-          console.error("Error fetching user data:", error);
+        //   console.error("Error fetching user data:", error);
         });
     }
   }, [user]);

@@ -21,7 +21,7 @@ export const getChannelsData = async (login: string, endpoint: string) => {
     );
     return channels;
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     throw new Error(error.message);
   }
 };
@@ -42,7 +42,7 @@ export const getCurrentChannelData = async (login: string, endpoint: string) => 
     );
     return channel;
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     throw new Error(error.message);
   }
 };
@@ -64,7 +64,7 @@ export const getChannelUsersData = async (login: string, endpoint: string) => {
     );
     return channelUsers;
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     throw new Error(error.message);
   }
 };
@@ -89,7 +89,7 @@ export const getChannelMessagesData = async (
     );
     return channelMessages;
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     throw new Error(error.message);
   }
 };

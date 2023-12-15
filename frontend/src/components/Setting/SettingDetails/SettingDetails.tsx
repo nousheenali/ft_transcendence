@@ -1,27 +1,28 @@
-"use client";
+'use client';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from "react";
-import { SettingDetailsProps } from "@/components/Setting/types";
-import { useSession } from "next-auth/react";
-import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+} from 'react';
+import { SettingDetailsProps } from '@/components/Setting/types';
+import { useSession } from 'next-auth/react';
+import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // import { activateTwoFa, verifyTwoFa } from '../../../../services/twoFa';
-import { Modal } from "react-daisyui";
-import Image from "next/image";
-import { userInformation } from "@/components/Profile/types";
-import { getUserData, updateUserName } from "../../../services/user";
-import SettingAvatar from "@/components/Setting/SettingAvatar/SettingAvatar";
-import { AuthContext } from "@/context/AuthProvider";
-import { activateTwoFa, verifyTwoFa } from "../../../services/two-fa";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useIsUserUpdated } from "@/context/store";
+import { Modal } from 'react-daisyui';
+import Image from 'next/image';
+import { userInformation } from '@/components/Profile/types';
+import { getUserData, updateUserName } from '../../../services/user';
+import SettingAvatar from '@/components/Setting/SettingAvatar/SettingAvatar';
+import { AuthContext } from '@/context/AuthProvider';
+import { activateTwoFa, verifyTwoFa } from '../../../services/two-fa';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { useIsUserUpdated } from '@/context/store';
+import DOMPurify from 'dompurify';
 
 function SettingDetails({ name, Auth }: SettingDetailsProps) {
   const { user, setUserUpdated } = useContext(AuthContext);
@@ -29,24 +30,24 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
-  const [qrCode, setQrCode] = useState("");
-  const [code, setCode] = useState("");
+  const [qrCode, setQrCode] = useState('');
+  const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
-  const [newName, setNewName] = useState("");
+  const [newName, setNewName] = useState('');
   const { setIsUserUpdated } = useIsUserUpdated();
 
   const router = useRouter();
 
   const handleClick = (buttonId: string) => {
-    console.log(buttonId + " button clicked");
+    // console.log(buttonId + " button clicked");
   };
 
   const handleActivateTwoFa = async () => {
     try {
       setIsLoading(true);
       if (userInfo?.TFAEnabled === true) {
-        toast.error("ALREADY ACTIVE");
+        toast.error('ALREADY ACTIVE');
         return;
       }
       const message = await activateTwoFa(
@@ -70,21 +71,40 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
       e.preventDefault();
       setIsLoading(true);
 
-      if (code === "") {
-        toast.error("CODE IS REQUIRED");
+      if (code === '') {
+        toast.error('CODE IS REQUIRED');
         return;
       }
+
+      if (code.length != 6) {
+        toast.error('Should be 6 digits');
+        return;
+      }
+
+      const sanitizedMessage = DOMPurify.sanitize(code);
+      if (sanitizedMessage !== code) {
+        toast.error('Message contains invalid characters');
+        return;
+      }
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
+
+      if (response?.data?.isValid === false) {
+        toast.error('Invalid token');
+        return;
+      }
+      // if (response.da)
+
       setUserUpdated(response.data.user);
-      router.push("/");
+      router.push('/');
       // }
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "An error occurred");
+      //   console.error(error);
+      toast.error(error.response?.data?.message || 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -95,8 +115,19 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
       e.preventDefault();
       setIsLoading(true);
 
-      if (code === "") {
-        toast.error("CODE IS REQUIRED");
+      if (code === '') {
+        toast.error('CODE IS REQUIRED');
+        return;
+      }
+
+      if (code.length != 6) {
+        toast.error('Should be 6 digits');
+        return;
+      }
+
+      const sanitizedMessage = DOMPurify.sanitize(code);
+      if (sanitizedMessage !== code) {
+        toast.error('Message contains invalid characters');
         return;
       }
       const response = await axios.post(
@@ -105,19 +136,24 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { withCredentials: true }
       );
 
+      if (response?.data?.isValid === false) {
+        toast.error('Invalid token');
+        return;
+      }
+
       const responsedeactivate = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.deactivateTwoFa}`,
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
-      console.log("done");
+      //   console.log("done");
       setUserUpdated(responsedeactivate.data.user);
-      toast.success("De-activate successfully");
-      router.push("/");
+      toast.success('De-activate successfully');
+      router.push('/');
       // }
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "An error occurred");
+      //   console.error(error);
+      toast.error(error.response?.data?.message || 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -128,45 +164,45 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
   const handleSaveName = async () => {
     try {
       setIsLoading(true);
-      if (newName === "") {
-        toast.error("Name cannot be empty", {
-          position: "top-center",
+      if (newName === '') {
+        toast.error('Name cannot be empty', {
+          position: 'top-center',
           autoClose: 800,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "dark",
+          theme: 'dark',
         });
         return;
       }
 
       const pattern = /^[a-zA-Z0-9]+$/;
       if (pattern.test(newName) === false) {
-        toast.error("Name can only contain letters and numbers", {
-          position: "top-center",
+        toast.error('Name can only contain letters and numbers', {
+          position: 'top-center',
           autoClose: 800,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "dark",
+          theme: 'dark',
         });
         return;
       }
 
       if (newName.length < 4 || newName.length > 20) {
-        toast.error("Minimum 3 characters and maximum 20 characters", {
-          position: "top-center",
+        toast.error('Minimum 3 characters and maximum 20 characters', {
+          position: 'top-center',
           autoClose: 800,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "dark",
+          theme: 'dark',
         });
         return;
       }
@@ -186,10 +222,10 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
 
       if (updatedData.name !== userInfo?.name) {
         setIsEditingName(false);
-        toast.success("Name updated successfully!!!");
+        toast.success('Name updated successfully!!!');
         setIsUserUpdated(true);
       } else {
-        toast.warning("No change. Name is the same.");
+        toast.warning('No change. Name is the same.');
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -199,7 +235,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
   };
 
   const handleCancelEditName = () => {
-    setNewName(userInfo?.name || "");
+    setNewName(userInfo?.name || '');
     setIsEditingName(false);
   };
 
@@ -220,7 +256,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
             return updatedUserInfo;
           });
         } catch (error) {
-          console.error(error);
+          //   console.error(error);
         }
       }
       setIsLoading(false);
@@ -277,7 +313,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         <div className="flex flx-row align-middle items-center justify-around">
           <div className="text-xl w-full text-center "> 2FA :</div>
           <div className="text-md truncate w-full text-center ">
-            {userInfo?.TFAEnabled ? "Activated" : "Not Activated"}
+            {userInfo?.TFAEnabled ? 'Activated' : 'Not Activated'}
           </div>
           <div className="w-full text-center">
             <button
@@ -286,7 +322,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
                 userInfo?.TFAEnabled ? handleShow() : handleActivateTwoFa();
               }}
             >
-              {userInfo?.TFAEnabled ? " De-activate 2FA" : " Activate 2FA"}
+              {userInfo?.TFAEnabled ? ' De-activate 2FA' : ' Activate 2FA'}
             </button>
           </div>
         </div>
@@ -303,7 +339,7 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
           </Modal.Header>
           <Modal.Body className="flex flex-col m-0 py-2">
             {user?.TFAEnabled ? (
-              ""
+              ''
             ) : (
               <div className="flex flex-row justify-center align-center">
                 <Image

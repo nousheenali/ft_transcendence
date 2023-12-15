@@ -19,7 +19,7 @@ export class AuthController {
     private jwtAuthService: JwtAuthService,
   ) {}
 
-  @UseGuards(AccessTokenGuard)
+//   @UseGuards(AccessTokenGuard)
   @Get('logout')
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     try {

@@ -1,23 +1,24 @@
-"use client";
-import "react-toastify/dist/ReactToastify.css";
-import { Title } from "@/components/Login/Title/Title";
-import { IntraAuthButton } from "@/components/Login/AuthButton/IntraAuth";
-import Team from "@/components/Login/Team/Team";
-import { Footer } from "@/components/Login/Footer/Footer";
+'use client';
+import 'react-toastify/dist/ReactToastify.css';
+import { Title } from '@/components/Login/Title/Title';
+import { IntraAuthButton } from '@/components/Login/AuthButton/IntraAuth';
+import Team from '@/components/Login/Team/Team';
+import { Footer } from '@/components/Login/Footer/Footer';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from "react";
-import { ToastContainer, toast } from "react-toastify";
-import { AuthContext } from "@/context/AuthProvider";
-import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
-import { verifyTwoFa } from "../../../services/two-fa";
-import { Modal } from "react-daisyui";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+} from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { AuthContext } from '@/context/AuthProvider';
+import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
+import { verifyTwoFa } from '../../../services/two-fa';
+import { Modal } from 'react-daisyui';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import DOMPurify from 'dompurify';
 
 /*
  * TODO: Put more spacing between the button and the team section.
@@ -33,15 +34,28 @@ export default function Home() {
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
-  const [code, setCode] = useState("");
+
+  const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleVerify = async (e: any) => {
     try {
       e.preventDefault();
       setIsLoading(true);
-      if (code === "") {
-        toast.error("CODE IS REQUIRED");
+      if (code === '') {
+        toast.error('CODE IS REQUIRED');
+        return;
+      }
+
+      if (code.length != 6) {
+        toast.error('Should be 6 digits');
+        return;
+      }
+
+      const sanitizedMessage = DOMPurify.sanitize(code);
+
+      if (sanitizedMessage !== code) {
+        toast.error('Message contains invalid characters');
         return;
       }
       const response = await axios.post(
@@ -49,26 +63,44 @@ export default function Home() {
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
+      if (response?.data?.isValid === false) {
+        toast.error('Invalid token');
+        return;
+      }
       setUserUpdated(response.data.user);
-      router.push("/");
+      router.push('/');
+
       handleShow();
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "An error occurred");
+      //   console.error(error);
+      toast.error(error.response?.data?.message || 'An error occurred');
     } finally {
       setIsLoading(false);
     }
   };
   useEffect(() => {
+
+    
     // Use URLSearchParams to work with query strings
+    // console.log(user);
+    // if (
+    //   (user?.login && user?.TFAEnabled === false) ||
+    //   (user?.TFAEnabled === true && user?.TFAVerified === true)
+    // ) {
+    //   router.push('/');
+    // }
+
     const queryParams = new URLSearchParams(window.location.search);
-    if (queryParams.get("show2faModal") === "true") {
+    if (queryParams.get('show2faModal') === 'true') {
       handleShow();
     }
-    if (queryParams.get("duplicateLogin") === "true") {
-      toast.error("already Logged in another browser");
-      // router.push(`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`);
-      // handleShow();
+
+    if (queryParams.get('duplicateLogin') === 'true') {
+      toast.error('already Logged in another browser');
+    }
+
+    if (user?.TFAEnabled === true && user?.TFAVerified === false) {
+      router.push('/login?show2faModal=true');
     }
   }, []);
 

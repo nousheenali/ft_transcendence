@@ -17,7 +17,7 @@ export const getMessages = async (login: string, endpoint: string) => {
     );
     return messages;
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     throw new Error(error.message);
   }
 };
@@ -33,7 +33,7 @@ export const postMessages = async (data: MessagesProps, endpoint: string) => {
   try {
     await postData<MessagesProps>(data, endpoint);
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     throw new Error(error.message);
   }
 };
