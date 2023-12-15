@@ -18,7 +18,7 @@ export default function ChannelPasswordTextBox(isPrivate: {
   }, []);
 
   const HandleInput = (e: any) => {
-    if (e.target.value.length >= 4) setValidPassword(true);
+    if (e.target.value.length > 4) setValidPassword(true);
     else setValidPassword(false);
     if (e.target.value.length > 20) return;
     setChannelPassword(e.target.value);

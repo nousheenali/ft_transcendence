@@ -14,7 +14,7 @@ import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
 
 /**======================================================================================================**/
 export default function FriendDashBoard() {
-  const gameHistoryHeading = ["Player 1", "Score", "Date", "Moves", "Result"];
+  const gameHistoryHeading = ["Player 1", "Score", "Date", "Result"];
   const { activeFriend, setActiveFriend } = activateClickedFriend();
   const [isLoading, setLoading] = React.useState(true);
   const [friendData, setFriendData] = React.useState<userInformation>();

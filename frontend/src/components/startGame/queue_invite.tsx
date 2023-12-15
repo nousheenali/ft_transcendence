@@ -26,7 +26,7 @@ export default function QueueAndInvite() {
       (item: userInformation) => !item.inAGame && item.isOnline
     );
     const combolist = filter?.map((item: userInformation) => ({
-      name: item.login,
+      name: item.name,
       id: item.id,
     }));
     setFriendsList([]);

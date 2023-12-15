@@ -44,7 +44,7 @@ export default function FriendsChatBoxHeader({
       if (response.data.inAGame == false) {
         inviteAndJoin();
       } else {
-        toast.error(`User ${friend?.login!} is in game`, {
+        toast.error(`User ${friend?.name} is in game`, {
           position: "top-center",
           autoClose: 800,
           hideProgressBar: true,
@@ -73,7 +73,7 @@ export default function FriendsChatBoxHeader({
       currentSocket
     );
     router.push("/game");
-    toast.success(`Invited ${friend?.login!} Successfully`, {
+    toast.success(`Invited ${friend?.name} Successfully`, {
       position: "top-center",
       autoClose: 800,
       hideProgressBar: true,
