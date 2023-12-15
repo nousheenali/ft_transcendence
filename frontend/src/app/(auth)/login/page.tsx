@@ -73,7 +73,7 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <main className="w-screen h-full flex flex-col items-center gap-20 mt-32">
         <Title />
         <a href={`${process.env.NEXT_PUBLIC_BACKEND}/auth/intra`}>
@@ -82,7 +82,11 @@ export default function Home() {
           </button>
         </a>
         <Team />
-        <Footer />
+        <div className="mt-auto">
+          <Footer />
+        </div>
+
+        {/* ============================================================================== */}
         <Modal
           className="overflow-hidden w-[267px] h-[310px] m-0 p-0 gap-0 bg-aside-fill-70  border-b-start-game border-b-2 rounded-2xl "
           ref={ref}
@@ -118,6 +122,6 @@ export default function Home() {
         </Modal>
         <ToastContainer position="top-right" />
       </main>
-    </>
+    </div>
   );
 }

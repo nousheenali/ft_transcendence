@@ -142,7 +142,7 @@ export default function DashBoardPage() {
             </h1>
           </div>
           <div>
-            <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
+            <Image height={25} width={25} src="/gamepad-2 1.svg" alt="crown icon" />
           </div>
         </div>
         <ResponsiveTable
@@ -167,7 +167,7 @@ export default function DashBoardPage() {
             </h1>
           </div>
           <div>
-            <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
+            <Image height={25} width={25} src="/forward.svg" alt="crown icon" />
           </div>
         </div>
         <ResponsiveTable
