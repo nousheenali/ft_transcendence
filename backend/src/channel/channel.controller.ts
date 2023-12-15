@@ -237,15 +237,15 @@ export class ChannelController {
 
       return await this.channelRelationService.isUserMuted(channel.id, user.id);
     } catch (error) {
-    //   if (!(error instanceof BadRequestException)) {
-    //     throw new HttpException(
-    //       'Unexpected Error while checking if the user is muted.',
-    //       HttpStatus.INTERNAL_SERVER_ERROR,
-    //     );
-    //   }
-    //   throw error;
-    // }
-    return false;
+      //   if (!(error instanceof BadRequestException)) {
+      //     throw new HttpException(
+      //       'Unexpected Error while checking if the user is muted.',
+      //       HttpStatus.INTERNAL_SERVER_ERROR,
+      //     );
+      //   }
+      //   throw error;
+      // }
+      return false;
     }
   }
   /**===============================================================================================*/

@@ -133,14 +133,7 @@ function ChannelSettingDetails({
                 }
               ></Input>
             </>
-          ) : (
-            <Input
-              value={newChannelPassword}
-              className="w-40 h-7 rounded-md items-center text-md  decoration-none border-0 border-b-[1px] border-main-yellow  focus:outline-none outline-none bg-transparent placeholder-aside-border"
-              size="lg"
-              placeholder="New Password..."
-              onChange={(e) => handleInput("Add New Password", e.target.value)}
-            ></Input>
+          ) : (""
           )}
         </div>
         <div className="" />
@@ -164,15 +157,15 @@ function ChannelSettingDetails({
                 Remove Password
               </Button>
             </>
-          ) : (
-            <Button
-              size="sm"
-              className="w-40 h-7 rounded-md items-center text-md bg-button-background "
-              onClick={() => handleSubmit("Add Password")}
-              disabled={newChannelPasswordStatus}
-            >
-              Set Password
-            </Button>
+          ) : (""
+            // <Button
+            //   size="sm"
+            //   className="w-40 h-7 rounded-md items-center text-md bg-button-background "
+            //   onClick={() => handleSubmit("Add Password")}
+            //   disabled={newChannelPasswordStatus}
+            // >
+            //   Set Password
+            // </Button>
           )}
         </div>
       </div>

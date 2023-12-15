@@ -29,6 +29,25 @@ async function bootstrap() {
   // const document = SwaggerModule.createDocument(app, config);
   // SwaggerModule.setup('api', app, document);
   // ----------------------------------------------------------------------------------------
+  // Listen for shutdown signals (e.g., Ctrl+C) and handle gracefully
+  const shutdownSignals: NodeJS.Signals[] = ['SIGTERM', 'SIGINT', 'SIGHUP'];
+  shutdownSignals.forEach((signal) => {
+    process.on(signal, () => {
+      // Perform cleanup tasks here (e.g., closing database connections)
+      //---------------------------------------------------------------------------------------
+      
+
+      //---------------------------------------------------------------------------------------
+      // Close the Nest application gracefully
+      app.close().then(() => {
+        console.log(`Nest application closed gracefully on ${signal} signal`);
+        process.exit(0);
+      });
+    });
+  });
+
+  // ----------------------------------------------------------------------------------------
+
   await app.listen(3001);
 }
 bootstrap();
