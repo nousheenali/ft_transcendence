@@ -61,11 +61,30 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
       channelPassword: channelPassword!,
     };
     try {
+      // check if the channel name is valid (only characters and numbers) and (4-20 characters)
+      if (
+        channelName!.length < 4 ||
+        channelName!.length > 20 ||
+        channelName!.match(/^[a-zA-Z0-9]+$/g) === null ||
+        channelName!.match(/^[a-zA-Z0-9]+$/g) === undefined
+      ) {
+        toast.error("Channel name is not valid", {
+          position: "top-center",
+          autoClose: 800,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        return;
+      }
+
       const chan = await postData<CreateChannelItems>(
         newChannel,
         API_ENDPOINTS.createChannel
       );
-
 
       setChannelName("");
       setChannelPassword("");
@@ -79,25 +98,9 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
         channelType: newChannel.channelType,
         creator: newChannel.createdBy,
       });
-    //   console.log("The creater is: ", newChannel.createdBy);
+      //   console.log("The creater is: ", newChannel.createdBy);
       // glopal value to re-render the channel list
-      toast.success("Channel created successfully", {
-        position: "top-center",
-        autoClose: 800,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    } catch (error: any) {
-      setChannelName("");
-      setChannelPassword("");
-      setValidChannelName(false);
-      setValidPassword(false);
-      modalRef.current?.close();
-      // toast.error("Channel creation failed: " + error.message, {
+      // toast.success("Channel created successfully", {
       //   position: "top-center",
       //   autoClose: 800,
       //   hideProgressBar: true,
@@ -107,6 +110,22 @@ export default function CreateChannel({ userLogin }: { userLogin: string }) {
       //   progress: undefined,
       //   theme: "dark",
       // });
+    } catch (error: any) {
+      setChannelName("");
+      setChannelPassword("");
+      setValidChannelName(false);
+      setValidPassword(false);
+      modalRef.current?.close();
+      toast.error("Channel creation failed...", {
+        position: "top-center",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
 

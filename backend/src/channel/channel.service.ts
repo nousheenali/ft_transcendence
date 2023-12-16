@@ -46,6 +46,7 @@ export class ChannelService {
       });
       return create_channel;
     } catch (error) {
+      return;
       throw new BadRequestException('UNABLE TO CREATE CHANNEL');
     }
   }
