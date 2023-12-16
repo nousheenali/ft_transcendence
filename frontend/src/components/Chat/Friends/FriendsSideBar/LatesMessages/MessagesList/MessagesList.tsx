@@ -70,11 +70,11 @@ export default function MessagesList() {
    **├ 👇 Activate the chat with the first channel in the list according to the joined channel type
    **└── 🟣
    **/
-  useEffect(() => {
-    if (latestMessages.length > 0) {
-      setActiveFriend(latestMessages[0].sender.login);
-    }
-  }, [latestMessages]);
+  // useEffect(() => {
+  //   if (latestMessages.length > 0) {
+  //     setActiveFriend(latestMessages[0].sender.login);
+  //   }
+  // }, [latestMessages]);
   //------------------------------------------------------------------------------------------------
   if (isLoading)
     return (

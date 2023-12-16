@@ -139,7 +139,8 @@ export class ChannelRelationService {
         return newChannelRelation;
       }
     } catch (error) {
-      throw new BadRequestException('UNABLE TO CREATE THE CHANNEL RELATION');
+      return;
+      // throw new BadRequestException('UNABLE TO CREATE THE CHANNEL RELATION');
     }
   }
 

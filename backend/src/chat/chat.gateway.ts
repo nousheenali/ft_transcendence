@@ -774,7 +774,14 @@ export class ChatGateway
           channelName + channelData.channelType,
           'CHANNELS',
         );
-        this.server.to(channelRoom.name).emit('UserMuted');
+        if (
+          await this.channelRelationService.isRelationExist(
+            channelData.id,
+            mutedUserData.id,
+          )
+        ) {
+          this.server.to(channelRoom.name).emit('UserMuted');
+        }
       }, 300000);
     }
 
