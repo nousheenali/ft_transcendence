@@ -1,22 +1,22 @@
-import Image from "next/image";
-import { userInformation } from "@/components/Profile/types";
-import { Drawer, Menu } from "react-daisyui";
-import { sendNotification } from "../../../../../services/friends";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Image from 'next/image';
+import { userInformation } from '@/components/Profile/types';
+import { Drawer, Menu } from 'react-daisyui';
+import { sendNotification } from '../../../../../services/friends';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   useGameState,
   useSocket,
   useSettingToggleVisiblity,
-} from "@/context/store";
-import { Content } from "@/components/notificationIcon/types";
-import { useRouter } from "next/navigation";
-import { AuthContext } from "@/context/AuthProvider";
-import { useContext, useCallback, useEffect, useState } from "react";
-import FriendDashBoard from "@/components/Chat/Friends/FriendsChatBox/FriendsChatBoxHeader/FriendDashBoard";
-import InvitaionGameCustomize from "@/components/startGame/startInvitedGame";
-import { API_ENDPOINTS } from "../../../../../../config/apiEndpoints";
-import axios from "axios";
+} from '@/context/store';
+import { Content } from '@/components/notificationIcon/types';
+import { useRouter } from 'next/navigation';
+import { AuthContext } from '@/context/AuthProvider';
+import { useContext, useCallback, useEffect, useState } from 'react';
+import FriendDashBoard from '@/components/Chat/Friends/FriendsChatBox/FriendsChatBoxHeader/FriendDashBoard';
+import InvitaionGameCustomize from '@/components/startGame/startInvitedGame';
+import { API_ENDPOINTS } from '../../../../../../config/apiEndpoints';
+import axios from 'axios';
 
 /**======================================================================================================**/
 export default function FriendsChatBoxHeader({
@@ -41,22 +41,26 @@ export default function FriendsChatBoxHeader({
           friend!.login,
         { withCredentials: true }
       );
+
       if (response.data.inAGame == false) {
         inviteAndJoin();
       } else {
         toast.error(`User ${friend?.name} is in game`, {
-          position: "top-center",
+          position: 'top-center',
           autoClose: 800,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "dark",
+          theme: 'dark',
         });
       }
       // ---------------------------------------------------------------------------------
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response.status === 401) {
+        window.location.href = '/login';
+      }
       console.log(error);
     }
   };
@@ -72,16 +76,16 @@ export default function FriendsChatBoxHeader({
       Content.GameInvite_Recieved,
       currentSocket
     );
-    router.push("/game");
+    router.push('/game');
     toast.success(`Invited ${friend?.name} Successfully`, {
-      position: "top-center",
+      position: 'top-center',
       autoClose: 800,
       hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "dark",
+      theme: 'dark',
     });
   };
   if (!friend) return null;

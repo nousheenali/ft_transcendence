@@ -63,6 +63,7 @@ export default function Home() {
         { userLogin: user.login!, token: code },
         { withCredentials: true }
       );
+
       if (response?.data?.isValid === false) {
         toast.error('Invalid token');
         return;
@@ -74,13 +75,14 @@ export default function Home() {
     } catch (error: any) {
       //   console.error(error);
       toast.error(error.response?.data?.message || 'An error occurred');
+      if (error.response?.status === 401) {
+        window.location.href = '/login';
+      }
     } finally {
       setIsLoading(false);
     }
   };
   useEffect(() => {
-
-    
     // Use URLSearchParams to work with query strings
     // console.log(user);
     // if (
@@ -91,6 +93,7 @@ export default function Home() {
     // }
 
     const queryParams = new URLSearchParams(window.location.search);
+
     if (queryParams.get('show2faModal') === 'true') {
       handleShow();
     }

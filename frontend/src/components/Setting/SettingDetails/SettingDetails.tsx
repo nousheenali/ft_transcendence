@@ -93,6 +93,13 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { withCredentials: true }
       );
 
+      // console.log(response);
+      // if (response.status === 401) {
+      //   // Redirect to login if unauthorized
+      //   window.location.href = '/login';
+      //   return;
+      // }
+
       if (response?.data?.isValid === false) {
         toast.error('Invalid token');
         return;
@@ -103,8 +110,11 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
       router.push('/');
       // }
     } catch (error: any) {
-      //   console.error(error);
-      toast.error(error.response?.data?.message || 'An error occurred');
+      console.error(error);
+      toast.error(error?.response?.data?.message || 'An error occurred');
+      if (error?.response?.status === 401) {
+        window.location.href = '/login';
+      }
     } finally {
       setIsLoading(false);
     }
@@ -136,6 +146,12 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
         { withCredentials: true }
       );
 
+      // if (response.status === 401) {
+      //   // Redirect to login if unauthorized
+      //   window.location.href = '/login';
+      //   return;
+      // }
+
       if (response?.data?.isValid === false) {
         toast.error('Invalid token');
         return;
@@ -152,8 +168,10 @@ function SettingDetails({ name, Auth }: SettingDetailsProps) {
       router.push('/');
       // }
     } catch (error: any) {
-      //   console.error(error);
       toast.error(error.response?.data?.message || 'An error occurred');
+      if (error.response?.status === 401) {
+        window.location.href = '/login';
+      }
     } finally {
       setIsLoading(false);
     }
