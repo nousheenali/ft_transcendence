@@ -1,14 +1,13 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Breaker from "../br/Br";
-import { signOut } from "next-auth/react";
- 
-import { usePathname } from 'next/navigation'
+
+
+import { usePathname } from "next/navigation";
 
 export default function MenuSideBar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
   // return <p>Current pathname: {pathname}</p>
   const [activeButton, setActiveButton] = useState(pathname);
 
@@ -144,12 +143,8 @@ export default function MenuSideBar() {
             </h1>
           </li>
         </Link>
-
-        <Link
-          href=""
-          onClick={() =>
-            signOut({ callbackUrl: "http://localhost:3000/login" })
-          }
+        <a
+          href={`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`}
           className={getButtonStyles("/logout") + " mb-10"}
         >
           <li className="flex flex-row gap-8 pl-6 p-3">
@@ -163,7 +158,7 @@ export default function MenuSideBar() {
               Logout
             </h1>
           </li>
-        </Link>
+        </a>
       </ul>
     </>
   );

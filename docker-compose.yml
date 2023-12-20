@@ -1,8 +1,8 @@
-version: '3.9'
+version: "3.9"
 
 services:
   postgres:
-    image: postgres:10.3
+    image: postgres:latest
     restart: always
     environment:
       - POSTGRES_USER=gab182
@@ -11,8 +11,48 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - "5432:5432"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./frontend/.env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+      - postgres
+    networks:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3001:3001"
+      - "5555:5555"
+      - "8005:8005"
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
 
 volumes:
   postgres:
-  # db-data:
+
+networks:
+  backend:

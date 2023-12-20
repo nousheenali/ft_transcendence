@@ -3,9 +3,15 @@
 /*------------ All the Types required in LeaderBoard page -----------*/
 /*-------------------------------------------------------------------*/
 
-import { playerData } from "../commonTypes/types";
+import { userInformation } from "../Profile/types";
+
 
 export interface PlayerInfoProps {
-  userData: playerData;
+  userData: userInformation;
+  rank: number;
   medal: string;
+}
+
+export interface TopPlayerProps {
+  data: userInformation[];
 }

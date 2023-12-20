@@ -1,11 +1,24 @@
-"use client";
-import { Title } from "@/components/Login/Title/Title";
-import { IntraAuthButton } from "@/components/Login/AuthButton/IntraAuth";
-import Team from "@/components/Login/Team/Team";
-import { Footer } from "@/components/Login/Footer/Footer";
-import React from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { Button } from "react-daisyui";
+'use client';
+import 'react-toastify/dist/ReactToastify.css';
+import { Title } from '@/components/Login/Title/Title';
+import { IntraAuthButton } from '@/components/Login/AuthButton/IntraAuth';
+import Team from '@/components/Login/Team/Team';
+import { Footer } from '@/components/Login/Footer/Footer';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { AuthContext } from '@/context/AuthProvider';
+import { API_ENDPOINTS } from '../../../../config/apiEndpoints';
+import { verifyTwoFa } from '../../../services/two-fa';
+import { Modal } from 'react-daisyui';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import DOMPurify from 'dompurify';
 
 /*
  * TODO: Put more spacing between the button and the team section.
@@ -14,23 +27,136 @@ import { Button } from "react-daisyui";
  * */
 
 export default function Home() {
-  const { data: session } = useSession();
+  const { user, setUserUpdated } = useContext(AuthContext);
 
-  const callbackUrl = "/";
-  const handleLogin = async () => {
-    await signIn("42-school", {
-      redirect: true,
-      callbackUrl,
-    });
+  const router = useRouter();
+  const ref = useRef<HTMLDialogElement>(null);
+  const handleShow = useCallback(() => {
+    ref.current?.showModal();
+  }, [ref]);
+
+  const [code, setCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleVerify = async (e: any) => {
+    try {
+      e.preventDefault();
+      setIsLoading(true);
+      if (code === '') {
+        toast.error('CODE IS REQUIRED');
+        return;
+      }
+
+      if (code.length != 6) {
+        toast.error('Should be 6 digits');
+        return;
+      }
+
+      const sanitizedMessage = DOMPurify.sanitize(code);
+
+      if (sanitizedMessage !== code) {
+        toast.error('Message contains invalid characters');
+        return;
+      }
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND}${API_ENDPOINTS.verifyTwoFa}`,
+        { userLogin: user.login!, token: code },
+        { withCredentials: true }
+      );
+
+      if (response?.data?.isValid === false) {
+        toast.error('Invalid token');
+        return;
+      }
+      setUserUpdated(response.data.user);
+      router.push('/');
+
+      handleShow();
+    } catch (error: any) {
+      //   console.error(error);
+      toast.error(error.response?.data?.message || 'An error occurred');
+      if (error.response?.status === 401) {
+        window.location.href = '/login';
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+  useEffect(() => {
+    // Use URLSearchParams to work with query strings
+    // console.log(user);
+    // if (
+    //   (user?.login && user?.TFAEnabled === false) ||
+    //   (user?.TFAEnabled === true && user?.TFAVerified === true)
+    // ) {
+    //   router.push('/');
+    // }
+
+    const queryParams = new URLSearchParams(window.location.search);
+
+    if (queryParams.get('show2faModal') === 'true') {
+      handleShow();
+    }
+
+    if (queryParams.get('duplicateLogin') === 'true') {
+      toast.error('already Logged in another browser');
+    }
+
+    if (user?.TFAEnabled === true && user?.TFAVerified === false) {
+      router.push('/login?show2faModal=true');
+    }
+  }, []);
+
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <main className="w-screen h-full flex flex-col items-center gap-20 mt-32">
         <Title />
-        <button onClick={handleLogin}><IntraAuthButton /></button>
+        <a href={`${process.env.NEXT_PUBLIC_BACKEND}/auth/intra`}>
+          <button>
+            <IntraAuthButton />
+          </button>
+        </a>
         <Team />
-        <Footer />
+        <div className="mt-auto">
+          <Footer />
+        </div>
+
+        {/* ============================================================================== */}
+        <Modal
+          className="overflow-hidden w-[267px] h-[310px] m-0 p-0 gap-0 bg-aside-fill-70  border-b-start-game border-b-2 rounded-2xl "
+          ref={ref}
+          id="login"
+        >
+          {/* Header */}
+          <Modal.Header className="font-bold m-0">
+            <div className="flex justify-center items-center h-full">
+              <p>TW-FA VERIFICATION</p>
+            </div>
+          </Modal.Header>
+          <Modal.Body className="flex flex-col m-0 py-2">
+            <div className="flex justify-center mt-3 p-2 items-center rounded-md bg-search-box-fill w-full h-8 border-[0.5px] border-chat-search-stroke">
+              <input
+                className="ml-2 bg-search-box-fill font-thin text-sm text-search-box-text w-40 h-full focus:outline-none hover:cursor-text"
+                type="search"
+                name="search"
+                placeholder="Enter Authenticator Code"
+                onChange={(e) => {
+                  setCode(e.target.value);
+                }}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Actions className="flex items-center  justify-center mt-2 ">
+            <button
+              onClick={(e) => handleVerify(e)}
+              className="text-start-game font-saira-condensed font-bold text-xl h-18 w-60 border-2 border-aside-border rounded-2xl  p-4 bg-heading-fill hover:bg-[#111417] opacity-90 mx"
+            >
+              VERIFY
+            </button>
+          </Modal.Actions>
+        </Modal>
+        <ToastContainer position="top-right" />
       </main>
-    </>
+    </div>
   );
 }

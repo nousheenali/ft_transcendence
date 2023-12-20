@@ -1,13 +1,16 @@
 import Image from "next/image";
 import { TableCellProps } from "./types";
 import { API_ENDPOINTS } from "../../../config/apiEndpoints";
-import { useSession } from "next-auth/react";
+
 import { toast } from "react-toastify";
 import {
   createFriendRelation,
   deleteFriendRelation,
   updateFriendRelation,
-} from "../../../services/friends";
+} from "../../services/friends";
+import { useSocket, useChatSocket } from "@/context/store";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
 
 const TableCell: React.FC<TableCellProps> = ({
   dataItem,
@@ -15,28 +18,41 @@ const TableCell: React.FC<TableCellProps> = ({
   activeButton,
   reloadPageData,
 }) => {
-  const { data: session } = useSession();
+  const { user } = useContext(AuthContext);
+  const { currentSocket } = useSocket();
+  const { socket } = useChatSocket();
 
+  if (typeof dataItem === "string" && (dataItem === "Win" || dataItem === "Yes")) {
+    return (
+      <div className="py-2 flex-1 text-center text-win-color">{dataItem}</div>
+    );
+  }
+
+  if (typeof dataItem === "string" && (dataItem === "Lose" || dataItem === "No")) {
+    return (
+      <div className="py-2 flex-1 text-center text-lose-color">{dataItem}</div>
+    );
+  }
   if (typeof dataItem === "string") {
     return <div className="py-2 flex-1 text-center">{dataItem}</div>;
   }
   // checks if there is playerName property in the data item then returns the relevent styles for the cell
-  if ("playerName" in dataItem) {
+  if (dataItem && "playerName" in dataItem) {
     return (
       <div className="py-2 flex-1 text-center">
-        <div className="flex-1 flex items-center justify-center flex-row">
-          <div className="w-12 h-12 mb-2 mr-3">
+        <div className="flex-1 flex items-center justify-start pl-8 flex-row">
+          <div className="w-12 h-12 mb-2 mr-3 pt-1">
             <Image
-              className="rounded-full"
+              className="rounded-full aspect-[1/1]"
               height={50}
               width={50}
               src={dataItem.img}
               alt="avatar"
             />
           </div>
-          <div>
+          <div className="text-left text-main-text font-bold">
             {dataItem.name?.length > 10
-              ? `${dataItem.name.substring(0, 10)}..`
+              ? `${dataItem.name.substring(0, 15)}..`
               : dataItem.name}
           </div>
         </div>
@@ -69,6 +85,10 @@ const TableCell: React.FC<TableCellProps> = ({
       case "BLOCK":
         action = updateFriendRelation;
         endpoint = API_ENDPOINTS.blockFriend;
+        socket.emit("BlockUser", {
+          friendLogin: friendLogin,
+          userLogin: user.login,
+        });
         break;
       case "UNBLOCK":
         action = updateFriendRelation;
@@ -85,9 +105,10 @@ const TableCell: React.FC<TableCellProps> = ({
     if (action && endpoint) {
       try {
         const message = await action(
-          session?.user.login!,
+          user.login!,
           friendLogin,
-          endpoint
+          endpoint,
+          currentSocket
         );
         reloadPageData(activeButton);
         toast.success(message);
@@ -97,7 +118,7 @@ const TableCell: React.FC<TableCellProps> = ({
     }
   };
 
-  // if both of the above doesnt match , returns the cell styles to show the action icons
+  // if both of the above doesn't match , returns the cell styles to show the action icons
   return (
     <div className="py-2 flex-1 text-center">
       <div className="flex items-center justify-center flex-row hover:cursor-pointer">

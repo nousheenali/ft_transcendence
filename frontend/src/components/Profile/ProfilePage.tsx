@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import ResponsiveTable from "@/components/Table/Table";
 import ProfileInfo from "@/components/Profile/ProfileInfo/ProfileInfo";
@@ -11,7 +10,6 @@ import {
   friendsRequestHeadings,
   pendingRequestHeadings,
 } from "@/data/Table/profileTableHeadings";
-import { ProfilePageProps } from "./types";
 import { generateProfileSearchData } from "@/data/Table/search";
 import { generateProfileBlockedData } from "@/data/Table/blocked";
 import { generateProfileFriendsData } from "@/data/Table/friends";
@@ -20,45 +18,64 @@ import { generatePendingRequestsData } from "@/data/Table/pendingFriendRequests"
 import { TableRowData } from "../Table/types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { DataGeneratorMap, ProfilePageProps, userInformation } from "./types";
+import { getUserData } from "../../services/user";
+import { API_ENDPOINTS } from "../../../config/apiEndpoints";
+import { AuthContext } from "@/context/AuthProvider";
+import { activeClickedProfilePage } from "@/context/store";
 
-const ProfilePage: React.FC<ProfilePageProps> = ({
-  userInfo
-}) => {
-  const [activeButton, setActiveButton] = useState("friends");
+const ProfilePage = () => {
+  // const [activeButton, setActiveButton] = useState("friends");
+  const { activeButton, setActiveButton } = activeClickedProfilePage();
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<TableRowData[]>([]);
-
-
+  const [userInfo, setUserInfo] = useState<userInformation>();
+  const { user } = useContext(AuthContext);
+  const login: string = user.login!;
+  const [maxHeight, setMaxHeight] = useState("none");
+  const containerRef = useRef<HTMLDivElement>(null);
   let data: TableRowData[];
-  
+
   const fetchTableData = async (buttonId: string) => {
     try {
-      const dataGeneratorMap: any = {
-        friends: generateProfileFriendsData,
-        search: generateProfileSearchData,
-        blocked: generateProfileBlockedData,
-        friendRequests: generateFriendRequestsData,
-        pendingRequests: generatePendingRequestsData,
-      };
-      const dataGenerator = dataGeneratorMap[buttonId];
+      if (user.login) {
+        const userData = await getUserData(
+          user.login,
+          API_ENDPOINTS.getUserbyLogin
+        );
+        if (userData) {
+          setUserInfo(userData);
+          const dataGeneratorMap: DataGeneratorMap = {
+            friends: generateProfileFriendsData,
+            search: generateProfileSearchData,
+            blocked: generateProfileBlockedData,
+            friendRequests: generateFriendRequestsData,
+            pendingRequests: generatePendingRequestsData,
+          };
+          const dataGenerator = dataGeneratorMap[buttonId];
 
-      if (dataGenerator) {
-        const data = await dataGenerator(userInfo.login);
-        setTableData(data);
-        setIsLoading(false)
+          if (dataGenerator) {
+            const data = await dataGenerator(user.login);
+            setTableData(data);
+            setIsLoading(false);
+          } else throw new Error("Invalid Button Click");
+        }
       }
-      else
-        throw new Error("Invalid Button Click");
     } catch (error: any) {
       toast.error(error.message);
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setIsLoading(true)
-    fetchTableData(activeButton); 
-  }, [activeButton]); // fetch data when button clicked
+    setIsLoading(true);
+    fetchTableData(activeButton);
+    if (containerRef.current) {
+      const containerHeight = containerRef.current.clientHeight;
+      setMaxHeight(`${containerHeight}px`);
+      //  console.log("Container Height:", containerHeight);
+    }
+  }, [activeButton, login]); // fetch data when button clicked
 
   const handleButtonClick = (buttonId: string) => {
     setActiveButton(buttonId);
@@ -66,9 +83,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
   const renderTable = () => {
     if (isLoading) {
-      return <span className="loading loading-ring loading-lg text-main-yellow"></span>;
-    } 
-    else {
+      return (
+        <span className="loading loading-ring loading-lg text-main-yellow"></span>
+      );
+    } else {
       switch (activeButton) {
         case "friends":
           return (
@@ -78,7 +96,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headerImage="people.svg"
               headings={friendsProfileHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="friends"
               reloadPageData={fetchTableData}
             />
@@ -91,7 +109,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headerImage="people.svg"
               headings={searchProfileHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="search"
               reloadPageData={fetchTableData}
             />
@@ -104,7 +122,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headerImage="user-minus.svg"
               headings={blockedFriendsHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="blocked"
               reloadPageData={fetchTableData}
             />
@@ -117,7 +135,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headerImage="user-plus.svg"
               headings={friendsRequestHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="friendRequests"
               reloadPageData={fetchTableData}
             />
@@ -130,7 +148,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               headerImage="user-plus.svg"
               headings={pendingRequestHeadings}
               data={tableData}
-              maxHeight="585px"
+              maxHeight={maxHeight}
               activeButton="pendingRequests"
               reloadPageData={fetchTableData}
             />
@@ -144,15 +162,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   return (
     <>
       <div className="w-full h-full text-center text-white flex flex-col p-6">
-        <ProfileInfo
-          name={userInfo.name}
-          email={userInfo.email}
-          rank="12"
-          avatar={userInfo.avatar}
-          activeButton={activeButton}
-          handleButtonClick={handleButtonClick}
-        />
-        <div className="h-full mt-[10px] border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden ">
+        <div className="h-1/5">
+          <ProfileInfo
+            name={userInfo?.name || "name"}
+            email={userInfo?.email || "email"}
+            score={userInfo?.score || 0}
+            avatar={userInfo?.avatar || "https://i.imgur.com/6VBx3io.png"}
+            activeButton={activeButton}
+            handleButtonClick={handleButtonClick}
+          />
+        </div>
+        <div
+          ref={containerRef}
+          className=" h-4/5 mt-[10px] border-b border-main-yellow bg-box-fill rounded-xl overflow-hidden"
+        >
           {renderTable()}
         </div>
       </div>

@@ -1,5 +1,7 @@
 export const friendsProfileHeadings = [
   'Friend',
+  'isOnline',
+  'inGame',
   'Score',
   'Games',
   'Wins',
@@ -44,4 +46,13 @@ export const pendingRequestHeadings = [
   'Wins',
   'Losses',
   'Cancel Request',
+];
+
+export const leaderboardHeadings = [
+  "Rank",
+  "Player",
+  "Score",
+  "Games",
+  "Wins",
+  "Losses",
 ];

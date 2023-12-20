@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import { useGameColor } from "@/context/store";
+import { useGameState } from "@/context/store";
+import QueueAndInvite from "./queue_invite";
 
 const colors = {
   "0xff0000": "Red",
@@ -8,14 +9,22 @@ const colors = {
   "0x0000ff": "Blue",
 };
 
+const backgroundColors = {
+  "0x000000": "None",
+  "0x044300": "Green",
+  "0x1F3573": "DeepBlue",
+  "0x6495ED": "LightBlue",
+};
+
 const dropdownStyles = {
-  select: "hover-bg-heading text-placeholder-text font-saira-condensed normal-case bg-main bg-heading-fill border-1 border-aside-border rounded-2xl w-40 h-8 p-1 flex flex-row justify-between",
+  select:
+    "hover-bg-heading text-placeholder-text font-saira-condensed normal-case bg-main bg-heading-fill border-1 border-aside-border rounded-2xl w-40 h-8 p-1 flex flex-row justify-between",
   option: "text-main-text",
 };
 
 export default function CustomizeGame() {
-  const { setBallColor, setBgColor, setRacketColor } = useGameColor();
-  const { ballColor, racketColor, bgColor } = useGameColor();
+  const { setBallColor, setBgColor, setRacketColor } = useGameState();
+  const { ballColor, racketColor, bgColor } = useGameState();
 
   const changeColor = (colorType: string) => {
     switch (colorType) {
@@ -57,7 +66,11 @@ export default function CustomizeGame() {
             className={dropdownStyles.select}
           >
             {Object.entries(colors).map(([value, label]) => (
-              <option key={value} value={value} className={dropdownStyles.option}>
+              <option
+                key={value}
+                value={value}
+                className={dropdownStyles.option}
+              >
                 {label}
               </option>
             ))}
@@ -71,7 +84,6 @@ export default function CustomizeGame() {
           />
         </div>
       </div>
-
       <div className="flex flex-row items-center justify-around gap-2">
         <h1 className="text-main-text font-saira-condensed">Racket Color</h1>
         <div className="relative">
@@ -81,7 +93,11 @@ export default function CustomizeGame() {
             className={dropdownStyles.select}
           >
             {Object.entries(colors).map(([value, label]) => (
-              <option key={value} value={value} className={dropdownStyles.option}>
+              <option
+                key={value}
+                value={value}
+                className={dropdownStyles.option}
+              >
                 {label}
               </option>
             ))}
@@ -104,8 +120,12 @@ export default function CustomizeGame() {
             onChange={(e) => handleColorChange("bgColor", e.target.value)}
             className={dropdownStyles.select}
           >
-            {Object.entries(colors).map(([value, label]) => (
-              <option key={value} value={value} className={dropdownStyles.option}>
+            {Object.entries(backgroundColors).map(([value, label]) => (
+              <option
+                key={value}
+                value={value}
+                className={dropdownStyles.option}
+              >
                 {label}
               </option>
             ))}
@@ -119,6 +139,7 @@ export default function CustomizeGame() {
           />
         </div>
       </div>
+      <QueueAndInvite />
     </div>
   );
 }

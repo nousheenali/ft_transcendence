@@ -4,7 +4,6 @@ import React from "react";
 import { Header } from "@/components/Login/Header/Header";
 import Background from "@/components/Background/Background";
 
-
 export const metadata: Metadata = {
   title: "Spin Masters",
   description: "Transcendence project",
@@ -18,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="overflow-y-scroll flex justify-center">
-				<Background />
+        <Background />
         <Header />
         {children}
       </body>

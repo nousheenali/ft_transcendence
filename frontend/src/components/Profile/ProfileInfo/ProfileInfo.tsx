@@ -1,18 +1,45 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import ProfileNavBar from './ProfileNavBar/ProfileNavBar';
-import { ProfileInfoProps } from '../types';
+import React, { useContext, useState } from "react";
+import Image from "next/image";
+import ProfileNavBar from "./ProfileNavBar/ProfileNavBar";
+import { ProfileInfoProps, userInformation } from "../types";
+import { generateLeaderboardData } from "@/data/Table/leaderBoard";
+import { TableRowData } from "@/components/Table/types";
+import { AuthContext } from "@/context/AuthProvider";
+import { getAllUsersData } from "../../../services/user";
+import { API_ENDPOINTS } from "../../../../config/apiEndpoints";
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
   name,
   email,
-  rank,
+  score,
   avatar,
   activeButton,
   handleButtonClick,
 }) => {
+  // const [usersData, setUsersData] = useState<userInformation[]>([]);
+  const [rank, setRank] = useState(0);
+  const { user } = useContext(AuthContext);
+  const login: string = user.login!;
+
+  const fetchUsersData = async () => {
+    if (login) {
+      const data = await getAllUsersData(login, API_ENDPOINTS.getAllUsers);
+      // setUsersData(data);
+      let i = 0;
+      data.forEach((item: userInformation) => {
+        i++;
+        if (item.login === login) {
+          setRank(i);
+          return;
+        }
+      });
+    }
+  };
+
+  fetchUsersData();
+
   return (
     <>
       <div className="flex flex-col w-full">
@@ -46,7 +73,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
             </div>
             <div className="flex flex-row">
               <div className="text-subheading-one">Rank:</div>
-              <div className="ml-10">#{rank}</div>
+              <div className="ml-10">{rank}</div>
             </div>
           </div>
         </div>

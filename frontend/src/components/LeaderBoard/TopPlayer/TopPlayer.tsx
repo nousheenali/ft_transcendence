@@ -1,29 +1,11 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import PlayerInfo from "./PlayerInfo/PlayerInfo";
-import { playerData } from "@/components/commonTypes/types";
+import { TopPlayerProps } from "../types";
+import { userInformation } from "@/components/Profile/types";
 
-
-const fetchData = async () => {
-  try {
-    const data = await import("../../../data/playersInformation.json")
-    return data.playersInformation;
-  } catch (error) {
-    return [];
-  }
-}
-
-export default function TopPlayer() {
-
-  const [topPlayersData, setTopPlayersData] = useState<playerData[]>([])
-
-  useEffect(() => {
-    fetchData().then((data) => {
-      setTopPlayersData(data);
-    });
-  },[])
-
+const TopPlayer: React.FC<TopPlayerProps> = ({ data }) => {
   return (
     <>
       <div className="flex flex-col w-full">
@@ -37,29 +19,31 @@ export default function TopPlayer() {
             <Image height={25} width={25} src="/crown.svg" alt="crown icon" />
           </div>
         </div>
-        <div className="flex justify-center items-center h-[130px] border-b rounded-b-lg border-main-yellow">
-          {topPlayersData.length === 1 && (
+        <div className="flex justify-center items-center h-[160px] border-b rounded-b-lg border-main-yellow">
+          {data.length === 1 && (
             <div>
-              <PlayerInfo userData={topPlayersData[0]} medal="gold.svg" />
+              <PlayerInfo userData={data[0]} rank={1} medal="gold.svg" />
             </div>
           )}
 
-          {topPlayersData.length === 2 && (
+          {data.length === 2 && (
             <div className="flex flex-row space-x-20">
-              <PlayerInfo userData={topPlayersData[0]} medal="gold.svg" />
-              <PlayerInfo userData={topPlayersData[1]} medal="silver.svg" />
+              <PlayerInfo userData={data[0]} rank={1} medal="gold.svg" />
+              <PlayerInfo userData={data[1]} rank={2} medal="silver.svg" />
             </div>
           )}
 
-          {topPlayersData.length > 2 && (
+          {data.length > 2 && (
             <div className="flex flex-row space-x-20">
-              <PlayerInfo userData={topPlayersData[1]} medal="silver.svg" />
-              <PlayerInfo userData={topPlayersData[0]} medal="gold.svg" />
-              <PlayerInfo userData={topPlayersData[2]} medal="bronze.svg" />
+              <PlayerInfo userData={data[1]} rank={2} medal="silver.svg" />
+              <PlayerInfo userData={data[0]} rank={1} medal="gold.svg" />
+              <PlayerInfo userData={data[2]} rank={3} medal="bronze.svg" />
             </div>
           )}
         </div>
       </div>
     </>
   );
-}
+};
+
+export default TopPlayer;

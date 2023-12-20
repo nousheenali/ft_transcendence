@@ -1,10 +1,34 @@
-# Use the official PostgreSQL image as the base image
-FROM postgres:latest
+FROM node:18 AS builder
 
-# Set environment variables for PostgreSQL
-ENV POSTGRES_USER=myuser
-ENV POSTGRES_PASSWORD=mypassword
-ENV POSTGRES_DB=mydatabase
+# Create app directory
+WORKDIR /app
 
-# Copy the initialization SQL script to the container
-COPY init.sql /docker-entrypoint-initdb.d/
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY prisma ./prisma/
+
+# Install app dependencies
+RUN npm install
+
+
+COPY . .
+
+RUN npm run build
+
+FROM node:18
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/tsconfig.json ./
+
+COPY --from=builder /app/prisma ./prisma
+
+EXPOSE 3001
+
+EXPOSE 8005
+
+EXPOSE 8001
+
+CMD ["sh", "-c", "npm run migrate && npm run start:dev"]

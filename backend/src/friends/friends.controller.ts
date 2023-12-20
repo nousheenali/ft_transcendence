@@ -1,8 +1,22 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { FriendsDto } from './dto/friends.dto';
 import { NotFoundError } from 'rxjs';
+import { AccessTokenGuard } from 'src/auth/jwt/jwt.guard';
 
+@UseGuards(AccessTokenGuard)
 @Controller('friends')
 export class FriendsController {
   constructor(private friendsService: FriendsService) {}
@@ -148,6 +162,32 @@ export class FriendsController {
     } catch (error) {
       throw new HttpException(
         'Unexpected Error while listing blocked users',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /* List all blocked friends */
+  @Get('blocked-by-list/:login')
+  getBlockeByList(@Param('login') login: string) {
+    try {
+      return this.friendsService.getBlockedBy(login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while listing the friends who blocked the user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /* List a login list of all the friends that the user blocked  */
+  @Get('blocked-logins/:login')
+  getBlockeLogins(@Param('login') login: string) {
+    try {
+      return this.friendsService.getBlockedLogins(login);
+    } catch (error) {
+      throw new HttpException(
+        'Unexpected Error while listing the blocked friends logins',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

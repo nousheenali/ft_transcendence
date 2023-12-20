@@ -1,5 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // binaryTargets = ["native"]
+  // binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -16,12 +19,16 @@ model User {
   avatar    String?  @default("https://i.imgur.com/6VBx3io.png")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  isOnline  Boolean  @default(true)
+  isOnline  Boolean  @default(false)
+
+  inAGame Boolean @default(false)
+
+  newUser Boolean @default(true)
 
   // Two factor authentication-----------------------------------------
-  TFAEnabled Boolean @default(false)
-  TFAKey     String?
-
+  TFAEnabled            Boolean        @default(false)
+  TFAKey                String?
+  TFAVerified           Boolean        @default(false)
   // Relation to notifications-----------------------------------------
   receiverdNotification Notification[] @relation(name: "receiver")
   sentNotification      Notification[] @relation(name: "sender")
@@ -50,7 +57,7 @@ model User {
 
 model Game {
   id         String     @id @default(uuid())
-  gameStatus GameStatus @default(QUEUED)
+  gameStatus GameStatus @default(LIVE)
   startTime  DateTime   @default(now())
 
   winnerId String?
@@ -64,7 +71,7 @@ model Game {
 
 enum GameStatus {
   LIVE
-  QUEUED
+  WAITING
   FINISHED
 }
 
@@ -76,10 +83,11 @@ model Notification {
   recivedAt DateTime @default(now())
   read      Boolean  @default(false)
 
-  sender   User   @relation("sender", fields: [senderId], references: [id])
-  senderId String
-  User     User   @relation("receiver", fields: [userId], references: [id])
-  userId   String
+  sender     User     @relation("sender", fields: [senderId], references: [id])
+  senderId   String
+  User       User     @relation("receiver", fields: [userId], references: [id])
+  userId     String
+  isAccepted Boolean? @default(false)
 }
 
 enum Content {
@@ -114,19 +122,17 @@ enum FriendStatus {
 model Channel {
   id String @id @default(uuid())
 
-  channelName   String @unique
-  channelType   Type
+  channelName     String            @unique
+  channelType     Type
   // Relation to the creator user
-  createdBy     String
-  createdByUser User   @relation("createdChannels", fields: [createdBy], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  channelMembers ChannelRelation[]
-
-  // channelMessages ChannelMessages[]
-  Messages Messages[]
+  createdBy       String
+  createdByUser   User              @relation("createdChannels", fields: [createdBy], references: [id])
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  // Relation to the members
+  channelMembers  ChannelRelation[] @relation(name: "channelMembers")
+  channelPassword String?
+  Messages        Messages[]
 }
 
 enum Type {
@@ -137,15 +143,21 @@ enum Type {
 // =====================================================================
 
 model ChannelRelation {
-  id     String @id @default(uuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id String @id @default(uuid())
+
+  // Relation to the member user.
+  userId  String
+  user    User    @relation(fields: [userId], references: [id])
+  isMuted Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Channel   Channel @relation(fields: [channelId], references: [id])
+  // Relation to the channel
+  channel   Channel @relation("channelMembers", fields: [channelId], references: [id])
   channelId String
+
+  isAdmin   Boolean @default(false)
 }
 
 // =====================================================================
