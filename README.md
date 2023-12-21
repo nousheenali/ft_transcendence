@@ -1,2 +1,16 @@
 # ft_transcendence
-Final 42 core project
+
+![37a3e72bd3a7a45ed5897703b8a2b800-0](https://github.com/nousheenali/ft_transcendence/assets/66158938/31e4c0ea-e9e7-4cc6-8988-5bafc03452b0)
+![37a3e72bd3a7a45ed5897703b8a2b800-1](https://github.com/nousheenali/ft_transcendence/assets/66158938/e138be4d-70ef-42f5-a12e-60f66f203535)
+![37a3e72bd3a7a45ed5897703b8a2b800-2](https://github.com/nousheenali/ft_transcendence/assets/66158938/8530086b-8fdf-4349-9682-9929c77956d8)
+![37a3e72bd3a7a45ed5897703b8a2b800-3](https://github.com/nousheenali/ft_transcendence/assets/66158938/4833aae1-7184-4482-aa93-9892dfb85249)
+![37a3e72bd3a7a45ed5897703b8a2b800-4](https://github.com/nousheenali/ft_transcendence/assets/66158938/9b84ace2-b382-49fb-bbeb-ff4ad3c31d45)
+![37a3e72bd3a7a45ed5897703b8a2b800-5](https://github.com/nousheenali/ft_transcendence/assets/66158938/27d6c823-f945-42e4-ba43-fa6b7c491b6c)
+![37a3e72bd3a7a45ed5897703b8a2b800-6](https://github.com/nousheenali/ft_transcendence/assets/66158938/2c71cd08-4461-40a1-9660-97224ca08a97)
+![37a3e72bd3a7a45ed5897703b8a2b800-7](https://github.com/nousheenali/ft_transcendence/assets/66158938/b9194a85-35a8-4a6f-b561-562fd25068d0)
+![37a3e72bd3a7a45ed5897703b8a2b800-8](https://github.com/nousheenali/ft_transcendence/assets/66158938/c16f2e45-0910-4fe8-94c6-85c2daa4ecbf)
+![37a3e72bd3a7a45ed5897703b8a2b800-9](https://github.com/nousheenali/ft_transcendence/assets/66158938/ca798604-9ec5-4946-9c49-94c97844a570)
+![37a3e72bd3a7a45ed5897703b8a2b800-10](https://github.com/nousheenali/ft_transcendence/assets/66158938/7b146b87-364f-4713-ba5a-0789acb72e9c)
+![37a3e72bd3a7a45ed5897703b8a2b800-11](https://github.com/nousheenali/ft_transcendence/assets/66158938/7b7538c2-5059-4d3c-83d2-25c11dce123a)
+![37a3e72bd3a7a45ed5897703b8a2b800-12](https://github.com/nousheenali/ft_transcendence/assets/66158938/e2e2fbcd-5422-4b09-b281-639ae0e11ed7)
+![37a3e72bd3a7a45ed5897703b8a2b800-13](https://github.com/nousheenali/ft_transcendence/assets/66158938/4363c000-f365-4571-aeb9-417d7abdd666)
