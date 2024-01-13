@@ -1,4 +1,14 @@
-# ft_transcendence
+# SPIN MASTERS
+
+Spin Masters is an online multiplayer pong game that offers its users an immersive and real-time gaming experience. Its visually captivating interface provides a social platform for gamers to interact with like-minded individuals, build a community, and enjoy a gaming environment in a robust and secure technology stack. 
+
+Crafted as a tribute to the timeless 1972 classic Pong game, this application offers a seamlessly immersive multiplayer gaming experience. Users can personalize their gaming adventure by customizing the game's appearance, adding a personal touch to the excitement. With an integrated chat functionality and a friend management system, the platform not only promotes social interaction but also fosters the formation of vibrant gaming communities. It sets the stage for endless hours of fun and competitive gameplay.
+
+Spin Masters is specifically designed for users with a 42-school login along with an option to enable 2FA enhancing the security of the user accounts. The platform is designed to be compatible with the latest stable version of Google Chrome and Mozilla, ensuring that every player can enjoy the game without compromise.
+
+This Application aims to blend the nostalgia of classic Pong with modern multiplayer dynamics, fostering a vibrant community, and prioritizing user security through features like 2FA.
+
+
 
 ![37a3e72bd3a7a45ed5897703b8a2b800-0](https://github.com/nousheenali/ft_transcendence/assets/66158938/ea1e954e-97a0-4bf8-9799-7be63cf13847)
 
