@@ -1,12 +1,23 @@
 # SPIN MASTERS
 
-Spin Masters is an online multiplayer pong game that offers its users an immersive and real-time gaming experience. Its visually captivating interface provides a social platform for gamers to interact with like-minded individuals, build a community, and enjoy a gaming environment in a robust and secure technology stack. 
+Spin Masters is an innovative and entertaining online platform crafted to enable users to engage in real-time Pong matches. With an attractive user interface, this application provides a fluid experience, allowing users to play, chat, connect with friends, and enjoy moments of fun.
 
-Crafted as a tribute to the timeless 1972 classic Pong game, this application offers a seamlessly immersive multiplayer gaming experience. Users can personalize their gaming adventure by customizing the game's appearance, adding a personal touch to the excitement. With an integrated chat functionality and a friend management system, the platform not only promotes social interaction but also fosters the formation of vibrant gaming communities. It sets the stage for endless hours of fun and competitive gameplay.
+At the core of this application is NestJS backend which ensures robustness, scalability, and efficiency through its modular architecture. NestJS with Prisma establishes a clean and reliable approach to managing PostgreSQL database interactions ensuring security and efficiency. Real-time communication is powered by WebSockets, enabling instantaneous updates not only in the game but also in the integrated chat system and notifications.
 
-Spin Masters is specifically designed for users with a 42-school login along with an option to enable 2FA enhancing the security of the user accounts. The platform is designed to be compatible with the latest stable version of Google Chrome and Mozilla, ensuring that every player can enjoy the game without compromise.
+The front end is built on the Next.js framework, which seamlessly integrates WebSockets and the Phaser game engine while offering a responsive and dynamic interface. 
 
-This Application aims to blend the nostalgia of classic Pong with modern multiplayer dynamics, fostering a vibrant community, and prioritizing user security through features like 2FA.
+The use of the Phaser game engine elevated the game mechanics and visuals. It ensures a fast and flexible 2D gaming experience with easy placement of scenes, audio, and sprites. Combined with WebSockets, it delivers real-time synchronization of game events, creating a wonderful gaming experience
+
+Some Key Features of the Application:
+
+-	Dashboard: Provides an extensive overview of the player’s achievements within the application. The page shows one’s game history and their outcomes along with live games.
+*	Leaderboard: Showcases the list of players as a ranked list giving a comprehensive view of the entire player community. Additionally shows the top-ranked players in the page's header banner.
++	Friends Management:  Enables users to find and interact with other users within the system. After establishing a connection, users can communicate and engage in gaming.
+-	Integrated Chat: Provides opportunities to interact with friends and create communities through our channels feature. The chat interface extends beyond communication, allowing users to seamlessly invite others to play Pong, access player profiles, and create a dynamic and inclusive gaming community.
+*	Multiplayer Pong Game: a canvas game that pays homage to the 1972 classic Pong, offering matchmaking and customization features.
++	Two-Factor Authentication(2FA): Security feature to provide an additional layer of security to the user’s account. Users require a 42 login to create an account on our platform and have the option to enable Google authenticators authentication.
+
+Spin Masters aims to provide a comfortable gaming experience while fostering a vibrant and inclusive community for endless moments of fun and competition.
 
 
 
